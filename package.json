@@ -23,7 +23,7 @@
   },
 
   "staticFiles": {
-    "staticPath": "models",
-    "excludeGlob": "modles/export"
+    "staticPath": "assets",
+    "excludeGlob": "models/export"
   }
 }

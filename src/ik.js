@@ -1,4 +1,4 @@
-import { Bone, Skeleton, SkeletonHelper, Vector3 } from "three"
+import { Bone, Skeleton, SkeletonHelper, Vector3, Matrix4 } from "three"
 import { IK, IKChain, IKJoint, IKHingeConstraint, IKHelper } from "three-ik";
 
 import { toDeg, transferPosition, showPoints } from './utils.js'
@@ -27,7 +27,11 @@ function setupIK(scene, robot, controlTarget) {
 				let bone = new Bone();
 				bone.name = 'bone_' + child.name;
 				bone.matrixWorld.copy(child.matrixWorld);
-				boneParent && boneParent.add(bone);
+				if (boneParent) {
+					boneParent.add(bone);
+					let inv = new Matrix4().getInverse(boneParent.matrixWorld);
+					bone.applyMatrix4(inv);
+				}
 				boneParent = bone;
 				bones.push(bone);
 
