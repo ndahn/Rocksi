@@ -13,7 +13,20 @@
 			</div>
 		</div>
 		
-    	<div id="robot-sim-canvas"></div>
-		<script src="src/index.js"></script>
+		<div class="sim-container">
+			<xml id="blocks-toolbox" style="display: none">
+				<block type="controls_if"></block>
+				<block type="controls_repeat_ext"></block>
+				<block type="logic_compare"></block>
+				<block type="math_number"></block>
+				<block type="math_arithmetic"></block>
+				<block type="text"></block>
+				<block type="text_print"></block>
+			  </xml>
+			<div id="blocks-canvas"></div>
+			<div id="robot-sim-canvas"></div>
+			<script src="src/blockly.js"></script>
+			<script src="src/index.js"></script>
+		</div>
 	</body>
 </html>

@@ -31,11 +31,11 @@ let stats;
 
 let camera, scene, renderer;
 let particleLight;
-let material;
 
 let robot;
 let tcp, tcptarget;
 let transformControl;
+let ik;
 
 // TODO remove
 let kinematicsTween;
@@ -62,8 +62,7 @@ function loadRobotModel(value) {
 			};
 			urdfLoader.workingPath = LoaderUtils.extractUrlBase(url);
 
-            robot = urdfLoader.parse(xml);
-			robot.scale.set(10.0, 10.0, 10.0);
+			robot = urdfLoader.parse(xml);
 			robot.rotateX(-Math.PI / 2);  // robot is oriented in Z-direction, but three-js has Y upwards by default
 			
 			robot.traverse(child => {
@@ -74,7 +73,7 @@ function loadRobotModel(value) {
 			});
 
 			initScene();
-			setupIK(scene, robot);
+			ik = setupIK(scene, robot, tcptarget);
 			//animate();
 		},
 		(error) => console.error(error)
@@ -103,6 +102,7 @@ function initScene() {
 	scene.add(grid);
 
 	// Robot
+	robot.scale.set(10.0, 10.0, 10.0);
 	scene.add(robot);
 
 	// Lights
@@ -138,7 +138,7 @@ function initScene() {
 	scene.add(tcptarget);
 
 	transformControl = new TransformControls(camera, renderer.domElement);
-	transformControl.addEventListener("change", render);
+	transformControl.addEventListener("change", updateRobot);
 	transformControl.addEventListener("dragging-changed", function (event) {
 		controls.enabled = !event.value;
 	});
@@ -160,6 +160,14 @@ function onWindowResize() {
 	camera.updateProjectionMatrix();
 
 	renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function updateRobot() {
+	if (ik) {
+		ik.solve();
+	}
+
+	render();
 }
 
 function render() {
