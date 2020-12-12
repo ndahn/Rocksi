@@ -1,0 +1,282 @@
+import * as THREE from 'three.module';
+import { IK, IKChain, IKJoint, IKHingeConstraint, IKHelper } from '../vendor/three-ik.module.js';
+import { ColladaArchiveLoader } from '../vendor/three/examples/jsm/loaders/ColladaArchiveLoader.js';
+import { OrbitControls } from '../vendor/three/examples/jsm/controls/OrbitControls.js';
+import { TransformControls } from '../vendor/three/examples/jsm/controls/TransformControls.js';
+import { TWEEN } from '../vendor/three/examples/jsm/libs/tween.module.min.js';
+import { ColladaLoader } from '../vendor/three/examples/jsm/loaders/ColladaLoader.js';
+import { loadFetchCache, loadFromIndexedDB, saveToIndexedDB } from './cachedb.js'
+
+let container;
+let camera, scene, renderer;
+let particleLight;
+let material;
+
+let robot;
+let kinematics;
+let base, tcp;
+let skeleton;
+const bones = [];
+let ik, ikchain, tcptarget, ikhelper;
+let transformControl;
+
+// TODO remove
+let kinematicsTween;
+const tweenParameters = {};
+
+
+loadFetchCache('robots', './models/franka_description/export/franka.zae')
+    .then(result => loadRobotModel(result))
+    .catch(error => console.error(error.message));
+
+
+function loadRobotModel( value ) {
+    let url = URL.createObjectURL(value);
+    const archiveLoader = new ColladaArchiveLoader();
+    archiveLoader.load( url, function ( collada ) {
+        console.info( "Loading robot model..." );
+        // Flat white since the imported ones don't quite work. 
+        material = new THREE.MeshStandardMaterial();
+        material.flatShading = true;
+        material.skinning = true;
+
+        robot = collada.scene;
+
+        robot.traverse( function ( child ) {
+            if ( child.isMesh ) {
+                child.material = material;
+            }
+            if ( child.name === 'panda_hand' ) {
+                tcp = child;
+            } else if ( child.name === 'panda_link0' ) {
+                base = child;
+            }
+        } );
+
+        robot.scale.x = robot.scale.y = robot.scale.z = 10.0;
+        robot.updateMatrix();
+
+        kinematics = collada.kinematics;
+
+        initScene();
+        setupIK();
+        //animate();
+    } );
+}
+
+function showPoints( positions, material ) {
+    material = material || new THREE.PointsMaterial( {size: 10, color: 0xff0000, sizeAttenuation: false, depthTest: false } );
+    let geom = new THREE.Geometry();
+
+    for (let p of positions) {
+        geom.vertices.push(p);
+    }
+
+    var dots = new THREE.Points( geom, material );
+    scene.add(dots);
+}
+
+function setupIK() {
+    ik = new IK();
+    ikchain = new IKChain();
+
+    let root = new THREE.Bone();
+    base.getWorldPosition(root.position);
+    bones.push(root);
+    
+    const positions = [];
+    let boneParent = root;
+
+    for (let joint of kinematics.jointMap.values()) {
+        const params = joint.joint;
+        const object = joint.object;
+
+        positions.push(object.localToWorld(new THREE.Vector3()));
+
+        if ( object.name.includes("finger") || object.name.includes("hand") || object.name.includes("link8") ) {
+            continue;
+        }
+
+        // Build a skeleton for the robot so we can control it with the IK. Since the robot is not a 
+        // SkinnedMesh we will instead update the model parts directly whenever the bones change.
+        const bone = new THREE.Bone();
+        bone.name = 'bone_' + object.name;
+        object.getWorldQuaternion(bone.quaternion);
+        object.getWorldPosition(bone.position);
+        
+        boneParent.add(bone);
+        boneParent = bone;
+        bones.push(bone);
+
+        // IK target the tcp will move towards
+        const jointTarget = (object === tcp) ? tcptarget : null;
+        const constraint = [new IKHingeConstraint(params.limits.min, params.limits.max)];
+        ikchain.add( new IKJoint(bone, { constraint }, { jointTarget }) );
+    }
+
+    showPoints(positions);
+
+    skeleton = new THREE.Skeleton(bones);
+    const skeletonHelper = new THREE.SkeletonHelper( bones[0] );
+    skeletonHelper.visible = true;
+    scene.add(skeletonHelper);
+
+    ik.add(ikchain);
+    ikhelper = new IKHelper(ik);
+    scene.add(ikhelper);
+}
+
+function initScene() {
+
+    container = document.getElementById( 'robot-sim-canvas' );
+
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color( 0x363b4b );
+
+    // Camera
+    camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
+    camera.position.set( 20, 20, 30 );
+    camera.lookAt( 0, 5, 0 );
+
+    // Grid
+    const grid = new THREE.GridHelper( 20, 20, 0xf0f0f0, 0x888888 );
+    scene.add( grid );
+
+    // Robot
+    scene.add( robot );
+
+    // Lights
+    particleLight = new THREE.Mesh( new THREE.SphereBufferGeometry( 4, 8, 8 ), new THREE.MeshBasicMaterial( { color: 0xffffff } ) );
+    scene.add( particleLight );
+
+    const light = new THREE.HemisphereLight( 0xffeeee, 0x111122 );
+    scene.add( light );
+
+    const pointLight = new THREE.PointLight( 0xffffff, 0.3 );
+    //pointLight.castShadow = true;
+    particleLight.add( pointLight );
+
+    renderer = new THREE.WebGLRenderer();
+    renderer.setPixelRatio( window.devicePixelRatio );
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    container.appendChild( renderer.domElement );
+
+    // Scene controls
+    const controls = new OrbitControls( camera, renderer.domElement );
+    controls.damping = 0.2;
+    controls.addEventListener( 'change', render );
+
+    // TCP target & controls
+    tcptarget = new THREE.Mesh(
+        new THREE.SphereGeometry(0.5),
+        new THREE.MeshBasicMaterial({wireframe: true})
+    );
+    tcptarget.position.set(10, 10, 5);  // TODO tcp.position
+    scene.add(tcptarget);
+
+    transformControl = new TransformControls( camera, renderer.domElement );
+    transformControl.addEventListener( 'change', render );
+    transformControl.addEventListener( 'dragging-changed', function( event ) {
+        controls.enabled = ! event.value;
+    } );
+    
+    transformControl.attach( tcptarget );
+    scene.add( transformControl );
+
+    //setupTween();
+
+    window.addEventListener( 'resize', onWindowResize, false );
+}
+
+function onWindowResize() {
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+
+}
+
+function render() {
+
+    const timer = Date.now() * 0.0001;
+
+    //camera.position.x = Math.cos( timer ) * 20;
+    //camera.position.y = 10;
+    //camera.position.z = Math.sin( timer ) * 20;
+
+    //camera.lookAt( 0, 5, 0 );
+
+    particleLight.position.x = Math.sin( timer * 4 ) * 3009;
+    particleLight.position.y = Math.cos( timer * 5 ) * 4000;
+    particleLight.position.z = Math.cos( timer * 4 ) * 3009;
+
+    renderer.render( scene, camera );
+
+}
+
+
+
+function setupTween() {
+
+    const duration = THREE.MathUtils.randInt( 1000, 5000 );
+
+    const target = {};
+
+    for ( const prop in kinematics.joints ) {
+
+        if ( kinematics.joints.hasOwnProperty( prop ) ) {
+
+            if ( ! kinematics.joints[ prop ].static ) {
+
+                const joint = kinematics.joints[ prop ];
+
+                const old = tweenParameters[ prop ];
+
+                const position = old ? old : joint.zeroPosition;
+
+                tweenParameters[ prop ] = position;
+
+                target[ prop ] = THREE.MathUtils.randInt( joint.limits.min, joint.limits.max );
+
+            }
+
+        }
+
+    }
+
+    kinematicsTween = new TWEEN.Tween( tweenParameters ).to( target, duration ).easing( TWEEN.Easing.Quadratic.Out );
+
+    kinematicsTween.onUpdate( function ( object ) {
+
+        for ( const prop in kinematics.joints ) {
+
+            if ( kinematics.joints.hasOwnProperty( prop ) ) {
+
+                if ( ! kinematics.joints[ prop ].static ) {
+
+                    kinematics.setJointValue( prop, object[ prop ] );
+
+                }
+
+            }
+
+        }
+
+    } );
+
+    kinematicsTween.start();
+
+    setTimeout( setupTween, duration );
+
+}
+
+function animate() {
+
+    requestAnimationFrame( animate );
+
+    render();
+//    stats.update();
+    TWEEN.update();
+
+}
