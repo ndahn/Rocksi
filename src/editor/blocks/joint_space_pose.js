@@ -4,41 +4,41 @@ Blockly.Blocks["joint_space_pose"] = {
 	init: function () {
 		this.jsonInit({
 			type: "joint_space_pose",
-			message0: "j0 %1 j1 %2 j2 %3 j3 %4 j4 %5 j5 %6 j6 %7",
+			message0: "j1 %1 j2 %2 j3 %3 j4 %4 j5 %5 j6 %6 j7 %7",
 			args0: [
 				{
 					type: "field_angle",
-					name: "j0",
+					name: "JOINT_1",
 					angle: 0,
 				},
 				{
 					type: "field_angle",
-					name: "j1",
+					name: "JOINT_2",
 					angle: 0,
 				},
 				{
 					type: "field_angle",
-					name: "j2",
+					name: "JOINT_3",
 					angle: 0,
 				},
 				{
 					type: "field_angle",
-					name: "j3",
+					name: "JOINT_4",
 					angle: 0,
 				},
 				{
 					type: "field_angle",
-					name: "j4",
+					name: "JOINT_5",
 					angle: 0,
 				},
 				{
 					type: "field_angle",
-					name: "j5",
+					name: "JOINT_6",
 					angle: 0,
 				},
 				{
 					type: "field_angle",
-					name: "j6",
+					name: "JOINT_7",
 					angle: 0,
 				},
 			],
@@ -54,8 +54,8 @@ Blockly.Blocks["joint_space_pose"] = {
 
 Blockly.JavaScript["joint_space_pose"] = function (block) {
     let ret = '[';
-    for (let i = 0; i < 7; i++) {
-        ret += block.getFieldValue('j' + i) + ',';
+    for (let i = 1; i < 8; i++) {
+        ret += block.getFieldValue('JOINT_' + i) + ',';
     }
     ret += ']'
 

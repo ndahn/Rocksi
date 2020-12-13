@@ -15,5 +15,14 @@ Blockly.Blocks["gripper_open"] = {
 };
 
 Blockly.JavaScript["gripper_open"] = function (block) {
-	return ["gripper_open();", Blockly.JavaScript.ORDER_FUNCTION_CALL];
+	var functionName = Blockly.JavaScript.provideFunction_(
+		"gripper_open",
+		[
+			"function " + Blockly.JavaScript.FUNCTION_NAME_PLACEHOLDER_ + "() {",
+			"  _gripper_open_internal();",
+			"}",
+		]);
+	
+	var code = functionName + "()";
+	return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };

@@ -111,14 +111,17 @@ function initScene() {
 		new SphereBufferGeometry(4, 8, 8),
 		new MeshBasicMaterial({ color: 0xffffff })
 	);
-	scene.add(particleLight);
+	//scene.add(particleLight);
 
 	const light = new HemisphereLight(0xffeeee, 0x111122);
 	scene.add(light);
 
 	const pointLight = new PointLight(0xffffff, 0.3);
 	//pointLight.castShadow = true;
-	particleLight.add(pointLight);
+	//particleLight.add(pointLight);
+	//particleLight.position.set(30, 40, 30);
+	pointLight.position.set(30, 40, 30);
+	scene.add(pointLight);
 
 	renderer = new WebGLRenderer();
 	renderer.setPixelRatio(window.devicePixelRatio);
@@ -186,9 +189,9 @@ function render() {
 
 	//camera.lookAt( 0, 5, 0 );
 
-	particleLight.position.x = Math.sin(timer * 4) * 3009;
-	particleLight.position.y = Math.cos(timer * 5) * 4000;
-	particleLight.position.z = Math.cos(timer * 4) * 3009;
+	//particleLight.position.x = Math.sin(timer * 4) * 3009;
+	//particleLight.position.y = Math.cos(timer * 5) * 4000;
+	//particleLight.position.z = Math.cos(timer * 4) * 3009;
 
 	renderer.render(scene, camera);
 }
@@ -227,5 +230,5 @@ function animate() {
 
 	render();
 	stats.update();
-	TWEEN.update();
+	//TWEEN.update();
 }

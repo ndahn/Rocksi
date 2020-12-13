@@ -1,4 +1,6 @@
 import * as Blockly from "blockly"
+import "blockly/blockly_compressed"
+import "blockly/javascript_compressed"
 import 'blockly/msg/de'
 
 import './blocks/move'
@@ -6,13 +8,33 @@ import './blocks/joint_space_pose'
 import './blocks/task_space_pose'
 import './blocks/gripper_open'
 import './blocks/gripper_close'
+import './blocks/joint_absolute'
+import './blocks/joint_relative'
 
 
 var blocklyArea = document.getElementById('blocks-container');
 var blocklyDiv = document.getElementById('blocks-canvas');
 
 var workspace = Blockly.inject(blocklyDiv,
-    { toolbox: document.getElementById('blocks-toolbox') });
+    {
+        toolbox: document.getElementById('blocks-toolbox'),
+        zoom: {
+            controls: true,
+            wheel: false,
+            startScale: 1.0,
+            maxScale: 3,
+            minScale: 0.3,
+            scaleSpeed: 1.1,
+            pinch: true
+        },
+        grid: {
+            spacing: 20,
+            length: 3,
+            colour: '#ddd',
+            snap: true
+        },
+        trashcan: true
+    });
 
 
 var onresize = function(e) {
