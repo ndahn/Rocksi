@@ -1,6 +1,7 @@
 body {
 	margin: 0;
 	color: #fff;
+	background: #363b4b;
 	overscroll-behavior: none;
 }
 
@@ -21,8 +22,7 @@ body {
 }
 
 
-#sim-container {
-	display: block;
+#main-container {
 	position: absolute;
 	z-index: 2;
 	width: 100%;
@@ -39,18 +39,32 @@ body {
 	overflow-y: auto;
 }
 
-#blocks-canvas {
+#blocks-container {
 	position: absolute;
-	width: calc(40% - 30px);
+	z-index: 5;
+	width: calc(50% - 25px);
 	height: calc(100% - 20px);
 	top: 10px;
 	left: 10px;
 }
 
-#robot-sim-canvas {
+#sim-container {
 	position: absolute;
-	width: calc(60% - 30px);
+	width: calc(50% - 25px);
 	height: calc(100% - 20px);
 	top: 10px;
 	right: 10px;
+}
+
+#sim-canvas {
+	display: block;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+#sim-stats {
+	position: absolute;
+	bottom: 0;
+	right: 0;
 }

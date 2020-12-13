@@ -7,25 +7,27 @@
 		<link type="text/css" rel="stylesheet" href="./css/main.css">
 	</head>
 	<body>
-		<div class="background-container">
-			<div class="loading-message">
-				<h3>Lade Roboter...</h3>
+		<div class="main-container">
+			<div id="blocks-container">
+				<xml id="blocks-toolbox" style="display: none">
+					<block type="move"></block>
+					<block type="joint_space_pose"></block>
+					<block type="task_space_pose"></block>
+					<block type="gripper_open"></block>
+					<block type="gripper_close"></block>
+				</xml>
+				<div id="blocks-canvas"></div>
 			</div>
-		</div>
-		
-		<div class="sim-container">
-			<xml id="blocks-toolbox" style="display: none">
-				<block type="controls_if"></block>
-				<block type="controls_repeat_ext"></block>
-				<block type="logic_compare"></block>
-				<block type="math_number"></block>
-				<block type="math_arithmetic"></block>
-				<block type="text"></block>
-				<block type="text_print"></block>
-			  </xml>
-			<div id="blocks-canvas"></div>
-			<div id="robot-sim-canvas"></div>
-			<script src="src/blockly.js"></script>
+
+			<div id="sim-container">
+				<div class="background-container">
+					<div class="loading-message">
+						<h3>Lade Roboter...</h3>
+					</div>
+				</div>
+				<div id="sim-canvas"></div>
+			</div>
+
 			<script src="src/index.js"></script>
 		</div>
 	</body>

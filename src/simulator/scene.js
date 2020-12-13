@@ -23,7 +23,7 @@ var TWEEN = require('@tweenjs/tween.js');
 import { XacroLoader } from "xacro-parser";
 import URDFLoader from "urdf-loader";
 
-import { loadCached } from "./cachedb.js";
+import { loadCached } from "../cachedb.js";
 import { setupIK } from "./ik.js";
 
 let container;
@@ -74,6 +74,7 @@ function loadRobotModel(value) {
 
 			initScene();
 			ik = setupIK(scene, robot, tcptarget);
+			render();
 			//animate();
 		},
 		(error) => console.error(error)
@@ -82,7 +83,7 @@ function loadRobotModel(value) {
 
 
 function initScene() {
-	container = document.getElementById("robot-sim-canvas");
+	container = document.getElementById("sim-canvas");
 
 	scene = new Scene();
 	scene.background = new Color(0x363b4b);
@@ -90,12 +91,12 @@ function initScene() {
 	// Camera
 	camera = new PerspectiveCamera(
 		45,
-		window.innerWidth / window.innerHeight,
+		container.clientWidth / container.clientHeight,
 		1,
 		2000
 	);
-	camera.position.set(20, 20, 30);
-	camera.lookAt(0, 5, 0);
+	camera.position.set(8, 17, 20);
+	camera.lookAt(0, 10,)
 
 	// Grid
 	const grid = new GridHelper(20, 20, 0xf0f0f0, 0x888888);
@@ -148,18 +149,21 @@ function initScene() {
 
 	// Performance statistics
 	stats = new Stats();
+	stats.dom.removeAttribute('style');
+	stats.dom.id = 'sim-stats';
 	container.appendChild(stats.dom);
 
     setupTween();
 
 	window.addEventListener("resize", onWindowResize, false);
+	onWindowResize();
 }
 
 function onWindowResize() {
-	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.aspect = container.clientWidth / container.clientHeight;
 	camera.updateProjectionMatrix();
 
-	renderer.setSize(window.innerWidth, window.innerHeight);
+	renderer.setSize(container.clientWidth, container.clientHeight);
 }
 
 function updateRobot() {
@@ -172,6 +176,9 @@ function updateRobot() {
 
 function render() {
 	const timer = Date.now() * 0.0001;
+
+	//console.log(camera.position);
+	//console.log(camera.rotation);
 
 	//camera.position.x = Math.cos( timer ) * 20;
 	//camera.position.y = 10;

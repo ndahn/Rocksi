@@ -1,1 +1,2 @@
-import './scene.js'
+import './simulator/scene'
+import './editor/blockly'
