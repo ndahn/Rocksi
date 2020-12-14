@@ -75,13 +75,28 @@ function loadRobotModel(url) {
 				robot = urdfLoader.parse(xml);
 				robot.rotateX(-Math.PI / 2);  // robot is oriented in Z-direction, but three-js has Y upwards by default
 				
+				const jointsOrdered = [];
+				const fingers = [];
+
 				robot.traverse(child => {
+					if (child.type === 'URDFJoint') {
+						jointsOrdered.push(child);
+					}
+
+					if (child.name.match('panda_finger_joint')) {
+						fingers.push(child);
+					}
+
 					// panda_hand is child to panda_hand_joint and parent of panda_hand_finger1 and 2
 					if (child.name === 'panda_hand') {
 						tcp = child;
 					}
 				});
 
+				// This way we can easily identify joints by index...
+				robot['jointsOrdered'] = jointsOrdered;
+				// ...as well as the fingers of the gripper
+				robot['fingers'] = fingers;
 				resolve(robot);
 			},
 			(error) => {
