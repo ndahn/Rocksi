@@ -11,11 +11,16 @@ import './blocks/gripper_close'
 import './blocks/joint_absolute'
 import './blocks/joint_relative'
 
+import { Interpreter } from 'js-interpreter'
 
-var blocklyArea = document.getElementById('blocks-container');
+import Simulation from '../simulator/simulation'
+
+
+var blocklyArea = document.querySelector('.blocks-container');
 var blocklyDiv = document.getElementById('blocks-canvas');
 
-var workspace = Blockly.inject(blocklyDiv,
+var workspace = Blockly.inject(
+    blocklyDiv,
     {
         toolbox: document.getElementById('blocks-toolbox'),
         zoom: {
@@ -60,3 +65,74 @@ var onresize = function(e) {
 window.addEventListener('resize', onresize, false);
 onresize();
 Blockly.svgResize(workspace);
+
+
+// Setup the run button
+const runButton = document.querySelector('.run-button');
+const runButtonIcon = runButton.querySelector('i:first-child');
+
+runButton.onclick = function () {
+    // No need to react to the other click, execution will check the status of the 
+    // button frequently
+    if (!runButton.classList.contains('running')) {
+        runProgram();
+    }
+
+    runButton.classList.toggle('running');
+    runButtonIcon.classList.toggle('fa-play');
+    runButtonIcon.classList.toggle('fa-stop');
+    return false;
+};
+
+
+// Get simulation instance
+var simulation = null;
+
+Simulation.getInstance(sim => {
+    // Once the simulation is available we can enable the run button
+    simulation = sim;
+    runButton.disabled = false;
+});
+
+function simAPI(interpreter, globalObject) {
+    let wrapper = function (id) {
+        return workspace.highlightBlock(id);
+    }
+    interpreter.setProperty(globalObject, 'highlightBlock',
+        interpreter.createNativeFunction(wrapper));
+    
+    const sim = simulation;
+    wrapper = function (command, ...args) {
+        return sim.run(command, args);
+    }
+    interpreter.setProperty(globalObject, 'simulation',
+        interpreter.createNativeFunction(wrapper));
+}
+
+function runProgram() {
+    Blockly.JavaScript.STATEMENT_PREFIX = 'highlightBlock(%1);\n'
+    Blockly.JavaScript.addReservedWords('highlightBlock');
+    Blockly.JavaScript.addReservedWords('code');
+
+    let code = Blockly.JavaScript.workspaceToCode(workspace);
+    console.log('Executing program: ' + code);
+
+    const interpreter = new Interpreter(code, simAPI);
+
+    // save current robot state
+    // execute code on instance
+    // restore robot state on stop or when code fails
+
+    function step() {
+        // Step through the program for as long as the button is in running state 
+        // and there is something to execute
+        if (runButton.classList.contains('running') && interpreter.step()) {
+            setTimeout(step, 0);
+        }
+        else {
+            runButton.classList.remove('running');
+            simulation.stop();
+        }
+    }
+    step();
+}

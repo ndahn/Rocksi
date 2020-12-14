@@ -31,7 +31,7 @@ Blockly.JavaScript["move"] = function (block) {
 		"move",
 		[
 			"function " + Blockly.JavaScript.FUNCTION_NAME_PLACEHOLDER_ + "(pose) {",
-			"  _move_internal(pose);",
+			"  simulation('move', pose);",
 			"}",
 		]);
 	

@@ -81,7 +81,7 @@ Blockly.JavaScript["joint_relative"] = function (block) {
 		"joint_relative",
 		[
 			"function " + Blockly.JavaScript.FUNCTION_NAME_PLACEHOLDER_ + "(joint, angle) {",
-			"  _joint_relative_internal(joint, angle);",
+			"  simulation('joint_relative', joint, angle);",
 			"}",
 		]);
 	

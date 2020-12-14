@@ -66,7 +66,7 @@ Blockly.JavaScript["joint_absolute"] = function (block) {
 		"joint_absolute",
 		[
 			"function " + Blockly.JavaScript.FUNCTION_NAME_PLACEHOLDER_ + "(joint, angle) {",
-			"  _joint_absolute_internal(joint, angle);",
+			"  simulation('joint_absolute', joint, angle);",
 			"}",
 		]);
 	

@@ -19,7 +19,7 @@ Blockly.JavaScript["gripper_close"] = function (block) {
 		"gripper_close",
 		[
 			"function " + Blockly.JavaScript.FUNCTION_NAME_PLACEHOLDER_ + "() {",
-			"  _gripper_close_internal();",
+			"  simulation('gripper_close');",
 			"}",
 		]);
 	

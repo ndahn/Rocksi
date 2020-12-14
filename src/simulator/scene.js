@@ -23,14 +23,14 @@ var TWEEN = require('@tweenjs/tween.js');
 import { XacroLoader } from "xacro-parser";
 import URDFLoader from "urdf-loader";
 
-import { loadCached } from "../cachedb.js";
-import { setupIK } from "./ik.js";
+import { loadCached } from "../cachedb";
+import { setupIK } from "./ik";
+import Simulation from "./simulation"
 
 let container;
 let stats;
 
 let camera, scene, renderer;
-let particleLight;
 
 let robot;
 let tcp, tcptarget;
@@ -44,41 +44,52 @@ const tweenParameters = {};
 //loadCached('robots', './models/export/franka_description.zip')
 //    .then(result => loadRobotModel(result))
 //    .catch(error => console.error(error.message));
-loadRobotModel("./models/franka_description/robots/panda_arm_hand.urdf.xacro");
+loadRobotModel("./models/franka_description/robots/panda_arm_hand.urdf.xacro")
+	.then(robot => {
+		initScene();
+		ik = setupIK(scene, robot, tcptarget);
+		render();
+		Simulation.init(robot, render);
+		//animate();
+	}, reason => {
+		console.error(reason);
+	});
 
-function loadRobotModel(value) {
-	const url = value;
-	const xacroLoader = new XacroLoader();
-	xacroLoader.inOrder = true;
-	xacroLoader.requirePrefix = true;
-	xacroLoader.localProperties = true;
-	xacroLoader.rospackCommands.find = (...args) => "/models/" + args;
-	xacroLoader.load(
-		url,
-		(xml) => {
-			const urdfLoader = new URDFLoader();
-			urdfLoader.packages = {
-				franka_description: "./models/franka_description",
-			};
-			urdfLoader.workingPath = LoaderUtils.extractUrlBase(url);
 
-			robot = urdfLoader.parse(xml);
-			robot.rotateX(-Math.PI / 2);  // robot is oriented in Z-direction, but three-js has Y upwards by default
-			
-			robot.traverse(child => {
-				// panda_hand is child to panda_hand_joint and parent of panda_hand_finger1 and 2
-				if (child.name === 'panda_hand') {
-					tcp = child;
-				}
-			});
+function loadRobotModel(url) {
+	return new Promise((resolve, reject) => {
+		const xacroLoader = new XacroLoader();
+		xacroLoader.inOrder = true;
+		xacroLoader.requirePrefix = true;
+		xacroLoader.localProperties = true;
+		xacroLoader.rospackCommands.find = (...args) => "/models/" + args;
+		xacroLoader.load(
+			url,
+			(xml) => {
+				const urdfLoader = new URDFLoader();
+				urdfLoader.packages = {
+					franka_description: "./models/franka_description",
+				};
+				urdfLoader.workingPath = LoaderUtils.extractUrlBase(url);
 
-			initScene();
-			ik = setupIK(scene, robot, tcptarget);
-			render();
-			//animate();
-		},
-		(error) => console.error(error)
-	);
+				robot = urdfLoader.parse(xml);
+				robot.rotateX(-Math.PI / 2);  // robot is oriented in Z-direction, but three-js has Y upwards by default
+				
+				robot.traverse(child => {
+					// panda_hand is child to panda_hand_joint and parent of panda_hand_finger1 and 2
+					if (child.name === 'panda_hand') {
+						tcp = child;
+					}
+				});
+
+				resolve(robot);
+			},
+			(error) => {
+				console.error(error);
+				reject(error);
+			}
+		);
+	});
 }
 
 
