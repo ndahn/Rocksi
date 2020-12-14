@@ -27,6 +27,12 @@ import { loadCached } from "../cachedb";
 import { setupIK } from "./ik";
 import Simulation from "./simulation"
 
+import * as Robots from './robots'
+
+let params = new URLSearchParams(location.search);
+const selectedRobot = params.get('robot') || 'Franka';
+const robotDefs = Robots[selectedRobot];
+
 let container;
 let stats;
 
@@ -37,20 +43,15 @@ let tcp, tcptarget;
 let transformControl;
 let ik;
 
-// TODO remove
-let kinematicsTween;
-const tweenParameters = {};
-
 //loadCached('robots', './models/export/franka_description.zip')
 //    .then(result => loadRobotModel(result))
 //    .catch(error => console.error(error.message));
-loadRobotModel("./models/franka_description/robots/panda_arm_hand.urdf.xacro")
+loadRobotModel(robotDefs.path)
 	.then(robot => {
 		initScene();
 		ik = setupIK(scene, robot, tcptarget);
 		render();
 		Simulation.init(robot, render);
-		//animate();
 	}, reason => {
 		console.error(reason);
 	});
@@ -67,9 +68,7 @@ function loadRobotModel(url) {
 			url,
 			(xml) => {
 				const urdfLoader = new URDFLoader();
-				urdfLoader.packages = {
-					franka_description: "./models/franka_description",
-				};
+				urdfLoader.packages = robotDefs.packages;
 				urdfLoader.workingPath = LoaderUtils.extractUrlBase(url);
 
 				robot = urdfLoader.parse(xml);
@@ -83,12 +82,11 @@ function loadRobotModel(url) {
 						jointsOrdered.push(child);
 					}
 
-					if (child.name.match('panda_finger_joint')) {
+					if (robotDefs.isFinger(child)) {
 						fingers.push(child);
 					}
 
-					// panda_hand is child to panda_hand_joint and parent of panda_hand_finger1 and 2
-					if (child.name === 'panda_hand') {
+					if (robotDefs.isTCP(child)) {
 						tcp = child;
 					}
 				});
@@ -220,41 +218,4 @@ function render() {
 	//particleLight.position.z = Math.cos(timer * 4) * 3009;
 
 	renderer.render(scene, camera);
-}
-
-function setupTween() {
-	const duration = MathUtils.randInt(1000, 5000);
-	const target = {};
-
-	for (const j in robot.joints) {
-		const joint = robot.joints[j];
-		
-		const old = tweenParameters[j];
-		const position = old ? old : 0.0;
-		tweenParameters[j] = position;
-
-		target[j] = MathUtils.randFloat(joint.limit.lower, joint.limit.upper);
-	}
-
-	kinematicsTween = new TWEEN.Tween(tweenParameters)
-		.to(target, duration)
-		.easing(TWEEN.Easing.Quadratic.Out);
-
-	kinematicsTween.onUpdate(function (object) {
-		for (const j in robot.joints) {
-			robot.joints[j].setJointValue(object[j]);
-		}
-	});
-
-	kinematicsTween.start();
-
-	setTimeout(setupTween, duration);
-}
-
-function animate() {
-	requestAnimationFrame(animate);
-
-	render();
-	stats.update();
-	//TWEEN.update();
 }

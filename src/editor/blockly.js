@@ -94,16 +94,15 @@ Simulation.getInstance(sim => {
     runButton.disabled = false;
 });
 
-function simAPI(interpreter, globalObject) {
+function simulationAPI(interpreter, globalObject) {
     let wrapper = function (id) {
         return workspace.highlightBlock(id);
     }
     interpreter.setProperty(globalObject, 'highlightBlock',
         interpreter.createNativeFunction(wrapper));
     
-    const sim = simulation;
     wrapper = function (command, ...args) {
-        return sim.run(command, args);
+        return simulation.run(command, ...args);
     }
     interpreter.setProperty(globalObject, 'simulation',
         interpreter.createNativeFunction(wrapper));
@@ -117,11 +116,7 @@ function runProgram() {
     let code = Blockly.JavaScript.workspaceToCode(workspace);
     console.log('Executing program: ' + code);
 
-    const interpreter = new Interpreter(code, simAPI);
-
-    // save current robot state
-    // execute code on instance
-    // restore robot state on stop or when code fails
+    const interpreter = new Interpreter(code, simulationAPI);
 
     function step() {
         // Step through the program for as long as the button is in running state 
@@ -131,7 +126,7 @@ function runProgram() {
         }
         else {
             runButton.classList.remove('running');
-            simulation.stop();
+            simulation.cancel();
         }
     }
     step();

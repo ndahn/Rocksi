@@ -1,5 +1,3 @@
-import { MinEquation } from 'three';
-
 var TWEEN = require('@tweenjs/tween.js');
 
 
@@ -30,7 +28,7 @@ class TheSimulation {
         }
     }
 
-    
+
     run(command, ...args) {
         let p = new Promise((resolve, reject) => {
             try {
@@ -53,50 +51,6 @@ class TheSimulation {
         // As this is called by _onTweenFinished, this prevents having multiple tweens
         // with different end times, but that's not a use case at the moment
         TWEEN.removeAll();
-    }
-
-
-    _start(tween, duration, resolve, reject) {
-        if (this.running) {
-            return;
-        }
-
-        this.running = true;
-
-        tween.start();
-        setTimeout(duration, () => {
-            this._onTweenFinished(tween, resolve, reject);
-        });
-
-        window.requestAnimationFrame(_animate);
-    }
-
-    _animate(time) {
-        TWEEN.update(time);
-        this._renderCallback();
-
-        if (this.running) {
-            window.requestAnimationFrame(_animate);
-        }
-    }
-
-    _onTweenFinished(tween, resolve, reject) {
-        this.running ? resolve('success') : reject('tween obsolete');
-        cancel();
-    }
-
-    _makeTween(start, target, duration) {
-        const robot = this._robot;
-
-        let tween = new TWEEN.Tween(start)
-            .to(target, duration)
-            .easing(TWEEN.Easing.Quadratic.Out);
-
-        tween.onUpdate(function (object) {
-            for (const j in robot.joints) {
-                robot.joints[j].setJointValue(object[j]);
-            }
-        });
     }
 
 
@@ -152,7 +106,7 @@ class TheSimulation {
     }
 
     joint_relative(resolve, reject, jointIdx, angle) {
-        console.log('Rotating joing ' + jointIdx + ' by ' + angle + ' degrees');
+        console.log('Rotating joint ' + jointIdx + ' by ' + angle + ' degrees');
 
         const joint = this._robot.jointsOrdered[jointIdx];
         let angleAbs = joint.angle() * 180.0 / Math.PI + angle;  // degrees
@@ -191,6 +145,50 @@ class TheSimulation {
             default:
                 console.error('move() cannot handle array of length ' + pose.length)
         }
+    }
+
+    
+    _makeTween(start, target, duration) {
+        const robot = this._robot;
+
+        let tween = new TWEEN.Tween(start)
+            .to(target, duration)
+            .easing(TWEEN.Easing.Quadratic.Out);
+
+        tween.onUpdate(function (object) {
+            for (const j in robot.joints) {
+                robot.joints[j].setJointValue(object[j]);
+            }
+        });
+    }
+
+    _start(tween, duration, resolve, reject) {
+        if (this.running) {
+            return;
+        }
+
+        this.running = true;
+
+        tween.start();
+        setTimeout(duration, () => {
+            this._onTweenFinished(tween, resolve, reject);
+        });
+
+        window.requestAnimationFrame(_animate);
+    }
+
+    _animate(time) {
+        TWEEN.update(time);
+        this._renderCallback();
+
+        if (this.running) {
+            window.requestAnimationFrame(_animate);
+        }
+    }
+
+    _onTweenFinished(tween, resolve, reject) {
+        this.running ? resolve('success') : reject('tween obsolete');
+        cancel();
     }
 }
 
