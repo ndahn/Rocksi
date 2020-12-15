@@ -11,6 +11,7 @@ import './blocks/gripper_close'
 import './blocks/joint_absolute'
 import './blocks/joint_relative'
 
+Blockly.FieldAngle.WRAP = 180;
 const generator = Blockly.JavaScript;
 generator.STATEMENT_PREFIX = 'highlightBlock(%1);\n'
 generator.addReservedWords('highlightBlock');
@@ -78,11 +79,14 @@ const runButton = document.querySelector('.run-button');
 
 runButton.onclick = function () {
     runButton.classList.toggle('running');
-
-    // No need to react to the other click, execution will check the status of the
-    // button frequently
     if (runButton.classList.contains('running')) {
         runProgram();
+    }
+    else {
+        simulation.cancel();
+        if (executionContext.interpreter) {
+            executionContext.interpreter.paused_ = true;
+        }
     }
 
     return false;
@@ -183,19 +187,9 @@ function runBlock(block) {
 }
 
 function onProgramFinished() {
-    let code = executionContext.code;
-    let l = code.length;
-    code = generator.finish(code);
-    // The generator may add some cleanup code at the end
-    if (code.length > l) {
-        let remainder = code.slice(code.length - l);
-        try {
-            executionContext.interpreter.appendCode(remainder);
-            executionContext.interpreter.run();
-        }
-        catch (e) { /*  */ }
-    }
-
+    // The generator may add some finalizing code in generator.finish(code), but if we 
+    // got this far it is most likely not required. Previous commit has a version executing
+    // These final statements.
     workspace.highlightBlock(null);
     runButton.classList.remove('running');
     console.log('Execution finished');

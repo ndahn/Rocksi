@@ -57,7 +57,7 @@ Blockly.JavaScript["joint_space_pose"] = function (block) {
     for (let i = 1; i < 8; i++) {
         ret += block.getFieldValue('JOINT_' + i) + ',';
     }
-    ret += ']'
+	ret = ret.slice(0, -1) + ']';
 
     return [ret, Blockly.JavaScript.ORDER_ATOMIC];
 };

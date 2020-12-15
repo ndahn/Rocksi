@@ -53,7 +53,7 @@ Blockly.JavaScript["task_space_pose"] = function (block) {
     for (const key of ['X', 'Y', 'Z', 'YAW', 'PITCH', 'ROLL']) {
         ret += block.getFieldValue(key) + ',';
     }
-    ret += ']'
+    ret = ret.slice(0, -1) + ']'
 
     return [ret, Blockly.JavaScript.ORDER_ATOMIC];
 };

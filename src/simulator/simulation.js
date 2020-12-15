@@ -131,6 +131,17 @@ class TheSimulation {
     }
 
     move(resolve, reject, pose) {
+        // Seems to be a weird bug in js-interpreter concerning varargs and arrays
+        if (pose.class === 'Array' && pose.length === undefined) {
+            let newPose = [];
+            for (const p in pose.properties) {
+                if (p.match(/\d+/g)) {
+                    newPose[p] = pose.properties[p];
+                }
+            }
+            pose = newPose;
+        }
+
         switch (pose.length) {
             case 6:
                 // Task space pose
@@ -168,12 +179,15 @@ class TheSimulation {
     _makeTween(start, target, duration, resolve, reject) {
         const robot = this._robot;
 
+        console.log(start);
+        console.log(target);
         let tween = new TWEEN.Tween(start)
             .to(target, duration)
             .easing(TWEEN.Easing.Quadratic.Out);
 
         tween.onUpdate(object => {
             for (const j in object) {
+                console.log('tween: ' + j + ' -> ' + object[j]);
                 robot.joints[j].setJointValue(object[j]);
             }
         });
