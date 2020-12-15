@@ -36,5 +36,5 @@ Blockly.JavaScript["move"] = function (block) {
 		]);
 	
 	var code = functionName + '(' + pose + ')';
-	return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+	return code;
 };

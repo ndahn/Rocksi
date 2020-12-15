@@ -12,31 +12,31 @@ Blockly.Blocks["joint_relative"] = {
 					"options": [
 					  [
 						"j1",
-						"0"
-					  ],
-					  [
-						"j2",
 						"1"
 					  ],
 					  [
-						"j3",
+						"j2",
 						"2"
 					  ],
 					  [
-						"j4",
+						"j3",
 						"3"
 					  ],
 					  [
-						"j5",
+						"j4",
 						"4"
 					  ],
 					  [
-						"j6",
+						"j5",
 						"5"
 					  ],
 					  [
-						"j7",
+						"j6",
 						"6"
+					  ],
+					  [
+						"j7",
+						"7"
 					  ]
 					]
 				},
@@ -86,5 +86,5 @@ Blockly.JavaScript["joint_relative"] = function (block) {
 		]);
 	
 	var code = functionName + '(' + joint + ', ' + sign + angle + ')';
-	return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+	return code;
 };

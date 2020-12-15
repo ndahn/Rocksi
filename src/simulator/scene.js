@@ -131,12 +131,6 @@ function initScene() {
 	scene.add(robot);
 
 	// Lights
-	particleLight = new Mesh(
-		new SphereBufferGeometry(4, 8, 8),
-		new MeshBasicMaterial({ color: 0xffffff })
-	);
-	//scene.add(particleLight);
-
 	const light = new HemisphereLight(0xffeeee, 0x111122);
 	scene.add(light);
 
@@ -179,8 +173,6 @@ function initScene() {
 	stats.dom.removeAttribute('style');
 	stats.dom.id = 'sim-stats';
 	container.appendChild(stats.dom);
-
-    setupTween();
 
 	window.addEventListener("resize", onWindowResize, false);
 	onWindowResize();

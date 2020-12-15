@@ -11,7 +11,7 @@ import './blocks/gripper_close'
 import './blocks/joint_absolute'
 import './blocks/joint_relative'
 
-import { Interpreter } from 'js-interpreter'
+var Interpreter = require('js-interpreter');
 
 import Simulation from '../simulator/simulation'
 
@@ -69,18 +69,16 @@ Blockly.svgResize(workspace);
 
 // Setup the run button
 const runButton = document.querySelector('.run-button');
-const runButtonIcon = runButton.querySelector('i:first-child');
 
 runButton.onclick = function () {
-    // No need to react to the other click, execution will check the status of the 
+    runButton.classList.toggle('running');
+
+    // No need to react to the other click, execution will check the status of the
     // button frequently
-    if (!runButton.classList.contains('running')) {
+    if (runButton.classList.contains('running')) {
         runProgram();
     }
 
-    runButton.classList.toggle('running');
-    runButtonIcon.classList.toggle('fa-play');
-    runButtonIcon.classList.toggle('fa-stop');
     return false;
 };
 
@@ -96,6 +94,7 @@ Simulation.getInstance(sim => {
 
 function simulationAPI(interpreter, globalObject) {
     let wrapper = function (id) {
+        console.log('> ' + workspace.getBlockById(id).type);
         return workspace.highlightBlock(id);
     }
     interpreter.setProperty(globalObject, 'highlightBlock',
@@ -114,7 +113,7 @@ function runProgram() {
     Blockly.JavaScript.addReservedWords('code');
 
     let code = Blockly.JavaScript.workspaceToCode(workspace);
-    console.log('Executing program: ' + code);
+    console.log('<executing program>\n' + code);
 
     const interpreter = new Interpreter(code, simulationAPI);
 
