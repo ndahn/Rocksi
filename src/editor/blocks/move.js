@@ -1,7 +1,7 @@
 import * as Blockly from "blockly";
 
 Blockly.Blocks["move"] = {
-	isRobotCommandBlock: true, 
+	deferredStep: true, 
 	
 	init: function () {
 		this.jsonInit({

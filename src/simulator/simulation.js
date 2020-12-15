@@ -53,7 +53,6 @@ class TheSimulation {
             }
         });
 
-        let tweenFinished = false;
         p.then(msg => {
             console.log(command + '(' + args + '):' + msg);
             finishCallback();

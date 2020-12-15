@@ -1,7 +1,7 @@
 import * as Blockly from "blockly";
 
 Blockly.Blocks["gripper_open"] = {
-	isRobotCommandBlock: true, 
+	deferredStep: true, 
 	
 	init: function () {
 		this.jsonInit({

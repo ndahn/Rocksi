@@ -112,59 +112,91 @@ function simulationAPI(interpreter, globalObject) {
         interpreter.createNativeFunction(wrapper));
 }
 
-function runProgram() {
-    let code = generator.workspaceToCode(workspace);
-    console.log('<executing program>\n' + code);
 
-    const interpreter = new Interpreter(code, simulationAPI);
-    generator.init(workspace);
-    let blocks = workspace.getTopBlocks(true);
-    step(blocks, interpreter, []);
+class ExecutionContext {
+    constructor(blocks, interpreter) {
+        this.blocks = blocks
+        this.pos = 0
+        this.interpreter = interpreter
+        this.code = []
+
+        return this
+    }
+
+    nextBlock() {
+        return this.finished() ? null : this.blocks[this.pos++];
+    }
+
+    finished() {
+        return this.pos >= this.blocks.length;
+    }
 }
 
-function step(blocks, interpreter, code) {
-    if (blocks) {
-        const block = blocks.shift();
-        runBlock(block, interpreter, code);
-        if (!block.isRobotCommandBlock) {
-            step(blocks, interpreter, code);
+var executionContext = null;
+
+function runProgram() {
+    const interpreter = new Interpreter('', simulationAPI);
+    let blocks = workspace.getAllBlocks(true);
+    executionContext = new ExecutionContext(blocks, interpreter);
+    
+    generator.init(workspace);
+    step();
+}
+
+function step() {
+    let block = executionContext.nextBlock();
+    if (block) {
+        runBlock(block);
+        // Our robot command blocks will use a callback to continue execution
+        if (!block.deferredStep) {
+            step();
         }
     }
     else {
-        onProgramFinished(interpreter, code);
+        onProgramFinished();
     }
 }
 
-function runBlock(block, interpreter, code) {
-    let line = generator.blockToCode(block);
+function runBlock(block) {
+    // Copied from blockly/core/generator.js
+    let line = generator.blockToCode(block, true);
     if (Array.isArray(line)) {
         line = line[0];
     }
     if (line) {
         if (block.outputConnection) {
             line = generator.scrubNakedValue(line);
-            if (thgeneratoris.STATEMENT_PREFIX && !block.suppressPrefixSuffix) {
+            if (generator.STATEMENT_PREFIX && !block.suppressPrefixSuffix) {
                 line = generator.injectId(generator.STATEMENT_PREFIX, block) + line;
             }
             if (generator.STATEMENT_SUFFIX && !block.suppressPrefixSuffix) {
                 line = line + generator.injectId(generator.STATEMENT_SUFFIX, block);
             }
         }
-        code.push(line);
+        executionContext.code.push(line);
     }
 
-    interpreter.appendCode(line);
-    interpreter.run();
+    // Execute just the block
+    console.log(line);
+    executionContext.interpreter.appendCode(line);
+    executionContext.interpreter.run();
 }
 
-function onProgramFinished(interpreter, code) {
+function onProgramFinished() {
+    let code = executionContext.code;
     let l = code.length;
     code = generator.finish(code);
+    // The generator may add some cleanup code at the end
     if (code.length > l) {
         let remainder = code.slice(code.length - l);
-        interpreter.appendCode(remainder);
-        interpreter.run();
+        try {
+            executionContext.interpreter.appendCode(remainder);
+            executionContext.interpreter.run();
+        }
+        catch (e) { /*  */ }
     }
 
+    workspace.highlightBlock(null);
     runButton.classList.remove('running');
+    console.log('Execution finished');
 }
