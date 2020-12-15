@@ -44,7 +44,7 @@ Blockly.Blocks["joint_space_pose"] = {
 			],
 			inputsInline: true,
 			output: "Array",
-			colour: 210,
+			colour: "#4c97ff",
 			tooltip:
 				"Eine Pose im Gelenkwinkelraum (ein Winkel pro Gelenk, von der Basis zum Endeffektor)",
 			helpUrl: "",

@@ -44,6 +44,15 @@ loadRobotModel(robotDefs.path)
 	.then(robot => {
 		initScene();
 		ik = setupIK(scene, robot, tcptarget);
+
+		for (const j in robotDefs.defaultPose) {
+			try {
+				robot.joints[j].setJointValue(robotDefs.defaultPose[j]);
+			} catch (e) {
+				console.error('Failed to set default joint pose for joint ' + j + ': ' + e);
+			}
+		}
+
 		render();
 		Simulation.init(robot, render);
 	}, reason => {
@@ -89,6 +98,7 @@ function loadRobotModel(url) {
 				robot['jointsOrdered'] = jointsOrdered;
 				// ...as well as the fingers of the gripper
 				robot['fingers'] = fingers;
+
 				resolve(robot);
 			},
 			(error) => {

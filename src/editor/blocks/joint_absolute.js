@@ -51,7 +51,7 @@ Blockly.Blocks["joint_absolute"] = {
 			inputsInline: false,
 			previousStatement: null,
 			nextStatement: "Array",
-			colour: 300,
+			colour: "%{BKY_JOINT_HEX}",
 			tooltip:
 				"Bewege ein einzelnes Gelenk in eine bestimmte Position",
 			helpUrl: "",

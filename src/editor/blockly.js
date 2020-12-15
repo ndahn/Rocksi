@@ -11,7 +11,14 @@ import './blocks/gripper_close'
 import './blocks/joint_absolute'
 import './blocks/joint_relative'
 
+Blockly.Msg.MOVEMENT_HEX = "#4c97ff";
+Blockly.Msg.GRIPPER_HEX = "#59c059";
+Blockly.Msg.JOINT_HEX = "#FF7700";
+Blockly.Msg.TEALGREEN_HEX = "#0fbd8c";
+Blockly.Msg.HOTRED_HEX = "#ff6680";
+
 Blockly.FieldAngle.WRAP = 180;
+
 const generator = Blockly.JavaScript;
 generator.STATEMENT_PREFIX = 'highlightBlock(%1);\n'
 generator.addReservedWords('highlightBlock');
@@ -30,6 +37,17 @@ var workspace = Blockly.inject(
     blocklyDiv,
     {
         toolbox: document.getElementById('blocks-toolbox'),
+        renderer: 'geras',
+        grid: {
+            spacing: 20,
+            length: 3,
+            colour: '#ddd',
+            snap: true
+        },
+        move: {
+            drag: true,
+            scrollbars: true
+        },
         zoom: {
             controls: true,
             wheel: false,
@@ -39,14 +57,10 @@ var workspace = Blockly.inject(
             scaleSpeed: 1.1,
             pinch: true
         },
-        grid: {
-            spacing: 20,
-            length: 3,
-            colour: '#ddd',
-            snap: true
-        },
     });
 
+// Will be used for updating the joint/task state block
+//var toolbox = workspace.getToolbox();
 
 var onresize = function(e) {
     // Compute the absolute coordinates and dimensions of blocklyArea.

@@ -17,7 +17,7 @@ Blockly.Blocks["move"] = {
 			inputsInline: false,
 			previousStatement: null,
 			nextStatement: "Array",
-			colour: 210,
+			colour: "%{BKY_MOVEMENT_HEX}",
 			tooltip:
 				"Füge rechts eine Joint oder Task Space Pose hinzu, zu der sich der Roboter bewegen soll",
 			helpUrl: "",
