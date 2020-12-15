@@ -42,7 +42,7 @@ class TheSimulation {
     }
 
 
-    run(command, ...args) {
+    run(finishCallback, command, ...args) {
         let p = new Promise((resolve, reject) => {
             try {
                 this[command](resolve, reject, ...args);
@@ -56,21 +56,18 @@ class TheSimulation {
         let tweenFinished = false;
         p.then(msg => {
             console.log(command + '(' + args + '):' + msg);
-            tweenFinished = true;
+            finishCallback();
         });
-
-        function wait() {
-            if (!tweenFinished) {
-                setTimeout(wait, 20);
-            }
-        }
-        wait();
     }
 
     cancel() {
         console.log('cancel');
         // Will prevent further callbacks to _animate
         this.running = false;
+
+        for (const t of TWEEN.getAll()) {
+            t.stop();
+        }
         // As this is called by _onTweenFinished, this prevents having multiple tweens
         // with different end times, but that's not a use case at the moment
         TWEEN.removeAll();
@@ -78,7 +75,7 @@ class TheSimulation {
 
 
     gripper_close(resolve, reject) {
-        console.log('Closing hand');
+        console.log('> Closing hand');
         
         const robot = this._robot;
         const start = {};
@@ -95,7 +92,7 @@ class TheSimulation {
     }
 
     gripper_open(resolve, reject) {
-        console.log('Opening hand');
+        console.log('> Opening hand');
 
         const robot = this._robot;
         const start = {};
@@ -112,7 +109,7 @@ class TheSimulation {
     }
 
     joint_absolute(resolve, reject, jointIdx, angle) {
-        console.log('Setting joint ' + jointIdx + ' to ' + angle + ' degrees');
+        console.log('> Setting joint ' + jointIdx + ' to ' + angle + ' degrees');
 
         const start = {};
         const target = {};
@@ -127,7 +124,7 @@ class TheSimulation {
     }
 
     joint_relative(resolve, reject, jointIdx, angle) {
-        console.log('Rotating joint ' + jointIdx + ' by ' + angle + ' degrees');
+        console.log('> Rotating joint ' + jointIdx + ' by ' + angle + ' degrees');
 
         const joint = this._robot.jointsOrdered[jointIdx - 1];
         let angleAbs = joint.angle * 180.0 / Math.PI + angle;  // degrees
@@ -138,7 +135,7 @@ class TheSimulation {
         switch (pose.length) {
             case 6:
                 // Task space pose
-                console.log('Moving robot to task space pose ' + pose);
+                console.log('> Moving robot to task space pose ' + pose);
 
                 // TODO Calculate joint angles through inverse kinematic, fall through to Joint Space Pose
                 console.error('Task space poses not supported yet');
@@ -146,7 +143,7 @@ class TheSimulation {
 
             case 7:
                 // Joint space pose
-                console.log('Moving robot to joint space pose ' + pose);
+                console.log('> Moving robot to joint space pose ' + pose);
 
                 const robot = this._robot;
                 const start = {};
@@ -177,17 +174,20 @@ class TheSimulation {
             .easing(TWEEN.Easing.Quadratic.Out);
 
         tween.onUpdate(object => {
-            console.log(object);
             for (const j in object) {
-                console.log('Tween update: ' + j + ' -> ' + object[j]);
                 robot.joints[j].setJointValue(object[j]);
             }
         });
 
         tween.onComplete(object => {
-            this.running ? resolve('success') : reject('tween obsolete');
-            this.cancel();
+            this.running = false;
+            resolve('success');
         });
+
+        tween.onStop(object => {
+            this.running = false;
+            reject('tween obsolete');
+        })
 
         return tween;
     }

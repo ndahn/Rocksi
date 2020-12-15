@@ -94,19 +94,24 @@ body {
 	transition-timing-function: ease;
 }
 
-.run-button:not(.running)::before {
-	content: '\f04b';  /* play icon */
+.run-button::before {
 	font-family: 'Font Awesome 5 Free';
 	font-size: 2em;
 	font-weight: bold;
+}
+
+.run-button:not(.running)::before {
+	content: '\f04b';  /* play icon */
 	padding-left: 4px;
 }
 
 .run-button.running::before {
 	content: '\f04d';  /* stop icon */
-	font-family: 'Font Awesome 5 Free';
-	font-size: 2em;
-	font-weight: bold;
+	padding-left: 0px;
+}
+
+.run-button:disabled::before {
+	content: '\f252';  /* hourglass icon */
 	padding-left: 0px;
 }
 
@@ -120,3 +125,4 @@ body {
 	color: grey;
 	border-color: grey;
 }
+

@@ -1,6 +1,8 @@
 import * as Blockly from "blockly";
 
 Blockly.Blocks["joint_absolute"] = {
+	isRobotCommandBlock: true, 
+	
 	init: function () {
 		this.jsonInit({
 			type: "joint_absolute",
@@ -62,14 +64,6 @@ Blockly.JavaScript["joint_absolute"] = function (block) {
 	var joint = block.getFieldValue('JOINT');
 	var angle = block.getFieldValue('ANGLE');
 
-	var functionName = Blockly.JavaScript.provideFunction_(
-		"joint_absolute",
-		[
-			"function " + Blockly.JavaScript.FUNCTION_NAME_PLACEHOLDER_ + "(joint, angle) {",
-			"  simulation('joint_absolute', joint, angle);",
-			"}",
-		]);
-	
-	var code = functionName + '(' + joint + ', ' + angle + ')';
+	var code = 'sendRobotCommand("joint_absolute", ' + joint + ', ' + angle + ');';
 	return code;
 };

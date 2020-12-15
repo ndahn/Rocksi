@@ -11,6 +11,12 @@ import './blocks/gripper_close'
 import './blocks/joint_absolute'
 import './blocks/joint_relative'
 
+const generator = Blockly.JavaScript;
+generator.STATEMENT_PREFIX = 'highlightBlock(%1);\n'
+generator.addReservedWords('highlightBlock');
+generator.addReservedWords('sendRobotCommand');
+generator.addReservedWords('code');
+
 var Interpreter = require('js-interpreter');
 
 import Simulation from '../simulator/simulation'
@@ -94,39 +100,71 @@ Simulation.getInstance(sim => {
 
 function simulationAPI(interpreter, globalObject) {
     let wrapper = function (id) {
-        console.log('> ' + workspace.getBlockById(id).type);
         return workspace.highlightBlock(id);
     }
     interpreter.setProperty(globalObject, 'highlightBlock',
         interpreter.createNativeFunction(wrapper));
     
     wrapper = function (command, ...args) {
-        return simulation.run(command, ...args);
+        return simulation.run(step, command, ...args);
     }
-    interpreter.setProperty(globalObject, 'simulation',
+    interpreter.setProperty(globalObject, 'sendRobotCommand',
         interpreter.createNativeFunction(wrapper));
 }
 
 function runProgram() {
-    Blockly.JavaScript.STATEMENT_PREFIX = 'highlightBlock(%1);\n'
-    Blockly.JavaScript.addReservedWords('highlightBlock');
-    Blockly.JavaScript.addReservedWords('code');
-
-    let code = Blockly.JavaScript.workspaceToCode(workspace);
+    let code = generator.workspaceToCode(workspace);
     console.log('<executing program>\n' + code);
 
     const interpreter = new Interpreter(code, simulationAPI);
+    generator.init(workspace);
+    let blocks = workspace.getTopBlocks(true);
+    step(blocks, interpreter, []);
+}
 
-    function step() {
-        // Step through the program for as long as the button is in running state 
-        // and there is something to execute
-        if (runButton.classList.contains('running') && interpreter.step()) {
-            setTimeout(step, 0);
-        }
-        else {
-            runButton.classList.remove('running');
-            simulation.cancel();
+function step(blocks, interpreter, code) {
+    if (blocks) {
+        const block = blocks.shift();
+        runBlock(block, interpreter, code);
+        if (!block.isRobotCommandBlock) {
+            step(blocks, interpreter, code);
         }
     }
-    step();
+    else {
+        onProgramFinished(interpreter, code);
+    }
+}
+
+function runBlock(block, interpreter, code) {
+    let line = generator.blockToCode(block);
+    if (Array.isArray(line)) {
+        line = line[0];
+    }
+    if (line) {
+        if (block.outputConnection) {
+            line = generator.scrubNakedValue(line);
+            if (thgeneratoris.STATEMENT_PREFIX && !block.suppressPrefixSuffix) {
+                line = generator.injectId(generator.STATEMENT_PREFIX, block) + line;
+            }
+            if (generator.STATEMENT_SUFFIX && !block.suppressPrefixSuffix) {
+                line = line + generator.injectId(generator.STATEMENT_SUFFIX, block);
+            }
+        }
+        code.push(line);
+    }
+
+    interpreter.appendCode(line);
+    interpreter.run();
+}
+
+function onProgramFinished(interpreter, code) {
+    let l = code.length;
+    code = generator.finish(code);
+    if (code.length > l) {
+        let remainder = code.slice(code.length - l);
+        interpreter.appendCode(remainder);
+        interpreter.run();
+    }
+
+    runButton.classList.remove('running');
 }

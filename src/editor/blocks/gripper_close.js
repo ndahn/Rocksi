@@ -1,6 +1,8 @@
 import * as Blockly from "blockly";
 
 Blockly.Blocks["gripper_close"] = {
+	isRobotCommandBlock: true, 
+	
 	init: function () {
 		this.jsonInit({
 			type: "gripper_close",
@@ -15,14 +17,6 @@ Blockly.Blocks["gripper_close"] = {
 };
 
 Blockly.JavaScript["gripper_close"] = function (block) {
-	var functionName = Blockly.JavaScript.provideFunction_(
-		"gripper_close",
-		[
-			"function " + Blockly.JavaScript.FUNCTION_NAME_PLACEHOLDER_ + "() {",
-			"  simulation('gripper_close');",
-			"}",
-		]);
-	
-	var code = functionName + "()";
+	var code = 'sendRobotCommand("gripper_close");';
 	return code;
 };

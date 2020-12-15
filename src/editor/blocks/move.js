@@ -1,6 +1,8 @@
 import * as Blockly from "blockly";
 
 Blockly.Blocks["move"] = {
+	isRobotCommandBlock: true, 
+	
 	init: function () {
 		this.jsonInit({
 			type: "move",
@@ -27,14 +29,6 @@ Blockly.Blocks["move"] = {
 Blockly.JavaScript["move"] = function (block) {
 	var pose = Blockly.JavaScript.valueToCode(block, 'POSE', Blockly.JavaScript.ORDER_COMMA) || 0;
 
-	var functionName = Blockly.JavaScript.provideFunction_(
-		"move",
-		[
-			"function " + Blockly.JavaScript.FUNCTION_NAME_PLACEHOLDER_ + "(pose) {",
-			"  simulation('move', pose);",
-			"}",
-		]);
-	
-	var code = functionName + '(' + pose + ')';
+	var code = 'sendRobotCommand("move", ' + pose + ');';
 	return code;
 };

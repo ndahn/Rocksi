@@ -194,10 +194,7 @@ function updateRobot() {
 }
 
 function render() {
-	const timer = Date.now() * 0.0001;
-
-	//console.log(camera.position);
-	//console.log(camera.rotation);
+	//const timer = Date.now() * 0.0001;
 
 	//camera.position.x = Math.cos( timer ) * 20;
 	//camera.position.y = 10;
