@@ -15,15 +15,15 @@ function clampJointAngle(joint, angle) {
     return Math.min(max, Math.max(min, angle % Math.PI));
 }
 
-function getDuration(target, vmax) {
+function getDuration(robot, target, unitDuration) {
     let smax = 0.0;
 
     // Find the joint that has to move the farthest
-    for (const joint in target) {
-        smax = Math.max(smax, Math.abs(joint.angle - target[joint]));
+    for (const j in target) {
+        smax = Math.max(smax, Math.abs(robot.joints[j].angle - target[j]));
     }
 
-    return smax / vmax;
+    return smax * unitDuration * 1000;
 }
 
 class TheSimulation {
@@ -32,10 +32,12 @@ class TheSimulation {
         this._renderCallback = renderCallback;
 
         this.running = false;
-        this.velocities = {
-            gripper: 1000,
-            move: 3000,
-            joint: 2000,
+        this.durations = {
+            // Duration to move a joint one unit 
+            // (meters for prismatic joints, rad for revolute joints)
+            gripper: 10.0,
+            move: 2.0,
+            joint: 1.5,
         }
     }
 
@@ -87,7 +89,7 @@ class TheSimulation {
             target[finger.name] = finger.limit.lower;  // fully closed
         }
 
-        const duration = getDuration(target, this.velocities.gripper);
+        const duration = getDuration(robot, target, this.durations.gripper);
         let tween = this._makeTween(start, target, duration, resolve, reject);
         this._start(tween);
     }
@@ -104,7 +106,7 @@ class TheSimulation {
             target[finger.name] = finger.limit.upper;  // fully opened
         }
         
-        const duration = getDuration(target, this.velocities.gripper);
+        const duration = getDuration(robot, target, this.durations.gripper);
         let tween = this._makeTween(start, target, duration, resolve, reject);
         this._start(tween);
     }
@@ -118,8 +120,8 @@ class TheSimulation {
         const joint = this._robot.jointsOrdered[jointIdx - 1];
         start[joint.name] = joint.angle;
         target[joint.name] = clampJointAngle(joint, deg2rad(angle));
-        
-        const duration = getDuration(target, this.velocities.joint);
+
+        const duration = getDuration(this._robot, target, this.durations.joint);
         let tween = this._makeTween(start, target, duration, resolve, reject);
         this._start(tween);
     }
@@ -156,7 +158,7 @@ class TheSimulation {
                     target[joint.name] = clampJointAngle(joint, deg2rad(pose[i]));
                 }
                 
-                const duration = getDuration(target, this.velocities.move);
+                const duration = getDuration(this._robot, target, this.durations.move);
                 let tween = this._makeTween(start, target, duration, resolve, reject);
                 this._start(tween);
                 break;
@@ -175,8 +177,10 @@ class TheSimulation {
             .easing(TWEEN.Easing.Quadratic.Out);
 
         tween.onUpdate(object => {
-            for (const joint in object) {
-                robot.joints[joint].setJointValue(object[joint]);
+            console.log(object);
+            for (const j in object) {
+                console.log('Tween update: ' + j + ' -> ' + object[j]);
+                robot.joints[j].setJointValue(object[j]);
             }
         });
 
