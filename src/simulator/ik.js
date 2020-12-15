@@ -1,7 +1,7 @@
 import { Bone, Skeleton, SkeletonHelper, Vector3, Matrix4, ArrowHelper } from "three"
 import { IK, IKChain, IKJoint, IKHingeConstraint, IKHelper } from "three-ik";
 
-import { toDeg, transferPosition, showPoints } from './utils.js'
+import { toDeg, showPoints } from './utils.js'
 
 function setupIK(scene, robot, controlTarget) {
 	const ik = new IK();

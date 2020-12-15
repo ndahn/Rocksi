@@ -1,6 +1,4 @@
 import {
-    MathUtils,
-    Vector3,
     LoaderUtils,
     Scene,
     WebGLRenderer,
@@ -9,7 +7,6 @@ import {
     HemisphereLight,
     PointLight,
     Mesh,
-    SphereBufferGeometry,
     SphereGeometry,
     Color,
     MeshBasicMaterial
@@ -17,8 +14,6 @@ import {
 
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
-import Stats from 'three/examples/jsm/libs/stats.module'
-var TWEEN = require('@tweenjs/tween.js');
 
 import { XacroLoader } from "xacro-parser";
 import URDFLoader from "urdf-loader";
@@ -34,7 +29,6 @@ const selectedRobot = params.get('robot') || 'Franka';
 const robotDefs = Robots[selectedRobot];
 
 let container;
-let stats;
 
 let camera, scene, renderer;
 
@@ -164,15 +158,8 @@ function initScene() {
 	transformControl.addEventListener("dragging-changed", function (event) {
 		controls.enabled = !event.value;
 	});
-
 	transformControl.attach(tcptarget);
 	scene.add(transformControl);
-
-	// Performance statistics
-	stats = new Stats();
-	stats.dom.removeAttribute('style');
-	stats.dom.id = 'sim-stats';
-	container.appendChild(stats.dom);
 
 	window.addEventListener("resize", onWindowResize, false);
 	onWindowResize();

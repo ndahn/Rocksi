@@ -6,13 +6,11 @@ function deg2rad(deg) {
 }
 
 function clampJointAngle(joint, angle) {
-    //let min = joint.limit.lower;
-    //let max = joint.limit.upper;
-
-    // Using the actual joint limits without user feedback is unintuitive
-    let min = -Math.PI;
-    let max = Math.PI;
-    return Math.min(max, Math.max(min, angle % Math.PI));
+    // ROS is limiting the joint values by itself, but this prevents long tweens
+    // where nothing happens because a joint is already past its limit
+    let min = joint.limit.lower;
+    let max = joint.limit.upper;
+    return Math.min(max, Math.max(min, angle));
 }
 
 function getDuration(robot, target, unitDuration) {
@@ -34,7 +32,7 @@ class TheSimulation {
         this.running = false;
         this.durations = {
             // Duration to move a joint one unit 
-            // (meters for prismatic joints, rad for revolute joints)
+            // (1 meter for prismatic joints, 1 rad for revolute joints)
             gripper: 10.0,
             move: 2.0,
             joint: 1.5,

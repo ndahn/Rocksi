@@ -45,7 +45,6 @@ var workspace = Blockly.inject(
             colour: '#ddd',
             snap: true
         },
-        trashcan: true
     });
 
 
