@@ -12,6 +12,8 @@ import './blocks/joint_absolute'
 import './blocks/joint_relative'
 import './blocks/set_speed'
 
+import './msg'
+
 Blockly.Msg.MOVEMENT_HEX = "#4c97ff";
 Blockly.Msg.GRIPPER_HEX = "#59c059";
 Blockly.Msg.JOINT_HEX = "#ff9f29";
@@ -94,6 +96,7 @@ var contextSaveWorkspace = {
     },
 
     preconditionFn: function (scope) {
+        console.log(scope);
         if (scope.workspace.getTopBlocks(false).length > 0) {
             return 'enabled';
         }
