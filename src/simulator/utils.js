@@ -42,7 +42,6 @@ function showPoints(scene, positions, material) {
 			sizeAttenuation: false,
 			depthTest: false,
             depthWrite: true,
-            renderOrder: 999
 		});
 	let geom = new Geometry();
 

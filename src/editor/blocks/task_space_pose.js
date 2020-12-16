@@ -1,5 +1,10 @@
 import * as Blockly from "blockly";
 
+import ClickableTargetMutator from '../mutators/clickable_target_mutator'
+import Simulation from '../../simulator/simulation'
+
+const fieldKeys = ['X', 'Y', 'Z', 'YAW', 'PITCH', 'ROLL'];
+
 Blockly.Blocks["task_space_pose"] = {
 	init: function () {
 		this.jsonInit({
@@ -7,19 +12,28 @@ Blockly.Blocks["task_space_pose"] = {
 			message0: "x %1 y %2 z %3 yaw %4 pitch %5 roll %6",
 			args0: [
 				{
-					type: "field_angle",
-					name: "X",
-					angle: 0,
+					"type": "field_number",
+					"name": "X",
+					"value": 0,
+					"min": 0.0,
+					"max": 1.0,
+					"precision": 0.1
 				},
 				{
-					type: "field_angle",
-					name: "Y",
-					angle: 0,
+					"type": "field_number",
+					"name": "Y",
+					"value": 0,
+					"min": 0.0,
+					"max": 1.0,
+					"precision": 0.1
 				},
 				{
-					type: "field_angle",
-					name: "Z",
-					angle: 0,
+					"type": "field_number",
+					"name": "Z",
+					"value": 0,
+					"min": 0.0,
+					"max": 1.0,
+					"precision": 0.1
 				},
 				{
 					type: "field_angle",
@@ -44,13 +58,26 @@ Blockly.Blocks["task_space_pose"] = {
 				"Eine Pose im Arbeitsraum (definiert über die Endeffektorpose, Position und Orientierung)",
 			helpUrl: "",
 		});
+		this.setMutator(new ClickableTargetMutator());
+	},
+	onClick: function (e) {
+		Simulation.getInstance(sim => {
+			const pose = sim.getTaskSpacePose();
+			for (let j = 0; j < 3; j++) {
+				this.setFieldValue(pose[j].toFixed(1), fieldKeys[j]);
+			}
+			for (let j = 3; j < 6; j++) {
+				let deg = pose[j] * 180.0 / Math.PI;
+				this.setFieldValue(deg.toFixed(0), fieldKeys[j]);
+			}
+		});
 	},
 };
 
 
 Blockly.JavaScript["task_space_pose"] = function (block) {
     let ret = '["task_space", ';
-    for (const key of ['X', 'Y', 'Z', 'YAW', 'PITCH', 'ROLL']) {
+    for (const key of fieldKeys) {
         ret += block.getFieldValue(key) + ', ';
     }
     ret = ret.slice(0, -1) + ']'

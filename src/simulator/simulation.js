@@ -45,34 +45,6 @@ class TheSimulation {
     }
 
 
-    setParam(param, value) {
-        try {
-            if (param.startsWith('velocity')) {
-                let motion = param.split('/')[1];
-                value = parseFloat(value);
-                switch (motion) {
-                    case 'move':
-                        this.velocities.move = value;
-                        break;
-                    case 'gripper':
-                        this.velocities.gripper = value;
-                        break;
-                    case 'joint':
-                        this.velocities.joint = value;
-                        break;
-                    default:
-                        throw ('invalid value \'' + value + '\'');
-                }
-            }
-            else {
-                throw ('unknown parameter');
-            }
-        } catch (e) {
-            console.warn('Failed to set ' + param + ': ' + e);
-        }
-    }
-
-
     run(finishCallback, command, ...args) {
         let p = new Promise((resolve, reject) => {
             try {
@@ -101,6 +73,51 @@ class TheSimulation {
         // As this is called by _onTweenFinished, this prevents having multiple tweens
         // with different end times, but that's not a use case at the moment
         TWEEN.removeAll();
+    }
+
+
+    setParam(param, value) {
+        try {
+            if (param.startsWith('velocity')) {
+                let motion = param.split('/')[1];
+                value = parseFloat(value);
+                switch (motion) {
+                    case 'move':
+                        this.velocities.move = value;
+                        break;
+                    case 'gripper':
+                        this.velocities.gripper = value;
+                        break;
+                    case 'joint':
+                        this.velocities.joint = value;
+                        break;
+                    default:
+                        throw ('invalid value \'' + value + '\'');
+                }
+            }
+            else {
+                throw ('unknown parameter');
+            }
+        } catch (e) {
+            console.warn('Failed to set ' + param + ': ' + e);
+        }
+    }
+
+    getJointSpacePose() {
+        const robot = this._robot;
+        const pose = [];
+        for (let idx = 0; idx < robot.jointsOrdered.length; idx++) {
+            const joint = robot.jointsOrdered[idx];
+            if (joint._jointType !== 'fixed' && !robot.fingers.includes(joint)) {
+                pose.push(joint.angle);
+            }
+        }
+        return pose;
+    }
+
+    getTaskSpacePose() {
+        // TODO
+        return [];
     }
 
 

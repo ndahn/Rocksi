@@ -1,4 +1,7 @@
-import * as Blockly from "blockly";
+import * as Blockly from 'blockly';
+
+import ClickableTargetMutator from '../mutators/clickable_target_mutator'
+import Simulation from '../../simulator/simulation'
 
 Blockly.Blocks["joint_space_pose"] = {
 	init: function () {
@@ -48,6 +51,16 @@ Blockly.Blocks["joint_space_pose"] = {
 			tooltip:
 				"Eine Pose im Gelenkwinkelraum (ein Winkel pro Gelenk, von der Basis zum Endeffektor)",
 			helpUrl: "",
+		});
+		this.setMutator(new ClickableTargetMutator());
+	},
+	onClick: function (e) {
+		Simulation.getInstance(sim => {
+			const pose = sim.getJointSpacePose();
+			for (let j = 0; j < pose.length; j++) {
+				let deg = pose[j] * 180.0 / Math.PI;
+				this.setFieldValue(deg.toFixed(0), 'JOINT_' + (j + 1));
+			}
 		});
 	},
 };

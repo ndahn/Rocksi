@@ -6,7 +6,7 @@ Blockly.Blocks["joint_relative"] = {
 	init: function () {
 		this.jsonInit({
 			type: "joint_relative",
-			message0: "Gelenkwinkel (relativ) %1 %2 %3",
+			message0: "Gelenkwinkel (relativ) %1 %2",
 			args0: [
 				{
 					"type": "field_dropdown",
@@ -43,24 +43,10 @@ Blockly.Blocks["joint_relative"] = {
 					]
 				},
 				{
-					"type": "field_dropdown",
-					"name": "SIGN",
-					"options": [
-					  [
-						"+",
-						"+"
-					  ],
-					  [
-						"-",
-						"-"
-					  ],
-					]
-				  },
-				  {
-					"type": "field_angle",
-					"name": "ANGLE",
-					"angle": 0
-				  }
+				"type": "field_angle",
+				"name": "ANGLE",
+				"angle": 0
+				}
 			],
 			inputsInline: false,
 			previousStatement: null,
@@ -76,9 +62,8 @@ Blockly.Blocks["joint_relative"] = {
 
 Blockly.JavaScript["joint_relative"] = function (block) {
 	var joint = block.getFieldValue('JOINT');
-	var sign  = block.getFieldValue('SIGN');
 	var angle = block.getFieldValue('ANGLE');
 
-	var code = 'sendRobotCommand("joint_relative", ' + joint + ', ' + sign + angle + ');';
+	var code = 'sendRobotCommand("joint_relative", ' + joint + ', ' + angle + ');';
 	return code;
 };
