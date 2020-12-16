@@ -88,6 +88,83 @@ onresize();
 Blockly.svgResize(workspace);
 
 
+var contextSaveWorkspace = {
+    displayText: function () {
+        return Blockly.Msg['SAVE'] || 'Save workspace';
+    },
+
+    preconditionFn: function (scope) {
+        if (scope.workspace.getTopBlocks(false).length > 0) {
+            return 'enabled';
+        }
+        return 'disabled';
+    },
+
+    callback: function (scope) {
+        let xml = Blockly.Xml.workspaceToDom(scope.workspace);
+        let text = Blockly.Xml.domToText(xml);
+        
+        let download = document.createElement('a');
+        download.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+        download.setAttribute('download', 'workspace.xml');
+        download.style.display = 'none';
+
+        document.body.appendChild(download);
+        download.click();
+        document.body.removeChild(download);
+    },
+
+    scopeType: Blockly.ContextMenuRegistry.ScopeType.WORKSPACE,
+    id: 'saveWorkspace',
+    weight: 99,
+};
+
+var contextLoadWorkspace = {
+    displayText: function () {
+        return Blockly.Msg['LOAD'] || 'Load workspace';
+    },
+
+    preconditionFn: function (scope) {
+        return 'enabled';
+    },
+
+    callback: function (scope) {
+        let upload = document.createElement('input');
+        upload.setAttribute('type', 'file');
+        upload.style.display = 'none';
+        
+        upload.onchange = (fileSelectedEvent) => {
+            try {
+                let file = fileSelectedEvent.target.files[0];
+                
+                let reader = new FileReader();
+                reader.readAsText(file, 'UTF-8');
+                reader.onload = (readerEvent) => {
+                    let text = readerEvent.target.result;
+                    let xml = Blockly.Xml.textToDom(text);
+                    //workspace.clear();
+                    Blockly.Xml.domToWorkspace(scope.workspace, xml);
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        }
+
+        document.body.appendChild(upload);
+        upload.click();
+        document.body.removeChild(upload);
+    },
+
+    scopeType: Blockly.ContextMenuRegistry.ScopeType.WORKSPACE,
+    id: 'loadWorkspace',
+    weight: 99,
+};
+
+Blockly.ContextMenuRegistry.registry.register(contextLoadWorkspace);
+Blockly.ContextMenuRegistry.registry.register(contextSaveWorkspace);
+
+
+
 // Setup the run button
 const runButton = document.querySelector('.run-button');
 
