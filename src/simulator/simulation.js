@@ -1,4 +1,11 @@
+import * as Blockly from "blockly"
 var TWEEN = require('@tweenjs/tween.js');
+
+// Velocities to move a joint one unit 
+// (m/s for prismatic joints, rad/s for revolute joints)
+Blockly.Msg.DEFAULT_SPEED_MOVE = 0.5;
+Blockly.Msg.DEFAULT_SPEED_GRIPPER = 0.1;
+Blockly.Msg.DEFAULT_SPEED_JOINT = 0.7;
 
 
 function deg2rad(deg) {
@@ -13,7 +20,7 @@ function clampJointAngle(joint, angle) {
     return Math.min(max, Math.max(min, angle));
 }
 
-function getDuration(robot, target, unitDuration) {
+function getDuration(robot, target, vmax) {
     let smax = 0.0;
 
     // Find the joint that has to move the farthest
@@ -21,7 +28,7 @@ function getDuration(robot, target, unitDuration) {
         smax = Math.max(smax, Math.abs(robot.joints[j].angle - target[j]));
     }
 
-    return smax * unitDuration * 1000;
+    return smax / vmax * 1000;  // ms
 }
 
 class TheSimulation {
@@ -30,12 +37,38 @@ class TheSimulation {
         this._renderCallback = renderCallback;
 
         this.running = false;
-        this.durations = {
-            // Duration to move a joint one unit 
-            // (1 meter for prismatic joints, 1 rad for revolute joints)
-            gripper: 10.0,
-            move: 2.0,
-            joint: 1.5,
+        this.velocities = {
+            move: Blockly.Msg.DEFAULT_SPEED_MOVE,
+            gripper: Blockly.Msg.DEFAULT_SPEED_GRIPPER,
+            joint: Blockly.Msg.DEFAULT_SPEED_JOINT,
+        }
+    }
+
+
+    setParam(param, value) {
+        try {
+            if (param.startsWith('velocity')) {
+                let motion = param.split('/')[1];
+                value = parseFloat(value);
+                switch (motion) {
+                    case 'move':
+                        this.velocities.move = value;
+                        break;
+                    case 'gripper':
+                        this.velocities.gripper = value;
+                        break;
+                    case 'joint':
+                        this.velocities.joint = value;
+                        break;
+                    default:
+                        throw ('invalid value \'' + value + '\'');
+                }
+            }
+            else {
+                throw ('unknown parameter');
+            }
+        } catch (e) {
+            console.warn('Failed to set ' + param + ': ' + e);
         }
     }
 
@@ -71,6 +104,52 @@ class TheSimulation {
     }
 
 
+    move(resolve, reject, pose) {
+        // Seems to be a weird bug in js-interpreter concerning varargs and arrays
+        if (pose.class === 'Array' && pose.length === undefined) {
+            let newPose = [];
+            for (const p in pose.properties) {
+                if (p.match(/\d+/g)) {
+                    newPose[p] = pose.properties[p];
+                }
+            }
+            pose = newPose;
+        }
+
+        const space = pose.shift();
+        switch (space) {
+            case 'task_space':
+                // Task space pose
+                console.log('> Moving robot to task space pose ' + pose);
+
+                // TODO Calculate joint angles through inverse kinematic, fall through to Joint Space Pose
+                console.error('Task space poses not supported yet');
+                break;
+
+            case 'joint_space':
+                // Joint space pose
+                console.log('> Moving robot to joint space pose ' + pose);
+
+                const robot = this._robot;
+                const start = {};
+                const target = {};
+                
+                for (let i = 0; i < pose.length; i++) {
+                    const joint = robot.jointsOrdered[i];
+                    start[joint.name] = joint.angle;
+                    target[joint.name] = clampJointAngle(joint, deg2rad(pose[i]));
+                }
+                
+                const duration = getDuration(this._robot, target, this.velocities.move);
+                let tween = this._makeTween(start, target, duration, resolve, reject);
+                this._start(tween);
+                break;
+
+            default:
+                console.error('move: unknown configuration space \'' + space + '\'');
+        }
+    }
+
     gripper_close(resolve, reject) {
         console.log('> Closing hand');
         
@@ -83,7 +162,7 @@ class TheSimulation {
             target[finger.name] = finger.limit.lower;  // fully closed
         }
 
-        const duration = getDuration(robot, target, this.durations.gripper);
+        const duration = getDuration(robot, target, this.velocities.gripper);
         let tween = this._makeTween(start, target, duration, resolve, reject);
         this._start(tween);
     }
@@ -100,7 +179,7 @@ class TheSimulation {
             target[finger.name] = finger.limit.upper;  // fully opened
         }
         
-        const duration = getDuration(robot, target, this.durations.gripper);
+        const duration = getDuration(robot, target, this.velocities.gripper);
         let tween = this._makeTween(start, target, duration, resolve, reject);
         this._start(tween);
     }
@@ -115,7 +194,7 @@ class TheSimulation {
         start[joint.name] = joint.angle;
         target[joint.name] = clampJointAngle(joint, deg2rad(angle));
 
-        const duration = getDuration(this._robot, target, this.durations.joint);
+        const duration = getDuration(this._robot, target, this.velocities.joint);
         let tween = this._makeTween(start, target, duration, resolve, reject);
         this._start(tween);
     }
@@ -128,64 +207,16 @@ class TheSimulation {
         return this.joint_absolute(resolve, reject, jointIdx, angleAbs);
     }
 
-    move(resolve, reject, pose) {
-        // Seems to be a weird bug in js-interpreter concerning varargs and arrays
-        if (pose.class === 'Array' && pose.length === undefined) {
-            let newPose = [];
-            for (const p in pose.properties) {
-                if (p.match(/\d+/g)) {
-                    newPose[p] = pose.properties[p];
-                }
-            }
-            pose = newPose;
-        }
-
-        switch (pose.length) {
-            case 6:
-                // Task space pose
-                console.log('> Moving robot to task space pose ' + pose);
-
-                // TODO Calculate joint angles through inverse kinematic, fall through to Joint Space Pose
-                console.error('Task space poses not supported yet');
-                break;
-
-            case 7:
-                // Joint space pose
-                console.log('> Moving robot to joint space pose ' + pose);
-
-                const robot = this._robot;
-                const start = {};
-                const target = {};
-                
-                for (let i = 0; i < pose.length; i++) {
-                    const joint = robot.jointsOrdered[i];
-                    start[joint.name] = joint.angle;
-                    target[joint.name] = clampJointAngle(joint, deg2rad(pose[i]));
-                }
-                
-                const duration = getDuration(this._robot, target, this.durations.move);
-                let tween = this._makeTween(start, target, duration, resolve, reject);
-                this._start(tween);
-                break;
-
-            default:
-                console.error('move() cannot handle array of length ' + pose.length)
-        }
-    }
-
 
     _makeTween(start, target, duration, resolve, reject) {
         const robot = this._robot;
 
-        console.log(start);
-        console.log(target);
         let tween = new TWEEN.Tween(start)
             .to(target, duration)
             .easing(TWEEN.Easing.Quadratic.Out);
 
         tween.onUpdate(object => {
             for (const j in object) {
-                console.log('tween: ' + j + ' -> ' + object[j]);
                 robot.joints[j].setJointValue(object[j]);
             }
         });
@@ -225,6 +256,10 @@ class TheSimulation {
     }
 }
 
+
+/*
+ * Singleton with async getter, will be initialized by the robot simulator.
+ */
 const Simulation = {
     _simulation: null,
     _awaiting: [],
@@ -247,5 +282,6 @@ const Simulation = {
         this._awaiting = []
     }
 };
+
 
 export default Simulation;

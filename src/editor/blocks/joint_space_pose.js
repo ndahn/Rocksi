@@ -53,9 +53,9 @@ Blockly.Blocks["joint_space_pose"] = {
 };
 
 Blockly.JavaScript["joint_space_pose"] = function (block) {
-    let ret = '[';
+    let ret = '["joint_space", ';
     for (let i = 1; i < 8; i++) {
-        ret += block.getFieldValue('JOINT_' + i) + ',';
+        ret += block.getFieldValue('JOINT_' + i) + ', ';
     }
 	ret = ret.slice(0, -1) + ']';
 

@@ -10,12 +10,13 @@ import './blocks/gripper_open'
 import './blocks/gripper_close'
 import './blocks/joint_absolute'
 import './blocks/joint_relative'
+import './blocks/set_speed'
 
 Blockly.Msg.MOVEMENT_HEX = "#4c97ff";
 Blockly.Msg.GRIPPER_HEX = "#59c059";
-Blockly.Msg.JOINT_HEX = "#FF7700";
+Blockly.Msg.JOINT_HEX = "#ff9f29";
+Blockly.Msg.SETPARAM_HEX = "#ff6680";
 Blockly.Msg.TEALGREEN_HEX = "#0fbd8c";
-Blockly.Msg.HOTRED_HEX = "#ff6680";
 
 Blockly.FieldAngle.WRAP = 180;
 
@@ -122,10 +123,16 @@ function simulationAPI(interpreter, globalObject) {
     interpreter.setProperty(globalObject, 'highlightBlock',
         interpreter.createNativeFunction(wrapper));
     
-    wrapper = function (command, ...args) {
+    wrapper = function(command, ...args) {
         return simulation.run(step, command, ...args);
     }
     interpreter.setProperty(globalObject, 'sendRobotCommand',
+        interpreter.createNativeFunction(wrapper));
+    
+    wrapper = function (param, value) {
+        return simulation.setParam(param, value);
+    }
+    interpreter.setProperty(globalObject, 'setSimulationParam',
         interpreter.createNativeFunction(wrapper));
 }
 

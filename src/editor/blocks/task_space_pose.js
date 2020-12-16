@@ -49,9 +49,9 @@ Blockly.Blocks["task_space_pose"] = {
 
 
 Blockly.JavaScript["task_space_pose"] = function (block) {
-    let ret = '[';
+    let ret = '["task_space", ';
     for (const key of ['X', 'Y', 'Z', 'YAW', 'PITCH', 'ROLL']) {
-        ret += block.getFieldValue(key) + ',';
+        ret += block.getFieldValue(key) + ', ';
     }
     ret = ret.slice(0, -1) + ']'
 
