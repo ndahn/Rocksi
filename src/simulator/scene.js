@@ -1,5 +1,5 @@
 import {
-    LoaderUtils,
+	LoaderUtils,
     Scene,
     WebGLRenderer,
     PerspectiveCamera,
@@ -9,11 +9,14 @@ import {
     Mesh,
     SphereGeometry,
     Color,
-    MeshBasicMaterial
+    MeshBasicMaterial,
+	LoadingManager
 } from "three";
 
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
+
+var ResizeSensor = require('css-element-queries/src/ResizeSensor');
 
 import { XacroLoader } from "xacro-parser";
 import URDFLoader from "urdf-loader";
@@ -53,7 +56,6 @@ loadRobotModel(robotDefs.path)
 			}
 		}
 
-		render();
 		Simulation.init(robot, render);
 	}, reason => {
 		console.error(reason);
@@ -70,7 +72,8 @@ function loadRobotModel(url) {
 		xacroLoader.load(
 			url,
 			(xml) => {
-				const urdfLoader = new URDFLoader();
+				let manager = new LoadingManager(undefined, render);
+				const urdfLoader = new URDFLoader(manager);
 				urdfLoader.packages = robotDefs.packages;
 				urdfLoader.workingPath = LoaderUtils.extractUrlBase(url);
 
@@ -171,15 +174,17 @@ function initScene() {
 	transformControl.attach(tcptarget);
 	scene.add(transformControl);
 
-	window.addEventListener("resize", onWindowResize, false);
-	onWindowResize();
+	let domParent = document.querySelector('.sim-container');
+	new ResizeSensor(domParent, onCanvasResize);
+	onCanvasResize();
 }
 
-function onWindowResize() {
+function onCanvasResize() {
 	camera.aspect = container.clientWidth / container.clientHeight;
 	camera.updateProjectionMatrix();
 
 	renderer.setSize(container.clientWidth, container.clientHeight);
+	requestAnimationFrame(render);
 }
 
 function updateRobot() {
@@ -187,7 +192,7 @@ function updateRobot() {
 		ik.solve();
 	}
 
-	render();
+	requestAnimationFrame(render);
 }
 
 function render() {

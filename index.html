@@ -9,7 +9,7 @@
 	</head>
 	<body>
 		<div class="main-container">
-			<div class="blocks-container">
+			<div id="split-pane-1" class="split blocks-container">
 				<xml id="blocks-toolbox" style="display: none">
 					<block type="move"></block>
 					<block type="joint_space_pose"></block>
@@ -23,18 +23,15 @@
 				<div id="blocks-canvas"></div>
 			</div>
 
-			<div class="sim-container">
-				<div class="background-container">
-					<div class="loading-message">
-						<h3>Lade Roboter...</h3>
-					</div>
+			<div id="split-pane-2" class="split sim-container">
+				<div class="loading-message">
+					<h3>Lade Roboter...</h3>
 				</div>
 				<div id="sim-canvas"></div>
+				<button class="run-button" disabled autocomplete="off">
+					<!--<i class="fa fa-play fa-2x"></i>-->
+				</button>
 			</div>
-
-			<button class="run-button" disabled autocomplete="off">
-				<!--<i class="fa fa-play fa-2x"></i>-->
-			</button>
 
 			<script src="src/index.js"></script>
 		</div>

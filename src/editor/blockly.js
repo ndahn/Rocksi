@@ -30,6 +30,8 @@ generator.addReservedWords('code');
 
 var Interpreter = require('js-interpreter');
 
+var ResizeSensor = require('css-element-queries/src/ResizeSensor');
+
 import Simulation from '../simulator/simulation'
 
 
@@ -65,7 +67,7 @@ var workspace = Blockly.inject(
 // Will be used for updating the joint/task state block
 //var toolbox = workspace.getToolbox();
 
-var onresize = function(e) {
+var onresize = function() {
     // Compute the absolute coordinates and dimensions of blocklyArea.
     var element = blocklyArea;
     var x = 0;
@@ -84,8 +86,9 @@ var onresize = function(e) {
     blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
     Blockly.svgResize(workspace);
 };
-    
-window.addEventListener('resize', onresize, false);
+
+new ResizeSensor(blocklyArea, onresize);
+blocklyArea.addEventListener('resize', onresize, false);
 onresize();
 Blockly.svgResize(workspace);
 
