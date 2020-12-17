@@ -25,14 +25,20 @@ import { loadCached } from "../cachedb";
 import { setupIK } from "./ik";
 import Simulation from "./simulation"
 
-import * as Robots from './robots'
-
 let params = new URLSearchParams(location.search);
 const selectedRobot = params.get('robot') || 'Franka';
-const robotDefs = Robots[selectedRobot];
+let RobotDefs;
+
+switch (selectedRobot.toLowerCase()) {
+	case 'franka':
+		RobotDefs = require('./robots/franka');
+		break;
+	
+	default:
+		throw ('Unknown robot \'' + selectedRobot + '\'');
+}
 
 let container;
-
 let camera, scene, renderer;
 
 let robot;
@@ -43,14 +49,14 @@ let ik;
 //loadCached('robots', './models/export/franka_description.zip')
 //    .then(result => loadRobotModel(result))
 //    .catch(error => console.error(error.message));
-loadRobotModel(robotDefs.path)
+loadRobotModel(RobotDefs.path)
 	.then(robot => {
 		initScene();
 		ik = setupIK(scene, robot, tcptarget);
 
-		for (const j in robotDefs.defaultPose) {
+		for (const j in RobotDefs.defaultPose) {
 			try {
-				robot.joints[j].setJointValue(robotDefs.defaultPose[j]);
+				robot.joints[j].setJointValue(RobotDefs.defaultPose[j]);
 			} catch (e) {
 				console.error('Failed to set default joint pose for joint ' + j + ': ' + e);
 			}
@@ -74,7 +80,7 @@ function loadRobotModel(url) {
 			(xml) => {
 				let manager = new LoadingManager(undefined, render);
 				const urdfLoader = new URDFLoader(manager);
-				urdfLoader.packages = robotDefs.packages;
+				urdfLoader.packages = RobotDefs.packages;
 				urdfLoader.workingPath = LoaderUtils.extractUrlBase(url);
 
 				robot = urdfLoader.parse(xml);
@@ -88,11 +94,11 @@ function loadRobotModel(url) {
 						jointsOrdered.push(child);
 					}
 
-					if (robotDefs.isFinger(child)) {
+					if (RobotDefs.isFinger(child)) {
 						fingers.push(child);
 					}
 
-					if (robotDefs.isTCP(child)) {
+					if (RobotDefs.isTCP(child)) {
 						tcp = child;
 					}
 				});
@@ -149,6 +155,7 @@ function initScene() {
 	scene.add(pointLight);
 
 	renderer = new WebGLRenderer();
+	renderer.sortObjects = false;
 	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	container.appendChild(renderer.domElement);
