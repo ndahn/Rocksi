@@ -33,12 +33,10 @@ function getRotationRelative(object, target) {
     return rel;
 }
 
-function showPoints(scene, positions, material) {
-	material =
-		material ||
-		new PointsMaterial({
+function showPoints(scene, positions, color) {
+	let material = new PointsMaterial({
 			size: 10,
-			color: 0x00ff00,
+			color: color || 0x00ff00,
 			sizeAttenuation: false,
 			depthTest: false,
             depthWrite: true,

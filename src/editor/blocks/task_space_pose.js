@@ -3,13 +3,13 @@ import * as Blockly from "blockly";
 import ClickableTargetMutator from '../mutators/clickable_target_mutator'
 import Simulation from '../../simulator/simulation'
 
-const fieldKeys = ['X', 'Y', 'Z', 'YAW', 'PITCH', 'ROLL'];
+const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
 
 Blockly.Blocks["task_space_pose"] = {
 	init: function () {
 		this.jsonInit({
 			type: "task_space_pose",
-			message0: "x %1 y %2 z %3 yaw %4 pitch %5 roll %6",
+			message0: "x %1 y %2 z %3 r %4 p %5 y %6",
 			args0: [
 				{
 					"type": "field_number",
@@ -37,7 +37,7 @@ Blockly.Blocks["task_space_pose"] = {
 				},
 				{
 					type: "field_angle",
-					name: "YAW",
+					name: "ROLL",
 					angle: 0,
 				},
 				{
@@ -47,7 +47,7 @@ Blockly.Blocks["task_space_pose"] = {
 				},
 				{
 					type: "field_angle",
-					name: "ROLL",
+					name: "YAW",
 					angle: 0,
 				},
 			],
