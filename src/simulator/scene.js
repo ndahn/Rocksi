@@ -22,16 +22,16 @@ import { XacroLoader } from "xacro-parser";
 import URDFLoader from "urdf-loader";
 
 import { loadCached } from "../cachedb";
-import { setupIK } from "./ik";
+import { default as IKSolver } from "./ik/ccdik"
 import Simulation from "./simulation"
 
 let params = new URLSearchParams(location.search);
 const selectedRobot = params.get('robot') || 'Franka';
-let RobotDefs;
+let robot;
 
 switch (selectedRobot.toLowerCase()) {
 	case 'franka':
-		RobotDefs = require('./robots/franka');
+		robot = require('./robots/franka');
 		break;
 	
 	default:
@@ -41,28 +41,31 @@ switch (selectedRobot.toLowerCase()) {
 let container;
 let camera, scene, renderer;
 
-let robot;
-let tcp, tcptarget;
+let tcptarget;
 let transformControl;
 let ik;
 
 //loadCached('robots', './models/export/franka_description.zip')
 //    .then(result => loadRobotModel(result))
 //    .catch(error => console.error(error.message));
-loadRobotModel(RobotDefs.path)
-	.then(robot => {
-		initScene();
-		ik = setupIK(scene, robot, tcptarget);
+loadRobotModel(robot.path)
+	.then(model => {
+		robot.init(model);
+		console.log(robot);
 
-		for (const j in RobotDefs.defaultPose) {
+		initScene();
+		model.rotateX(-Math.PI / 2);  // robot is oriented in Z-direction, but three-js has Y upwards by default
+		
+		for (const j in robot.defaultPose) {
 			try {
-				robot.joints[j].setJointValue(RobotDefs.defaultPose[j]);
+				model.joints[j].setJointValue(robot.defaultPose[j]);
 			} catch (e) {
 				console.error('Failed to set default joint pose for joint ' + j + ': ' + e);
 			}
 		}
 
-		Simulation.init(robot, render);
+		ik = new IKSolver(scene, robot);
+		Simulation.init(robot, ik, render);
 	}, reason => {
 		console.error(reason);
 	});
@@ -80,35 +83,11 @@ function loadRobotModel(url) {
 			(xml) => {
 				let manager = new LoadingManager(undefined, render);
 				const urdfLoader = new URDFLoader(manager);
-				urdfLoader.packages = RobotDefs.packages;
+				urdfLoader.packages = robot.packages;
 				urdfLoader.workingPath = LoaderUtils.extractUrlBase(url);
 
-				robot = urdfLoader.parse(xml);
-				robot.rotateX(-Math.PI / 2);  // robot is oriented in Z-direction, but three-js has Y upwards by default
-				
-				const jointsOrdered = [];
-				const fingers = [];
-
-				robot.traverse(child => {
-					if (child.type === 'URDFJoint') {
-						jointsOrdered.push(child);
-					}
-
-					if (RobotDefs.isFinger(child)) {
-						fingers.push(child);
-					}
-
-					if (RobotDefs.isTCP(child)) {
-						tcp = child;
-					}
-				});
-
-				// This way we can easily identify joints by index...
-				robot['jointsOrdered'] = jointsOrdered;
-				// ...as well as the fingers of the gripper
-				robot['fingers'] = fingers;
-
-				resolve(robot);
+				let model = urdfLoader.parse(xml);
+				resolve(model);
 			},
 			(error) => {
 				console.error(error);
@@ -140,8 +119,8 @@ function initScene() {
 	scene.add(grid);
 
 	// Robot
-	robot.scale.set(10.0, 10.0, 10.0);
-	scene.add(robot);
+	robot.loadedModel.scale.set(10.0, 10.0, 10.0);
+	scene.add(robot.loadedModel);
 
 	// Lights
 	const light = new HemisphereLight(0xffeeee, 0x111122);
@@ -195,8 +174,12 @@ function onCanvasResize() {
 }
 
 function updateRobot() {
-	if (ik) {
-		ik.solve();
+	if (ik && typeof ik.solve === 'function') {
+		const solution = ik.solve(scene, robot, tcptarget.position);
+
+		for (const j in solution) {
+			robot.joints[j].setJointValue(solution[j]);
+		}
 	}
 
 	requestAnimationFrame(render);

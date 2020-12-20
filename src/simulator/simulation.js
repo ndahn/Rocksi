@@ -1,4 +1,5 @@
 import * as Blockly from "blockly"
+import { Vector3, Euler } from "three"
 var TWEEN = require('@tweenjs/tween.js');
 
 // Velocities to move a joint one unit 
@@ -32,8 +33,9 @@ function getDuration(robot, target, vmax) {
 }
 
 class TheSimulation {
-    constructor(robot, renderCallback) {
+    constructor(robot, ik, renderCallback) {
         this._robot = robot;
+        this._ik = ik;
         this._renderCallback = renderCallback;
 
         this.running = false;
@@ -108,7 +110,7 @@ class TheSimulation {
         const pose = [];
         for (let idx = 0; idx < robot.jointsOrdered.length; idx++) {
             const joint = robot.jointsOrdered[idx];
-            if (joint._jointType !== 'fixed' && !robot.fingers.includes(joint)) {
+            if (joint._jointType !== 'fixed' && !robot.isArm(joint)) {
                 pose.push(joint.angle);
             }
         }
@@ -116,8 +118,17 @@ class TheSimulation {
     }
 
     getTaskSpacePose() {
-        // TODO
-        return [];
+        const pose = [];
+
+        const m = this._robot.tcp.matrixWorld();
+        const pos = new Vector3();
+        pos.setFromMatrixPosition(m);
+        const rot = new Euler();
+        rot.setFromRotationMatrix(m);
+        
+        // x, y, z, roll, pitch, yaw
+        pose.push(pos.x, pos.y, pos.z, rot.x, rot.y, rot.z);
+        return pose;
     }
 
 
@@ -157,7 +168,7 @@ class TheSimulation {
                     target[joint.name] = clampJointAngle(joint, deg2rad(pose[i]));
                 }
                 
-                const duration = getDuration(this._robot, target, this.velocities.move);
+                const duration = getDuration(robot, target, this.velocities.move);
                 let tween = this._makeTween(start, target, duration, resolve, reject);
                 this._start(tween);
                 break;
@@ -175,6 +186,9 @@ class TheSimulation {
         const target = {};
 
         for (const finger of robot.fingers) {
+            if (!robot.isJoint(finger)) {
+                continue;
+            }
             start[finger.name] = finger.angle;
             target[finger.name] = finger.limit.lower;  // fully closed
         }
@@ -192,6 +206,9 @@ class TheSimulation {
         const target = {};
         
         for (const finger of robot.fingers) {
+            if (!robot.isJoint(finger)) {
+                continue;
+            }
             start[finger.name] = finger.angle;
             target[finger.name] = finger.limit.upper;  // fully opened
         }
@@ -293,8 +310,8 @@ const Simulation = {
         }
     },
 
-    init: function(robot, renderCallback) {
-        let s = this._simulation = new TheSimulation(robot, renderCallback);
+    init: function(robot, ik, renderCallback) {
+        let s = this._simulation = new TheSimulation(robot, ik, renderCallback);
         this._awaiting.forEach(cb => cb(s));
         this._awaiting = []
     }
