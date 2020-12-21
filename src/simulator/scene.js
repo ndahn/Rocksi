@@ -10,7 +10,10 @@ import {
     SphereGeometry,
     Color,
     MeshBasicMaterial,
-	LoadingManager
+	LoadingManager,
+	Geometry,
+	Line,
+	LineBasicMaterial
 } from "three";
 
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -41,7 +44,7 @@ switch (selectedRobot.toLowerCase()) {
 let container;
 let camera, scene, renderer;
 
-let tcptarget;
+let tcptarget, groundLine;
 let transformControl;
 let ik;
 
@@ -53,9 +56,6 @@ loadRobotModel(robot.path)
 		robot.init(model);
 		console.log(robot);
 
-		initScene();
-		model.rotateX(-Math.PI / 2);  // robot is oriented in Z-direction, but three-js has Y upwards by default
-		
 		for (const j in robot.defaultPose) {
 			try {
 				model.joints[j].setJointValue(robot.defaultPose[j]);
@@ -64,6 +64,9 @@ loadRobotModel(robot.path)
 			}
 		}
 
+		model.rotateX(-Math.PI / 2);  // robot is oriented in Z-direction, but three-js has Y upwards by default
+		initScene();
+		
 		ik = new IKSolver(scene, robot);
 		Simulation.init(robot, ik, render);
 	}, reason => {
@@ -146,17 +149,29 @@ function initScene() {
 
 	// TCP target & controls
 	tcptarget = new Mesh(
-		new SphereGeometry(0.5),
-		new MeshBasicMaterial({ wireframe: true })
+		new SphereGeometry(0.01),
+		new MeshBasicMaterial()
 	);
-	tcptarget.position.set(10, 10, 5); // TODO tcp.position
+	robot.tcp.getWorldPosition(tcptarget.position);
 	scene.add(tcptarget);
 
+	let lineGeometry = new Geometry();
+	lineGeometry.vertices.push(tcptarget.position);
+	let tcpPositionGround = tcptarget.position.clone();
+	tcpPositionGround.y = 0;
+	lineGeometry.vertices.push(tcpPositionGround);
+	groundLine = new Line(lineGeometry, new LineBasicMaterial({
+		color: 0xaaaacc,
+	}));
+	groundLine.name = 'groundLine';
+	scene.add(groundLine);
+
 	transformControl = new TransformControls(camera, renderer.domElement);
-	transformControl.addEventListener("change", updateRobot);
+	transformControl.addEventListener("change", onTargetChange);
 	transformControl.addEventListener("dragging-changed", function (event) {
 		controls.enabled = !event.value;
 	});
+	// TODO setMode('rotate') on click event
 	transformControl.attach(tcptarget);
 	scene.add(transformControl);
 
@@ -173,16 +188,28 @@ function onCanvasResize() {
 	requestAnimationFrame(render);
 }
 
-function updateRobot() {
+function onTargetChange() {
+	// Prevent target from going beneath the floor
+	tcptarget.position.y = Math.max(0, tcptarget.position.y);
+	
+	// Update the ground line's end point
+	const geom = groundLine.geometry;
+	const tcpPositionGround = geom.vertices[geom.vertices.length - 1];
+	tcpPositionGround.copy(tcptarget.position);
+	tcpPositionGround.y = 0;
+	geom.verticesNeedUpdate = true;
+
+	// Do the IK if the target has been moved 
+	// TODO do this ONLY when it moved
 	if (ik && typeof ik.solve === 'function') {
 		const solution = ik.solve(scene, robot, tcptarget.position);
 
 		for (const j in solution) {
 			robot.joints[j].setJointValue(solution[j]);
 		}
-	}
 
-	requestAnimationFrame(render);
+		requestAnimationFrame(render);
+	}
 }
 
 function render() {

@@ -8,7 +8,7 @@ const Franka = {
     defaultPose: {
         panda_joint1: 0.5,
         panda_joint2: -0.3,
-        panda_joint4: -1.5,
+        panda_joint4: -1.8,
         panda_joint6: 1.5,
         panda_joint7: 1.0,
     },
@@ -29,7 +29,7 @@ const Franka = {
     arm: [],
     hand: [],
     fingers: [],
-    tcp: [],
+    tcp: {},
     
     isJoint: function (part) {
         return part.name.includes('_joint');

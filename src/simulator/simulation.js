@@ -38,6 +38,8 @@ class TheSimulation {
         this._ik = ik;
         this._renderCallback = renderCallback;
 
+        this.lockedJoints = [];
+
         this.running = false;
         this.velocities = {
             move: Blockly.Msg.DEFAULT_SPEED_MOVE,
@@ -104,6 +106,30 @@ class TheSimulation {
             console.warn('Failed to set ' + param + ': ' + e);
         }
     }
+    
+    joint_lock(jointIdx) {
+        console.log('> Locking joint ' + jointIdx);
+        
+        if (this.lockedJoints.includes(jointIdx)) {
+            console.warn('> ... but joint ' + jointIdx + ' is already locked');
+            return;
+        }
+
+        this.lockedJoints.push(jointIdx);
+    }
+
+    joint_unlock(jointIdx) {
+        console.log('> Unlocking joint ' + jointIdx);
+        let idx = this.lockedJoints.indexOf(jointIdx);
+        
+        if (idx < 0) {
+            console.warn('> ... but joint ' + jointIdx + ' is not locked');
+            return;
+        }
+
+        this.lockedJoints.splice(idx, 1);
+    }
+
 
     getJointSpacePose() {
         const robot = this._robot;
@@ -221,6 +247,11 @@ class TheSimulation {
     joint_absolute(resolve, reject, jointIdx, angle) {
         console.log('> Setting joint ' + jointIdx + ' to ' + angle + ' degrees');
 
+        if (this.lockedJoints.includes(jointIdx)) {
+            console.log('> ... but joint ' + jointIdx + ' is locked');
+            return;
+        }
+
         const start = {};
         const target = {};
         
@@ -235,15 +266,21 @@ class TheSimulation {
 
     joint_relative(resolve, reject, jointIdx, angle) {
         console.log('> Rotating joint ' + jointIdx + ' by ' + angle + ' degrees');
-
+        
         const joint = this._robot.jointsOrdered[jointIdx - 1];
         let angleAbs = joint.angle * 180.0 / Math.PI + angle;  // degrees
-        return this.joint_absolute(resolve, reject, jointIdx, angleAbs);
+        this.joint_absolute(resolve, reject, jointIdx, angleAbs);
     }
 
 
     _makeTween(start, target, duration, resolve, reject) {
         const robot = this._robot;
+
+        // Locked joints should not be animated
+        for (const j in this.lockedJoints) {
+            const name = robot.jointsOrdered[j].name;
+            delete target[name];
+        }
 
         let tween = new TWEEN.Tween(start)
             .to(target, duration)
