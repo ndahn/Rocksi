@@ -24,9 +24,17 @@ class CCDIK {
             let tcpDirection = joint.worldToLocal(tcpPosition).normalize();
             let targetDirection = joint.worldToLocal(targetPosition.clone()).normalize();
 
-            // This approach would work, but we need to calculate the hinge angle and use setJointValue
+            tcpDirection = tcpDirection.projectOnPlane(joint.axis);
+            targetDirection = targetDirection.projectOnPlane(joint.axis);
             fromToQuat.setFromUnitVectors(tcpDirection, targetDirection);
-            joint.quaternion.multiply(fromToQuat);
+
+            // This approach would work, but we need to calculate the hinge angle and use setJointValue
+            //joint.quaternion.multiply(joint.quaternion);
+
+            //fromToQuat.premultiply(joint.quaternion);
+            
+            let angle = Math.acos(fromToQuat.w) * 2;
+            solution[joint.name] = joint.angle + angle;
 
             /*
             axis.copy(joint.axis);
@@ -43,10 +51,11 @@ class CCDIK {
             // Project directions onto joint rotation plane and get the angle in between
             tcpDirection = tcpDirection.projectOnPlane(axis);
             targetDirection = targetDirection.projectOnPlane(axis);
-            */
             //solution[joint.name] = tcpDirection.angleTo(targetDirection);
+            */
         }
 
+        console.log(solution);
         return solution;
     }
 };
