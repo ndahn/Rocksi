@@ -29,6 +29,6 @@ Blockly.Blocks["move"] = {
 Blockly.JavaScript["move"] = function (block) {
 	var pose = Blockly.JavaScript.valueToCode(block, 'POSE', Blockly.JavaScript.ORDER_COMMA) || 0;
 
-	var code = 'sendRobotCommand("move", ' + pose + ');';
+	var code = 'simulateAsync("move", ' + pose + ');';
 	return code;
 };

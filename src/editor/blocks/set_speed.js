@@ -28,9 +28,9 @@ Blockly.Blocks["set_speed"] = {
 				"type": "field_number",
 				"name": "SPEED",
 				"value": 0.5,
-				"min": 0.1,
+				"min": 0.01,
 				"max": 3,
-				"precision": 0.1
+				"precision": 0.01
 			  }
 			],
 			previousStatement: null,
@@ -71,6 +71,6 @@ Blockly.JavaScript["set_speed"] = function (block) {
 	var motion = block.getFieldValue('MOTION_TYPE');
 	var speed = block.getFieldValue('SPEED');
 	
-	var code = 'setSimulationParam("velocity/' + motion + '", ' + speed + ');';
+	var code = 'simulate("setParam", "velocity/' + motion + '", ' + speed + ');';
 	return code;
 };

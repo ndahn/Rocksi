@@ -64,6 +64,6 @@ Blockly.JavaScript["joint_absolute"] = function (block) {
 	var joint = block.getFieldValue('JOINT');
 	var angle = block.getFieldValue('ANGLE');
 
-	var code = 'sendRobotCommand("joint_absolute", ' + joint + ', ' + angle + ');';
+	var code = 'simulateAsync("joint_absolute", ' + joint + ', ' + angle + ');';
 	return code;
 };

@@ -17,6 +17,6 @@ Blockly.Blocks["gripper_open"] = {
 };
 
 Blockly.JavaScript["gripper_open"] = function (block) {
-	var code = 'sendRobotCommand("gripper_open");';
+	var code = 'simulateAsync("gripper_open");';
 	return code;
 };

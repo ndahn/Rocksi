@@ -34,8 +34,8 @@ function getDuration(robot, target, vmax) {
 
 class TheSimulation {
     constructor(robot, ik, renderCallback) {
-        this._robot = robot;
-        this._ik = ik;
+        this.robot = robot;
+        this.ik = ik;
         this._renderCallback = renderCallback;
 
         this.lockedJoints = [];
@@ -48,14 +48,27 @@ class TheSimulation {
         }
     }
 
+    reset() {
+        this.unlockJoints();
+        this.setDefaultVelocities();
+    }
 
-    run(finishCallback, command, ...args) {
+    run(command, ...args) {
+        try {
+            this[command](...args);
+        }
+        catch (e) {
+            console.error('Failed to run command \'' + command + '(' + args + ')\':' + e);
+            throw (e);
+        }
+    }
+
+    runAsync(finishCallback, command, ...args) {
         let p = new Promise((resolve, reject) => {
             try {
-                this[command](resolve, reject, ...args);
+                this.run(command, resolve, reject, ...args);
             }
             catch (e) {
-                console.error('Failed to run command \'' + command + '(' + args + ')\':' + e);
                 reject(e);
             }
         });
@@ -106,8 +119,19 @@ class TheSimulation {
             console.warn('Failed to set ' + param + ': ' + e);
         }
     }
+
+    setDefaultVelocities() {
+        console.log('> Resetting velocities to defaults');
+
+        this.velocities = {
+            move: Blockly.Msg.DEFAULT_SPEED_MOVE,
+            gripper: Blockly.Msg.DEFAULT_SPEED_GRIPPER,
+            joint: Blockly.Msg.DEFAULT_SPEED_JOINT,
+        }
+    }
+
     
-    joint_lock(jointIdx) {
+    lockJoint(jointIdx) {
         console.log('> Locking joint ' + jointIdx);
         
         if (this.lockedJoints.includes(jointIdx)) {
@@ -118,7 +142,7 @@ class TheSimulation {
         this.lockedJoints.push(jointIdx);
     }
 
-    joint_unlock(jointIdx) {
+    unlockJoint(jointIdx) {
         console.log('> Unlocking joint ' + jointIdx);
         let idx = this.lockedJoints.indexOf(jointIdx);
         
@@ -130,23 +154,30 @@ class TheSimulation {
         this.lockedJoints.splice(idx, 1);
     }
 
+    unlockJoints() {
+        console.log('> Unlocking all joints');
+        this.lockedJoints = [];
+    }
+
 
     getJointSpacePose() {
-        const robot = this._robot;
+        const robot = this.robot;
         const pose = [];
         for (let idx = 0; idx < robot.jointsOrdered.length; idx++) {
             const joint = robot.jointsOrdered[idx];
-            if (joint._jointType !== 'fixed' && !robot.isArm(joint)) {
+            console.log(joint);
+            if (joint._jointType !== 'fixed' && robot.isArm(joint)) {
                 pose.push(joint.angle);
             }
         }
+        console.log(pose);
         return pose;
     }
 
     getTaskSpacePose() {
         const pose = [];
 
-        const m = this._robot.tcp.matrixWorld();
+        const m = this.robot.tcp.matrixWorld();
         const pos = new Vector3();
         pos.setFromMatrixPosition(m);
         const rot = new Euler();
@@ -184,7 +215,7 @@ class TheSimulation {
                 // Joint space pose
                 console.log('> Moving robot to joint space pose ' + pose);
 
-                const robot = this._robot;
+                const robot = this.robot;
                 const start = {};
                 const target = {};
                 
@@ -207,7 +238,7 @@ class TheSimulation {
     gripper_close(resolve, reject) {
         console.log('> Closing hand');
         
-        const robot = this._robot;
+        const robot = this.robot;
         const start = {};
         const target = {};
 
@@ -227,7 +258,7 @@ class TheSimulation {
     gripper_open(resolve, reject) {
         console.log('> Opening hand');
 
-        const robot = this._robot;
+        const robot = this.robot;
         const start = {};
         const target = {};
         
@@ -249,17 +280,18 @@ class TheSimulation {
 
         if (this.lockedJoints.includes(jointIdx)) {
             console.log('> ... but joint ' + jointIdx + ' is locked');
+            resolve('locked');
             return;
         }
 
         const start = {};
         const target = {};
         
-        const joint = this._robot.jointsOrdered[jointIdx - 1];
+        const joint = this.robot.jointsOrdered[jointIdx - 1];
         start[joint.name] = joint.angle;
         target[joint.name] = clampJointAngle(joint, deg2rad(angle));
 
-        const duration = getDuration(this._robot, target, this.velocities.joint);
+        const duration = getDuration(this.robot, target, this.velocities.joint);
         let tween = this._makeTween(start, target, duration, resolve, reject);
         this._start(tween);
     }
@@ -267,14 +299,14 @@ class TheSimulation {
     joint_relative(resolve, reject, jointIdx, angle) {
         console.log('> Rotating joint ' + jointIdx + ' by ' + angle + ' degrees');
         
-        const joint = this._robot.jointsOrdered[jointIdx - 1];
+        const joint = this.robot.jointsOrdered[jointIdx - 1];
         let angleAbs = joint.angle * 180.0 / Math.PI + angle;  // degrees
         this.joint_absolute(resolve, reject, jointIdx, angleAbs);
     }
 
 
     _makeTween(start, target, duration, resolve, reject) {
-        const robot = this._robot;
+        const robot = this.robot;
 
         // Locked joints should not be animated
         for (const j in this.lockedJoints) {

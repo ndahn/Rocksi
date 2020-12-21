@@ -64,6 +64,6 @@ Blockly.JavaScript["joint_relative"] = function (block) {
 	var joint = block.getFieldValue('JOINT');
 	var angle = block.getFieldValue('ANGLE');
 
-	var code = 'sendRobotCommand("joint_relative", ' + joint + ', ' + angle + ');';
+	var code = 'simulateAsync("joint_relative", ' + joint + ', ' + angle + ');';
 	return code;
 };

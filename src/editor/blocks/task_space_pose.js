@@ -53,7 +53,7 @@ Blockly.Blocks["task_space_pose"] = {
 			],
 			inputsInline: true,
 			output: "Array",
-			colour: "#4c97ff",
+			colour: "%{BKY_MOVEMENT_HEX}",
 			tooltip:
 				"Eine Pose im Arbeitsraum (definiert über die Endeffektorpose, Position und Orientierung)",
 			helpUrl: "",

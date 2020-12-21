@@ -11,14 +11,12 @@ import './blocks/gripper_close'
 import './blocks/joint_absolute'
 import './blocks/joint_relative'
 import './blocks/set_speed'
+import './blocks/joint_lock'
+import './blocks/joint_unlock'
 
 import './msg'
+import './colors'
 
-Blockly.Msg.MOVEMENT_HEX = "#4c97ff";
-Blockly.Msg.GRIPPER_HEX = "#59c059";
-Blockly.Msg.JOINT_HEX = "#ff9f29";
-Blockly.Msg.SETPARAM_HEX = "#ff6680";
-Blockly.Msg.TEALGREEN_HEX = "#0fbd8c";
 
 Blockly.FieldAngle.WRAP = 180;
 
@@ -99,7 +97,6 @@ var contextSaveWorkspace = {
     },
 
     preconditionFn: function (scope) {
-        console.log(scope);
         if (scope.workspace.getTopBlocks(false).length > 0) {
             return 'enabled';
         }
@@ -206,16 +203,16 @@ function simulationAPI(interpreter, globalObject) {
     interpreter.setProperty(globalObject, 'highlightBlock',
         interpreter.createNativeFunction(wrapper));
     
-    wrapper = function(command, ...args) {
-        return simulation.run(step, command, ...args);
+    wrapper = function (command, ...args) {
+        return simulation.run(command, ...args);
     }
-    interpreter.setProperty(globalObject, 'sendRobotCommand',
+    interpreter.setProperty(globalObject, 'simulate',
         interpreter.createNativeFunction(wrapper));
     
-    wrapper = function (param, value) {
-        return simulation.setParam(param, value);
+    wrapper = function(command, ...args) {
+        return simulation.runAsync(step, command, ...args);
     }
-    interpreter.setProperty(globalObject, 'setSimulationParam',
+    interpreter.setProperty(globalObject, 'simulateAsync',
         interpreter.createNativeFunction(wrapper));
 }
 
@@ -242,6 +239,8 @@ class ExecutionContext {
 var executionContext = null;
 
 function runProgram() {
+    simulation.reset();
+
     const interpreter = new Interpreter('', simulationAPI);
     let blocks = workspace.getAllBlocks(true);
     executionContext = new ExecutionContext(blocks, interpreter);
