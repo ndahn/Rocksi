@@ -165,7 +165,6 @@ class TheSimulation {
         const pose = [];
         for (let idx = 0; idx < robot.jointsOrdered.length; idx++) {
             const joint = robot.jointsOrdered[idx];
-            console.log(joint);
             if (joint._jointType !== 'fixed' && robot.isArm(joint)) {
                 pose.push(joint.angle);
             }
@@ -208,7 +207,7 @@ class TheSimulation {
                 console.log('> Moving robot to task space pose ' + pose);
 
                 // TODO Calculate joint angles through inverse kinematic, fall through to Joint Space Pose
-                console.error('Task space poses not supported yet');
+                reject('Task space poses not supported yet');
                 break;
 
             case 'joint_space':
