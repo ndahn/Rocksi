@@ -15,11 +15,9 @@ import './blocks/set_speed'
 import './blocks/joint_lock'
 import './blocks/joint_unlock'
 
-import './msg'
-import './colors'
-
-
-Blockly.FieldAngle.WRAP = 180;
+import './constants/msg'
+import './constants/colors'
+import './constants/params'
 
 const generator = Blockly.JavaScript;
 generator.STATEMENT_PREFIX = 'highlightBlock(%1);\n'
@@ -28,7 +26,6 @@ generator.addReservedWords('sendRobotCommand');
 generator.addReservedWords('code');
 
 var Interpreter = require('js-interpreter');
-
 var ResizeSensor = require('css-element-queries/src/ResizeSensor');
 
 import Simulation from '../simulator/simulation'
