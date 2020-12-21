@@ -1,9 +1,11 @@
 import {
+	Object3D,
 	LoaderUtils,
     Scene,
     WebGLRenderer,
-    PerspectiveCamera,
-    GridHelper,
+	PerspectiveCamera,
+	GridHelper,
+    PolarGridHelper,
     HemisphereLight,
     PointLight,
     Mesh,
@@ -13,8 +15,12 @@ import {
 	LoadingManager,
 	Geometry,
 	Line,
-	LineBasicMaterial
+	LineBasicMaterial,
+	Vector3
 } from "three";
+
+// In ROS models Z points upwards
+Object3D.DefaultUp = new Vector3(0, 0, 1);
 
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
@@ -64,7 +70,6 @@ loadRobotModel(robot.path)
 			}
 		}
 
-		model.rotateX(-Math.PI / 2);  // robot is oriented in Z-direction, but three-js has Y upwards by default
 		initScene();
 		
 		ik = new IKSolver(scene, robot);
@@ -114,11 +119,13 @@ function initScene() {
 		1,
 		2000
 	);
-	camera.position.set(8, 17, 20);
-	camera.lookAt(0, 10,)
+	camera.position.set(8, 20, 17);
+	camera.lookAt(0, 0, 10)
 
 	// Grid
+	//const grid = new PolarGridHelper(12, 16, 8, 64, 0x888888, 0xaaaaaa);
 	const grid = new GridHelper(20, 20, 0xf0f0f0, 0x888888);
+	grid.rotateX(Math.PI / 2);
 	scene.add(grid);
 
 	// Robot
@@ -133,7 +140,7 @@ function initScene() {
 	//pointLight.castShadow = true;
 	//particleLight.add(pointLight);
 	//particleLight.position.set(30, 40, 30);
-	pointLight.position.set(30, 40, 30);
+	pointLight.position.set(30, 30, 40);
 	scene.add(pointLight);
 
 	renderer = new WebGLRenderer();
@@ -158,7 +165,7 @@ function initScene() {
 	let lineGeometry = new Geometry();
 	lineGeometry.vertices.push(tcptarget.position);
 	let tcpPositionGround = tcptarget.position.clone();
-	tcpPositionGround.y = 0;
+	tcpPositionGround.z = 0;
 	lineGeometry.vertices.push(tcpPositionGround);
 	groundLine = new Line(lineGeometry, new LineBasicMaterial({
 		color: 0xaaaacc,
@@ -190,13 +197,13 @@ function onCanvasResize() {
 
 function onTargetChange() {
 	// Prevent target from going beneath the floor
-	tcptarget.position.y = Math.max(0, tcptarget.position.y);
+	tcptarget.position.z = Math.max(0, tcptarget.position.z);
 	
 	// Update the ground line's end point
 	const geom = groundLine.geometry;
 	const tcpPositionGround = geom.vertices[geom.vertices.length - 1];
 	tcpPositionGround.copy(tcptarget.position);
-	tcpPositionGround.y = 0;
+	tcpPositionGround.z = 0;
 	geom.verticesNeedUpdate = true;
 
 	// Do the IK if the target has been moved 

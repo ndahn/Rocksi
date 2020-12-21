@@ -9,7 +9,6 @@ class CCDIK {
 
         let tcpPosition = new Vector3();
         let fromToQuat = new Quaternion();
-        let axis = new Vector3();
         
         for (let i = robot.jointsOrdered.length - 1; i >= 0; i--) {
             const joint = robot.jointsOrdered[i];
@@ -27,32 +26,24 @@ class CCDIK {
             tcpDirection = tcpDirection.projectOnPlane(joint.axis);
             targetDirection = targetDirection.projectOnPlane(joint.axis);
             fromToQuat.setFromUnitVectors(tcpDirection, targetDirection);
-
-            // This approach would work, but we need to calculate the hinge angle and use setJointValue
+            
+            // V1
+            // This approach would (almost) work, but we need to calculate the hinge angle and use setJointValue
             //joint.quaternion.multiply(joint.quaternion);
 
+            // V2
             //fromToQuat.premultiply(joint.quaternion);
-            
-            let angle = Math.acos(fromToQuat.w) * 2;
-            solution[joint.name] = joint.angle + angle;
+            //let angle = joint.angle + Math.acos(fromToQuat.w) * 2;
 
-            /*
-            axis.copy(joint.axis);
-            axis.applyMatrix4(joint.parent.matrixWorld);
-            axis.applyMatrix4(joint.matrix);
-            joint.worldToLocal(axis);
+            // V3
+            let angle = joint.angle + tcpDirection.angleTo(targetDirection);
 
-            let p = new Vector3();
-            joint.getWorldPosition(p);
-            p.z += 2;
-            let arrow = new ArrowHelper(axis, p);
-            scene.add(arrow);
+            // V4
+            //fromToQuat.premultiply(joint.quaternion.clone().conjugate());
+            //let ftqNorm = new Vector3().set(fromToQuat.x, fromToQuat.y, fromToQuat.z).length();
+            //let angle = Math.atan2(ftqNorm, fromToQuat.w) * 2;
             
-            // Project directions onto joint rotation plane and get the angle in between
-            tcpDirection = tcpDirection.projectOnPlane(axis);
-            targetDirection = targetDirection.projectOnPlane(axis);
-            //solution[joint.name] = tcpDirection.angleTo(targetDirection);
-            */
+            solution[joint.name] = angle;
         }
 
         console.log(solution);
