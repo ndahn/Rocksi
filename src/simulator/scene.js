@@ -129,8 +129,8 @@ function initScene() {
 	scene.add(grid);
 
 	// Robot
-	robot.loadedModel.scale.set(10.0, 10.0, 10.0);
-	scene.add(robot.loadedModel);
+	robot.model.scale.set(10.0, 10.0, 10.0);
+	scene.add(robot.model);
 
 	// Lights
 	const light = new HemisphereLight(0xffeeee, 0x111122);
@@ -209,7 +209,12 @@ function onTargetChange() {
 	// Do the IK if the target has been moved 
 	// TODO do this ONLY when it moved
 	if (ik && typeof ik.solve === 'function') {
-		const solution = ik.solve(robot, tcptarget.position);
+		const solution = ik.solve(
+			tcptarget,
+			robot.tcp,
+			robot.ikjoints,
+			robot.interactionJointLimits
+		);
 
 		// TODO For now the IK solver applies the updates directly
 		// for (const j in solution) {

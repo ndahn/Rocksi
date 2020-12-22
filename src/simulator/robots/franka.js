@@ -13,30 +13,45 @@ const Franka = {
         panda_joint7: 1.0,
     },
 
+    // TODO Use only for viewport interactions
+    ikEnabled: [
+        'panda_joint1',
+        'panda_joint2',
+        'panda_joint4',
+//        'panda_joint5',
+//        'panda_joint6',
+    ],
+
+    interactionJointLimits: {
+        panda_joint4: { upper: -Math.PI / 6 },
+    },
+
+
     // The model loaded by URDFLoader
-    loadedModel: {},
+    model: {},
 
-    // Aliases to properties of the loadedModel for convenience
-    joints: {},
-    links: {},
-    frames: {},
-    
-    // Access to joints and links in a defined order
-    jointsOrdered: [],
-    linksOrdered: [],
+    arm: {
+        joints: [],
+        movable: [],
+        links: [],
+    },
 
-    // Various parts of the robot
-    arm: [],
-    hand: [],
-    fingers: [],
+    hand: {
+        joints: [],
+        movable: [],
+        links: [],
+    },
+
+    ikjoints: [],
     tcp: {},
     
+
     isJoint: function (part) {
-        return part.name.includes('_joint');
+        return part.type === 'URDFJoint';
     },
 
     isLink: function (part) {
-        return !this.isJoint(part);
+        return part.type === 'URDFLink';
     },
 
     isArm: function (part) {
@@ -44,20 +59,21 @@ const Franka = {
     },
 
     isHand: function (part) {
-        return part.name.includes('hand');
-    },
-
-    isFinger: function(part) {
-        return part.name.includes('finger');
+        return part.name.includes('hand') || part.name.includes('finger');
     },
 
     isTCP: function(part) {
         return part.name === 'panda_hand';
     },
 
+    isIKEnabled: function (part) {
+        return this.ikEnabled.includes(part.name);
+    },
+
+
     getJointForLink: function (link, model) {
         if (model === undefined) {
-            model = this.loadedModel;
+            model = this.model;
         }
 
         if (typeof link === 'string') {
@@ -65,7 +81,7 @@ const Franka = {
         }
 
         if (this.isHand(link)) {
-            return model['panda_hand_joint'];
+            return model.joints['panda_hand_joint'];
         }
 
         if (this.isFinger(link)) {
@@ -83,7 +99,7 @@ const Franka = {
 
     getLinkForJoint: function (joint, model) {
         if (model === undefined) {
-            model = this.loadedModel;
+            model = this.model;
         }
 
         if (typeof joint === 'string') {
@@ -107,36 +123,40 @@ const Franka = {
         return model.links[linkName];
     },
 
-    init(loadedModel) {
-        this.loadedModel = loadedModel;
-        this.joints = loadedModel.joints;
-        this.links = loadedModel.links;
-        this.frames = loadedModel.frames;
 
-        loadedModel.traverse(child => {
-            if (child.type === 'URDFJoint') {
-                this.jointsOrdered.push(child);
+    init(model) {
+        this.model = model;
+        this.joints = model.joints;
+        this.links = model.links;
+
+        model.traverse(child => {
+            if (this.isTCP(child)) {
+                this.tcp = child;
             }
-            else if (child.type === 'URDFLink') {
-                this.linksOrdered.push(child);
+
+            if (this.isIKEnabled(child)) {
+                this.ikjoints.push(child);
+            }
+
+            let obj;
+            if (this.isArm(child)) {
+                obj = this.arm;
+            }
+            else if (this.isHand(child)) {
+                obj = this.hand;
             }
             else {
-                // E.g. URDFVisual
                 return;
             }
 
-            if (this.isArm(child)) {
-                this.arm.push(child);
+            if (this.isJoint(child)) {
+                obj.joints.push(child);
+                if (child._jointType !== 'fixed') {
+                    obj.movable.push(child);
+                }
             }
-            else if (this.isHand(child)) {
-                this.hand.push(child);
-            }
-            else if (this.isFinger(child)) {
-                this.fingers.push(child);
-            }
-            
-            if (this.isTCP(child)) {
-                this.tcp = child;
+            else if (child.type === 'URDFLink') {
+                obj.links.push(child);
             }
         });
     },

@@ -15,14 +15,13 @@ Blockly.Blocks["default_pose"] = {
 
 		Simulation.getInstance(sim => {
 			const pose = [];
-			const defaults = sim.robot.defaultPose;
+			const robot = sim.robot;
+			const defaults = robot.defaultPose;
 
-			for (const joint of sim.robot.jointsOrdered) {
-				if (joint._jointType !== 'fixed' && sim.robot.isArm(joint)) {
-					let angle = defaults[joint.name] || 0.0
-					angle *= 180 / Math.PI;
-					pose.push(angle);
-				}
+			for (const joint of robot.arm.movable) {
+				let angle = defaults[joint.name] || 0.0
+				angle *= 180 / Math.PI;
+				pose.push(angle);
 			}
 			
 			let tooltip = '';
