@@ -16,7 +16,7 @@ import {
 	Geometry,
 	Line,
 	LineBasicMaterial,
-	Vector3
+	Vector3,
 } from "three";
 
 // In ROS models Z points upwards
@@ -211,9 +211,10 @@ function onTargetChange() {
 	if (ik && typeof ik.solve === 'function') {
 		const solution = ik.solve(scene, robot, tcptarget.position);
 
-		for (const j in solution) {
-			robot.joints[j].setJointValue(solution[j]);
-		}
+		// TODO For now the IK solver applies the updates directly
+		// for (const j in solution) {
+		// 	robot.joints[j].setJointValue(solution[j]);
+		// }
 
 		requestAnimationFrame(render);
 	}

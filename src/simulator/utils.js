@@ -1,37 +1,4 @@
-import { PointsMaterial, Geometry, Points, Vector3 } from "three";
-
-function toDeg(rad) {
-	return rad * (180 / Math.PI);
-}
-
-function transferPosition(source, target) {
-    let p = new Vector3();
-    source.getWorldPosition(p);
-    if (target.parent) {
-        p = target.parent.worldToLocal(p);
-    }
-    target.position.copy(p);
-}
-
-function getPositionRelative(object, target) {
-    let rel = target || new Vector3();
-    object.getWorldPosition(rel);
-    if (object.parent) {
-        rel = object.parent.worldToLocal(rel);
-    }
-    return rel;
-}
-
-function getRotationRelative(object, target) {
-    let rel = target || new Quaternion();
-    object.getWorldQuaternion(rel);
-    if (object.parent) {
-        let pq = new Quaternion();
-        object.parent.getWorldQuaternion(pq);
-        rel = rel * pq.inverse();
-    }
-    return rel;
-}
+import { PointsMaterial, Geometry, Points } from "three";
 
 function showPoints(scene, positions, color) {
 	let material = new PointsMaterial({
@@ -52,4 +19,26 @@ function showPoints(scene, positions, color) {
 	scene.add(dots);
 }
 
-export { toDeg, transferPosition, showPoints }
+function showAxes(objects) {	
+	for (const o of objects) {
+		let color = 0xff0000;
+		for (const c of ['x', 'y', 'z']) {
+			let dir = new Vector3();
+			dir[c] = 1.0;
+			let arrow = new ArrowHelper(dir, new Vector3(), 0.2, color);
+			o.add(arrow);
+			color = color >>> 8;
+		}
+	}
+
+}
+
+/*
+ * Returns the signed difference between two angles in [-PI, PI);
+ */
+function signedAngleDifference(a1, a2) {
+	return (a1 - a2 + 3 * Math.PI) % (2 * Math.PI) - Math.PI;
+}
+
+
+export { showPoints, showAxes, signedAngleDifference }

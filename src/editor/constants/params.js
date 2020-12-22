@@ -1,3 +1,3 @@
-import * as Blockly from 'blockly'
+import { FieldAngle } from 'blockly'
 
-Blockly.FieldAngle.WRAP = 180;
+FieldAngle.WRAP = 180;
