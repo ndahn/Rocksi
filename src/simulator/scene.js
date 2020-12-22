@@ -209,7 +209,7 @@ function onTargetChange() {
 	// Do the IK if the target has been moved 
 	// TODO do this ONLY when it moved
 	if (ik && typeof ik.solve === 'function') {
-		const solution = ik.solve(scene, robot, tcptarget.position);
+		const solution = ik.solve(robot, tcptarget.position);
 
 		// TODO For now the IK solver applies the updates directly
 		// for (const j in solution) {

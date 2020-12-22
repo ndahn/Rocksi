@@ -50,7 +50,6 @@ class CCDIK {
             solution[joint.name] = angle;
         }
 
-        console.log(solution);
         return solution;
     }
 };
