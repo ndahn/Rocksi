@@ -159,7 +159,7 @@ function initScene() {
 		new SphereGeometry(0.01),
 		new MeshBasicMaterial()
 	);
-	robot.tcp.getWorldPosition(tcptarget.position);
+	robot.tcp.object.getWorldPosition(tcptarget.position);
 	scene.add(tcptarget);
 
 	let lineGeometry = new Geometry();
@@ -211,7 +211,7 @@ function onTargetChange() {
 	if (ik && typeof ik.solve === 'function') {
 		const solution = ik.solve(
 			tcptarget,
-			robot.tcp,
+			robot.tcp.object,
 			robot.ikjoints,
 			robot.interactionJointLimits
 		);
