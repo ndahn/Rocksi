@@ -1,5 +1,5 @@
 import * as Blockly from "blockly"
-import { Vector3, Euler } from "three"
+import { Object3D, Vector3, Euler } from "three"
 var TWEEN = require('@tweenjs/tween.js');
 
 // Velocities to move a joint one unit 
@@ -175,7 +175,7 @@ class TheSimulation {
     getTaskSpacePose() {
         const pose = [];
 
-        const m = this.robot.tcp.matrixWorld;
+        const m = this.robot.tcp.object.matrixWorld;
         const pos = new Vector3();
         pos.setFromMatrixPosition(m);
         const rot = new Euler();
@@ -199,38 +199,57 @@ class TheSimulation {
             pose = newPose;
         }
 
+        const robot = this.robot;
+        const start = {};
+        const target = {};
+
         const space = pose.shift();
         switch (space) {
             case 'task_space':
                 // Task space pose
                 console.log('> Moving robot to task space pose ' + pose);
 
-                // TODO Calculate joint angles through inverse kinematic, fall through to Joint Space Pose
-                reject('Task space poses not supported yet');
+                const ikTarget = new Object3D();
+                ikTarget.position.set(pose[0], pose[1], pose[2]);
+                ikTarget.setRotationFromEuler(new Euler(pose[3], pose[4], pose[5]));
+
+                const solution = this.ik.solve(
+                    ikTarget,
+                    robot.tcp.object,
+                    robot.ikjoints,
+                    { iterations: 1, jointLimits: robot.interactionJointLimits, apply: false }
+                );
+
+                for (let i = 0; i < pose.length; i++) {
+                    const joint = robot.arm.movable[i];
+                    if (joint.name in solution) {
+                        start[joint.name] = joint.angle;
+                        target[joint.name] = solution[joint.name];
+                    }
+                }
+                
                 break;
 
             case 'joint_space':
                 // Joint space pose
                 console.log('> Moving robot to joint space pose ' + pose);
 
-                const robot = this.robot;
-                const start = {};
-                const target = {};
-                
                 for (let i = 0; i < pose.length; i++) {
                     const joint = robot.arm.movable[i];
                     start[joint.name] = joint.angle;
                     target[joint.name] = clampJointAngle(joint, deg2rad(pose[i]));
                 }
                 
-                const duration = getDuration(robot, target, this.velocities.move);
-                let tween = this._makeTween(start, target, duration, resolve, reject);
-                this._start(tween);
                 break;
 
             default:
                 console.error('move: unknown configuration space \'' + space + '\'');
+                return;
         }
+
+        const duration = getDuration(robot, target, this.velocities.move);
+        let tween = this._makeTween(start, target, duration, resolve, reject);
+        this._start(tween);
     }
 
     gripper_close(resolve, reject) {

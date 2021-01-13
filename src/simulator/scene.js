@@ -73,7 +73,7 @@ loadRobotModel(robot.path)
 		initScene();
 		
 		ik = new IKSolver(scene, robot);
-		Simulation.init(robot, ik, render);
+		Simulation.init(robot, ik, ikRender);
 	}, reason => {
 		console.error(reason);
 	});
@@ -209,34 +209,24 @@ function onTargetChange() {
 	// Do the IK if the target has been moved 
 	// TODO do this ONLY when it moved
 	if (ik && typeof ik.solve === 'function') {
-		const solution = ik.solve(
+		ik.solve(
 			tcptarget,
 			robot.tcp.object,
 			robot.ikjoints,
-			robot.interactionJointLimits
+			{ iterations: 1, jointLimits: robot.interactionJointLimits, apply: true }
 		);
-
-		// TODO For now the IK solver applies the updates directly
-		// for (const j in solution) {
-		// 	robot.joints[j].setJointValue(solution[j]);
-		// }
 
 		requestAnimationFrame(render);
 	}
 }
 
+function ikRender() {
+	robot.tcp.object.getWorldPosition(tcptarget.position);
+	robot.tcp.object.getWorldQuaternion(tcptarget.quaternion);
+	
+	requestAnimationFrame(render);
+}
+
 function render() {
-	//const timer = Date.now() * 0.0001;
-
-	//camera.position.x = Math.cos( timer ) * 20;
-	//camera.position.y = 10;
-	//camera.position.z = Math.sin( timer ) * 20;
-
-	//camera.lookAt( 0, 5, 0 );
-
-	//particleLight.position.x = Math.sin(timer * 4) * 3009;
-	//particleLight.position.y = Math.cos(timer * 5) * 4000;
-	//particleLight.position.z = Math.cos(timer * 4) * 3009;
-
 	renderer.render(scene, camera);
 }

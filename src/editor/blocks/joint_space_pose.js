@@ -49,7 +49,7 @@ Blockly.Blocks["joint_space_pose"] = {
 			output: "Array",
 			colour: "%{BKY_MOVEMENT_HEX}",
 			tooltip:
-				"Eine Pose im Gelenkwinkelraum (ein Winkel pro Gelenk, von der Basis zum Endeffektor)",
+				"Eine Pose im Gelenkwinkelraum (ein Winkel pro Gelenk, d.h. von der Basis zum Endeffektor)",
 			helpUrl: "",
 		});
 		this.setMutator(new ClickableTargetMutator());

@@ -7,47 +7,42 @@ const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
 
 Blockly.Blocks["task_space_pose"] = {
 	init: function () {
+		let i = 0;
 		this.jsonInit({
 			type: "task_space_pose",
 			message0: "x %1 y %2 z %3 r %4 p %5 y %6",
 			args0: [
 				{
 					"type": "field_number",
-					"name": "X",
+					"name": fieldKeys[i++],
 					"value": 0,
-					"min": 0.0,
-					"max": 1.0,
 					"precision": 0.1
 				},
 				{
 					"type": "field_number",
-					"name": "Y",
+					"name": fieldKeys[i++],
 					"value": 0,
-					"min": 0.0,
-					"max": 1.0,
 					"precision": 0.1
 				},
 				{
 					"type": "field_number",
-					"name": "Z",
+					"name": fieldKeys[i++],
 					"value": 0,
-					"min": 0.0,
-					"max": 1.0,
 					"precision": 0.1
 				},
 				{
 					type: "field_angle",
-					name: "ROLL",
+					name: fieldKeys[i++],
 					angle: 0,
 				},
 				{
 					type: "field_angle",
-					name: "PITCH",
+					name: fieldKeys[i++],
 					angle: 0,
 				},
 				{
 					type: "field_angle",
-					name: "YAW",
+					name: fieldKeys[i++],
 					angle: 0,
 				},
 			],
@@ -55,7 +50,7 @@ Blockly.Blocks["task_space_pose"] = {
 			output: "Array",
 			colour: "%{BKY_MOVEMENT_HEX}",
 			tooltip:
-				"Eine Pose im Arbeitsraum (definiert über die Endeffektorpose, Position und Orientierung)",
+				"Eine Pose im Arbeitsraum (definiert über die Endeffektorpose, d.h. Position und Orientierung)",
 			helpUrl: "",
 		});
 		this.setMutator(new ClickableTargetMutator());
