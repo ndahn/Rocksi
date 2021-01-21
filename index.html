@@ -5,10 +5,13 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="./css/main.css">
+		<link type="text/css" rel="stylesheet" href="./css/alerts.css">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
 	</head>
 	<body>
 		<div class="main-container">
+			
 			<div id="split-pane-1" class="split blocks-container">
 				<xml id="blocks-toolbox" style="display: none">
 					<block type="move"></block>
@@ -38,5 +41,8 @@
 
 			<script src="src/index.js"></script>
 		</div>
+
+		<div id="msgbox-area" class="msgbox-area"></div>
+		<div id="overlay"></div>
 	</body>
 </html>

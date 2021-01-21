@@ -1,10 +1,21 @@
 import { Object3D, Quaternion, Euler } from "three";
+const path = require('path');
 
 const Franka = {
-	path: "./models/franka_description/robots/panda_arm_hand.urdf.xacro",
+	// TODO: find a better place that can be referenced easily by all robot definitions
+	root: path.join(process.env.PUBLIC_URL || '', "/models/"),
+
+	get package() {
+		return path.join(Franka.root, "franka_description/");
+	},
+	get xacro() {
+		return path.join(Franka.package, "robots/panda_arm_hand.urdf.xacro");
+	},
 
 	packages: {
-		franka_description: "./models/franka_description",
+		get franka_description() {
+			return Franka.package;
+		},
 	},
 
 	defaultPose: {
@@ -15,7 +26,7 @@ const Franka = {
 		panda_joint7: 1.0,
 	},
 
-	// TODO Use only for viewport interactions
+	// Only for viewport interactions
 	ikEnabled: [
 		"panda_joint1",
 		"panda_joint2",

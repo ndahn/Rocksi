@@ -30,12 +30,15 @@ var ResizeSensor = require('css-element-queries/src/ResizeSensor');
 import { XacroLoader } from "xacro-parser";
 import URDFLoader from "urdf-loader";
 
-import { loadCached } from "../cachedb";
+// import { loadCached } from "../cachedb";
+import makeRock from './objects/rock'
 import { default as IKSolver } from "./ik/ccdik"
 import Simulation from "./simulation"
 
+const path = require('path');
+
 let params = new URLSearchParams(location.search);
-const selectedRobot = params.get('robot') || 'Franka';
+const selectedRobot = params.get('robot') || 'franka';
 let robot;
 
 switch (selectedRobot.toLowerCase()) {
@@ -57,10 +60,9 @@ let ik;
 //loadCached('robots', './models/export/franka_description.zip')
 //    .then(result => loadRobotModel(result))
 //    .catch(error => console.error(error.message));
-loadRobotModel(robot.path)
+loadRobotModel(robot.xacro)
 	.then(model => {
 		robot.init(model);
-		console.log(robot);
 
 		for (const j in robot.defaultPose) {
 			try {
@@ -85,7 +87,7 @@ function loadRobotModel(url) {
 		xacroLoader.inOrder = true;
 		xacroLoader.requirePrefix = true;
 		xacroLoader.localProperties = true;
-		xacroLoader.rospackCommands.find = (...args) => "/models/" + args;
+		xacroLoader.rospackCommands.find = (...args) => path.join(robot.root, ...args);
 		xacroLoader.load(
 			url,
 			(xml) => {
@@ -127,6 +129,12 @@ function initScene() {
 	const grid = new GridHelper(20, 20, 0xf0f0f0, 0x888888);
 	grid.rotateX(Math.PI / 2);
 	scene.add(grid);
+
+	// for (let i = 0; i < 5; i++) {
+	// 	let rock = makeRock(20, 1);
+	// 	rock.position.set(i * 3, 5, 0);
+	// 	scene.add(rock);
+	// }
 
 	// Robot
 	robot.model.scale.set(10.0, 10.0, 10.0);
