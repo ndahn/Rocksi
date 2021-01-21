@@ -1,0 +1,124 @@
+.msgbox-area {
+	max-height: 100%;
+	position: fixed;
+	top: 15px;
+	left: auto;
+	right: 20px;
+	z-index: 100;
+}
+
+.msgbox-box {
+	font-size: inherit;
+	background-color: rgba(0, 0, 0, 0.8);
+	padding: 18px 20px;
+	margin: 0 0 15px;
+	display: flex;
+	align-items: center;
+	position: relative;
+	border-radius: 12px;
+	box-shadow: 0 10px 15px rgba(0, 0, 0, 0.65);
+	transition: opacity 300ms ease-in;
+	transition: background-color 0.3s;
+}
+
+.msgbox-box::before {
+	content: '';
+	position: absolute;
+	width: 0;
+	height: 50%;
+	border-left: 1px solid;
+	border-right: 2px solid;
+	border-bottom-right-radius: 3px;
+	border-top-right-radius: 3px;
+	left: 0;
+	top: 50%;
+	transform: translate(0,-50%);
+}
+
+.msgbox-content::before {
+	margin-right: .7em;
+	font-family: 'Font Awesome 5 Free';
+	font-size: 1em;
+	font-weight: bold;
+}
+
+.msgbox-box.msgbox-box-hide {
+	opacity: 0;
+	display: none;
+}
+
+.msgbox-box:last-child {
+	margin: 0;
+}
+
+.msgbox-content {
+	flex-shrink: 1;
+}
+
+.msgbox-text {
+	display: inline-block;
+}
+
+.msgbox-close {
+	color: #ffffff;
+	font-weight: bold;
+	text-decoration: none;
+	margin: 0 0 0 20px;
+	flex-grow: 0;
+	flex-shrink: 0;
+	position: relative;
+	transition: text-shadow 225ms ease-out;
+}
+
+.msgbox-close:hover {
+	text-shadow: 0 0 3px #efefef;
+}
+
+
+.msgbox-box.info {
+	border: 1px solid rgba(6, 44, 241, 0.46);
+    background-color: rgba(7, 73, 149, 0.12);
+    box-shadow: 0px 0px 2px #0396ff;
+}
+.msgbox-box.info:hover {
+	background-color: rgba(7, 73, 149, 0.35);
+}
+.msgbox-box.info .msgbox-content::before {
+	content: "\f05a";
+	color: #0396ff;
+}
+.msgbox-box.info::before {
+	color: #0396ff;
+}
+
+.msgbox-box.warning {
+	border: 1px solid rgba(241, 142, 6, 0.81);
+    background-color: rgba(220, 128, 1, 0.16);
+    box-shadow: 0px 0px 2px #ffb103;
+}
+.msgbox-box.warning:hover {
+	background-color: rgba(220, 128, 1, 0.33);
+}
+.msgbox-box.warning .msgbox-content::before {
+	content: "\f071";
+	color: #ffb40b;
+}
+.msgbox-box.warning::before {
+	color: #ffb40b;
+}
+
+.msgbox-box.error {
+	border: 1px solid rgba(241, 6, 6, 0.81);
+    background-color: rgba(220, 17, 1, 0.16);
+    box-shadow: 0px 0px 2px #ff0303;
+}
+.msgbox-box.error:hover {
+	background-color: rgba(220, 17, 1, 0.33);
+}
+.msgbox-box.error .msgbox-content::before {
+	content: "\f057";
+	color: #ff0303;
+}
+.msgbox-box.error::before {
+	color: #ff0303;
+}

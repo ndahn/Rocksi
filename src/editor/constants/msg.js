@@ -12,3 +12,8 @@ Msg['SAVE'] = "\u{1F847} Programm speichern";
 Msg['DUPLICATE_BLOCK'] = "\u25D0 Klonen";
 Msg['COLLAPSE_BLOCK'] = "\u25F2 Reduzieren";
 Msg['EXPAND_BLOCK'] = "\u29C9 Erweitern";
+
+Msg['EXEC_ERROR'] = "Programmfehler";
+Msg['EXEC_SUCCESS'] = "Programm abgeschlossen";
+Msg['EMPTY_PROGRAM'] = "Leeres Programm";
+Msg['SEE_CONSOLE'] = "Weitere Details sind in der Konsole (F12).";

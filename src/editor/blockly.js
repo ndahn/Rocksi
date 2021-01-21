@@ -19,6 +19,8 @@ import './constants/msg'
 import './constants/colors'
 import './constants/params'
 
+import { popInfo, popWarning, popError } from '../alert'
+
 const generator = Blockly.JavaScript;
 generator.STATEMENT_PREFIX = 'highlightBlock(%1);\n'
 generator.addReservedWords('highlightBlock');
@@ -172,6 +174,10 @@ const runButton = document.querySelector('.run-button');
 runButton.onclick = function () {
     runButton.classList.toggle('running');
     if (runButton.classList.contains('running')) {
+        if (workspace.getTopBlocks(false).length == 0) {
+            popWarning(Blockly.Msg['EMPTY_PROGRAM'] || "Empty program");
+        }
+
         runProgram();
     }
     else {
@@ -250,8 +256,14 @@ function runProgram() {
 function step() {
     let block = executionContext.nextBlock();
     if (block) {
-        runBlock(block);
-        // Our robot command blocks will use a callback to continue execution
+        try {
+            runBlock(block);
+        }
+        catch (e) {
+            onProgramError(e);
+        }
+        // Command blocks with deferredStep will use a callback to continue execution, 
+        // otherwise we have to trigger the next block here.
         if (!block.deferredStep) {
             step();
         }
@@ -286,6 +298,14 @@ function runBlock(block) {
     executionContext.interpreter.run();
 }
 
+function onProgramError(e) {
+    workspace.highlightBlock(null);
+    runButton.classList.remove('running');
+    console.error('Program execution failed: ' + e);
+    popError(e + '\n'
+        + (Blockly.Msg['SEE_CONSOLE'] || 'Please see the console (F12) for additional details.'));
+}
+
 function onProgramFinished() {
     // The generator may add some finalizing code in generator.finish(code), but if we 
     // got this far it is most likely not required. Previous commit has a version executing
@@ -293,4 +313,5 @@ function onProgramFinished() {
     workspace.highlightBlock(null);
     runButton.classList.remove('running');
     console.log('Execution finished');
+    popInfo(Blockly.Msg['EXEC_SUCCESS'] || "Program finished");
 }
