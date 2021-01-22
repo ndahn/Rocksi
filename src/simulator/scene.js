@@ -73,6 +73,7 @@ loadRobotModel(robot.xacro)
 		}
 
 		initScene();
+		$('.loading-message').hide();
 		
 		ik = new IKSolver(scene, robot);
 		Simulation.init(robot, ik, ikRender);

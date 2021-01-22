@@ -6,29 +6,40 @@
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="./css/main.css">
 		<link type="text/css" rel="stylesheet" href="./css/alerts.css">
+		<link type="text/css" rel="stylesheet" href="./css/blockly.css">
+		<link type="text/css" rel="stylesheet" href="./css/viewport.css">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
 	</head>
 	<body>
 		<div class="main-container">
-			
+			<button id="blocks-btn" class="tab-label">
+				<i class="fas fa-code-branch"></i>
+				<!-- <i class="fas fa-shapes"></i> -->
+				<!-- <i class="fas fa-project-diagram"></i> -->
+			</button>
 			<div id="split-pane-1" class="split blocks-container">
 				<xml id="blocks-toolbox" style="display: none">
-					<block type="move"></block>
-					<block type="joint_space_pose"></block>
-					<block type="task_space_pose"></block>
-					<block type="default_pose"></block>
-					<block type="gripper_open"></block>
-					<block type="gripper_close"></block>
-					<block type="joint_absolute"></block>
-					<block type="joint_relative"></block>
-					<block type="set_speed"></block>
-					<block type="joint_lock"></block>
-					<block type="joint_unlock"></block>
+					<category name="R">
+						<block type="move"></block>
+						<block type="joint_space_pose"></block>
+						<block type="task_space_pose"></block>
+						<block type="default_pose"></block>
+						<block type="gripper_open"></block>
+						<block type="gripper_close"></block>
+						<block type="joint_absolute"></block>
+						<block type="joint_relative"></block>
+						<block type="set_speed"></block>
+						<block type="joint_lock"></block>
+						<block type="joint_unlock"></block>
+					</category>
 				</xml>
 				<div id="blocks-canvas"></div>
 			</div>
 
+			<button id="viewport-btn" class="tab-label">
+				<i class="fas fa-cubes"></i>
+			</button>
 			<div id="split-pane-2" class="split sim-container">
 				<div class="loading-message">
 					<h3>Lade Roboter...</h3>
@@ -39,10 +50,21 @@
 				</button>
 			</div>
 
+			<button id="tutorial-btn" class="tab-label">
+				<i class="far fa-life-ring"></i>
+				<!-- <i class="far fa-handshake"></i> -->
+			</button>
+			<div id="overlay"></div>
+
+			<button id="about-btn" class="tab-label">
+				<i class="fas fa-info-circle"></i>
+				<!-- <i class="fas fa-question-circle"></i> -->
+			</button>
+			<div id="about"></div>
+			
+			<div id="msgbox-area" class="msgbox-area"></div>
+
 			<script src="src/index.js"></script>
 		</div>
-
-		<div id="msgbox-area" class="msgbox-area"></div>
-		<div id="overlay"></div>
 	</body>
 </html>

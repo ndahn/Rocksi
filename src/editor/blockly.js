@@ -41,6 +41,7 @@ var workspace = Blockly.inject(
     {
         toolbox: document.getElementById('blocks-toolbox'),
         renderer: 'geras',
+        horizontalLayout: false,
         grid: {
             spacing: 20,
             length: 3,
