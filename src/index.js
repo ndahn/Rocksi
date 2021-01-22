@@ -35,6 +35,17 @@ $('#viewport-btn').on('click', evt => {
     }
 });
 
+$('#tutorial-btn').on('click', evt => {
+
+});
+
+$('#about-btn').on('click', evt => {
+    $('#about-lightbox').show();
+});
+$('#about-lightbox').on('click', evt => {
+    $('#about-lightbox').hide();
+});
+
 
 import './simulator/scene'
 import './editor/blockly'

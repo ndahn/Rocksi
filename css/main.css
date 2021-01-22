@@ -6,6 +6,10 @@ body {
 	overscroll-behavior: none;
 }
 
+a {
+	color: steelblue;
+}
+
 .main-container {
 	display: flex;
 	flex-direction: row;
@@ -87,3 +91,4 @@ body {
 	background-color: rgba(0, 0, 0, 0.5);
 	z-index: 99;
 }
+

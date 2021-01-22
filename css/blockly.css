@@ -14,7 +14,7 @@
 /* Category label */
 .blocklyTreeRow {
 	margin: 3px;
-	padding: 10px !important;
+	padding: 20px !important;
 	color: rgb(85, 119, 238);
 	background-color: transparent !important;
 	cursor: pointer;
@@ -31,7 +31,7 @@
 #blockly-0::after {
 	content: '\f12e';
 	font-family: 'Font Awesome 5 Free';
-	font-size: 1.8em;
+	font-size: 2.2em;
 	font-weight: bold;
 }
 
@@ -50,6 +50,7 @@
 /* Toolbox container */
 .blocklyFlyout {
 	border: #aaa 2px dashed;
+	border-radius: 10px;
 	box-sizing: border-box;
 	height: calc(100% - 10px);
 	top: 5px;

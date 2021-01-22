@@ -81,7 +81,7 @@
     box-shadow: 0px 0px 2px #0396ff;
 }
 .msgbox-box.info:hover {
-	background-color: rgba(7, 73, 149, 0.35);
+	background-color: rgba(38, 59, 82, 0.9);
 }
 .msgbox-box.info .msgbox-content::before {
 	content: "\f05a";
@@ -97,7 +97,7 @@
     box-shadow: 0px 0px 2px #ffb103;
 }
 .msgbox-box.warning:hover {
-	background-color: rgba(220, 128, 1, 0.33);
+	background-color: rgba(148, 88, 4, 0.9);
 }
 .msgbox-box.warning .msgbox-content::before {
 	content: "\f071";
@@ -113,7 +113,7 @@
     box-shadow: 0px 0px 2px #ff0303;
 }
 .msgbox-box.error:hover {
-	background-color: rgba(220, 17, 1, 0.33);
+	background-color: rgba(117, 15, 7, 0.9);
 }
 .msgbox-box.error .msgbox-content::before {
 	content: "\f057";

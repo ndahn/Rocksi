@@ -8,6 +8,7 @@
 		<link type="text/css" rel="stylesheet" href="./css/alerts.css">
 		<link type="text/css" rel="stylesheet" href="./css/blockly.css">
 		<link type="text/css" rel="stylesheet" href="./css/viewport.css">
+		<link type="text/css" rel="stylesheet" href="./css/about.css">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
 	</head>
@@ -56,11 +57,22 @@
 			</button>
 			<div id="overlay"></div>
 
-			<button id="about-btn" class="tab-label">
+			<button id="about-btn" class="tab-label" href="#about-lightbox">
 				<i class="fas fa-info-circle"></i>
 				<!-- <i class="fas fa-question-circle"></i> -->
 			</button>
-			<div id="about"></div>
+			<div id="about-lightbox">
+				<div class="about-box">
+					<a href="https://www.robokind.de" target="_blank">
+						<img class="about-logo" src="assets/images/robokind_logo_white.png">
+					</a>
+					<div class="about-info">
+						&copy; Robokind 2021<br>
+						Code: <a href="https://github.com/ndahn/" target="_blank">Nikolas Dahn</a><br>
+						<a href="https://www.robokind.de" target="_blank">www.robokind.de</a>
+					</div>
+				</div>
+			</div>
 			
 			<div id="msgbox-area" class="msgbox-area"></div>
 
