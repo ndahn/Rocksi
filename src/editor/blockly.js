@@ -61,11 +61,33 @@ var workspace = Blockly.inject(
             scaleSpeed: 1.1,
             pinch: true
         },
+        trashcan: false,
+        collapse: false,
+        disable: true,
     });
 
-// Will be used for updating the joint/task state block
-//var toolbox = workspace.getToolbox();
 
+// Blockly is not using parenting for its HTML code, so we have to do some manual adjustments. 
+// TODO For some reason there is a second toolboxFlyout that is never used -> blockly bug?
+var toolboxFlyout = $('.blocklyFlyout');
+var toolboxScrollbar = $('.blocklyFlyoutScrollbar');
+
+toolboxFlyout.each((idx, element) => {
+    var observer = new MutationObserver((mutations, observer) => {
+        let flyout = $(element);
+        if (flyout.css('display') !== 'none') {
+            let scrollbarX = parseInt(flyout.css('left')) + flyout.width() - toolboxScrollbar.width() + 2;
+            toolboxScrollbar.css(
+                'transform',
+                'translate(' + scrollbarX + 'px, 2.5px)');
+            // observer.disconnect();
+        }
+    });
+    observer.observe(element, { attributes: true });
+});
+
+
+// React to resize events
 var onresize = function() {
     // Compute the absolute coordinates and dimensions of blocklyArea.
     var element = blocklyArea;
@@ -92,6 +114,7 @@ onresize();
 Blockly.svgResize(workspace);
 
 
+// Right click menu item for exporting the workspace
 var contextSaveWorkspace = {
     displayText: function () {
         return Blockly.Msg['SAVE'] || 'Save workspace';
@@ -123,6 +146,7 @@ var contextSaveWorkspace = {
     weight: 99,
 };
 
+// Right click menu item for loading a workspace
 var contextLoadWorkspace = {
     displayText: function () {
         return Blockly.Msg['LOAD'] || 'Load workspace';
@@ -168,8 +192,7 @@ Blockly.ContextMenuRegistry.registry.register(contextLoadWorkspace);
 Blockly.ContextMenuRegistry.registry.register(contextSaveWorkspace);
 
 
-
-// Setup the run button
+// Run button
 const runButton = document.querySelector('.run-button');
 
 runButton.onclick = function () {
@@ -192,7 +215,7 @@ runButton.onclick = function () {
 };
 
 
-// Get simulation instance
+// Get simulation instance - this is the interface to our 3D robot
 var simulation = null;
 
 Simulation.getInstance(sim => {
@@ -222,6 +245,7 @@ function simulationAPI(interpreter, globalObject) {
 }
 
 
+// Keeps track of program execution (i.e. which block we're on)
 class ExecutionContext {
     constructor(blocks, interpreter) {
         this.blocks = blocks
@@ -302,9 +326,9 @@ function runBlock(block) {
 function onProgramError(e) {
     workspace.highlightBlock(null);
     runButton.classList.remove('running');
-    console.error('Program execution failed: ' + e);
+    console.error('Program execution failed: ', e);
     popError(e + '\n'
-        + (Blockly.Msg['SEE_CONSOLE'] || 'Please see the console (F12) for additional details.'));
+        + (Blockly.Msg['SEE_CONSOLE'] || 'See console for additional details.'));
 }
 
 function onProgramFinished() {

@@ -10,8 +10,12 @@ Msg['LOAD'] = "\u{1F845} Programm laden";
 Msg['SAVE'] = "\u{1F847} Programm speichern";
 
 Msg['DUPLICATE_BLOCK'] = "\u25D0 Klonen";
+Msg['ADD_COMMENT'] = "\u201A\u2018 Kommentar";
+Msg['REMOVE_COMMENT'] = "\u2425 Kommentar löschen"; // 007F
 Msg['COLLAPSE_BLOCK'] = "\u25F2 Reduzieren";
 Msg['EXPAND_BLOCK'] = "\u29C9 Erweitern";
+Msg['DISABLE_BLOCK'] = "\u{1F7A9} Deaktivieren";
+Msg['ENABLE_BLOCK'] = "\u{1F7BB} Aktivieren";
 
 Msg['EXEC_ERROR'] = "Programmfehler";
 Msg['EXEC_SUCCESS'] = "Programm abgeschlossen";
