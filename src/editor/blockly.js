@@ -77,10 +77,7 @@ toolboxFlyout.each((idx, element) => {
         let flyout = $(element);
         if (flyout.css('display') !== 'none') {
             let scrollbarX = parseInt(flyout.css('left')) + flyout.width() - toolboxScrollbar.width() + 2;
-            toolboxScrollbar.css(
-                'transform',
-                'translate(' + scrollbarX + 'px, 2.5px)');
-            // observer.disconnect();
+            toolboxScrollbar.css('transform', 'translate(' + scrollbarX + 'px, 2.5px)');
         }
     });
     observer.observe(element, { attributes: true });
