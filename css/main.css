@@ -75,9 +75,9 @@ a {
 
 
 .loading-message {
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
+	top: 5px;
+	right: 15px;
+	text-align: right;
 	position: absolute;
 	z-index: 0;
 }
