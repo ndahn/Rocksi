@@ -17,6 +17,7 @@
 	display: flex;
 	position: absolute;
 	width: 20%;
+	min-width: 300px;
 	left: 50%;
 	top: 50%;
 	transform: translate(-50%, -50%);

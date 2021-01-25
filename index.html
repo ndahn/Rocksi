@@ -8,6 +8,7 @@
 		<link type="text/css" rel="stylesheet" href="./css/alerts.css">
 		<link type="text/css" rel="stylesheet" href="./css/blockly.css">
 		<link type="text/css" rel="stylesheet" href="./css/viewport.css">
+		<link type="text/css" rel="stylesheet" href="./css/tutorial.css">
 		<link type="text/css" rel="stylesheet" href="./css/about.css">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
@@ -21,7 +22,7 @@
 			</button>
 			<div id="split-pane-1" class="split blocks-container">
 				<xml id="blocks-toolbox" style="display: none">
-					<category name="R">
+					<category name="R" expanded="true">
 						<block type="move"></block>
 						<block type="joint_space_pose"></block>
 						<block type="task_space_pose"></block>
@@ -51,11 +52,102 @@
 				</button>
 			</div>
 
+
 			<button id="tutorial-btn" class="tab-label">
 				<i class="far fa-life-ring"></i>
 				<!-- <i class="far fa-handshake"></i> -->
 			</button>
-			<div id="overlay"></div>
+			<div id="tutorial-container">
+				<div class="slide-container">
+					<!-- Open/close viewports -->
+					<input class="tutorial-radio" id="tutorial-radio-0" name="tutorial" autocomplete="off" type="radio" checked>
+					<div class="tutorial-slide">
+						<h3>Behalte den Überblick</h3>
+						<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
+							<source data-src="assets/tutorial/tutorial_panels.mp4" type="video/mp4">
+						</video>
+						<p>Über das Menü links kannst du schnell zwischen den Ansichten wechseln.</p>
+					</div>
+
+					<!-- Viewport resize -->
+					<input class="tutorial-radio" id="tutorial-radio-1" name="tutorial" autocomplete="off" type="radio">
+					<div class="tutorial-slide">
+						<h3>Für Individualisten</h3>
+						<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
+							<source data-src="assets/tutorial/tutorial_resize.mp4" type="video/mp4">
+						</video>
+						<p>Mit dem Mittelbalken kannst die Ansichten natürlich auch anders aufteilen.</p>
+					</div>
+
+					<!-- Moving in 3D -->
+					<input class="tutorial-radio" id="tutorial-radio-2" name="tutorial" autocomplete="off" type="radio">
+					<div class="tutorial-slide">
+						<h3>Voll im Bilde</h3>
+						<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
+							<source data-src="assets/tutorial/tutorial_viewport.mp4" type="video/mp4">
+						</video>
+						<p class="desktop-only">Mit Links- und Rechtsklick drehst du dir die Welt, wie sie dir gefällt.</p>
+						<p class="mobile-only">Mit den gewohnten Touch-Gesten findest du jedes Detail.</p>
+					</div>
+
+					<!-- Controlling the robot -->
+					<input class="tutorial-radio" id="tutorial-radio-3" name="tutorial" autocomplete="off" type="radio">
+					<div class="tutorial-slide">
+						<h3>Handzahm</h3>
+						<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
+							<source data-src="assets/tutorial/tutorial_robot.mp4" type="video/mp4">
+						</video>
+						<p>Den Roboter kannst du direkt in der 3D-Ansicht bewegen. Mithilfe der farbigen Ebenen schränkst du die Bewegung des Roboters ein.</p>
+					</div>
+
+					<!-- Programming with blocks -->
+					<input class="tutorial-radio" id="tutorial-radio-4" name="tutorial" autocomplete="off" type="radio">
+					<div class="tutorial-slide">
+						<h3>Das Leben ist ein Puzzle-Spiel</h3>
+						<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
+							<source data-src="assets/tutorial/tutorial_programming.mp4" type="video/mp4">
+						</video>
+						<p>Klicke auf das Puzzleteil um dir aus den Bausteinen ein Programm für den Roboter zusammenzubauen.</p>
+					</div>
+					
+					<!-- Context menu -->
+					<input class="tutorial-radio" id="tutorial-radio-5" name="tutorial" autocomplete="off" type="radio">
+					<div class="tutorial-slide">
+						<h3>Aus dem Kontext gerissen</h3>
+						<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
+							<source data-src="assets/tutorial/tutorial_context.mp4" type="video/mp4">
+						</video>
+						<p>Das Kontext-Menü gibt dir weitere Optionen. Außerdem kannst du so deine Programme speichern und laden.</p>
+					</div>
+
+					<!-- Executing a program -->
+					<input class="tutorial-radio" id="tutorial-radio-6" name="tutorial" autocomplete="off" type="radio">
+					<div class="tutorial-slide">
+						<h3>You better run</h3>
+						<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
+							<source data-src="assets/tutorial/tutorial_execution.mp4" type="video/mp4">
+						</video>
+						<p>Um ein Programm auszuführen klickst du in der 3D-Ansicht auf den Play-Button.</p>
+					</div>
+
+					<!-- Further reading -->
+					<input class="tutorial-radio" id="tutorial-radio-7" name="tutorial" autocomplete="off" type="radio">
+					<div class="tutorial-slide">
+						<h3>Der Roboterführerschein</h3>
+						<a href="https://www.robotikschulungen.de" target="_blank">
+							<img class="tutorial-media" src="https://robokind.de/wp-content/uploads/2020/10/RoFue_Collage_technologieoffen2-768x432.jpg">
+						</a>
+						<p>
+							Du möchtest noch mehr wissen oder dir war etwas unklar? Dann mach doch unseren kostenlosen 
+							<a href="https://www.robotikschulungen.de" target="_blank">Roboterführerschein</a>!
+						</p>
+					</div>
+					
+					<div id="tutorial-close-btn">&#128937;</div>
+				</div>
+
+			</div>
+
 
 			<button id="about-btn" class="tab-label" href="#about-lightbox">
 				<i class="fas fa-info-circle"></i>
@@ -67,7 +159,7 @@
 						<img class="about-logo" src="assets/images/robokind_logo_white.png">
 					</a>
 					<div class="about-info">
-						&copy; Robokind 2021<br>
+						Rocksi &copy; Robokind 2021<br>
 						Code: <a href="https://github.com/ndahn/" target="_blank">Nikolas Dahn</a><br>
 						<a href="https://www.robokind.de" target="_blank">www.robokind.de</a>
 					</div>

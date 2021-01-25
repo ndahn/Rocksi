@@ -1,0 +1,117 @@
+#tutorial-container {
+	display: none;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.9);
+	z-index: 99;
+	padding: 10px 20px 10px 20px;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+#tutorial-close-btn {
+	cursor: pointer;
+	position: absolute;
+	top: -0.5em;
+	right: 10px;
+	font-size: 2em;
+}
+
+.slide-container {
+    /* Applying transforms here instead of the slide-class prevents creating new 
+       stacking contexts which mess up our prev/next controls */
+    position: absolute;
+    width: 70%;
+	height: 70%;
+    top: 50%;
+	left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.tutorial-radio {
+	display: inline-block;
+	position: relative;
+    font-size: 0.75em;
+	width: 1em;
+	height: 1em;
+    background: transparent;
+    border: 1px solid white;
+	border-radius: 1em;
+    appearance: none;
+    cursor: pointer;
+	transition: 0.2s ease-out background, 0.2s ease-out transform;
+}
+
+.tutorial-radio:checked {
+	background: white;
+	outline: none;
+	transform: scale(1.3);
+}
+
+.tutorial-slide {
+	opacity: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    line-height: 1.5;
+	transition: 0.3s ease-out opacity;
+}
+
+.tutorial-slide .tutorial-media {
+    height: 70%;
+    background-color: black;
+}
+
+.tutorial-slide label {
+	display: none;
+	width: 10%;
+	height: 70%;
+	position: absolute;
+	top: 15%;
+    bottom: 0;
+    z-index: 99;  /* Must all be on the same z level! */
+	cursor: pointer;
+	color: transparent;
+}
+/*
+.tutorial-slide label:not[opacity=0] {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+*/
+.tutorial-slide label::after {
+	font-size: 2em;
+	color: #fff;
+	display: block;
+	position: absolute;
+	top: 50%;
+	margin-top: -0.5em;
+}
+
+.tutorial-slide label:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.tutorial-slide label.prev {
+    left: 0;
+    display: block;
+}
+.tutorial-slide label.prev::after {
+    content: "\276E";
+    left: 10px;
+}
+
+.tutorial-slide label.next {
+    right: 0;
+    display: block;
+}
+
+.tutorial-slide label.next::after {
+    content: "\276F";
+    right: 10px;
+}
+
+.tutorial-radio:checked + .tutorial-slide {
+	opacity: 1;
+}

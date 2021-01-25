@@ -1,4 +1,5 @@
 import Split from 'split.js'
+import lozad from 'lozad'
 
 // Split panes
 Split(['#split-pane-1', '#split-pane-2'], {
@@ -16,6 +17,7 @@ let animDuration = 200;
 let targetRatio = 50;
 if (document.body.clientWidth < 768) {
     targetRatio = 100;
+    // If not hidden the initial expansion will not work correctly
     $('#split-pane-2').hide();
     $('#split-pane-1').css('width', '100%');
 }
@@ -48,8 +50,38 @@ $('#viewport-btn').on('click', evt => {
     }
 });
 
-$('#tutorial-btn').on('click', evt => {
 
+// Add prev/next buttons to each tutorial slide
+let slides = $('#tutorial-container .tutorial-slide');
+slides.each((idx, elem) => {
+    let prev = (idx === 0) ? slides.length - 1 : idx - 1;
+    let next = (idx === slides.length - 1) ? 0 : idx + 1;
+
+    // <label for="tutorial-radio-1" class="prev"></label>
+    let prevLabel = document.createElement('label');
+    prevLabel.setAttribute('for', 'tutorial-radio-' + prev);
+    prevLabel.classList.add('prev');
+
+    // <label for="tutorial-radio-3" class="prev"></label>
+    let nextLabel = document.createElement('label');
+    nextLabel.setAttribute('for', 'tutorial-radio-' + next);
+    nextLabel.classList.add('next');
+
+    elem.appendChild(prevLabel);
+    elem.appendChild(nextLabel);
+});
+
+$('#tutorial-btn').on('click', evt => {
+    $('#tutorial-container').show();
+});
+$('#tutorial-close-btn').on('click', evt => {
+    $('#tutorial-container').hide();
+    $('.tutorial-slide video').each((idx, video) => {
+        // Unload the video to save some resources
+        video.pause();
+        video.removeAttribute('src');
+        video.load();
+    });
 });
 
 $('#about-btn').on('click', evt => {
@@ -58,6 +90,11 @@ $('#about-btn').on('click', evt => {
 $('#about-lightbox').on('click', evt => {
     $('#about-lightbox').hide();
 });
+
+
+// Lazy loads everything with css class 'lozad', e.g. tutorial videos
+const lazyObserver = lozad();
+lazyObserver.observe();
 
 
 import './simulator/scene'

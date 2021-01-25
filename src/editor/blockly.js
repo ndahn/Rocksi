@@ -66,6 +66,9 @@ var workspace = Blockly.inject(
         disable: true,
     });
 
+// Open the toolbox and keep it open
+//workspace.getToolbox().getFlyout().autoClose = false;
+//$('blockly-0').click();
 
 // Blockly is not using parenting for its HTML code, so we have to do some manual adjustments. 
 // TODO For some reason there is a second toolboxFlyout that is never used -> blockly bug?

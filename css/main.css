@@ -92,3 +92,15 @@ a {
 	z-index: 99;
 }
 
+
+@media (hover: none) and (pointer: coarse) {
+	.desktop-only {
+		display: none;
+	}
+}
+
+@media (hover: hover) {
+	.mobile-only {
+		display: none;
+	}
+}
