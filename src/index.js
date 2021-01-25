@@ -92,6 +92,13 @@ $('#about-lightbox').on('click', evt => {
 });
 
 
+// Hide the first time hint on the first click anywhere
+$('body').on('click.first-time-hint', evt => {
+    $('#first-time-hint').hide();
+    $(this).off('click.first-time-hint');
+});
+
+
 // Lazy loads everything with css class 'lozad', e.g. tutorial videos
 const lazyObserver = lozad();
 lazyObserver.observe();

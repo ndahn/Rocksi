@@ -57,6 +57,17 @@ a {
 	background-color: yellowgreen;
 }
 
+#first-time-hint {
+	position: absolute;
+	color: deeppink;
+	text-shadow: 1px 1px 2px black;
+	font-size: 2em;
+	left: 1em;
+	animation: note-me-bounce 2s ease infinite;
+	transform-origin: left;
+}
+
+
 #about-btn {
 	top: 75%;
 	background-color: slategrey;
@@ -93,14 +104,23 @@ a {
 }
 
 
+.mobile-only {
+	display: none;
+}
+
 @media (hover: none) and (pointer: coarse) {
 	.desktop-only {
 		display: none;
 	}
 }
 
-@media (hover: hover) {
-	.mobile-only {
-		display: none;
-	}
+
+@keyframes note-me-bounce {
+	0%   { transform: scale(1,1)      translateX(0); }
+	10%  { transform: scale(.9,1.1)   translateX(0); }
+	30%  { transform: scale(1.1,.9)   translateX(.7em); }
+	50%  { transform: scale(1.05,.95) translateX(0); }
+	57%  { transform: scale(1,1)      translateX(.1em); }
+	64%  { transform: scale(1,1)      translateX(0); }
+	100% { transform: scale(1,1)      translateX(0); }
 }

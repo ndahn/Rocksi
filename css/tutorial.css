@@ -7,7 +7,7 @@
 	z-index: 99;
 	padding: 10px 20px 10px 20px;
     box-sizing: border-box;
-    user-select: none;
+	user-select: none;
 }
 
 #tutorial-close-btn {
@@ -24,9 +24,8 @@
     position: absolute;
     width: 70%;
 	height: 70%;
-    top: 50%;
-	left: 50%;
-    transform: translate(-50%, -50%);
+    top: 5%;
+	left: 15%;
 }
 
 .tutorial-radio {
@@ -59,8 +58,13 @@
 	transition: 0.3s ease-out opacity;
 }
 
+.tutorial-slide[opacity="0"] {
+	display: none;
+}
+
 .tutorial-slide .tutorial-media {
-    height: 70%;
+	max-height: 70%;
+	max-width: 100%;
     background-color: black;
 }
 
