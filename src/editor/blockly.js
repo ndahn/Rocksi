@@ -256,7 +256,7 @@ function simulationAPI(interpreter, globalObject) {
         interpreter.createNativeFunction(wrapper));
     
     wrapper = function(command, ...args) {
-        return simulation.runAsync(step, command, ...args);
+        return simulation.runAsync(step, onProgramError, command, ...args);
     }
     interpreter.setProperty(globalObject, 'simulateAsync',
         interpreter.createNativeFunction(wrapper));

@@ -36,7 +36,7 @@
 }
 
 .msgbox-content::before {
-	margin-right: .7em;
+	margin: auto .7em auto 0;
 	font-family: 'Font Awesome 5 Free';
 	font-size: 1em;
 	font-weight: bold;
@@ -52,6 +52,7 @@
 }
 
 .msgbox-content {
+	display: flex;
 	flex-shrink: 1;
 }
 

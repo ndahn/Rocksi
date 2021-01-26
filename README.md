@@ -5,6 +5,8 @@ Rocksi is a robot simulator that runs entirely in (modern) web browsers with abs
 
 In time I plan to add more robots and blocks (suggestions?), but for now I decided to use the [Franka Emika](https://franka.de/) robot.
 
+A running version can be found **[here](https://robotikschulungen.de/rocksi)**!
+
 
 ## License
 Rocksi is distributed under the very permissive MIT license, which basically states that you can do with it whatever you want! Check out the LICENSE file for further details.
@@ -31,7 +33,7 @@ Despite these major advancements, to the average person robots stay elusive and 
 * they are expensive and hard to come by
 * the knowledge and tech that makes them move is non-trivial and inaccessible
 
-To this end many schools throughout the world have started adding robotics to their curricula. However, their expensive nature gave rise to a new problem: at classes of 20-40 students, how can every student work with the robot if the school can't afford to spend hundreds of thousands of dollars? This is where Rocksi comes in!
+To this end many schools throughout the world have started adding robotics to their curricula. However, their expensive nature gave rise to a new problem: at classes of 20-40 students, how can every student work with the robot if the school can't afford to spend hundreds of thousands of euros? This is where Rocksi comes in!
 
 
 ## Further Reading

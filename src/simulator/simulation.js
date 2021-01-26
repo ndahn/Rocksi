@@ -63,7 +63,7 @@ class TheSimulation {
         }
     }
 
-    runAsync(finishCallback, command, ...args) {
+    runAsync(finishCallback, errorCallback, command, ...args) {
         let p = new Promise((resolve, reject) => {
             try {
                 this.run(command, resolve, reject, ...args);
@@ -76,6 +76,8 @@ class TheSimulation {
         p.then(msg => {
             console.log(command + '(' + args + '):' + msg);
             finishCallback();
+        }).catch(e => {
+            errorCallback(e)
         });
     }
 
@@ -188,6 +190,11 @@ class TheSimulation {
 
 
     move(resolve, reject, pose) {
+        if (!pose) {
+            reject('move failed: missing pose');
+            return;
+        }
+
         // Seems to be a weird bug in js-interpreter concerning varargs and arrays
         if (pose.class === 'Array' && pose.length === undefined) {
             let newPose = [];
