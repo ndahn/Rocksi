@@ -19,7 +19,9 @@ To this end many schools throughout the world have started adding robotics to th
 ## Robokind
 Rocksi is developed as part of my work at [Robokind](https://www.robokind.de), a non-profit foundation that strives to make robots more accessible to the general public. Check them out, they are nice! 
 
-![Robokind](https://robokind.de/wp-content/uploads/2020/10/cropped-Logo_Robokind_black_600x134.png)
+<a href="https://robokind.de" target="_blank">
+  <img src="https://robokind.de/wp-content/uploads/2020/10/cropped-Logo_Robokind_black_600x134.png" width="250" alttext="Robokind Logo">
+</a>
 
 
 ## Further Reading
@@ -38,6 +40,4 @@ npm run [dev|build]
 ```
 
 This will also start a local parcel webserver serving Rocksi. Especially when running in `build` mode, check the `scripts` section in package.json as it may contain some settings that influence the build process.
-
-
 
