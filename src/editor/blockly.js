@@ -114,6 +114,21 @@ onresize();
 Blockly.svgResize(workspace);
 
 
+// Blockly does not open context menus on long presses, so we provide an alternative
+if (window.matchMedia('(hover: none)')) {
+    $('#blockly-mobile-menu').on('click', evt => {
+        console.log(Blockly.selected)
+        if (Blockly.selected !== null) {
+            console.log('block');
+            workspace.getBlockById(Blockly.selected.id).showContextMenu(evt);
+        } else {
+            console.log('workspace')
+            workspace.showContextMenu(evt);
+        }
+    });
+}
+
+
 // Right click menu item for exporting the workspace
 var contextSaveWorkspace = {
     displayText: function () {
