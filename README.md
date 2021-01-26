@@ -20,3 +20,17 @@ To this end many schools throughout the world have started adding robotics to th
 
 ## Further Reading
 If you speak German and want to learn more about robotics, Robokind offers several free courses such as the **Roboterführerschein** (robots driving license) on their [Moodle platform](https://robotikschulungen.de). Feel free to check it out!
+
+
+## Building
+You will need [npm](https://www.npmjs.com/) or any other package manager that can handle `package.json` files to build this project. First install the dependencies by running the following command in the project's root directory:
+```
+npm install
+```
+
+Afterwards you can build the project in development or build mode by running
+```
+npm run [dev|build]
+```
+
+This will also start a local parcel webserver serving Rocksi. Especially when running in `build` mode, check the `scripts` section in package.json as it may contain some settings that influence the build process.
