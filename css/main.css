@@ -42,24 +42,30 @@ a {
 	filter: brightness(120%);
 }
 
+/* Palette: https://coolors.co/f9c80e-f86624-ea3546-662e9b-43bccd */
 #blocks-btn {
 	top: 0%;
-	background-color: deepskyblue;
+	background-color: #F9C80E;
 }
 
 #viewport-btn {
 	top: 25%;
-	background-color: lightseagreen;
+	background-color: #F86624;
 }
 
 #tutorial-btn {
 	top: 50%;
-	background-color: yellowgreen;
+	background-color: #EA3546;
+}
+
+#about-btn {
+	top: 75%;
+	background-color: #662E9B;
 }
 
 #first-time-hint {
 	position: absolute;
-	color: deeppink;
+	color: #EA3546;  /* deeppink */
 	text-shadow: 1px 1px 2px black;
 	font-size: 2em;
 	left: 1em;
@@ -67,11 +73,6 @@ a {
 	transform-origin: left;
 }
 
-
-#about-btn {
-	top: 75%;
-	background-color: slategrey;
-}
 
 
 .gutter.gutter-horizontal {

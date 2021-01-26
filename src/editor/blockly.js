@@ -1,7 +1,14 @@
-import * as Blockly from "blockly"
-import "blockly/blockly_compressed"
-import "blockly/javascript_compressed"
-import 'blockly/msg/de'
+import * as Blockly from 'blockly/core'
+import 'blockly/blocks'
+import 'blockly/javascript'
+import * as BlocklyDE from 'blockly/msg/de'
+
+import * as BlocklyDECustom from './constants/msg'
+import './constants/colors'
+import './constants/params'
+
+Blockly.setLocale(BlocklyDE);
+Blockly.setLocale(BlocklyDECustom);
 
 import './blocks/move'
 import './blocks/joint_space_pose'
@@ -14,10 +21,6 @@ import './blocks/joint_relative'
 import './blocks/set_speed'
 import './blocks/joint_lock'
 import './blocks/joint_unlock'
-
-import './constants/msg'
-import './constants/colors'
-import './constants/params'
 
 import { popInfo, popWarning, popError } from '../alert'
 
