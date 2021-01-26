@@ -6,6 +6,10 @@ Rocksi is a robot simulator that runs entirely in (modern) web browsers with abs
 In time I plan to add more robots and blocks (suggestions?), but for now I decided to use the [Franka Emika](https://franka.de/) robot.
 
 
+## License
+Rocksi is distributed under the very permissive MIT license, which basically states that you can do with it whatever you want! Check out the LICENSE file for further details.
+
+
 ## Building
 You will need [npm](https://www.npmjs.com/) or any other package manager that can handle `package.json` files to build this project. First install the dependencies by running the following command in the project's root directory:
 ```
