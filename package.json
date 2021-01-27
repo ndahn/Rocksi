@@ -37,8 +37,8 @@
   "staticFiles": {
     "staticPath": "assets",
     "excludeGlob": [
-      "models/tutorial",
-      "models/tutorial/**"
+      "tutorial",
+      "tutorial/**"
     ]
   }
 }

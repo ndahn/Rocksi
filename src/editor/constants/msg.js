@@ -20,4 +20,4 @@ Msg['ENABLE_BLOCK'] = "\u{1F7BB} Aktivieren";
 Msg['EXEC_ERROR'] = "Programmfehler";
 Msg['EXEC_SUCCESS'] = "Programm abgeschlossen";
 Msg['EMPTY_PROGRAM'] = "Leeres Programm";
-Msg['SEE_CONSOLE'] = "Weitere Details sind in der Konsole (F12).";
+Msg['SEE_CONSOLE'] = "Weitere Details sind in der Konsole.";
