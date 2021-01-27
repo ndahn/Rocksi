@@ -1,7 +1,8 @@
 import {
 	Object3D,
-	LoaderUtils,
+	Vector3,
     Scene,
+	LoaderUtils,
     WebGLRenderer,
 	PerspectiveCamera,
 	GridHelper,
@@ -16,7 +17,8 @@ import {
 	Geometry,
 	Line,
 	LineBasicMaterial,
-	Vector3,
+	Raycaster,
+	Vector2,
 } from "three";
 
 // In ROS models Z points upwards
@@ -52,10 +54,14 @@ switch (selectedRobot.toLowerCase()) {
 
 let container;
 let camera, scene, renderer;
+let raycaster;
+let mouseXY = new Vector2();
 
 let tcptarget, groundLine;
 let transformControl;
 let ik;
+
+const canHover = window.matchMedia('(hover: hover)').matches;
 
 //loadCached('robots', './models/export/franka_description.zip')
 //    .then(result => loadRobotModel(result))
@@ -165,8 +171,10 @@ function initScene() {
 
 	// TCP target & controls
 	tcptarget = new Mesh(
-		new SphereGeometry(0.01),
-		new MeshBasicMaterial()
+		new SphereGeometry(2),
+		new MeshBasicMaterial({
+			visible: false
+		})
 	);
 	robot.tcp.object.getWorldPosition(tcptarget.position);
 	scene.add(tcptarget);
@@ -183,13 +191,20 @@ function initScene() {
 	scene.add(groundLine);
 
 	transformControl = new TransformControls(camera, renderer.domElement);
-	transformControl.addEventListener("change", onTargetChange);
-	transformControl.addEventListener("dragging-changed", function (event) {
-		controls.enabled = !event.value;
-	});
+	transformControl.setSize(1.7);
+	transformControl.addEventListener("change", evt => requestAnimationFrame(render));
+	transformControl.addEventListener("objectChange", onTargetChange);
+	transformControl.addEventListener("dragging-changed", evt => controls.enabled = !evt.value);
+
 	// TODO setMode('rotate') on click event
 	transformControl.attach(tcptarget);
 	scene.add(transformControl);
+
+	if (canHover) {
+		transformControl.visible = false;
+		raycaster = new Raycaster();
+		container.addEventListener('mousemove', onMouseMove);
+	}
 
 	let domParent = document.querySelector('.sim-container');
 	new ResizeSensor(domParent, onCanvasResize);
@@ -204,36 +219,56 @@ function onCanvasResize() {
 	requestAnimationFrame(render);
 }
 
+function onMouseMove(evt) {
+	evt.preventDefault();
+	mouseXY.x = (evt.offsetX / container.clientWidth) * 2 - 1;
+	mouseXY.y = -(evt.offsetY / container.clientHeight) * 2 + 1;
+
+	raycaster.setFromCamera(mouseXY, camera);
+	const intersections = raycaster.intersectObjects([tcptarget]);
+	let showTC = intersections.length > 0;
+
+	if (showTC !== transformControl.visible) {
+		transformControl.visible = showTC;
+		requestAnimationFrame(render);
+	}
+}
+
 function onTargetChange() {
 	// Prevent target from going beneath the floor
 	tcptarget.position.z = Math.max(0, tcptarget.position.z);
+	updateGroundLine();
+
+	// Do the IK if the target has been moved
+	ik.solve(
+		tcptarget,
+		robot.tcp.object,
+		robot.ikjoints,
+		{
+			iterations: 1,
+			jointLimits: robot.interactionJointLimits,
+			apply: true
+		}
+	);
 	
-	// Update the ground line's end point
-	const geom = groundLine.geometry;
-	const tcpPositionGround = geom.vertices[geom.vertices.length - 1];
-	tcpPositionGround.copy(tcptarget.position);
-	tcpPositionGround.z = 0;
-	geom.verticesNeedUpdate = true;
-
-	// Do the IK if the target has been moved 
-	// TODO do this ONLY when it moved
-	if (ik && typeof ik.solve === 'function') {
-		ik.solve(
-			tcptarget,
-			robot.tcp.object,
-			robot.ikjoints,
-			{ iterations: 1, jointLimits: robot.interactionJointLimits, apply: true }
-		);
-
-		requestAnimationFrame(render);
-	}
+	// requestAnimationFrame is called in the transformControl's change-listener, 
+	// so we can skip it here
 }
 
 function ikRender() {
 	robot.tcp.object.getWorldPosition(tcptarget.position);
 	robot.tcp.object.getWorldQuaternion(tcptarget.quaternion);
-	
+
+	updateGroundLine();
 	requestAnimationFrame(render);
+}
+
+function updateGroundLine() {
+	const geom = groundLine.geometry;
+	const tcpPositionGround = geom.vertices[geom.vertices.length - 1];
+	tcpPositionGround.copy(tcptarget.position);
+	tcpPositionGround.z = 0;
+	geom.verticesNeedUpdate = true;
 }
 
 function render() {

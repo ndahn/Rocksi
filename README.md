@@ -42,5 +42,5 @@ If you speak German and want to learn more about robotics, Robokind offers sever
 Rocksi is developed as part of my work at [Robokind](https://www.robokind.de), a non-profit foundation that strives to make robots more accessible to the general public. Check them out, they are a nice bunch! 
 
 <a href="https://robokind.de" target="_blank">
-  <img src="https://robokind.de/wp-content/uploads/2020/10/cropped-Logo_Robokind_black_600x134.png" width="250" alttext="Robokind Logo">
+  <img src="assets/images/robokind_logo_black.png" width="250" alttext="Robokind Logo">
 </a>
