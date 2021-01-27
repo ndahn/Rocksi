@@ -31,7 +31,7 @@ class MessageBox {
 		// Content area of the message box
 		msgboxContent.classList.add("msgbox-content");
 		msgboxText.classList.add("msgbox-text");
-		msgboxText.innerText = msg;
+		msgboxText.innerHTML = msg;
 		msgboxContent.appendChild(msgboxText);
 
 		// Close button
@@ -104,19 +104,29 @@ class MessageBox {
 
 			msgboxBox.dispatchEvent(new Event('mouseleave'));
 		}
+
+		return msgboxBox;
 	}
 
 	hide(msgboxBox) {
 		msgboxBox.classList.add("msgbox-box-hide");
+		document.querySelector(this.id).removeChild(msgboxBox);
 	}
 }
 
 
 let msgboxInfo = new MessageBox('#msgbox-area', {
-	closeTime: 4000,
+	closeTime: 0,
 	hideCloseButton: true,
 	closeOnClick: true,
 	csscls: ["info"]
+});
+
+let msgboxSuccess = new MessageBox('#msgbox-area', {
+	closeTime: 4000,
+	hideCloseButton: true,
+	closeOnClick: true,
+	csscls: ["success"]
 });
 
 let msgboxWarning = new MessageBox('#msgbox-area', {
@@ -134,7 +144,8 @@ let msgboxError = new MessageBox('#msgbox-area', {
 });
 
 let popInfo = (msg, cb) => msgboxInfo.show(msg, cb);
+let popSuccess = (msg, cb) => msgboxSuccess.show(msg, cb);
 let popWarning = (msg, cb) => msgboxWarning.show(msg, cb);
 let popError = (msg, cb) => msgboxError.show(msg, cb);
 
-export { MessageBox, popInfo, popWarning, popError };
+export { MessageBox, popInfo, popSuccess, popWarning, popError };

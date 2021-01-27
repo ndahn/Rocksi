@@ -22,7 +22,7 @@ import './blocks/set_speed'
 import './blocks/joint_lock'
 import './blocks/joint_unlock'
 
-import { popInfo, popWarning, popError } from '../alert'
+import { popSuccess, popWarning, popError } from '../alert'
 
 const generator = Blockly.JavaScript;
 generator.STATEMENT_PREFIX = 'highlightBlock(%1);\n'
@@ -356,5 +356,5 @@ function onProgramFinished() {
     workspace.highlightBlock(null);
     runButton.classList.remove('running');
     console.log('Execution finished');
-    popInfo(Blockly.Msg['EXEC_SUCCESS'] || "Program finished");
+    popSuccess(Blockly.Msg['EXEC_SUCCESS'] || "Program finished");
 }

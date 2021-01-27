@@ -33,9 +33,10 @@ import { XacroLoader } from "xacro-parser";
 import URDFLoader from "urdf-loader";
 
 // import { loadCached } from "../cachedb";
-import makeRock from './objects/rock'
+// import makeRock from './objects/rock'
 import { default as IKSolver } from "./ik/ccdik"
 import Simulation from "./simulation"
+import { popInfo } from '../alert'
 
 const path = require('path');
 
@@ -69,6 +70,7 @@ const canHover = window.matchMedia('(hover: hover)').matches;
 loadRobotModel(robot.xacro)
 	.then(model => {
 		robot.init(model);
+		$('.robot-info').on('click', evt => popInfo(robot.info.DE))
 
 		for (const j in robot.defaultPose) {
 			try {

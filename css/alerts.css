@@ -1,8 +1,9 @@
 .msgbox-area {
 	max-height: 100%;
+	max-width: 30%;
+	min-width: 300px;
 	position: fixed;
 	top: 15px;
-	left: auto;
 	right: 20px;
 	z-index: 100;
 }
@@ -77,12 +78,12 @@
 
 
 .msgbox-box.info {
-	border: 1px solid rgba(6, 44, 241, 0.46);
-    background-color: rgba(7, 73, 149, 0.12);
+	border: 1px solid rgba(6, 45, 241, 0.842);
+    background-color: rgba(6, 57, 114, 0.438);
     box-shadow: 0px 0px 2px #0396ff;
 }
 .msgbox-box.info:hover {
-	background-color: rgba(38, 59, 82, 0.9);
+	background-color: rgba(10, 67, 128, 0.9);
 }
 .msgbox-box.info .msgbox-content::before {
 	content: "\f05a";
@@ -92,9 +93,25 @@
 	color: #0396ff;
 }
 
+.msgbox-box.success {
+	border: 1px solid rgba(12, 221, 12, 0.822);
+    background-color: rgba(13, 85, 19, 0.479);
+    box-shadow: 0px 0px 2px #0396ff;
+}
+.msgbox-box.success:hover {
+	background-color: rgba(43, 104, 47, 0.9);
+}
+.msgbox-box.success .msgbox-content::before {
+	content: "\f058";
+	color: #25eb0b;
+}
+.msgbox-box.success::before {
+	color: #25eb0b;
+}
+
 .msgbox-box.warning {
-	border: 1px solid rgba(241, 142, 6, 0.81);
-    background-color: rgba(220, 128, 1, 0.16);
+	border: 1px solid rgba(241, 167, 6, 0.918);
+    background-color: rgba(112, 68, 7, 0.452);
     box-shadow: 0px 0px 2px #ffb103;
 }
 .msgbox-box.warning:hover {
@@ -109,8 +126,8 @@
 }
 
 .msgbox-box.error {
-	border: 1px solid rgba(241, 6, 6, 0.81);
-    background-color: rgba(220, 17, 1, 0.16);
+	border: 1px solid rgba(241, 6, 6, 0.884);
+    background-color: rgba(105, 12, 5, 0.486);
     box-shadow: 0px 0px 2px #ff0303;
 }
 .msgbox-box.error:hover {
