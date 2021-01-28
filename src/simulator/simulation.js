@@ -218,13 +218,21 @@ class TheSimulation {
 
                 const ikTarget = new Object3D();
                 ikTarget.position.set(pose[0], pose[1], pose[2]);
-                ikTarget.setRotationFromEuler(new Euler(pose[3], pose[4], pose[5]));
+                if (pose.length > 3) {
+                    ikTarget.setRotationFromEuler(new Euler(pose[3], pose[4], pose[5]));
+                } else {
+                    ikTarget.setRotationFromQuaternion(robot.tcp.object.quaternion);
+                }
 
                 const solution = this.ik.solve(
                     ikTarget,
                     robot.tcp.object,
                     robot.ikjoints,
-                    { iterations: 1, jointLimits: robot.interactionJointLimits, apply: false }
+                    {
+                        iterations: 1,
+                        jointLimits: robot.interactionJointLimits,
+                        apply: false
+                    }
                 );
 
                 for (let i = 0; i < pose.length; i++) {

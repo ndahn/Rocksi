@@ -13,6 +13,7 @@ Blockly.setLocale(BlocklyDECustom);
 import './blocks/move'
 import './blocks/joint_space_pose'
 import './blocks/task_space_pose'
+import './blocks/task_space_position'
 import './blocks/default_pose'
 import './blocks/gripper_open'
 import './blocks/gripper_close'

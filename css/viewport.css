@@ -83,7 +83,7 @@
 	right: 10px;
 	bottom: 10px;
 	z-index: 20;
-	display: flex;
+	display: none; /* flex; */
 	justify-content: center;
 	align-items: center;
 	width: 1.5em;
