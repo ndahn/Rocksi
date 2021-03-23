@@ -48,7 +48,7 @@ switch (selectedRobot.toLowerCase()) {
 	case 'franka':
 		robot = require('./robots/franka');
 		break;
-	
+
 	default:
 		throw ('Unknown robot \'' + selectedRobot + '\'');
 }
@@ -82,7 +82,7 @@ loadRobotModel(robot.xacro)
 
 		initScene();
 		$('.loading-message').hide();
-		
+
 		ik = new IKSolver(scene, robot);
 		Simulation.init(robot, ik, ikRender);
 	}, reason => {
@@ -252,8 +252,8 @@ function onTargetChange() {
 			apply: true
 		}
 	);
-	
-	// requestAnimationFrame is called in the transformControl's change-listener, 
+
+	// requestAnimationFrame is called in the transformControl's change-listener,
 	// so we can skip it here
 }
 
@@ -276,3 +276,6 @@ function updateGroundLine() {
 function render() {
 	renderer.render(scene, camera);
 }
+
+//I need the scene, this is for experimenting
+export {scene};

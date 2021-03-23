@@ -22,6 +22,8 @@ import './blocks/joint_relative'
 import './blocks/set_speed'
 import './blocks/joint_lock'
 import './blocks/joint_unlock'
+//points to block definition for the add3dbox, Lukas
+import './blocks/add3dbox'
 
 import { popSuccess, popWarning, popError } from '../alert'
 
@@ -74,7 +76,7 @@ var workspace = Blockly.inject(
 //workspace.getToolbox().getFlyout().autoClose = false;
 //$('blockly-0').click();
 
-// Blockly is not using parenting for its HTML code, so we have to do some manual adjustments. 
+// Blockly is not using parenting for its HTML code, so we have to do some manual adjustments.
 // TODO For some reason there is a second toolboxFlyout that is never used -> blockly bug?
 var toolboxFlyout = $('.blocklyFlyout');
 var toolboxScrollbar = $('.blocklyFlyoutScrollbar');
@@ -149,7 +151,7 @@ var contextSaveWorkspace = {
     callback: function (scope) {
         let xml = Blockly.Xml.workspaceToDom(scope.workspace);
         let text = Blockly.Xml.domToText(xml);
-        
+
         let download = document.createElement('a');
         download.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
         download.setAttribute('download', 'workspace.xml');
@@ -179,11 +181,11 @@ var contextLoadWorkspace = {
         let upload = document.createElement('input');
         upload.setAttribute('type', 'file');
         upload.style.display = 'none';
-        
+
         upload.onchange = (fileSelectedEvent) => {
             try {
                 let file = fileSelectedEvent.target.files[0];
-                
+
                 let reader = new FileReader();
                 reader.readAsText(file, 'UTF-8');
                 reader.onload = (readerEvent) => {
@@ -249,13 +251,13 @@ function simulationAPI(interpreter, globalObject) {
     }
     interpreter.setProperty(globalObject, 'highlightBlock',
         interpreter.createNativeFunction(wrapper));
-    
+
     wrapper = function (command, ...args) {
         return simulation.run(command, ...args);
     }
     interpreter.setProperty(globalObject, 'simulate',
         interpreter.createNativeFunction(wrapper));
-    
+
     wrapper = function(command, ...args) {
         return simulation.runAsync(step, onProgramError, command, ...args);
     }
@@ -292,7 +294,7 @@ function runProgram() {
     const interpreter = new Interpreter('', simulationAPI);
     let blocks = workspace.getAllBlocks(true);
     executionContext = new ExecutionContext(blocks, interpreter);
-    
+
     generator.init(workspace);
     step();
 }
@@ -306,7 +308,7 @@ function step() {
         catch (e) {
             onProgramError(e);
         }
-        // Command blocks with deferredStep will use a callback to continue execution, 
+        // Command blocks with deferredStep will use a callback to continue execution,
         // otherwise we have to trigger the next block here.
         if (!block.deferredStep) {
             step();
@@ -351,7 +353,7 @@ function onProgramError(e) {
 }
 
 function onProgramFinished() {
-    // The generator may add some finalizing code in generator.finish(code), but if we 
+    // The generator may add some finalizing code in generator.finish(code), but if we
     // got this far it is most likely not required. Previous commit has a version executing
     // These final statements.
     workspace.highlightBlock(null);
