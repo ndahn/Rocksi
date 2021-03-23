@@ -77,7 +77,7 @@ var workspace = Blockly.inject(
 //workspace.getToolbox().getFlyout().autoClose = false;
 //$('blockly-0').click();
 
-// Blockly is not using parenting for its HTML code, so we have to do some manual adjustments. 
+// Blockly is not using parenting for its HTML code, so we have to do some manual adjustments.
 // TODO For some reason there is a second toolboxFlyout that is never used -> blockly bug?
 var toolboxFlyout = $('.blocklyFlyout');
 var toolboxScrollbar = $('.blocklyFlyoutScrollbar');
@@ -152,7 +152,7 @@ var contextSaveWorkspace = {
     callback: function (scope) {
         let xml = Blockly.Xml.workspaceToDom(scope.workspace);
         let text = Blockly.Xml.domToText(xml);
-        
+
         let download = document.createElement('a');
         download.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
         download.setAttribute('download', 'workspace.xml');
@@ -183,11 +183,11 @@ var contextLoadWorkspace = {
         upload.setAttribute('type', 'file');
         upload.setAttribute('accept', '.xml');
         upload.style.display = 'none';
-        
+
         upload.onchange = (fileSelectedEvent) => {
             try {
                 let file = fileSelectedEvent.target.files[0];
-                
+
                 let reader = new FileReader();
                 reader.readAsText(file, 'UTF-8');
                 reader.onload = (readerEvent) => {
@@ -290,10 +290,10 @@ function executeProgram() {
     }
 
     interpreter.paused_ = false;
-    
+
     try {
-        // Blocks are being executed until a block interacts with the robot, which will 
-        // pause execution until the robot is done and then calls run() again. 
+        // Blocks are being executed until a block interacts with the robot, which will
+        // pause execution until the robot is done and then calls run() again.
         // See simulationAPI above.
         let hasMore = interpreter.run();
         if (!hasMore) {

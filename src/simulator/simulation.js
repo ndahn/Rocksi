@@ -2,7 +2,10 @@ import * as Blockly from "blockly"
 import { Object3D, Vector3, Euler } from "three"
 var TWEEN = require('@tweenjs/tween.js');
 
-// Velocities to move a joint one unit 
+//imports for creating 3D objects to interact with, Lukas
+import create3dObject from "./objects/create3dObject";
+
+// Velocities to move a joint one unit
 // (m/s for prismatic joints, rad/s for revolute joints)
 Blockly.Msg.DEFAULT_SPEED_MOVE = 0.5;
 Blockly.Msg.DEFAULT_SPEED_GRIPPER = 0.1;
@@ -114,10 +117,10 @@ class TheSimulation {
         }
     }
 
-    
+
     lockJoint(jointIdx) {
         console.log('> Locking joint ' + jointIdx);
-        
+
         if (this.lockedJointIndices.includes(jointIdx)) {
             console.warn('> ... but joint ' + jointIdx + ' is already locked');
             return;
@@ -129,7 +132,7 @@ class TheSimulation {
     unlockJoint(jointIdx) {
         console.log('> Unlocking joint ' + jointIdx);
         let idx = this.lockedJointIndices.indexOf(jointIdx);
-        
+
         if (idx < 0) {
             console.warn('> ... but joint ' + jointIdx + ' is not locked');
             return;
@@ -230,7 +233,7 @@ class TheSimulation {
                         target[joint.name] = solution[joint.name];
                     }
                 }
-                
+
                 break;
 
             case 'joint_space':
@@ -242,7 +245,7 @@ class TheSimulation {
                     start[joint.name] = joint.angle;
                     target[joint.name] = clampJointAngle(joint, deg2rad(pose[i]));
                 }
-                
+
                 break;
 
             default:
@@ -257,7 +260,7 @@ class TheSimulation {
 
     gripper_close() {
         console.log('> Closing hand');
-        
+
         const robot = this.robot;
         const start = {};
         const target = {};
@@ -278,12 +281,12 @@ class TheSimulation {
         const robot = this.robot;
         const start = {};
         const target = {};
-        
+
         for (const finger of robot.hand.movable) {
             start[finger.name] = finger.angle;
             target[finger.name] = finger.limit.upper;  // fully opened
         }
-        
+
         const duration = getDuration(robot, target, this.velocities.gripper);
         let tween = this._makeTween(start, target, duration);
         return tween;
@@ -300,7 +303,7 @@ class TheSimulation {
         const robot = this.robot;
         const start = {};
         const target = {};
-        
+
         const joint = robot.arm.movable[jointIdx - 1];
         start[joint.name] = joint.angle;
         target[joint.name] = clampJointAngle(joint, deg2rad(angle));
@@ -312,10 +315,26 @@ class TheSimulation {
 
     joint_relative(jointIdx, angle) {
         console.log('> Rotating joint ' + jointIdx + ' by ' + angle + ' degrees');
-        
+
         const joint = this.robot.arm.movable[jointIdx - 1];
         let angleAbs = joint.angle * 180.0 / Math.PI + angle;  // degrees
         return this.joint_absolute(jointIdx, angleAbs);
+    }
+
+    //Calls the create3dObject script for adding a new 3D object, Lukas
+    add3dbox(position) {
+        const shape = "box"
+        // Seems to be a weird bug in js-interpreter concerning varargs and arrays
+        if (position.class === 'Array' && position.length === undefined) {
+            let newPosition = [];
+            for (const p in position.properties) {
+                if (p.match(/\d+/g)) {
+                    newPosition[p] = position.properties[p];
+                }
+            }
+            position = newPosition;
+        }
+        create3dObject(shape, position);
     }
 
 
