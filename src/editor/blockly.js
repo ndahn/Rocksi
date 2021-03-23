@@ -22,10 +22,15 @@ import './blocks/joint_relative'
 import './blocks/set_speed'
 import './blocks/joint_lock'
 import './blocks/joint_unlock'
+<<<<<<< HEAD
 import './blocks/comment'
 import './blocks/wait'
 import './blocks/is_attached'
 import './blocks/physics_done'
+=======
+//points to block definition for the add3dbox, Lukas
+import './blocks/add3dbox'
+>>>>>>> 7861fe4 (Added a new Blockly block for adding a 3D box to the scene)
 
 
 //points to block definition for add_sim_object, Lukas
@@ -277,6 +282,7 @@ function simulationAPI(interpreter, globalObject) {
     interpreter.setProperty(globalObject, 'highlightBlock',
         interpreter.createNativeFunction(wrapper));
 
+<<<<<<< HEAD
     wrapper = async function (command, ...args) {
         try {
             pauseExecution();
@@ -286,6 +292,16 @@ function simulationAPI(interpreter, globalObject) {
         catch (e) {
             onProgramError(e);
         }
+=======
+    wrapper = function (command, ...args) {
+        return simulation.run(command, ...args);
+    }
+    interpreter.setProperty(globalObject, 'simulate',
+        interpreter.createNativeFunction(wrapper));
+
+    wrapper = function(command, ...args) {
+        return simulation.runAsync(step, onProgramError, command, ...args);
+>>>>>>> 7861fe4 (Added a new Blockly block for adding a 3D box to the scene)
     }
     interpreter.setProperty(globalObject, 'robot',
         interpreter.createNativeFunction(wrapper));
@@ -307,6 +323,7 @@ function compileProgram() {
     }
 
 
+<<<<<<< HEAD
 >>>>>>> f09f389 (The Run-Button now resets all simObjects)
     let code = Blockly.JavaScript.workspaceToCode(workspace);
     console.log(code);
@@ -316,6 +333,30 @@ function compileProgram() {
 function pauseExecution() {
     if (interpreter) {
         interpreter.paused_ = true;
+=======
+    const interpreter = new Interpreter('', simulationAPI);
+    let blocks = workspace.getAllBlocks(true);
+    executionContext = new ExecutionContext(blocks, interpreter);
+
+    generator.init(workspace);
+    step();
+}
+
+function step() {
+    let block = executionContext.nextBlock();
+    if (block) {
+        try {
+            runBlock(block);
+        }
+        catch (e) {
+            onProgramError(e);
+        }
+        // Command blocks with deferredStep will use a callback to continue execution,
+        // otherwise we have to trigger the next block here.
+        if (!block.deferredStep) {
+            step();
+        }
+>>>>>>> 7861fe4 (Added a new Blockly block for adding a 3D box to the scene)
     }
     else {
         setTimeout(() => {

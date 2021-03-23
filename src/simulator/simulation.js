@@ -8,12 +8,23 @@ import { updatePhysics,
 
 var TWEEN = require('@tweenjs/tween.js');
 
+<<<<<<< HEAD
 import { isAttached,
          getAttachedObject,
          getSimObjects,
          getSimObjectByPos,
          resetAllSimObjects,
          getSimObjectIdx } from "./objects/objects"
+=======
+//imports for creating 3D objects to interact with, Lukas
+import create3dObject from "./objects/create3dObject";
+
+// Velocities to move a joint one unit
+// (m/s for prismatic joints, rad/s for revolute joints)
+Blockly.Msg.DEFAULT_SPEED_MOVE = 0.5;
+Blockly.Msg.DEFAULT_SPEED_GRIPPER = 0.1;
+Blockly.Msg.DEFAULT_SPEED_JOINT = 0.7;
+>>>>>>> 7861fe4 (Added a new Blockly block for adding a 3D box to the scene)
 
 
 function deg2rad(deg) {
@@ -319,6 +330,7 @@ class TheSimulation {
         const robot = this.robot;
         const start = {};
         const target = {};
+<<<<<<< HEAD
         //let mesh;
 
         //If an object is currently gripped, detach it from the gripper, Lukas
@@ -330,6 +342,8 @@ class TheSimulation {
                 this.startPhysicalBody(idx);
             }
         }
+=======
+>>>>>>> 7861fe4 (Added a new Blockly block for adding a 3D box to the scene)
 
         for (const finger of robot.hand.movable) {
             start[finger.name] = finger.angle;
@@ -337,8 +351,11 @@ class TheSimulation {
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         const duration = getDuration(robot, target, this.velocities.gripper * robot.maxSpeed.gripper);
 =======
+=======
+>>>>>>> 7861fe4 (Added a new Blockly block for adding a 3D box to the scene)
         const duration = getDuration(robot, target, this.velocities.gripper);
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -380,6 +397,9 @@ class TheSimulation {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 7861fe4 (Added a new Blockly block for adding a 3D box to the scene)
     //Calls the create3dObject script for adding a new 3D object, Lukas
     add3dbox(position) {
         const shape = "box"
@@ -395,6 +415,10 @@ class TheSimulation {
         }
         create3dObject(shape, position);
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7861fe4 (Added a new Blockly block for adding a 3D box to the scene)
 
 =======
     //Lukas

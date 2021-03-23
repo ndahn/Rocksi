@@ -59,10 +59,13 @@ switch (selectedRobot.toLowerCase()) {
 		robot = require('./robots/franka');
 		break;
 
+<<<<<<< HEAD
 	case 'niryo':
 		robot = require('./robots/niryo');
 		break;
 
+=======
+>>>>>>> 7861fe4 (Added a new Blockly block for adding a 3D box to the scene)
 	default:
 		throw ('Unknown robot \'' + selectedRobot + '\'');
 }
