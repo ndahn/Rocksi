@@ -9,6 +9,7 @@ import { updatePhysics,
 
 var TWEEN = require('@tweenjs/tween.js');
 
+<<<<<<< HEAD
 import { isAttached,
          getAttachedObject,
          getSimObjects,
@@ -16,6 +17,8 @@ import { isAttached,
          resetAllSimObjects,
          getSimObjectIdx } from "./objects/objects"
 
+=======
+>>>>>>> 0046a16 (Integrating 3D objects for the robot to interact with)
 
 // Velocities to move a joint one unit
 // (m/s for prismatic joints, rad/s for revolute joints)
@@ -391,6 +394,7 @@ class TheSimulation {
         return this.joint_absolute(jointIdx, angleAbs);
     }
 
+<<<<<<< HEAD
     //Lukas
     startPhysicalBody(simObjectsIdx) {
         const simObjects = getSimObjects();
@@ -444,6 +448,8 @@ class TheSimulation {
         }
         window.requestAnimationFrame(() => this._animatePhysics());
     }
+=======
+>>>>>>> 0046a16 (Integrating 3D objects for the robot to interact with)
 
     _makeTween(start, target, duration) {
         return new Promise((resolve, reject) => {

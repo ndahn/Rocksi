@@ -311,6 +311,7 @@ function onClick() {
     setTCSimObjectsOnClick(raycaster);
 }
 
+<<<<<<< HEAD
 export function requestAF () { requestAnimationFrame(render); }
 
 export function getScene () { return scene; }
@@ -325,3 +326,17 @@ export function getControl () {
     }
     return contObj;
 }
+=======
+//These two functions are exported to add meshes to the scene or remove them
+function addMeshToScene(mesh){
+    scene.add(mesh);
+    requestAnimationFrame(render);
+    return mesh.name;
+}
+
+function removeMeshFromScene(meshname){
+    scene.remove(meshname);
+}
+//I need the scene, this is for experimenting
+export default addMeshToScene;
+>>>>>>> 0046a16 (Integrating 3D objects for the robot to interact with)
