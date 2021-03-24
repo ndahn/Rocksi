@@ -1,18 +1,20 @@
 import * as THREE from 'three';
-import {scene} from '../scene';
+import addMeshToScene from '../scene';
 
-function create3dObject(shape, position){
-    console.log("create3dObject triggered");
-    console.log(shape, "at position", position);
+function create3dObject(){
     //for testing
-    const cubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 10, 10)
-    const cubeMaterial = new THREE.MeshPhongMaterial({ color: 0x999999 })
-    const cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial)
-    cubeMesh.castShadow = true
-    cubeMesh.position.x  = position[0]
-    cubeMesh.position.y  = position[1]
-    cubeMesh.position.z  = position[2]
-    scene.add(cubeMesh)
+    const cubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 10, 10);
+    const cubeMaterial = new THREE.MeshPhongMaterial({ color: 0x999999 });
+    const cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
+    cubeMesh.castShadow = true;
+    cubeMesh.position.x  = 10;
+    cubeMesh.position.y  = 10;
+    cubeMesh.position.z  = 0.5;
+    cubeMesh.name = "Ineedanidentyfier"
+    const meshname = addMeshToScene(cubeMesh);
+    console.log(meshname);
 }
+
+
 
 export default create3dObject;

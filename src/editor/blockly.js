@@ -23,7 +23,9 @@ import './blocks/set_speed'
 import './blocks/joint_lock'
 import './blocks/joint_unlock'
 //points to block definition for the add3dbox, Lukas
-import './blocks/add3dbox'
+import './blocks/addObject'
+
+
 
 import { popSuccess, popWarning, popError } from '../alert'
 
