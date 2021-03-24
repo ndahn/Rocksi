@@ -1,31 +1,20 @@
 import { Object3D, Vector3, Euler } from "three"
 
 //function for updating the physics, Lukas
-import { updatePhysics,
-         updateMeshes,
-         updateBodies,
-         isWorldActive } from './physics'
+import { updatePhysics } from './physics'
 
 var TWEEN = require('@tweenjs/tween.js');
 
-<<<<<<< HEAD
-import { isAttached,
-         getAttachedObject,
-         getSimObjects,
-         getSimObjectByPos,
-         resetAllSimObjects,
-         getSimObjectIdx } from "./objects/objects"
-=======
-//imports for creating 3D objects to interact with, Lukas
-import create3dObject from "./objects/create3dObject";
+//Stuff for the gripper,Lukas
+import { getMeshByPosition,
+         getTCP,
+         getObjectRadius,
+         getMesh } from "./scene"
 
-// Velocities to move a joint one unit
-// (m/s for prismatic joints, rad/s for revolute joints)
-Blockly.Msg.DEFAULT_SPEED_MOVE = 0.5;
-Blockly.Msg.DEFAULT_SPEED_GRIPPER = 0.1;
-Blockly.Msg.DEFAULT_SPEED_JOINT = 0.7;
->>>>>>> 7861fe4 (Added a new Blockly block for adding a 3D box to the scene)
-
+import { attachToGripper,
+         detachFromGripper,
+         isAttached,
+         getAttachedObject } from "./objects/objects"
 
 function deg2rad(deg) {
     return deg * Math.PI / 180.0;
@@ -63,30 +52,11 @@ class TheSimulation {
             move: 0.5,
             gripper: 0.5
         }
-        //Physics and triggers, Lukas
-        this.runningPhysics = false;
-        this.gripperWasOpen = false;
-        this.physicsDone = false;
-        this.lastSimObjectProcessed = false;
     }
-
 
     reset() {
         this.unlockJoints();
         this.setDefaultVelocities();
-
-        this.physicsDone = false;
-        this.lastSimObjectProcessed = false;
-        this.runningPhysics = false;
-    }
-
-    resetSimObjects(visable = true) {
-        const simObjects = getSimObjects();
-        for (const simObject of simObjects) {
-            simObject.reset();
-            if (visable) { simObject.makeVisable(); }
-            else if (!visable) { simObject.hide(); }
-        }
     }
 
     async run(command, ...args) {
@@ -110,7 +80,6 @@ class TheSimulation {
         // As this is called by _onTweenFinished, this prevents having multiple tweens
         // with different end times, but that's not a use case at the moment
         TWEEN.removeAll();
-        this.runningPhysics = false;
     }
 
 
@@ -295,19 +264,18 @@ class TheSimulation {
         const robot = this.robot;
         const start = {};
         const target = {};
-        //let mesh;
+        let mesh;
         //WIP: Determin if something is under the gripper
         //if yes, then close it until the gripper touches the object, Lukas
-        //mesh = getMeshByPosition(getTCP());
-        const tcp = robot.tcp.object;
-        let position = new Vector3;
-        tcp.getWorldPosition(position);
-        const simObject = getSimObjectByPos(position, 0.5);
-        if (isAttached() == false && simObject != undefined && this.gripperWasOpen) {
-            simObject.attachToGripper();
-            for (const finger of robot.hand.movable) {
+        if (isAttached() == false) {
+            mesh = getMeshByPosition(getTCP());
+            if (mesh != undefined) {
+                attachToGripper(mesh);
+                for (const finger of robot.hand.movable) {
                     start[finger.name] = finger.angle;
-                    target[finger.name] = finger.limit.upper - (simObject.size.x * 0.2);//This is just for testing, Lukas
+                    target[finger.name] = finger.limit.upper - getObjectRadius(mesh) *  0.1;//This is just for testing, Lukas
+
+                }
             }
         }
         //if not, close full
@@ -320,7 +288,6 @@ class TheSimulation {
 
         const duration = getDuration(robot, target, this.velocities.gripper * robot.maxSpeed.gripper);
         let tween = this._makeTween(start, target, duration);
-        this.gripperWasOpen = false;
         return tween;
     }
 
@@ -330,40 +297,22 @@ class TheSimulation {
         const robot = this.robot;
         const start = {};
         const target = {};
-<<<<<<< HEAD
-        //let mesh;
+        let mesh;
 
         //If an object is currently gripped, detach it from the gripper, Lukas
         if (isAttached() == true) {
-            const simObject = getAttachedObject();
-            simObject.detachFromGripper();
-            const idx = getSimObjectIdx(simObject.name);
-            if (!this.runningPhysics) {
-                this.startPhysicalBody(idx);
-            }
+            mesh = getMesh(getAttachedObject());
+            console.log('mesh sim', mesh);
+            detachFromGripper(mesh);
         }
-=======
->>>>>>> 7861fe4 (Added a new Blockly block for adding a 3D box to the scene)
 
         for (const finger of robot.hand.movable) {
             start[finger.name] = finger.angle;
             target[finger.name] = finger.limit.upper;  // fully opened
         }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
         const duration = getDuration(robot, target, this.velocities.gripper * robot.maxSpeed.gripper);
-=======
-=======
->>>>>>> 7861fe4 (Added a new Blockly block for adding a 3D box to the scene)
-        const duration = getDuration(robot, target, this.velocities.gripper);
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 3cea4c9 (The gripper has to be open before something is gripped.)
-=======
->>>>>>> b5b9f23 (Rebased to new master.)
         let tween = this._makeTween(start, target, duration);
-        this.gripperWasOpen = true;
         return tween;
     }
 
@@ -396,70 +345,10 @@ class TheSimulation {
         return this.joint_absolute(jointIdx, angleAbs);
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 7861fe4 (Added a new Blockly block for adding a 3D box to the scene)
-    //Calls the create3dObject script for adding a new 3D object, Lukas
-    add3dbox(position) {
-        const shape = "box"
-        // Seems to be a weird bug in js-interpreter concerning varargs and arrays
-        if (position.class === 'Array' && position.length === undefined) {
-            let newPosition = [];
-            for (const p in position.properties) {
-                if (p.match(/\d+/g)) {
-                    newPosition[p] = position.properties[p];
-                }
-            }
-            position = newPosition;
-        }
-        create3dObject(shape, position);
-    }
-<<<<<<< HEAD
-=======
-
->>>>>>> 7861fe4 (Added a new Blockly block for adding a 3D box to the scene)
-
-=======
     //Lukas
-    startPhysicalBody(simObjectsIdx) {
-        const simObjects = getSimObjects();
-        simObjects[simObjectsIdx].makeVisable();
-
-        simObjects[simObjectsIdx].addBodyToWorld();
-        simObjects[simObjectsIdx].updateBody();
-        simObjects[simObjectsIdx].body.wakeUp();
-        if (simObjectsIdx + 1 == simObjects.length) {
-            this.lastSimObjectProcessed = true;
-        }
-        if (!this.runningPhysics) {
-            this._animatePhysics();
-            this.runningPhysics = true;
-        }
+    objects(name) {
+        console.log('So much happening right now. Whooo!', name);
     }
-
-    getPhysicsDone() {
-        if ( !this.runningPhysics
-             && this.lastSimObjectProcessed
-             && !isWorldActive()) {
-                 this.physicsDone = true;
-        }
-        else { this.physicsDone = false; }
-
-        return this.physicsDone;
-    }
-
-    _animatePhysics() {
-        updatePhysics();
-        this._renderCallback();
-        if (!isWorldActive()) {
-            console.log('Physics rendering halted.');
-            this.runningPhysics = false;
-            return;
-        }
-        window.requestAnimationFrame(() => this._animatePhysics());
-    }
->>>>>>> fc4b4db (Fixed the wrong if/else loop in objects.js/getSimobject and objects.js/getSimObjectIdx functions. Some work on integrating the physics in simulation.js. Some cleanup in blockly.js)
 
     _makeTween(start, target, duration) {
         return new Promise((resolve, reject) => {
@@ -502,8 +391,9 @@ class TheSimulation {
     }
 
     _animate(time) {
-
         TWEEN.update(time);
+        //testing, Lukas
+        updatePhysics();
         this._renderCallback();
 
         if (this.running) {

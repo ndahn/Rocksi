@@ -11,15 +11,7 @@ const dt = 0.02
 let world;
 let robotBodies = [];
 let initDone = false;
-<<<<<<< HEAD
-<<<<<<< HEAD
 const debugOn = false;
-=======
-const debugOn = true;
->>>>>>> 7c6800e (Added cannon-es-debugger module. Bodys now have friction and a more adequate mass.)
-=======
-const debugOn = false;
->>>>>>> f5185ba (Bodies are now removed from world if the object is gripped.)
 
 function debug() {
     if (debugOn) {
@@ -27,32 +19,6 @@ function debug() {
         cannonDebugger(scene, world.bodies);
     }
 }
-<<<<<<< HEAD
-
-export function initRobotHitboxes(robot) {
-    /**console.log('Robot: ', robot);
-    const scene = getScene();
-    const links = robot.arm.links;
-    let i = 1;
-    let linkWorldPosition = new THREE.Vector3();
-    let linkWorldQuat = new THREE.Vector2();
-    for (const link of links) {
-		link.getWorldPosition(linkWorldPosition);
-        //link.getWorldQuaternion(linkWorldQuat);
-		const geometry = new THREE.BoxGeometry( 1,2,1 );
-		const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-		const cube = new THREE.Mesh( geometry, material );
-        cube.position.copy(linkWorldPosition);
-        //cube.quaternion.copy(linkWorldQuat);
-		cube.visible = false;
-		const box = new THREE.BoxHelper( cube );
-		scene.add( box );
-		scene.add( cube );
-    }**/
-}
-**/
-=======
->>>>>>> 7c6800e (Added cannon-es-debugger module. Bodys now have friction and a more adequate mass.)
 
 export function initRobotHitboxes(robot) {
     /**console.log('Robot: ', robot);
@@ -85,15 +51,7 @@ export function initCannon() {
     //world.solver = solver;
     world.solver.tolerance = 0.001
     world.quatNormalizeFast = true;
-<<<<<<< HEAD
-<<<<<<< HEAD
     world.solver.iterations = 10;
-=======
-    world.solver.iterations = 15;
->>>>>>> 7c6800e (Added cannon-es-debugger module. Bodys now have friction and a more adequate mass.)
-=======
-    world.solver.iterations = 10;
->>>>>>> a05b7c7 (Changed the sleepSpeedLimit for the simulation. Fewer micro collisions and jitter.)
     world.allowSleep = true;
 
     //Floor
@@ -145,22 +103,9 @@ export function removeAllBodies(simObjects) {
 }
 
 export function updateMeshes(simObjects) {
-<<<<<<< HEAD
-<<<<<<< HEAD
     let limit = simObjects.length;
     for (let i = 0; i < limit; i++) {
         simObjects[i].updateMesh();
-=======
-    if (simObjects != undefined) {
-        for (const simObject of simObjects) {
-            simObject.updateMesh();
-        }
->>>>>>> 7c6800e (Added cannon-es-debugger module. Bodys now have friction and a more adequate mass.)
-=======
-    let limit = simObjects.length;
-    for (let i = 0; i < limit; i++) {
-        simObjects[i].updateMesh();
->>>>>>> a05b7c7 (Changed the sleepSpeedLimit for the simulation. Fewer micro collisions and jitter.)
     }
 }
 

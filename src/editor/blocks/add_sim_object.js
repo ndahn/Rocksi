@@ -48,13 +48,8 @@ Blockly.Blocks['add_sim_object'] = {
             previousStatement: null,
             nextStatement: null,
             style: 'objects_blocks',
-<<<<<<< HEAD
             tooltip: "Fügt ein Objekt hinzu, diese wird zur Laufzeit erstellt.",
             helpUrl: "",
-=======
-            tooltip: "Ich bin kein hilfreicher Tooltip!",
-            helpUrl: "www.google.com",
->>>>>>> b5b9f23 (Rebased to new master.)
         });
     },
 
@@ -81,7 +76,6 @@ Blockly.Blocks['add_sim_object'] = {
             simObject.updateFromFieldValues();
             simObject.render();
         }
-<<<<<<< HEAD
 
         if (colour != null && event.blockId === colour.id) {
             var simObject = getSimObject(this.id);
@@ -98,8 +92,6 @@ Blockly.Blocks['add_sim_object'] = {
 
             simObject.render();
         }
-=======
->>>>>>> 7f9d945 (Programms are now loaded correct.)
     }
 };
 

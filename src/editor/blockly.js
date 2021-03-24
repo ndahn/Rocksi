@@ -22,15 +22,10 @@ import './blocks/joint_relative'
 import './blocks/set_speed'
 import './blocks/joint_lock'
 import './blocks/joint_unlock'
-<<<<<<< HEAD
 import './blocks/comment'
 import './blocks/wait'
 import './blocks/is_attached'
 import './blocks/physics_done'
-=======
-//points to block definition for the add3dbox, Lukas
-import './blocks/add3dbox'
->>>>>>> 7861fe4 (Added a new Blockly block for adding a 3D box to the scene)
 
 
 //points to block definition for add_sim_object, Lukas
@@ -40,13 +35,9 @@ import './blocks/pose'
 //imports for adding and removing 3D-objects, Lukas
 import { addSimObject,
          remSimObjects,
-<<<<<<< HEAD
          getSimObjects,
          randomColour } from '../simulator/objects/objects'
 
-=======
-         getSimObjects } from '../simulator/objects/objects'
->>>>>>> f09f389 (The Run-Button now resets all simObjects)
 
 import { popSuccess, popWarning, popError, popInfo } from '../alert'
 
@@ -65,11 +56,7 @@ import Simulation from '../simulator/simulation'
 var blocklyArea = document.querySelector('.blocks-container');
 var blocklyDiv = document.getElementById('blocks-canvas');
 
-<<<<<<< HEAD
 const waitToFinish = 200; //Time to wait for the physics simulation to finish. Lukas
-=======
-const waitToFinish = 5000; //Time to wait for the physics simulation to finish. Lukas
->>>>>>> a165be5 (Blockly now waits for the physics sim.)
 
 var workspace = Blockly.inject(
     blocklyDiv,
@@ -282,7 +269,6 @@ function simulationAPI(interpreter, globalObject) {
     interpreter.setProperty(globalObject, 'highlightBlock',
         interpreter.createNativeFunction(wrapper));
 
-<<<<<<< HEAD
     wrapper = async function (command, ...args) {
         try {
             pauseExecution();
@@ -292,16 +278,6 @@ function simulationAPI(interpreter, globalObject) {
         catch (e) {
             onProgramError(e);
         }
-=======
-    wrapper = function (command, ...args) {
-        return simulation.run(command, ...args);
-    }
-    interpreter.setProperty(globalObject, 'simulate',
-        interpreter.createNativeFunction(wrapper));
-
-    wrapper = function(command, ...args) {
-        return simulation.runAsync(step, onProgramError, command, ...args);
->>>>>>> 7861fe4 (Added a new Blockly block for adding a 3D box to the scene)
     }
     interpreter.setProperty(globalObject, 'robot',
         interpreter.createNativeFunction(wrapper));
@@ -312,19 +288,8 @@ var interpreter = null;
 
 function compileProgram() {
     simulation.reset();
-<<<<<<< HEAD
     const visible = false;
     simulation.resetSimObjects(visible);
-=======
-    //This resets all simObjects
-    const simObjects = getSimObjects();
-    for (const simObject of simObjects) {
-        simObject.reset();
-    }
-
-
-<<<<<<< HEAD
->>>>>>> f09f389 (The Run-Button now resets all simObjects)
     let code = Blockly.JavaScript.workspaceToCode(workspace);
     console.log(code);
     interpreter = new Interpreter(code, simulationAPI);
@@ -333,38 +298,7 @@ function compileProgram() {
 function pauseExecution() {
     if (interpreter) {
         interpreter.paused_ = true;
-=======
-    const interpreter = new Interpreter('', simulationAPI);
-    let blocks = workspace.getAllBlocks(true);
-    executionContext = new ExecutionContext(blocks, interpreter);
-
-    generator.init(workspace);
-    step();
-}
-
-function step() {
-    let block = executionContext.nextBlock();
-    if (block) {
-        try {
-            runBlock(block);
-        }
-        catch (e) {
-            onProgramError(e);
-        }
-        // Command blocks with deferredStep will use a callback to continue execution,
-        // otherwise we have to trigger the next block here.
-        if (!block.deferredStep) {
-            step();
-        }
->>>>>>> 7861fe4 (Added a new Blockly block for adding a 3D box to the scene)
     }
-    else {
-        setTimeout(() => {
-            console.log('Reset in 5 seconds...');
-            step();
-        }, waitToFinish );
-    }
-
 }
 
 function executeProgram() {
@@ -426,7 +360,6 @@ function onProgramFinished() {
 //If added, add a new 3D-object. If removed remove the 3D-object assosiated with the block.
 //Lukas
 function watchSpawnBlocks(event) {
-<<<<<<< HEAD
     if(Blockly.Events.BLOCK_CREATE === event.type) {
         for (let i = 0; i < event.ids.length; i++) {
             const newBlock = workspace.getBlockById(event.ids[i]);
@@ -455,29 +388,9 @@ function watchSpawnBlocks(event) {
                 }
                 console.log(pickedColour);
                 addSimObject(newBlock.id, fieldValues, pickedColour);
-=======
-
-    if(Blockly.Events.BLOCK_CREATE === event.type) {
-        for (let i = 0; i < event.ids.length; i++) {
-            console.log(event.ids[i]);
-            const newBlock = workspace.getBlockById(event.ids[i]);
-            if (newBlock.type == 'add_sim_object') {
-                const children = newBlock.getChildren();
-                let inputChild;
-                for (const child of children) {
-                    if (child.type == 'pose') {
-                        inputChild = child;
-                    }
-                }
-                addSimObject(newBlock.id, true, inputChild);
->>>>>>> 7f9d945 (Programms are now loaded correct.)
             }
 
         }
-<<<<<<< HEAD
-=======
-
->>>>>>> 7f9d945 (Programms are now loaded correct.)
     }
 
     if(Blockly.Events.BLOCK_DELETE === event.type) {

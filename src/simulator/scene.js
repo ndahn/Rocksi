@@ -22,13 +22,10 @@ import {
 	ArrowHelper
 } from "three";
 
-<<<<<<< HEAD
-=======
 //Imports for managing objects and physics, Lukas
 import { initCannon,
          initRobotHitboxes } from './physics'
 
->>>>>>> 6414c7e (Added call to initRobotHitboxes.)
 // In ROS models Z points upwards
 Object3D.DefaultUp = new Vector3(0, 0, 1);
 
@@ -59,13 +56,10 @@ switch (selectedRobot.toLowerCase()) {
 		robot = require('./robots/franka');
 		break;
 
-<<<<<<< HEAD
 	case 'niryo':
 		robot = require('./robots/niryo');
 		break;
 
-=======
->>>>>>> 7861fe4 (Added a new Blockly block for adding a 3D box to the scene)
 	default:
 		throw ('Unknown robot \'' + selectedRobot + '\'');
 }
@@ -99,12 +93,9 @@ loadRobotModel(robot.xacro)
 		}
 
 		initScene();
-<<<<<<< HEAD
-=======
         //Lukas
         initCannon();
         initRobotHitboxes(robot);
->>>>>>> 6414c7e (Added call to initRobotHitboxes.)
 		$('.loading-message').hide();
 
 		ik = new IKSolver(scene, robot);
