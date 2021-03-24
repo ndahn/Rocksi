@@ -277,5 +277,15 @@ function render() {
 	renderer.render(scene, camera);
 }
 
+//These two functions are exported to add meshes to the scene or remove them
+function addMeshToScene(mesh){
+    scene.add(mesh);
+    requestAnimationFrame(render);
+    return mesh.name;
+}
+
+function removeMeshFromScene(meshname){
+    scene.remove(meshname);
+}
 //I need the scene, this is for experimenting
-export {scene};
+export default addMeshToScene;

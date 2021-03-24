@@ -2,8 +2,6 @@ import * as Blockly from "blockly"
 import { Object3D, Vector3, Euler } from "three"
 var TWEEN = require('@tweenjs/tween.js');
 
-//imports for creating 3D objects to interact with, Lukas
-import create3dObject from "./objects/create3dObject";
 
 // Velocities to move a joint one unit
 // (m/s for prismatic joints, rad/s for revolute joints)
@@ -319,22 +317,6 @@ class TheSimulation {
         const joint = this.robot.arm.movable[jointIdx - 1];
         let angleAbs = joint.angle * 180.0 / Math.PI + angle;  // degrees
         return this.joint_absolute(jointIdx, angleAbs);
-    }
-
-    //Calls the create3dObject script for adding a new 3D object, Lukas
-    add3dbox(position) {
-        const shape = "box"
-        // Seems to be a weird bug in js-interpreter concerning varargs and arrays
-        if (position.class === 'Array' && position.length === undefined) {
-            let newPosition = [];
-            for (const p in position.properties) {
-                if (p.match(/\d+/g)) {
-                    newPosition[p] = position.properties[p];
-                }
-            }
-            position = newPosition;
-        }
-        create3dObject(shape, position);
     }
 
 
