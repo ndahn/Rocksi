@@ -1,9 +1,11 @@
 import * as Blockly from 'blockly';
 //create3dObject
-import create3dObject from "../../simulator/objects/create3dObject";
+import update3dobjects from "../../simulator/objects/create3dObject";
+import get3dobjects from "../../simulator/objects/create3dObject";
 
-Blockly.Blocks["addObject"] = {
+Blockly.Blocks['addSimObject'] = {
 	init: function () {
+        var thisBlock = this;
 		this.jsonInit({
 			"type": "addObject",
 			"message0": "Objekt: %1 %2 %3 %4",
@@ -12,18 +14,14 @@ Blockly.Blocks["addObject"] = {
 				"type": "field_dropdown",
 				"name": "OBJECT_TYPE",
 				"options": [
-                  [
-                    "Bitte Objekttyp wählen",
-                    "nothing"
-                  ],
 				  [
 					"Würfel",
 					"cube"
                   ],
                   [
-                    "Wurst",
+                    "Zylinder",
                     "cylinder"
-                    ],
+                  ],
 				]
 			  },
 			  {
@@ -57,25 +55,22 @@ Blockly.Blocks["addObject"] = {
 		  });
 	},
 	onchange: function (event) {
+        //this is it... IDEA: I need to tell create3dObject thisBlock.id 
+        var thisBlock = this;
+        console.log(thisBlock.id);
 		if (event.name === 'OBJECT_TYPE') {
+            console.log()
 			switch (event.newValue) {
-                case 'nothing':
-                    console.log("New Kids from the Block");
-                    create3dObject();
-					break;
 				case 'cube':
-                    console.log("New Kids from the Block");
-                    create3dObject();
+
 					break;
                 case 'cylinder':
-                    console.log("New Kids from the Block");
+
                     break;
                 default:
-    				console.error('set_speed: unknown motion type \'' + event.newValue + '\'');
+    				console.error('Error: ');
 			}
 		}
-        if (event.name === Blockly.Events.DELETE) {
-            console.log("no more blockly please");
-        }
+
 	},
 };

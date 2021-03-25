@@ -321,3 +321,52 @@ function onProgramFinished() {
     console.log('Execution finished');
     popSuccess(Blockly.Msg['EXEC_SUCCESS'] || "Program finished");
 }
+
+//experimenting with the eventListener, Lukas
+
+let blocksIdList = [];
+let simObjects = [];
+
+function watchBlocks(event) {
+
+    const newBlock = workspace.getBlockById(event.blockId);
+    let currentBlocksList = workspace.getAllBlocks();
+    let currentBlocksIdList = [];
+
+    if (event.type === Blockly.Events.BLOCK_CREATE && newBlock != null){
+
+        blocksIdList.push(newBlock.id);
+
+        if (newBlock.type === 'addSimObject'){
+            //update list with 3D objects
+            //and tell the create3dObject script
+            simObjects.push(newBlock.id);
+            console.log('ID', newBlock.id);
+            console.warn('Updated 3D objects list. Waring not implemented');
+            //update3dobjects(simObjects);
+        }
+    }
+
+    if (event.type === Blockly.Events.BLOCK_DELETE) {
+
+        currentBlocksList.forEach(block => currentBlocksIdList.push(block.id));
+        currentBlocksList = [];
+
+        let compareBlockList = new Set(currentBlocksIdList);
+        let deletedBlocks = [...blocksIdList].filter(blockId => !compareBlockList.has(blockId));
+
+        blocksIdList = currentBlocksIdList;
+        currentBlocksIdList = [];
+
+        let deletedBlocksSet = new Set(deletedBlocks);
+        let deletedSimObjects = [...simObjects].filter(id => deletedBlocksSet.has(id));
+
+        simObjects = simObjects.filter(id => !deletedSimObjects.includes(id))
+
+        deletedSimObjects = [];
+        deletedBlocks = [];
+        console.warn('Updated 3D objects list. Waring not implemented');
+    }
+}
+
+workspace.addChangeListener(watchBlocks);
