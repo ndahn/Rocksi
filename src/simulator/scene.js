@@ -306,5 +306,28 @@ function render() {
 	renderer.render(scene, camera);
 }
 
-//I need the scene, this is for experimenting
-export {scene};
+//These two functions are exported to add meshes to the scene or remove them
+//no error checking right now, Lukas
+//addMesh needs a valid three mesh.
+export function addMesh(mesh){
+    scene.add(mesh);
+    requestAnimationFrame(render);
+}
+
+export function remMesh(simObject){
+    scene.remove(scene.getObjectByName(simObject.name));
+    requestAnimationFrame(render);
+}
+
+export function moveMesh(simObject){
+    const mesh = scene.getObjectByName(simObject.name);
+    mesh.position.x = simObject.x;
+    mesh.position.y = simObject.y;
+    mesh.position.z = simObject.z;
+    mesh.rotation.z = simObject.z;
+    requestAnimationFrame(render);
+}
+export function getMesh(simObject){
+    const mesh = scene.getObjectByName(simObject.name);
+    return mesh
+}
