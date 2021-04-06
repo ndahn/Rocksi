@@ -295,9 +295,16 @@ export function moveMesh(simObject){
     mesh.position.x = simObject.x;
     mesh.position.y = simObject.y;
     mesh.position.z = simObject.z;
-    mesh.rotation.z = simObject.z;
     requestAnimationFrame(render);
 }
+export function rotMesh(simObject){
+    const mesh = scene.getObjectByName(simObject.name);
+    mesh.rotation.x = simObject.rotX;
+    mesh.rotation.y = simObject.rotY;
+    mesh.rotation.z = simObject.rotZ;
+    requestAnimationFrame(render);
+}
+
 export function getMesh(simObject){
     const mesh = scene.getObjectByName(simObject.name);
     return mesh
