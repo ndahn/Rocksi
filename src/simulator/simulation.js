@@ -1,30 +1,5 @@
-import * as Blockly from "blockly"
 import { Object3D, Vector3, Euler } from "three"
-
-//function for updating the physics, Lukas
-import { updatePhysics,
-         updateMeshes,
-         updateBodies,
-         isWorldActive } from './physics'
-
 var TWEEN = require('@tweenjs/tween.js');
-
-<<<<<<< HEAD
-import { isAttached,
-         getAttachedObject,
-         getSimObjects,
-         getSimObjectByPos,
-         resetAllSimObjects,
-         getSimObjectIdx } from "./objects/objects"
-
-=======
->>>>>>> 0046a16 (Integrating 3D objects for the robot to interact with)
-
-// Velocities to move a joint one unit
-// (m/s for prismatic joints, rad/s for revolute joints)
-Blockly.Msg.DEFAULT_SPEED_MOVE = 0.5;
-Blockly.Msg.DEFAULT_SPEED_GRIPPER = 0.1;
-Blockly.Msg.DEFAULT_SPEED_JOINT = 0.7;
 
 
 function deg2rad(deg) {
@@ -60,38 +35,14 @@ class TheSimulation {
 
         this.running = false;
         this.velocities = {
-            move: Blockly.Msg.DEFAULT_SPEED_MOVE,
-            gripper: Blockly.Msg.DEFAULT_SPEED_GRIPPER,
-            joint: Blockly.Msg.DEFAULT_SPEED_JOINT,
+            move: 0.5,
+            gripper: 0.5
         }
-        //Physics and triggers, Lukas
-        this.runningPhysics = false;
-        this.gripperWasOpen = false;
-        this.physicsDone = true;
-        this.lastSimObjectProcessed = false;
     }
-
 
     reset() {
         this.unlockJoints();
         this.setDefaultVelocities();
-
-        this.physicsDone = true;
-        this.lastSimObjectProcessed = false;
-        this.runningPhysics = false;
-    }
-
-    //Lukas
-    resetSimObjects(visible = true) {
-        const simObjects = getSimObjects();
-        if (simObjects != undefined) {
-            for (const simObject of simObjects) {
-                simObject.reset();
-                simObject.addTransformListeners();
-                if (visible) { simObject.makeVisible(); }
-                else if (!visible) { simObject.hide(); }
-            }
-        }
     }
 
     async run(command, ...args) {
@@ -115,14 +66,11 @@ class TheSimulation {
         // As this is called by _onTweenFinished, this prevents having multiple tweens
         // with different end times, but that's not a use case at the moment
         TWEEN.removeAll();
-        this.runningPhysics = false;
-        this.physicsDone = true;
-        this.lastSimObjectProcessed = true;
-        
     }
 
 
     setParam(param, value) {
+        console.log('> Setting ' + param + ' to ' + value);
         try {
             if (param.startsWith('velocity')) {
                 let motion = param.split('/')[1];
@@ -134,18 +82,15 @@ class TheSimulation {
                     case 'gripper':
                         this.velocities.gripper = value;
                         break;
-                    case 'joint':
-                        this.velocities.joint = value;
-                        break;
                     default:
-                        throw ('invalid value \'' + value + '\'');
+                        throw ('invalid parameter \'' + param + '=' + value + '\'');
                 }
             }
             else {
                 throw ('unknown parameter');
             }
         } catch (e) {
-            console.warn('Failed to set ' + param + ': ' + e);
+            console.warn('! Failed to set ' + param + ': ' + e);
         }
     }
 
@@ -153,9 +98,8 @@ class TheSimulation {
         console.log('> Resetting velocities to defaults');
 
         this.velocities = {
-            move: Blockly.Msg.DEFAULT_SPEED_MOVE,
-            gripper: Blockly.Msg.DEFAULT_SPEED_GRIPPER,
-            joint: Blockly.Msg.DEFAULT_SPEED_JOINT,
+            move: 0.5,
+            gripper: 0.5
         }
     }
 
@@ -164,7 +108,7 @@ class TheSimulation {
         console.log('> Locking joint ' + jointIdx);
 
         if (this.lockedJointIndices.includes(jointIdx)) {
-            console.warn('> ... but joint ' + jointIdx + ' is already locked');
+            console.warn('! ... but joint ' + jointIdx + ' is already locked');
             return;
         }
 
@@ -176,7 +120,7 @@ class TheSimulation {
         let idx = this.lockedJointIndices.indexOf(jointIdx);
 
         if (idx < 0) {
-            console.warn('> ... but joint ' + jointIdx + ' is not locked');
+            console.warn('! ... but joint ' + jointIdx + ' is not locked');
             return;
         }
 
@@ -217,13 +161,14 @@ class TheSimulation {
 
 
     wait(ms) {
+        console.log('> Waiting ' + ms + ' ms');
         return new Promise(resolve => {
             setTimeout(() => resolve('success'), ms);
         });
     }
 
 
-    move(pose) {
+    move(poseType, pose) {
         if (!pose) {
             throw new Error('move failed: missing pose');
         }
@@ -243,9 +188,8 @@ class TheSimulation {
         const start = {};
         const target = {};
 
-        const space = pose.shift();
-        switch (space) {
-            case 'task_space':
+        switch (poseType) {
+            case 'TaskspacePose':
                 // Task space pose
                 console.log('> Moving robot to task space pose ' + pose);
 
@@ -259,8 +203,8 @@ class TheSimulation {
 
                 const solution = this.ik.solve(
                     ikTarget,
-                    robot.tcp.object,
-                    robot.ikjoints,
+                    robot,
+                    robot.ikEnabled,
                     {
                         iterations: 1,
                         jointLimits: robot.interactionJointLimits,
@@ -278,7 +222,7 @@ class TheSimulation {
 
                 break;
 
-            case 'joint_space':
+            case 'JointspacePose':
                 // Joint space pose
                 console.log('> Moving robot to joint space pose ' + pose);
 
@@ -291,11 +235,11 @@ class TheSimulation {
                 break;
 
             default:
-                console.error('move: unknown configuration space \'' + space + '\'');
+                console.error('# unknown configuration space \'' + poseType + '\'');
                 return;
         }
 
-        const duration = getDuration(robot, target, this.velocities.move);
+        const duration = getDuration(robot, target, this.velocities.move * robot.maxSpeed.move);
         let tween = this._makeTween(start, target, duration);
         return tween;
     }
@@ -306,33 +250,14 @@ class TheSimulation {
         const robot = this.robot;
         const start = {};
         const target = {};
-        //let mesh;
-        //WIP: Determin if something is under the gripper
-        //if yes, then close it until the gripper touches the object, Lukas
-        //mesh = getMeshByPosition(getTCP());
-        const tcp = robot.tcp.object;
-        let position = new Vector3;
-        tcp.getWorldPosition(position);
-        const simObject = getSimObjectByPos(position, 0.5);
-        if (isAttached() == false && simObject != undefined && this.gripperWasOpen) {
-            simObject.attachToGripper();
-            simObject.wasGripped = true;
-            for (const finger of robot.hand.movable) {
-                    start[finger.name] = finger.angle;
-                    target[finger.name] = finger.limit.upper - (simObject.size.x * 0.2);//This is just for testing, Lukas
-            }
-        }
-        //if not, close full
-        else {
-            for (const finger of robot.hand.movable) {
-                start[finger.name] = finger.angle;
-                target[finger.name] = finger.limit.lower;  // fully closed
-            }
+
+        for (const finger of robot.hand.movable) {
+            start[finger.name] = finger.angle;
+            target[finger.name] = finger.limit.lower;  // fully closed
         }
 
-        const duration = getDuration(robot, target, this.velocities.gripper);
+        const duration = getDuration(robot, target, this.velocities.gripper * robot.maxSpeed.gripper);
         let tween = this._makeTween(start, target, duration);
-        this.gripperWasOpen = false;
         return tween;
     }
 
@@ -342,26 +267,14 @@ class TheSimulation {
         const robot = this.robot;
         const start = {};
         const target = {};
-        //let mesh;
-
-        //If an object is currently gripped, detach it from the gripper, Lukas
-        if (isAttached() == true) {
-            const simObject = getAttachedObject();
-            simObject.detachFromGripper();
-            const idx = getSimObjectIdx(simObject.name);
-            if (!this.runningPhysics) {
-                this.startPhysicalBody(idx);
-            }
-        }
 
         for (const finger of robot.hand.movable) {
             start[finger.name] = finger.angle;
             target[finger.name] = finger.limit.upper;  // fully opened
         }
 
-        const duration = getDuration(robot, target, this.velocities.gripper);
+        const duration = getDuration(robot, target, this.velocities.gripper * robot.maxSpeed.gripper);
         let tween = this._makeTween(start, target, duration);
-        this.gripperWasOpen = true;
         return tween;
     }
 
@@ -381,7 +294,7 @@ class TheSimulation {
         start[joint.name] = joint.angle;
         target[joint.name] = clampJointAngle(joint, deg2rad(angle));
 
-        const duration = getDuration(robot, target, this.velocities.joint);
+        const duration = getDuration(robot, target, this.velocities.move * robot.maxSpeed.move);
         let tween = this._makeTween(start, target, duration);
         return tween;
     }
@@ -394,62 +307,22 @@ class TheSimulation {
         return this.joint_absolute(jointIdx, angleAbs);
     }
 
-<<<<<<< HEAD
-    //Lukas
-    startPhysicalBody(simObjectsIdx) {
-        const simObjects = getSimObjects();
-        this.physicsDone = false;
-        if (simObjects[simObjectsIdx].wasGripped) {
-            simObjects[simObjectsIdx].wasGripped = false;
-        } else {
-            simObjects[simObjectsIdx].reset();
+    //Calls the create3dObject script for adding a new 3D object, Lukas
+    add3dbox(position) {
+        const shape = "box"
+        // Seems to be a weird bug in js-interpreter concerning varargs and arrays
+        if (position.class === 'Array' && position.length === undefined) {
+            let newPosition = [];
+            for (const p in position.properties) {
+                if (p.match(/\d+/g)) {
+                    newPosition[p] = position.properties[p];
+                }
+            }
+            position = newPosition;
         }
-        simObjects[simObjectsIdx].makeVisible();
-        simObjects[simObjectsIdx].removeTransformListners(); //also removes the listners for the raycaster
-        simObjects[simObjectsIdx].addBodyToWorld();
-        simObjects[simObjectsIdx].updateBody();
-        simObjects[simObjectsIdx].body.wakeUp();
-        if (simObjectsIdx + 1 == simObjects.length) {
-            this.lastSimObjectProcessed = true;
-        }
-        if (!this.runningPhysics) {
-            this._animatePhysics();
-            this.runningPhysics = true;
-        }
+        create3dObject(shape, position);
     }
 
-    getPhysicsDone() {
-        const simObjects = getSimObjects();
-        if (simObjects != undefined) {
-
-            if ( !this.runningPhysics
-                 && this.lastSimObjectProcessed
-                 && !isWorldActive()) {
-
-                     this.physicsDone = true;
-
-            } else { this.physicsDone = false; }
-        }
-
-        else {
-            this.physicsDone = true;
-        }
-
-        return this.physicsDone;
-    }
-
-    _animatePhysics() {
-        updatePhysics();
-        this._renderCallback();
-        if (!isWorldActive()) {
-            console.log('Physics rendering halted.');
-            this.runningPhysics = false;
-            return;
-        }
-        window.requestAnimationFrame(() => this._animatePhysics());
-    }
-=======
->>>>>>> 0046a16 (Integrating 3D objects for the robot to interact with)
 
     _makeTween(start, target, duration) {
         return new Promise((resolve, reject) => {
@@ -492,7 +365,6 @@ class TheSimulation {
     }
 
     _animate(time) {
-
         TWEEN.update(time);
         this._renderCallback();
 
@@ -508,24 +380,22 @@ class TheSimulation {
  * Singleton with async getter, will be initialized by the robot simulator.
  */
 const Simulation = {
-    _simulation: null,
+    instance: null,
     _awaiting: [],
 
-    getInstance: function(callback) {
-        let s = this._simulation;
-        if (s) {
-            // Immediate callback
-            callback(s);
+    getInstance: function () {
+        if (this.instance) {
+            return Promise.resolve(this.instance);
         }
         else {
-            // Wait for simulation to be initialized
-            this._awaiting.push(callback);
+            let p = new Promise(resolve => this._awaiting.push(resolve));
+            return p;
         }
     },
 
     init: function(robot, ik, renderCallback) {
-        let s = this._simulation = new TheSimulation(robot, ik, renderCallback);
-        this._awaiting.forEach(cb => cb(s));
+        this.instance = new TheSimulation(robot, ik, renderCallback);
+        this._awaiting.forEach(p => p(this.instance));
         this._awaiting = []
     }
 };

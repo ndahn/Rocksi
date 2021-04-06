@@ -19,16 +19,8 @@ import {
 	LineBasicMaterial,
 	Raycaster,
 	Vector2,
-    Sphere,
-    Box3,
+	ArrowHelper
 } from "three";
-
-//Imports for managing objects and physics, Lukas
-import { initCannon,
-         initRobotHitboxes } from './physics';
-
-import { setTCSimObjects,
-         setTCSimObjectsOnClick } from './objects/objects';
 
 // In ROS models Z points upwards
 Object3D.DefaultUp = new Vector3(0, 0, 1);
@@ -36,7 +28,7 @@ Object3D.DefaultUp = new Vector3(0, 0, 1);
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 
-var ResizeSensor = require('css-element-queries/src/ResizeSensor');
+var ResizeSensor = require("css-element-queries/src/ResizeSensor");
 
 import { XacroLoader } from "xacro-parser";
 import URDFLoader from "urdf-loader";
@@ -44,8 +36,10 @@ import URDFLoader from "urdf-loader";
 // import { loadCached } from "../cachedb";
 // import makeRock from './objects/rock'
 import { default as IKSolver } from "./ik/ccdik"
+//import { default as IKSolver } from "./ik/fabrik"
 import Simulation from "./simulation"
-import { popInfo } from '../alert'
+import { initGui } from "./gui"
+import { popInfo } from "../alert"
 
 const path = require('path');
 
@@ -58,9 +52,14 @@ switch (selectedRobot.toLowerCase()) {
 		robot = require('./robots/franka');
 		break;
 
+	case 'niryo':
+		robot = require('./robots/niryo');
+		break;
+
 	default:
 		throw ('Unknown robot \'' + selectedRobot + '\'');
 }
+
 
 let container;
 let camera, scene, renderer;
@@ -68,7 +67,7 @@ let raycaster;
 let mouseXY = new Vector2();
 
 let tcptarget, groundLine;
-let transformControl, controls; //I need them for the simObjects. They need to be disabled when moving a simObject.
+let cameraControl, transformControl;
 let ik;
 
 const canHover = window.matchMedia('(hover: hover)').matches;
@@ -83,16 +82,13 @@ loadRobotModel(robot.xacro)
 
 		for (const j in robot.defaultPose) {
 			try {
-				model.joints[j].setJointValue(robot.defaultPose[j]);
+				robot.joints[j].setJointValue(robot.defaultPose[j]);
 			} catch (e) {
 				console.error('Failed to set default joint pose for joint ' + j + ': ' + e);
 			}
 		}
 
 		initScene();
-        //Lukas
-        initCannon();
-        //initRobotHitboxes(robot); Not working... Lukas
 		$('.loading-message').hide();
 
 		ik = new IKSolver(scene, robot);
@@ -108,7 +104,15 @@ function loadRobotModel(url) {
 		xacroLoader.inOrder = true;
 		xacroLoader.requirePrefix = true;
 		xacroLoader.localProperties = true;
-		xacroLoader.rospackCommands.find = (...args) => path.join(robot.root, ...args);
+
+		xacroLoader.rospackCommands.find = (...args) => {
+			return path.join(robot.root, ...args);
+		}
+
+		for (let cmd in robot.rosMacros) {
+			xacroLoader.rospackCommands[cmd] = robot.rosMacros[cmd];
+		}
+
 		xacroLoader.load(
 			url,
 			(xml) => {
@@ -142,8 +146,9 @@ function initScene() {
 		1,
 		2000
 	);
+
 	camera.position.set(8, 20, 17);
-	camera.lookAt(0, 0, 10)
+	camera.lookAt(0, 0, 10);
 
 	// Grid
 	//const grid = new PolarGridHelper(12, 16, 8, 64, 0x888888, 0xaaaaaa);
@@ -158,8 +163,11 @@ function initScene() {
 	// }
 
 	// Robot
-	robot.model.scale.set(10.0, 10.0, 10.0);
 	scene.add(robot.model);
+	// for (let joint of robot.arm.movable) {
+	// 	joint.add(new ArrowHelper(new Vector3(0, 0, 1), new Vector3(), 0.3, 0x0000ff));
+	// }
+
 
 	// Lights
 	const light = new HemisphereLight(0xffeeee, 0x111122);
@@ -179,9 +187,9 @@ function initScene() {
 	container.appendChild(renderer.domElement);
 
 	// Scene controls
-	controls = new OrbitControls(camera, renderer.domElement);
-	controls.damping = 0.2;
-	controls.addEventListener("change", render);
+	cameraControl = new OrbitControls(camera, renderer.domElement);
+	cameraControl.damping = 0.2;
+	cameraControl.addEventListener("change", render);
 
 	// TCP target & controls
 	tcptarget = new Mesh(
@@ -208,7 +216,7 @@ function initScene() {
 	transformControl.setSize(1.7);
 	transformControl.addEventListener("change", evt => requestAnimationFrame(render));
 	transformControl.addEventListener("objectChange", onTargetChange);
-	transformControl.addEventListener("dragging-changed", evt => controls.enabled = !evt.value);
+	transformControl.addEventListener("dragging-changed", evt => cameraControl.enabled = !evt.value);
 
 	// TODO setMode('rotate') on click event
 	transformControl.attach(tcptarget);
@@ -216,16 +224,15 @@ function initScene() {
 
 	if (canHover) {
 		transformControl.visible = false;
-        raycaster = new Raycaster();
-		/*container.addEventListener('mousemove', onMouseMove);
-        container.addEventListener('click', onClick);
-        replaced by: addListeners()*/
-        addListeners();
+		raycaster = new Raycaster();
+		container.addEventListener('mousemove', onMouseMove);
 	}
 
 	let domParent = document.querySelector('.sim-container');
 	new ResizeSensor(domParent, onCanvasResize);
 	onCanvasResize();
+
+	initGui(robot, cameraControl, ikRender);
 }
 
 function onCanvasResize() {
@@ -241,15 +248,14 @@ function onMouseMove(evt) {
 	mouseXY.x = (evt.offsetX / container.clientWidth) * 2 - 1;
 	mouseXY.y = -(evt.offsetY / container.clientHeight) * 2 + 1;
 
-    raycaster.setFromCamera(mouseXY, camera);
-    const intersections = raycaster.intersectObjects([tcptarget]);
-    setTCSimObjects(raycaster); //does this for all TransformControls of simObjects
-    let showTC = intersections.length > 0;
+	raycaster.setFromCamera(mouseXY, camera);
+	const intersections = raycaster.intersectObjects([tcptarget]);
+	let showTC = intersections.length > 0;
 
-    if (showTC !== transformControl.visible) {
-        transformControl.visible = showTC;
-        requestAnimationFrame(render);
-    }
+	if (showTC !== transformControl.visible) {
+		transformControl.visible = showTC;
+		requestAnimationFrame(render);
+	}
 }
 
 function onTargetChange() {
@@ -260,10 +266,10 @@ function onTargetChange() {
 	// Do the IK if the target has been moved
 	ik.solve(
 		tcptarget,
-		robot.tcp.object,
-		robot.ikjoints,
+		robot,
+		robot.ikEnabled,
 		{
-			iterations: 1,
+			iterations: 3,
 			jointLimits: robot.interactionJointLimits,
 			apply: true
 		}
@@ -276,6 +282,7 @@ function onTargetChange() {
 function ikRender() {
 	robot.tcp.object.getWorldPosition(tcptarget.position);
 	robot.tcp.object.getWorldQuaternion(tcptarget.quaternion);
+
 	updateGroundLine();
 	requestAnimationFrame(render);
 }
@@ -289,79 +296,8 @@ function updateGroundLine() {
 }
 
 function render() {
-    renderer.render(scene, camera);
+	renderer.render(scene, camera);
 }
 
-//functions for simObject stuff, Lukas
-export function removeListeners() {
-    if (container != undefined) {
-        container.removeEventListener('mousemove', onMouseMove);
-        container.removeEventListener('click', onClick); //Only used for TransformControls for simObjects, Lukas
-    }
-}
-
-export function addListeners() {
-    if (container != undefined) {
-        container.addEventListener('mousemove', onMouseMove);
-        container.addEventListener('click', onClick); //Only used for TransformControls for simObjects, Lukas
-    }
-}
-
-function onClick() {
-    setTCSimObjectsOnClick(raycaster);
-}
-
-<<<<<<< HEAD
-export function requestAF () { requestAnimationFrame(render); }
-
-export function getScene () { return scene; }
-
-export function getRobot () { return robot; }
-
-export function getControl () {
-    const contObj = {
-        camera: camera,
-        orbitControls: controls,
-        renderer: renderer,
-    }
-    return contObj;
-}
-=======
-//These two functions are exported to add meshes to the scene or remove them
-//no error checking right now, Lukas
-//addMesh needs a valid three mesh.
-export function addMesh(mesh){
-    scene.add(mesh);
-    requestAnimationFrame(render);
-}
-
-export function remMesh(simObject){
-    scene.remove(scene.getObjectByName(simObject.name));
-    requestAnimationFrame(render);
-}
-
-export function moveMesh(simObject){
-    const mesh = scene.getObjectByName(simObject.name);
-    mesh.position.x = simObject.x;
-    mesh.position.y = simObject.y;
-    mesh.position.z = simObject.z;
-    requestAnimationFrame(render);
-}
-export function rotMesh(simObject){
-    const mesh = scene.getObjectByName(simObject.name);
-    mesh.rotation.x = simObject.rotX;
-    mesh.rotation.y = simObject.rotY;
-    mesh.rotation.z = simObject.rotZ;
-    requestAnimationFrame(render);
-}
-
-export function getMesh(simObject){
-    const mesh = scene.getObjectByName(simObject.name);
-    return mesh
-}
-<<<<<<< HEAD
 //I need the scene, this is for experimenting
-export default addMeshToScene;
->>>>>>> 0046a16 (Integrating 3D objects for the robot to interact with)
-=======
->>>>>>> 6bf9026 (You can now add and remove blockly blocks to create 3D-objects. The 3D-object can be change into a cylinder. Some clean up)
+export {scene};
