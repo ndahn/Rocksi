@@ -43,7 +43,9 @@ import { addSimObject,
 import { popSuccess, popWarning, popError, popInfo } from '../alert'
 =======
 //imports for adding and removing 3D-objects
-import {addSimObjects, remSimObjects, getSimObjectsIds} from '../simulator/objects/create3dObject'
+import {addSimObjects,
+        remSimObjects,
+        getSimObjectsNames} from '../simulator/objects/objects'
 
 import { popSuccess, popWarning, popError } from '../alert'
 >>>>>>> 6bf9026 (You can now add and remove blockly blocks to create 3D-objects. The 3D-object can be change into a cylinder. Some clean up)
@@ -422,17 +424,19 @@ let simObjects = [];
 function watchBlocks(event) {
 
     //get all ids of currently rendered 3D-block representations
-    let simObjectsIds = getSimObjectsIds();
+    let simObjectsIds = getSimObjectsNames();
     //if there is a new block added to the workspace store it
     const newBlock = workspace.getBlockById(event.blockId);
 
+    //init some arrays
     let deletedSimObjects = [];
     let currentSimObjects = [];
     let currentSimObjectIds = [];
 
-    currentSimObjects = workspace.getBlocksByType('addSimObject');
     //put all blocks ids that are currently on the workspace into an array
+    currentSimObjects = workspace.getBlocksByType('addSimObject');
     currentSimObjects.forEach(block => currentSimObjectIds.push(block.id));
+
     //clear memory
     currentSimObjects = [];
 
@@ -445,9 +449,8 @@ function watchBlocks(event) {
     }
 
     if (event.type === Blockly.Events.BLOCK_DELETE) {
-
-        deletedSimObjects = [...simObjectsIds].filter(blockId => !currentSimObjectIds.includes(blockId));
-
+        deletedSimObjects = [...simObjectsIds].filter(blockId =>
+                             !currentSimObjectIds.includes(blockId));
         remSimObjects(deletedSimObjects);
         deletedSimObjects = [];
     }
