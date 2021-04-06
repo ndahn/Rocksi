@@ -3,7 +3,8 @@ import { addMesh,
          remMesh,
          getMesh,
          moveMesh,
-         rotMesh } from '../scene';
+         rotMesh,
+         addToTCP } from '../scene';
 
 // TODO: Error checking!
 
@@ -12,18 +13,19 @@ let simObjects = [];
 
 //container for storing simObject properties
 export class simObject {
-    constructor(x, y, z, rotX, rotY, rotZ, name, type) {
+    constructor(x, y, z, rotX, rotY, rotZ, name, type, attached) {
         this.name = 'default';
         this.type = 'cube';
-        this.x = 5;
-        this.y = 5;
-        this.z = 0.5;
+        this.x = 3;
+        this.y = 3;
+        this.z = 0.25;
         this.rotX = 0;
         this.rotY = 0;
         this.rotZ = 0;
-        this.sizeX = 1;
-        this.sizeY = 1;
-        this.sizeZ = 1; 
+        this.sizeX = .5;
+        this.sizeY = .5;
+        this.sizeZ = .5;
+        this.attached = false;
     }
 }
 
@@ -40,25 +42,33 @@ function createMesh(simObject){
     }
 
     if(simObject.type === 'cube'){
-        const cubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1, 10, 10);
+        const cubeGeometry = new THREE.BoxBufferGeometry(simObject.sizeX * 10,
+                                                        simObject.sizeY * 10,
+                                                        simObject.sizeZ * 10,
+                                                        10,
+                                                        10);
         const cubeMaterial = new THREE.MeshPhongMaterial({ color: randomColor() });
-        const cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        let cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
         cubeMesh.castShadow = true;
-        cubeMesh.position.x  = getRandomInt(10);
-        cubeMesh.position.y  = getRandomInt(10);
+        cubeMesh.position.x  = simObject.x;
+        cubeMesh.position.y  = simObject.y;
         cubeMesh.position.z  = simObject.z;
+        cubeMesh.scale.x = 0.1;
+        cubeMesh.scale.y = 0.1;
+        cubeMesh.scale.z = 0.1;
         cubeMesh.name = simObject.name;
         addMesh(cubeMesh);
+
     }
 
     if(simObject.type === 'cylinder'){
-        const cylinderGeometry = new THREE.CylinderBufferGeometry(1, 1, 1, 10, 10);
+        const cylinderGeometry = new THREE.CylinderBufferGeometry(simObject.sizeX, simObject.sizeY, simObject.sizeZ, 10, 10);
         const cylinderMaterial = new THREE.MeshPhongMaterial({ color: randomColor() });
         const cylinderMesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
         cylinderMesh.castShadow = true;
-        cylinderMesh.position.x  = getRandomInt(10);
-        cylinderMesh.position.y  = getRandomInt(10);
-        cylinderMesh.position.z  = 0.5;
+        cylinderMesh.position.x  = simObject.x;
+        cylinderMesh.position.y  = simObject.y;
+        cylinderMesh.position.z  = simObject.z;
         cylinderMesh.name = simObject.name;
         addMesh(cylinderMesh);
     }
@@ -143,6 +153,55 @@ function getSimObjectIdx(simObjects, simObjectName){
     }
 }
 
+
+//Checks if the tcp is on top of an simObjects mesh. experimenting, Lukas
+export function watchObjects(position, scene){
+    //Look if something is already attached to the TCP
+    if (isAttached() == false) {
+        let meshes = [];
+        for (let i = 0; i < simObjects.length; i++){
+            const mesh = getMesh(simObjects[i]);
+            if (mesh != undefined && mesh.parent === scene){
+                meshes.push(mesh);
+            }
+        }
+        for(let i = 0; i < meshes.length; i++){
+            //console.log('Mesh is at: ', mesh.position);
+            if (meshes[i].position.x >= position.x - 0.2
+                && meshes[i].position.x <= position.x + 0.2){
+
+                if (meshes[i].position.y >= position.y - 0.2
+                    && meshes[i].position.y <= position.y + 0.2){
+
+                    if (meshes[i].position.z >= position.z - 0.2
+                        && meshes[i].position.z <= position.z + 0.2){
+
+                        //Placeholder for gripper status
+                        if (true){
+                            //console.log('Mesh collision at position: ', position);
+                            addToTCP(meshes[i]);
+                            let attachedSimObject = getSimObject(meshes[i].name);
+                            attachedSimObject.attached = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+//Determin if a simobject is attached to the TCP
+function isAttached(){
+    let attached = false;
+    for (let i = 0; i < simObjects.length; i++){
+        if (simObjects[i].attached == true){
+            attached = true;
+        }
+    }
+    return attached;
+}
+
+//utils
 //Random integers. They are essential.
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));

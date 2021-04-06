@@ -20,6 +20,8 @@ import {
 	Raycaster,
 	Vector2,
 } from "three";
+//Function for checking the position of an Object in the Scene, Lukas
+import { watchObjects } from './objects/objects';
 
 // In ROS models Z points upwards
 Object3D.DefaultUp = new Vector3(0, 0, 1);
@@ -260,7 +262,6 @@ function onTargetChange() {
 function ikRender() {
 	robot.tcp.object.getWorldPosition(tcptarget.position);
 	robot.tcp.object.getWorldQuaternion(tcptarget.quaternion);
-
 	updateGroundLine();
 	requestAnimationFrame(render);
 }
@@ -273,12 +274,18 @@ function updateGroundLine() {
 	geom.verticesNeedUpdate = true;
 }
 
+//Custom collision detection with watchObjects, Lukas
 function render() {
-	renderer.render(scene, camera);
+    const position = getTCP();
+    watchObjects(position, scene);
+    //console.log('TCP Position: ', position);
+    renderer.render(scene, camera);
 }
 
-//These two functions are exported to add meshes to the scene or remove them
+//Functions for adding, removing and changing postions of meshs at various
+//nodes in the scene, Lukas
 //no error checking right now, Lukas
+
 //addMesh needs a valid three mesh.
 export function addMesh(mesh){
     scene.add(mesh);
@@ -297,6 +304,7 @@ export function moveMesh(simObject){
     mesh.position.z = simObject.z;
     requestAnimationFrame(render);
 }
+
 export function rotMesh(simObject){
     const mesh = scene.getObjectByName(simObject.name);
     mesh.rotation.x = simObject.rotX;
@@ -308,4 +316,25 @@ export function rotMesh(simObject){
 export function getMesh(simObject){
     const mesh = scene.getObjectByName(simObject.name);
     return mesh
+}
+
+export function addToTCP(mesh){
+    let tcp = robot.tcp.object;
+    scene.remove(mesh);
+    tcp.attach(mesh);
+    mesh.updateMatrix();
+}
+
+export function remFromTCP(mesh){
+    let tcp = robot.tcp.object;
+    tcp.remove(mesh);
+    scene.add(mesh);
+}
+
+export function getTCP(){
+    let tcp;
+    tcp = robot.tcp.object;
+    let position = new Vector3;
+    tcp.getWorldPosition(position);
+    return position
 }
