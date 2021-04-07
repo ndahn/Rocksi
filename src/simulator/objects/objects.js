@@ -4,7 +4,8 @@ import { addMesh,
          getMesh,
          moveMesh,
          rotMesh,
-         addToTCP } from '../scene';
+         addToTCP,
+         remFromTCP } from '../scene';
 
 // TODO: Error checking!
 
@@ -12,13 +13,15 @@ import { addMesh,
 let simObjects = [];
 
 //container for storing simObject properties
+//x, y, z, rotX, rotY, rotZ, name, type, attached
 export class simObject {
-    constructor(x, y, z, rotX, rotY, rotZ, name, type, attached) {
+    constructor() {
         this.name = 'default';
         this.type = 'cube';
-        this.x = 3;
-        this.y = 3;
-        this.z = 0.25;
+        //this.position = new THREE.Vector3(3, 3, 0.25);
+        this.x = 5;
+        this.y = 5;
+        this.z = 0;
         this.rotX = 0;
         this.rotY = 0;
         this.rotZ = 0;
@@ -29,30 +32,24 @@ export class simObject {
     }
 }
 
-//creates a three mesh from an simObject depending on simObject.type
-function createMesh(simObject){
-    //random colors for fancy cubes
-    function randomColor() {
-        const hexDigits = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += hexDigits[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    }
+//Functions for creating meshes
 
-    if(simObject.type === 'cube'){
+//creates a three mesh from an simObject depending on simObject.type
+function createMesh(simObject) {
+
+    if (simObject.type === 'cube') {
         const cubeGeometry = new THREE.BoxBufferGeometry(simObject.sizeX * 10,
-                                                        simObject.sizeY * 10,
-                                                        simObject.sizeZ * 10,
-                                                        10,
-                                                        10);
+                                                         simObject.sizeY * 10,
+                                                         simObject.sizeZ * 10,
+                                                         10,
+                                                         10);
+
         const cubeMaterial = new THREE.MeshPhongMaterial({ color: randomColor() });
         let cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
         cubeMesh.castShadow = true;
         cubeMesh.position.x  = simObject.x;
         cubeMesh.position.y  = simObject.y;
-        cubeMesh.position.z  = simObject.z;
+        cubeMesh.position.z  = simObject.z + 0.25;
         cubeMesh.scale.x = 0.1;
         cubeMesh.scale.y = 0.1;
         cubeMesh.scale.z = 0.1;
@@ -61,8 +58,13 @@ function createMesh(simObject){
 
     }
 
-    if(simObject.type === 'cylinder'){
-        const cylinderGeometry = new THREE.CylinderBufferGeometry(simObject.sizeX, simObject.sizeY, simObject.sizeZ, 10, 10);
+    if (simObject.type === 'cylinder') {
+        const cylinderGeometry = new THREE.CylinderBufferGeometry(simObject.sizeX,
+                                                                  simObject.sizeY,
+                                                                  simObject.sizeZ,
+                                                                  10,
+                                                                  10);
+
         const cylinderMaterial = new THREE.MeshPhongMaterial({ color: randomColor() });
         const cylinderMesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
         cylinderMesh.castShadow = true;
@@ -74,8 +76,10 @@ function createMesh(simObject){
     }
 }
 
+//Functions for simObjects
+
 //removes the three mesh and creates a new one with the new type
-export function changeSimObjectType(simObjectName, type){
+export function changeSimObjectType(simObjectName, type) {
     const idx = getSimObjectIdx(simObjects, simObjectName);
     simObjects[idx].type = type;
     remMesh(simObjects[idx]);
@@ -86,7 +90,7 @@ export function changeSimObjectType(simObjectName, type){
 //Note that the movement of the mesh is not animated.
 //It will pop out and in of existence.
 //We don't need an animation at this point.
-export function changeSimObjectPosition(simObject){
+export function changeSimObjectPosition(simObject) {
     const idx = getSimObjectIdx(simObjects, simObject.name);
     simObjects[idx].x = simObject.x;
     simObjects[idx].y = simObject.y;
@@ -94,7 +98,7 @@ export function changeSimObjectPosition(simObject){
     moveMesh(simObjects[idx]);
 }
 
-export function changeSimObjectOrientation(simObject){
+export function changeSimObjectOrientation(simObject) {
     const idx = getSimObjectIdx(simObjects, simObject.name);
     simObjects[idx].rotX = simObject.rotX;
     simObjects[idx].rotY = simObject.rotY;
@@ -107,9 +111,9 @@ export function changeSimObjectOrientation(simObject){
 //To do this it looks for the uuid in the simObjects array and if returned
 //undefined it will add a new simObject and call createMesh. I do not think
 //looking for an undefined is a good desing choice, but it is working as intended
-export function addSimObjects(simObjectNames){
-    for(let i = 0; i < simObjectNames.length; i++){
-        if(simObjects.find(object => object.name === simObjectNames[i]) === undefined){
+export function addSimObjects(simObjectNames) {
+    for (let i = 0; i < simObjectNames.length; i++) {
+        if (simObjects.find(object => object.name === simObjectNames[i]) === undefined){
             let newSimObject = new simObject;
             newSimObject.name = simObjectNames[i];
             simObjects.push(newSimObject);
@@ -120,10 +124,10 @@ export function addSimObjects(simObjectNames){
 
 //Removes the simObject from the simObjects array and calls remMesh
 //I need to implement some form of error checking here.
-export function remSimObjects(simObjectNames){
-    for(let i = 0; i < simObjectNames.length; i++){
-        for(let k = 0; k < simObjects.length; k++){
-            if(simObjects[k].name == simObjectNames[i]){
+export function remSimObjects(simObjectNames) {
+    for (let i = 0; i < simObjectNames.length; i++) {
+        for (let k = 0; k < simObjects.length; k++) {
+            if (simObjects[k].name == simObjectNames[i]) {
                 remMesh(simObjects[k]);
                 simObjects.splice(k, 1);
             }
@@ -134,75 +138,74 @@ export function remSimObjects(simObjectNames){
 //Returns a list with all names of simObjects (the uuids of the blockly blocks)
 //currently in the simObjects array
 //I need to implement some form of error checking here.
-export function getSimObjectsNames(){
+export function getSimObjectsNames() {
     let simObjectsNames = [];
     simObjects.forEach(simObject => simObjectsNames.push(simObject.name));
     return simObjectsNames
 }
 
-export function getSimObject(simObjectName){
+//Returns all simObjects
+export function getSimObjects() {
+        return simObjects
+}
+
+//Returns the simObject by name (the uuid of the blockly block)
+export function getSimObject(simObjectName) {
         const idx = getSimObjectIdx(simObjects, simObjectName);
         return simObjects[idx]
 }
 
 //Returns the index of a simObject in the simObjects array
 //I need to implement some form of error checking here.
-function getSimObjectIdx(simObjects, simObjectName){
+function getSimObjectIdx(simObjects, simObjectName) {
     for (let i = 0; i < simObjects.length; i++) {
         if (simObjects[i].name == simObjectName) return i;
     }
 }
 
+//Functions for gripping
 
-//Checks if the tcp is on top of an simObjects mesh. experimenting, Lukas
-export function watchObjects(position, scene){
-    //Look if something is already attached to the TCP
-    if (isAttached() == false) {
-        let meshes = [];
-        for (let i = 0; i < simObjects.length; i++){
-            const mesh = getMesh(simObjects[i]);
-            if (mesh != undefined && mesh.parent === scene){
-                meshes.push(mesh);
-            }
-        }
-        for(let i = 0; i < meshes.length; i++){
-            //console.log('Mesh is at: ', mesh.position);
-            if (meshes[i].position.x >= position.x - 0.2
-                && meshes[i].position.x <= position.x + 0.2){
+export function detachFromGripper(mesh) {
+    console.log('> Object dropped!');
+    getSimObject(mesh.name).attached = false;
+    remFromTCP(mesh);
+}
 
-                if (meshes[i].position.y >= position.y - 0.2
-                    && meshes[i].position.y <= position.y + 0.2){
-
-                    if (meshes[i].position.z >= position.z - 0.2
-                        && meshes[i].position.z <= position.z + 0.2){
-
-                        //Placeholder for gripper status
-                        if (true){
-                            //console.log('Mesh collision at position: ', position);
-                            addToTCP(meshes[i]);
-                            let attachedSimObject = getSimObject(meshes[i].name);
-                            attachedSimObject.attached = true;
-                        }
-                    }
-                }
-            }
-        }
-    }
+export function attachToGripper(mesh) {
+    console.log('> Object gripped!');
+    getSimObject(mesh.name).attached = true;
+    addToTCP(mesh);
 }
 
 //Determin if a simobject is attached to the TCP
-function isAttached(){
+export function isAttached() {
     let attached = false;
-    for (let i = 0; i < simObjects.length; i++){
-        if (simObjects[i].attached == true){
-            attached = true;
-        }
+    for (let i = 0; i < simObjects.length; i++) {
+        if (simObjects[i].attached == true) { attached = true; }
     }
-    return attached;
+    return attached
 }
 
-//utils
+//Return the first attached simObject
+export function getAttachedObject() {
+    for (let i = 0; i < simObjects.length; i++) {
+        if (simObjects[i].attached == true) { return simObjects[i] }
+    }
+}
+
+//Utils
+
 //Random integers. They are essential.
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
+}
+
+//random colors for fancy cubes
+function randomColor() {
+    const hexDigits = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += hexDigits[Math.floor(Math.random() * 16)];
+    }
+    return color;
 }

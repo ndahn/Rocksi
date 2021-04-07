@@ -22,13 +22,14 @@ import './blocks/joint_relative'
 import './blocks/set_speed'
 import './blocks/joint_lock'
 import './blocks/joint_unlock'
+
 //points to block definition for the add3dbox, Lukas
 import './blocks/addSimObject'
 
-//imports for adding and removing 3D-objects
-import {addSimObjects,
-        remSimObjects,
-        getSimObjectsNames} from '../simulator/objects/objects'
+//imports for adding and removing 3D-objects, Lukas
+import { addSimObjects,
+         remSimObjects,
+         getSimObjectsNames } from '../simulator/objects/objects'
 
 import { popSuccess, popWarning, popError } from '../alert'
 
