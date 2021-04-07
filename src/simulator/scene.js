@@ -22,7 +22,7 @@ import {
 	ArrowHelper
 } from "three";
 //Function for checking the position of an Object in the Scene, Lukas
-import { watchObjects } from './objects/objects';
+import { getSimObjects } from './objects/objects';
 
 //Imports for managing objects and physics, Lukas
 import { initCannon,
@@ -303,30 +303,26 @@ function updateGroundLine() {
 	geom.verticesNeedUpdate = true;
 }
 
-//Custom collision detection with watchObjects, Lukas
 function render() {
-    const position = getTCP();
-    watchObjects(position, scene);
-    //console.log('TCP Position: ', position);
     renderer.render(scene, camera);
 }
 
-//Functions for adding, removing and changing postions of meshs at various
+//Wrapper functions for adding, removing and changing postions of meshs at various
 //nodes in the scene, Lukas
 //no error checking right now, Lukas
 
 //addMesh needs a valid three mesh.
-export function addMesh(mesh){
+export function addMesh(mesh) {
     scene.add(mesh);
     requestAnimationFrame(render);
 }
 
-export function remMesh(simObject){
+export function remMesh(simObject) {
     scene.remove(scene.getObjectByName(simObject.name));
     requestAnimationFrame(render);
 }
 
-export function moveMesh(simObject){
+export function moveMesh(simObject) {
     const mesh = scene.getObjectByName(simObject.name);
     mesh.position.x = simObject.x;
     mesh.position.y = simObject.y;
@@ -334,7 +330,7 @@ export function moveMesh(simObject){
     requestAnimationFrame(render);
 }
 
-export function rotMesh(simObject){
+export function rotMesh(simObject) {
     const mesh = scene.getObjectByName(simObject.name);
     mesh.rotation.x = simObject.rotX;
     mesh.rotation.y = simObject.rotY;
@@ -342,28 +338,50 @@ export function rotMesh(simObject){
     requestAnimationFrame(render);
 }
 
-export function getMesh(simObject){
+export function getMesh(simObject) {
     const mesh = scene.getObjectByName(simObject.name);
     return mesh
 }
 
-export function addToTCP(mesh){
+export function addToTCP(mesh) {
     let tcp = robot.tcp.object;
-    scene.remove(mesh);
     tcp.attach(mesh);
-    mesh.updateMatrix();
 }
 
-export function remFromTCP(mesh){
+export function remFromTCP(mesh) {
     let tcp = robot.tcp.object;
-    tcp.remove(mesh);
-    scene.add(mesh);
+    scene.attach(mesh);
 }
 
-export function getTCP(){
+export function getTCP() {
     let tcp;
     tcp = robot.tcp.object;
     let position = new Vector3;
     tcp.getWorldPosition(position);
     return position
+}
+
+export function getMeshByPosition(position) {
+    let meshes = [];
+    let simObjects = getSimObjects();
+    for (let i = 0; i < simObjects.length; i++) {
+        const mesh = getMesh(simObjects[i]);
+        if (mesh != undefined) {
+            meshes.push(mesh);
+        }
+    }
+    for (let i = 0; i < meshes.length; i++) {
+        //console.log('Mesh is at: ', mesh.position);
+        if (meshes[i].position.distanceTo(position) <= 0.5) {
+            return meshes[i]
+        }
+        else return undefined
+    }
+}
+
+export function getObjectRadius(mesh) {
+    let box = new Box3().setFromObject( mesh );
+    let sphere = new Sphere;
+    box.getBoundingSphere(sphere);
+    return sphere.radius
 }
