@@ -25,10 +25,10 @@ import './blocks/joint_unlock'
 import './blocks/comment'
 import './blocks/wait'
 
-//imports for adding and removing 3D-objects
-import {addSimObjects,
-        remSimObjects,
-        getSimObjectsNames} from '../simulator/objects/objects'
+//imports for adding and removing 3D-objects, Lukas
+import { addSimObjects,
+         remSimObjects,
+         getSimObjectsNames } from '../simulator/objects/objects'
 
 import { popSuccess, popWarning, popError } from '../alert'
 

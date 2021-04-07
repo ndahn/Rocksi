@@ -1,7 +1,16 @@
 import * as Blockly from "blockly"
 import { Object3D, Vector3, Euler } from "three"
 var TWEEN = require('@tweenjs/tween.js');
+//Stuff for the gripper,Lukas
+import { getMeshByPosition,
+         getTCP,
+         getObjectRadius,
+         getMesh } from "./scene"
 
+import { attachToGripper,
+         detachFromGripper,
+         isAttached,
+         getAttachedObject } from "./objects/objects"
 
 // Velocities to move a joint one unit
 // (m/s for prismatic joints, rad/s for revolute joints)
@@ -262,10 +271,26 @@ class TheSimulation {
         const robot = this.robot;
         const start = {};
         const target = {};
+        let mesh;
+        //WIP: Determin if something is under the gripper
+        //if yes, then close it until the gripper touches the object, Lukas
+        if (isAttached() == false && getMeshByPosition(getTCP()) != undefined) {
+            mesh = getMeshByPosition(getTCP());
+            if (mesh != undefined) {
+                attachToGripper(mesh);
+                for (const finger of robot.hand.movable) {
+                    start[finger.name] = finger.angle;
+                    target[finger.name] = finger.limit.upper - getObjectRadius(mesh) *  0.1;//This is just for testing, Lukas
 
-        for (const finger of robot.hand.movable) {
-            start[finger.name] = finger.angle;
-            target[finger.name] = finger.limit.lower;  // fully closed
+                }
+            }
+        }
+        //if not, close full
+        else {
+            for (const finger of robot.hand.movable) {
+                start[finger.name] = finger.angle;
+                target[finger.name] = finger.limit.lower;  // fully closed
+            }
         }
 
         const duration = getDuration(robot, target, this.velocities.gripper);
@@ -279,6 +304,14 @@ class TheSimulation {
         const robot = this.robot;
         const start = {};
         const target = {};
+        let mesh;
+
+        //If an object is currently gripped, detach it from the gripper, Lukas
+        if (isAttached() == true) {
+            mesh = getMesh(getAttachedObject());
+            console.log('mesh sim', mesh);
+            detachFromGripper(mesh);
+        }
 
         for (const finger of robot.hand.movable) {
             start[finger.name] = finger.angle;
