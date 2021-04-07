@@ -19,8 +19,16 @@ import {
 	LineBasicMaterial,
 	Raycaster,
 	Vector2,
+<<<<<<< HEAD
 	ArrowHelper
 } from "three";
+=======
+    Sphere,
+    Box3,
+} from "three";
+//Function for checking the position of an Object in the Scene, Lukas
+import { getSimObjects } from './objects/objects';
+>>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
 
 // In ROS models Z points upwards
 Object3D.DefaultUp = new Vector3(0, 0, 1);
@@ -296,8 +304,92 @@ function updateGroundLine() {
 }
 
 function render() {
+<<<<<<< HEAD
 	renderer.render(scene, camera);
 }
 
 //I need the scene, this is for experimenting
 export {scene};
+=======
+    renderer.render(scene, camera);
+}
+
+//Wrapper functions for adding, removing and changing postions of meshs at various
+//nodes in the scene, Lukas
+//no error checking right now, Lukas
+
+//addMesh needs a valid three mesh.
+export function addMesh(mesh) {
+    scene.add(mesh);
+    requestAnimationFrame(render);
+}
+
+export function remMesh(simObject) {
+    scene.remove(scene.getObjectByName(simObject.name));
+    requestAnimationFrame(render);
+}
+
+export function moveMesh(simObject) {
+    const mesh = scene.getObjectByName(simObject.name);
+    mesh.position.x = simObject.x;
+    mesh.position.y = simObject.y;
+    mesh.position.z = simObject.z;
+    requestAnimationFrame(render);
+}
+
+export function rotMesh(simObject) {
+    const mesh = scene.getObjectByName(simObject.name);
+    mesh.rotation.x = simObject.rotX;
+    mesh.rotation.y = simObject.rotY;
+    mesh.rotation.z = simObject.rotZ;
+    requestAnimationFrame(render);
+}
+
+export function getMesh(simObject) {
+    const mesh = scene.getObjectByName(simObject.name);
+    return mesh
+}
+
+export function addToTCP(mesh) {
+    let tcp = robot.tcp.object;
+    tcp.attach(mesh);
+}
+
+export function remFromTCP(mesh) {
+    let tcp = robot.tcp.object;
+    scene.attach(mesh);
+}
+
+export function getTCP() {
+    let tcp;
+    tcp = robot.tcp.object;
+    let position = new Vector3;
+    tcp.getWorldPosition(position);
+    return position
+}
+
+export function getMeshByPosition(position) {
+    let meshes = [];
+    let simObjects = getSimObjects();
+    for (let i = 0; i < simObjects.length; i++) {
+        const mesh = getMesh(simObjects[i]);
+        if (mesh != undefined) {
+            meshes.push(mesh);
+        }
+    }
+    for (let i = 0; i < meshes.length; i++) {
+        //console.log('Mesh is at: ', mesh.position);
+        if (meshes[i].position.distanceTo(position) <= 0.5) {
+            return meshes[i]
+        }
+        else return undefined
+    }
+}
+
+export function getObjectRadius(mesh) {
+    let box = new Box3().setFromObject( mesh );
+    let sphere = new Sphere;
+    box.getBoundingSphere(sphere);
+    return sphere.radius
+}
+>>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
