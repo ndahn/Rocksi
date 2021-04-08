@@ -22,8 +22,10 @@ import {
     Sphere,
     Box3,
 } from "three";
-//Function for checking the position of an Object in the Scene, Lukas
+
+//Imports for managing objects and physics, Lukas
 import { getSimObjects } from './objects/objects';
+import { initCannon, updatePhysics } from './physics'
 
 // In ROS models Z points upwards
 Object3D.DefaultUp = new Vector3(0, 0, 1);
@@ -85,6 +87,7 @@ loadRobotModel(robot.xacro)
 		}
 
 		initScene();
+        initCannon();
 		$('.loading-message').hide();
 
 		ik = new IKSolver(scene, robot);
@@ -277,6 +280,8 @@ function updateGroundLine() {
 }
 
 function render() {
+    //for testing
+    updatePhysics();
     renderer.render(scene, camera);
 }
 
