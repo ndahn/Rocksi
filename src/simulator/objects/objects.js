@@ -6,6 +6,7 @@ import { addMesh,
          rotMesh,
          addToTCP,
          remFromTCP } from '../scene';
+import { createBody, updateBodys } from '../physics';
 
 // TODO: Error checking!
 
@@ -96,6 +97,7 @@ export function changeSimObjectPosition(simObject) {
     simObjects[idx].y = simObject.y;
     simObjects[idx].z = simObject.z;
     moveMesh(simObjects[idx]);
+    updateBodys([simObjects[idx]])
 }
 
 export function changeSimObjectOrientation(simObject) {
@@ -104,6 +106,7 @@ export function changeSimObjectOrientation(simObject) {
     simObjects[idx].rotY = simObject.rotY;
     simObjects[idx].rotZ = simObject.rotZ;
     rotMesh(simObjects[idx]);
+    updateBodys([simObjects[idx]])
 }
 
 //Takes an array of blockly block uuids and turns them into simObjects
@@ -118,6 +121,7 @@ export function addSimObjects(simObjectNames) {
             newSimObject.name = simObjectNames[i];
             simObjects.push(newSimObject);
             createMesh(newSimObject);
+            createBody(newSimObject);
         }
     }
 }
