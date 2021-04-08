@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { BoxBufferGeometry,
          MeshPhongMaterial,
          CylinderGeometry } from 'three';
@@ -15,6 +16,21 @@ import { requestAF,
 
 import { getWorld } from '../physics';
 
+=======
+import * as THREE from 'three';
+import { addMesh,
+         remMesh,
+         getMesh,
+         moveMesh,
+         rotMesh,
+         addToTCP,
+         remFromTCP } from '../scene';
+import { createBody, updateBodys } from '../physics';
+
+// TODO: Error checking!
+
+//This is not finished right now. Using global variables is not a good practice.
+>>>>>>> 4c6ae0d (Started to add physics to the simulation. Not really working right now. Object pickup is broken, in this commit. Objects only fall if you move the camera, this is intentional.)
 let simObjects = [];
 
 //Functions for creating meshes
@@ -117,10 +133,58 @@ export function remSimObjects(ids) {
     }
 }
 
+<<<<<<< HEAD
 export function resetAllSimObjects () {
     if (simObjects.length > 0) {
         for (const simObject of simObjects) {
             simObject.reset();
+=======
+//Functions for simObjects
+
+//removes the three mesh and creates a new one with the new type
+export function changeSimObjectType(simObjectName, type) {
+    const idx = getSimObjectIdx(simObjects, simObjectName);
+    simObjects[idx].type = type;
+    remMesh(simObjects[idx]);
+    createMesh(simObjects[idx]);
+}
+
+//Changes the position of a simObject and calls moveMesh with the new position.
+//Note that the movement of the mesh is not animated.
+//It will pop out and in of existence.
+//We don't need an animation at this point.
+export function changeSimObjectPosition(simObject) {
+    const idx = getSimObjectIdx(simObjects, simObject.name);
+    simObjects[idx].x = simObject.x;
+    simObjects[idx].y = simObject.y;
+    simObjects[idx].z = simObject.z;
+    moveMesh(simObjects[idx]);
+    updateBodys([simObjects[idx]])
+}
+
+export function changeSimObjectOrientation(simObject) {
+    const idx = getSimObjectIdx(simObjects, simObject.name);
+    simObjects[idx].rotX = simObject.rotX;
+    simObjects[idx].rotY = simObject.rotY;
+    simObjects[idx].rotZ = simObject.rotZ;
+    rotMesh(simObjects[idx]);
+    updateBodys([simObjects[idx]])
+}
+
+//Takes an array of blockly block uuids and turns them into simObjects
+//and the corresponding three mesh with the same name.
+//To do this it looks for the uuid in the simObjects array and if returned
+//undefined it will add a new simObject and call createMesh. I do not think
+//looking for an undefined is a good desing choice, but it is working as intended
+export function addSimObjects(simObjectNames) {
+    for (let i = 0; i < simObjectNames.length; i++) {
+        if (simObjects.find(object => object.name === simObjectNames[i]) === undefined){
+            let newSimObject = new simObject;
+            newSimObject.name = simObjectNames[i];
+            simObjects.push(newSimObject);
+            createMesh(newSimObject);
+            createBody(newSimObject);
+>>>>>>> 4c6ae0d (Started to add physics to the simulation. Not really working right now. Object pickup is broken, in this commit. Objects only fall if you move the camera, this is intentional.)
         }
     }
 }

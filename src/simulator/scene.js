@@ -21,8 +21,10 @@ import {
 	Vector2,
 	ArrowHelper
 } from "three";
-//Function for checking the position of an Object in the Scene, Lukas
+
+//Imports for managing objects and physics, Lukas
 import { getSimObjects } from './objects/objects';
+import { initCannon, updatePhysics } from './physics'
 
 //Imports for managing objects and physics, Lukas
 import { initCannon,
@@ -95,9 +97,13 @@ loadRobotModel(robot.xacro)
 		}
 
 		initScene();
+<<<<<<< HEAD
         //Lukas
         initCannon();
         initRobotHitboxes(robot);
+=======
+        initCannon();
+>>>>>>> 4c6ae0d (Started to add physics to the simulation. Not really working right now. Object pickup is broken, in this commit. Objects only fall if you move the camera, this is intentional.)
 		$('.loading-message').hide();
 
 		ik = new IKSolver(scene, robot);
@@ -304,6 +310,8 @@ function updateGroundLine() {
 }
 
 function render() {
+    //for testing
+    updatePhysics();
     renderer.render(scene, camera);
 }
 

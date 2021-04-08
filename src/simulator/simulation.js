@@ -395,6 +395,8 @@ class TheSimulation {
         //testing, Lukas
         updatePhysics();
         this._renderCallback();
+        //Is this the place for the physics update, I dunno. Let's try it! Lukas
+        updatePhysics();
 
         if (this.running) {
             // => captures the 'this' reference
