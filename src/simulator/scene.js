@@ -26,9 +26,14 @@ import {
     Sphere,
     Box3,
 } from "three";
-//Function for checking the position of an Object in the Scene, Lukas
+
+//Imports for managing objects and physics, Lukas
 import { getSimObjects } from './objects/objects';
+<<<<<<< HEAD
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
+=======
+import { initCannon, updatePhysics } from './physics'
+>>>>>>> 3862ed5 (Started to add physics to the simulation. Not really working right now. Object pickup is broken, in this commit. Objects only fall if you move the camera, this is intentional.)
 
 // In ROS models Z points upwards
 Object3D.DefaultUp = new Vector3(0, 0, 1);
@@ -97,6 +102,7 @@ loadRobotModel(robot.xacro)
 		}
 
 		initScene();
+        initCannon();
 		$('.loading-message').hide();
 
 		ik = new IKSolver(scene, robot);
@@ -305,12 +311,17 @@ function updateGroundLine() {
 
 function render() {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	renderer.render(scene, camera);
 }
 
 //I need the scene, this is for experimenting
 export {scene};
 =======
+=======
+    //for testing
+    updatePhysics();
+>>>>>>> 3862ed5 (Started to add physics to the simulation. Not really working right now. Object pickup is broken, in this commit. Objects only fall if you move the camera, this is intentional.)
     renderer.render(scene, camera);
 }
 

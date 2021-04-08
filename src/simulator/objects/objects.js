@@ -11,7 +11,11 @@ import { addMesh,
          rotMesh,
          addToTCP,
          remFromTCP } from '../scene';
+<<<<<<< HEAD
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
+=======
+import { createBody, updateBodys } from '../physics';
+>>>>>>> 3862ed5 (Started to add physics to the simulation. Not really working right now. Object pickup is broken, in this commit. Objects only fall if you move the camera, this is intentional.)
 
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 
@@ -210,6 +214,7 @@ export function changeSimObjectPosition(simObject) {
     simObjects[idx].y = simObject.y;
     simObjects[idx].z = simObject.z;
     moveMesh(simObjects[idx]);
+    updateBodys([simObjects[idx]])
 }
 
 export function changeSimObjectOrientation(simObject) {
@@ -218,6 +223,7 @@ export function changeSimObjectOrientation(simObject) {
     simObjects[idx].rotY = simObject.rotY;
     simObjects[idx].rotZ = simObject.rotZ;
     rotMesh(simObjects[idx]);
+    updateBodys([simObjects[idx]])
 }
 
 //Takes an array of blockly block uuids and turns them into simObjects
@@ -232,7 +238,11 @@ export function addSimObjects(simObjectNames) {
             newSimObject.name = simObjectNames[i];
             simObjects.push(newSimObject);
             createMesh(newSimObject);
+<<<<<<< HEAD
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
+=======
+            createBody(newSimObject);
+>>>>>>> 3862ed5 (Started to add physics to the simulation. Not really working right now. Object pickup is broken, in this commit. Objects only fall if you move the camera, this is intentional.)
         }
     }
 }

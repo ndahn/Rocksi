@@ -1,5 +1,10 @@
 import { Object3D, Vector3, Euler } from "three"
+
+//function for updating the physics, Lukas
+import { updatePhysics } from './physics'
+
 var TWEEN = require('@tweenjs/tween.js');
+
 //Stuff for the gripper,Lukas
 import { getMeshByPosition,
          getTCP,
@@ -400,6 +405,8 @@ class TheSimulation {
     _animate(time) {
         TWEEN.update(time);
         this._renderCallback();
+        //Is this the place for the physics update, I dunno. Let's try it! Lukas
+        updatePhysics();
 
         if (this.running) {
             // => captures the 'this' reference
