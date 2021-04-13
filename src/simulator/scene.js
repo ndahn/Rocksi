@@ -102,6 +102,7 @@ loadRobotModel(robot.xacro)
 		}
 
 		initScene();
+        //Lukas
         initCannon();
 		$('.loading-message').hide();
 
@@ -312,6 +313,7 @@ function updateGroundLine() {
 function render() {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 	renderer.render(scene, camera);
 }
 
@@ -322,6 +324,8 @@ export {scene};
     //for testing
     updatePhysics();
 >>>>>>> 3862ed5 (Started to add physics to the simulation. Not really working right now. Object pickup is broken, in this commit. Objects only fall if you move the camera, this is intentional.)
+=======
+>>>>>>> 7eccd06 (Work on the physics simulation. Some cleanup. Minor changes on the watchBlocks function in blockly.js)
     renderer.render(scene, camera);
 }
 
@@ -342,17 +346,13 @@ export function remMesh(simObject) {
 
 export function moveMesh(simObject) {
     const mesh = scene.getObjectByName(simObject.name);
-    mesh.position.x = simObject.x;
-    mesh.position.y = simObject.y;
-    mesh.position.z = simObject.z;
+    mesh.position.copy(simObject.position);
     requestAnimationFrame(render);
 }
 
 export function rotMesh(simObject) {
     const mesh = scene.getObjectByName(simObject.name);
-    mesh.rotation.x = simObject.rotX;
-    mesh.rotation.y = simObject.rotY;
-    mesh.rotation.z = simObject.rotZ;
+    mesh.rotation.copy(simObject.rotation);
     requestAnimationFrame(render);
 }
 
@@ -376,7 +376,7 @@ export function getTCP() {
     tcp = robot.tcp.object;
     let position = new Vector3;
     tcp.getWorldPosition(position);
-    return position
+    return position;
 }
 
 export function getMeshByPosition(position) {
@@ -393,7 +393,7 @@ export function getMeshByPosition(position) {
         if (meshes[i].position.distanceTo(position) <= 0.5) {
             return meshes[i]
         }
-        else return undefined
+        else { return undefined; }
     }
 }
 
@@ -401,6 +401,12 @@ export function getObjectRadius(mesh) {
     let box = new Box3().setFromObject( mesh );
     let sphere = new Sphere;
     box.getBoundingSphere(sphere);
-    return sphere.radius
+    return sphere.radius;
 }
+<<<<<<< HEAD
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
+=======
+
+
+//Physics rendering
+>>>>>>> 7eccd06 (Work on the physics simulation. Some cleanup. Minor changes on the watchBlocks function in blockly.js)

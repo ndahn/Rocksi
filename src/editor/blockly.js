@@ -366,6 +366,7 @@ function onProgramFinished() {
 //Determin if a add_sim_object-block was added or removed form the Blockly Workspace.
 //If added, add a new 3D-object. If removed remove the 3D-object assosiated with the block.
 //Lukas
+<<<<<<< HEAD
 function watchSpawnBlocks(event) {
     if(Blockly.Events.BLOCK_CREATE === event.type) {
         for (let i = 0; i < event.ids.length; i++) {
@@ -402,6 +403,55 @@ function watchSpawnBlocks(event) {
     if(Blockly.Events.BLOCK_DELETE === event.type) {
         console.log('Deleted: ', event.ids);
         remSimObjects(event.ids);
+=======
+function watchBlocks(event) {
+    if (event.type === Blockly.Events.BLOCK_CREATE) {
+        //get all ids of currently rendered 3D-block representations
+        let simObjectsIds = getSimObjectsNames();
+        //if there is a new block added to the workspace store it
+        const newBlock = workspace.getBlockById(event.blockId);
+
+        //init some arrays
+        let currentSimObjects = [];
+        let currentSimObjectIds = [];
+
+        //put all block ids that are currently on the workspace into an array
+        currentSimObjects = workspace.getBlocksByType('addSimObject');
+        currentSimObjects.forEach(block => currentSimObjectIds.push(block.id));
+
+        //clear memory
+        currentSimObjects = [];
+
+        if (event.type === Blockly.Events.BLOCK_CREATE
+            && newBlock != null
+            && newBlock.type === 'addSimObject'){
+
+            console.log('newBlock.id', newBlock.id);
+            addSimObjects([newBlock.id]);
+        }
+    }
+    if (event.type === Blockly.Events.BLOCK_DELETE) {
+        //get all ids of currently rendered 3D-block representations
+        let simObjectsIds = getSimObjectsNames();
+        //if there is a new block added to the workspace store it
+        const newBlock = workspace.getBlockById(event.blockId);
+
+        //init some arrays
+        let deletedSimObjects = [];
+        let currentSimObjects = [];
+        let currentSimObjectIds = [];
+
+        //put all blocks ids that are currently on the workspace into an array
+        currentSimObjects = workspace.getBlocksByType('addSimObject');
+        currentSimObjects.forEach(block => currentSimObjectIds.push(block.id));
+
+        //clear memory
+        currentSimObjects = [];
+        deletedSimObjects = [...simObjectsIds].filter(blockId =>
+                             !currentSimObjectIds.includes(blockId));
+        remSimObjects(deletedSimObjects);
+        deletedSimObjects = [];
+>>>>>>> 7eccd06 (Work on the physics simulation. Some cleanup. Minor changes on the watchBlocks function in blockly.js)
     }
 }
 

@@ -12,10 +12,14 @@ import { addMesh,
          addToTCP,
          remFromTCP } from '../scene';
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
 =======
 import { createBody, updateBodys } from '../physics';
 >>>>>>> 3862ed5 (Started to add physics to the simulation. Not really working right now. Object pickup is broken, in this commit. Objects only fall if you move the camera, this is intentional.)
+=======
+import { createBody, removeBody, updateBodies, updateMeshes } from '../physics';
+>>>>>>> 7eccd06 (Work on the physics simulation. Some cleanup. Minor changes on the watchBlocks function in blockly.js)
 
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 
@@ -98,21 +102,15 @@ function setSpawnPosition(simObject) {
 =======
 //container for storing simObject properties
 //x, y, z, rotX, rotY, rotZ, name, type, attached
-export class simObject {
+export class SimObject {
     constructor() {
-        this.name = 'default';
+        this.name = undefined;
         this.type = 'cube';
-        //this.position = new THREE.Vector3(3, 3, 0.25);
-        this.x = 5;
-        this.y = 5;
-        this.z = 0;
-        this.rotX = 0;
-        this.rotY = 0;
-        this.rotZ = 0;
-        this.sizeX = .5;
-        this.sizeY = .5;
-        this.sizeZ = .5;
+        this.rotation = new THREE.Euler(0, 0, 0, 'XYZ');
+        this.size = new THREE.Vector3(.5, .5, .5);
+        this.position = new THREE.Vector3(5, 5, this.size.z * .5);
         this.attached = false;
+        this.asleep = false;
     }
 }
 
@@ -122,21 +120,17 @@ export class simObject {
 function createMesh(simObject) {
 
     if (simObject.type === 'cube') {
-        const cubeGeometry = new THREE.BoxBufferGeometry(simObject.sizeX * 10,
-                                                         simObject.sizeY * 10,
-                                                         simObject.sizeZ * 10,
-                                                         10,
-                                                         10);
+        let cubeGeometry = new THREE.BoxBufferGeometry( simObject.size.x,
+                                                        simObject.size.y,
+                                                        simObject.size.z,
+                                                        10,
+                                                        10);
 
-        const cubeMaterial = new THREE.MeshPhongMaterial({ color: randomColor() });
+        let cubeMaterial = new THREE.MeshPhongMaterial({ color: randomColor() });
         let cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cubeMesh.castShadow = true;
-        cubeMesh.position.x  = simObject.x;
-        cubeMesh.position.y  = simObject.y;
-        cubeMesh.position.z  = simObject.z + 0.25;
-        cubeMesh.scale.x = 0.1;
-        cubeMesh.scale.y = 0.1;
-        cubeMesh.scale.z = 0.1;
+        //cubeMesh.castShadow = true;
+        cubeMesh.position.copy(simObject.position);
+        cubeMesh.rotation.copy(simObject.rotation);
         cubeMesh.name = simObject.name;
         addMesh(cubeMesh);
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
@@ -165,18 +159,17 @@ function zShiftCubes(simObject) {
         }
 =======
     if (simObject.type === 'cylinder') {
-        const cylinderGeometry = new THREE.CylinderBufferGeometry(simObject.sizeX,
-                                                                  simObject.sizeY,
-                                                                  simObject.sizeZ,
+        const cylinderGeometry = new THREE.CylinderBufferGeometry(simObject.size.x,
+                                                                  simObject.size.y,
+                                                                  simObject.size.z,
                                                                   10,
                                                                   10);
 
         const cylinderMaterial = new THREE.MeshPhongMaterial({ color: randomColor() });
         const cylinderMesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
-        cylinderMesh.castShadow = true;
-        cylinderMesh.position.x  = simObject.x;
-        cylinderMesh.position.y  = simObject.y;
-        cylinderMesh.position.z  = simObject.z;
+        //cylinderMesh.castShadow = true;
+        cylinderMesh.position.copy(simObject.position);
+        cylinderMesh.rotation.copy(simObject.rotation);
         cylinderMesh.name = simObject.name;
         addMesh(cylinderMesh);
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
@@ -210,20 +203,17 @@ export function changeSimObjectType(simObjectName, type) {
 //We don't need an animation at this point.
 export function changeSimObjectPosition(simObject) {
     const idx = getSimObjectIdx(simObjects, simObject.name);
-    simObjects[idx].x = simObject.x;
-    simObjects[idx].y = simObject.y;
-    simObjects[idx].z = simObject.z;
+    simObjects[idx].position.copy(simObject.position);
+    updateBodies([simObjects[idx]])
     moveMesh(simObjects[idx]);
-    updateBodys([simObjects[idx]])
+
 }
 
 export function changeSimObjectOrientation(simObject) {
     const idx = getSimObjectIdx(simObjects, simObject.name);
-    simObjects[idx].rotX = simObject.rotX;
-    simObjects[idx].rotY = simObject.rotY;
-    simObjects[idx].rotZ = simObject.rotZ;
+    simObjects[idx].rotation.copy(simObject.rotation);
+    updateBodies([simObjects[idx]])
     rotMesh(simObjects[idx]);
-    updateBodys([simObjects[idx]])
 }
 
 //Takes an array of blockly block uuids and turns them into simObjects
@@ -234,15 +224,22 @@ export function changeSimObjectOrientation(simObject) {
 export function addSimObjects(simObjectNames) {
     for (let i = 0; i < simObjectNames.length; i++) {
         if (simObjects.find(object => object.name === simObjectNames[i]) === undefined){
-            let newSimObject = new simObject;
+            let newSimObject = new SimObject;
             newSimObject.name = simObjectNames[i];
             simObjects.push(newSimObject);
+<<<<<<< HEAD
             createMesh(newSimObject);
 <<<<<<< HEAD
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
 =======
             createBody(newSimObject);
 >>>>>>> 3862ed5 (Started to add physics to the simulation. Not really working right now. Object pickup is broken, in this commit. Objects only fall if you move the camera, this is intentional.)
+=======
+            createBody(newSimObject);
+            createMesh(newSimObject);
+            updateBodies(simObjects);
+
+>>>>>>> 7eccd06 (Work on the physics simulation. Some cleanup. Minor changes on the watchBlocks function in blockly.js)
         }
     }
 }
@@ -339,6 +336,7 @@ export function getSimObjects() {
 //Returns the simObject by name (the uuid of the blockly block)
 export function getSimObject(simObjectName) {
 <<<<<<< HEAD
+<<<<<<< HEAD
     let returnVal = undefined;
         for (let i = 0; i < simObjects.length; i++) {
             if (simObjectName == simObjects[i].name) { returnVal = simObjects[i]; }
@@ -360,6 +358,20 @@ function getSimObjectIdx(simObjects, simObjectName) {
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
     for (let i = 0; i < simObjects.length; i++) {
         if (simObjects[i].name == simObjectName){ returnVal = i; }
+=======
+        for (let i = 0; i < simObjects.length; i++) {
+            if (simObjects[i].name == simObjectName){ return simObjects[i] }
+            else { return undefined }
+        }
+
+}
+
+//Returns the index of a simObject in the simObjects array
+export function getSimObjectIdx(simObjects, simObjectName) {
+    for (let i = 0; i < simObjects.length; i++) {
+        if (simObjects[i].name == simObjectName) return i;
+        else return undefined;
+>>>>>>> 7eccd06 (Work on the physics simulation. Some cleanup. Minor changes on the watchBlocks function in blockly.js)
     }
     return returnVal;
 }
@@ -375,18 +387,27 @@ export function getSimObjectByPos(position, accuracy) {
     return returnVal;
 =======
 //Functions for gripping
-
 export function detachFromGripper(mesh) {
     console.log('> Object dropped!');
-    getSimObject(mesh.name).attached = false;
+    let simObject = getSimObject(mesh.name)
+    simObject.attached = false;
+    simObject.position.copy(mesh.position);
     remFromTCP(mesh);
+    createBody(simObject)
+    updateBodies([getSimObject(mesh.name)]);
 }
 
 export function attachToGripper(mesh) {
     console.log('> Object gripped!');
-    getSimObject(mesh.name).attached = true;
+    let simObject = getSimObject(mesh.name)
+    simObject.attached = true;
+    removeBody(simObject);
     addToTCP(mesh);
+<<<<<<< HEAD
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
+=======
+    updateBodies([getSimObject(mesh.name)]);
+>>>>>>> 7eccd06 (Work on the physics simulation. Some cleanup. Minor changes on the watchBlocks function in blockly.js)
 }
 
 //Determin if a simobject is attached to the TCP
@@ -419,8 +440,11 @@ export function getAttachedObject() {
 //Utils
 =======
 //Utils
+<<<<<<< HEAD
 
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
+=======
+>>>>>>> 7eccd06 (Work on the physics simulation. Some cleanup. Minor changes on the watchBlocks function in blockly.js)
 //Random integers. They are essential.
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
