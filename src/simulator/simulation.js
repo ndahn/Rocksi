@@ -345,6 +345,7 @@ class TheSimulation {
         return this.joint_absolute(jointIdx, angleAbs);
     }
 
+<<<<<<< HEAD
     //Calls the create3dObject script for adding a new 3D object, Lukas
     add3dbox(position) {
         const shape = "box"
@@ -361,6 +362,12 @@ class TheSimulation {
         create3dObject(shape, position);
     }
 
+=======
+    //Lukas
+    objects(name) {
+        console.log('So much happening right now. Whooo!', name);
+    }
+>>>>>>> fc4b4db (Fixed the wrong if/else loop in objects.js/getSimobject and objects.js/getSimObjectIdx functions. Some work on integrating the physics in simulation.js. Some cleanup in blockly.js)
 
     _makeTween(start, target, duration) {
         return new Promise((resolve, reject) => {

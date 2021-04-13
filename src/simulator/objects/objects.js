@@ -191,7 +191,7 @@ export function remSimObjects(ids) {
 
 //removes the three mesh and creates a new one with the new type
 export function changeSimObjectType(simObjectName, type) {
-    const idx = getSimObjectIdx(simObjects, simObjectName);
+    const idx = getSimObjectIdx(simObjectName);
     simObjects[idx].type = type;
     remMesh(simObjects[idx]);
     createMesh(simObjects[idx]);
@@ -202,17 +202,17 @@ export function changeSimObjectType(simObjectName, type) {
 //It will pop out and in of existence.
 //We don't need an animation at this point.
 export function changeSimObjectPosition(simObject) {
-    const idx = getSimObjectIdx(simObjects, simObject.name);
+    const idx = getSimObjectIdx(simObject.name);
     simObjects[idx].position.copy(simObject.position);
-    updateBodies([simObjects[idx]])
+    //updateBodies([simObjects[idx]])
     moveMesh(simObjects[idx]);
 
 }
 
 export function changeSimObjectOrientation(simObject) {
-    const idx = getSimObjectIdx(simObjects, simObject.name);
+    const idx = getSimObjectIdx(simObject.name);
     simObjects[idx].rotation.copy(simObject.rotation);
-    updateBodies([simObjects[idx]])
+    //updateBodies([simObjects[idx]])
     rotMesh(simObjects[idx]);
 }
 
@@ -228,6 +228,7 @@ export function addSimObjects(simObjectNames) {
             newSimObject.name = simObjectNames[i];
             simObjects.push(newSimObject);
 <<<<<<< HEAD
+<<<<<<< HEAD
             createMesh(newSimObject);
 <<<<<<< HEAD
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
@@ -236,8 +237,11 @@ export function addSimObjects(simObjectNames) {
 >>>>>>> 3862ed5 (Started to add physics to the simulation. Not really working right now. Object pickup is broken, in this commit. Objects only fall if you move the camera, this is intentional.)
 =======
             createBody(newSimObject);
+=======
+            //createBody(newSimObject);
+>>>>>>> fc4b4db (Fixed the wrong if/else loop in objects.js/getSimobject and objects.js/getSimObjectIdx functions. Some work on integrating the physics in simulation.js. Some cleanup in blockly.js)
             createMesh(newSimObject);
-            updateBodies(simObjects);
+            //updateBodies(simObjects);
 
 >>>>>>> 7eccd06 (Work on the physics simulation. Some cleanup. Minor changes on the watchBlocks function in blockly.js)
         }
@@ -337,6 +341,7 @@ export function getSimObjects() {
 export function getSimObject(simObjectName) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     let returnVal = undefined;
         for (let i = 0; i < simObjects.length; i++) {
             if (simObjectName == simObjects[i].name) { returnVal = simObjects[i]; }
@@ -359,19 +364,26 @@ function getSimObjectIdx(simObjects, simObjectName) {
     for (let i = 0; i < simObjects.length; i++) {
         if (simObjects[i].name == simObjectName){ returnVal = i; }
 =======
+=======
+    let returnVal = undefined;
+>>>>>>> fc4b4db (Fixed the wrong if/else loop in objects.js/getSimobject and objects.js/getSimObjectIdx functions. Some work on integrating the physics in simulation.js. Some cleanup in blockly.js)
         for (let i = 0; i < simObjects.length; i++) {
-            if (simObjects[i].name == simObjectName){ return simObjects[i] }
-            else { return undefined }
+            if (simObjectName == simObjects[i].name) { returnVal = simObjects[i]; }
         }
-
+     return returnVal;
 }
 
 //Returns the index of a simObject in the simObjects array
-export function getSimObjectIdx(simObjects, simObjectName) {
+export function getSimObjectIdx(simObjectName) {
+    let returnVal = undefined;
     for (let i = 0; i < simObjects.length; i++) {
+<<<<<<< HEAD
         if (simObjects[i].name == simObjectName) return i;
         else return undefined;
 >>>>>>> 7eccd06 (Work on the physics simulation. Some cleanup. Minor changes on the watchBlocks function in blockly.js)
+=======
+        if (simObjects[i].name == simObjectName){ returnVal = i; }
+>>>>>>> fc4b4db (Fixed the wrong if/else loop in objects.js/getSimobject and objects.js/getSimObjectIdx functions. Some work on integrating the physics in simulation.js. Some cleanup in blockly.js)
     }
     return returnVal;
 }

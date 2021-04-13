@@ -405,48 +405,26 @@ function watchSpawnBlocks(event) {
         remSimObjects(event.ids);
 =======
 function watchBlocks(event) {
-    if (event.type === Blockly.Events.BLOCK_CREATE) {
-        //get all ids of currently rendered 3D-block representations
-        let simObjectsIds = getSimObjectsNames();
-        //if there is a new block added to the workspace store it
-        const newBlock = workspace.getBlockById(event.blockId);
-
-        //init some arrays
-        let currentSimObjects = [];
-        let currentSimObjectIds = [];
-
-        //put all block ids that are currently on the workspace into an array
-        currentSimObjects = workspace.getBlocksByType('addSimObject');
-        currentSimObjects.forEach(block => currentSimObjectIds.push(block.id));
-
-        //clear memory
-        currentSimObjects = [];
-
-        if (event.type === Blockly.Events.BLOCK_CREATE
-            && newBlock != null
-            && newBlock.type === 'addSimObject'){
-
-            console.log('newBlock.id', newBlock.id);
-            addSimObjects([newBlock.id]);
-        }
+    //get all ids of currently rendered 3D-block representations
+    let simObjectsIds = getSimObjectsNames();
+    //if there is a new block added to the workspace store it
+    const newBlock = workspace.getBlockById(event.blockId);
+    //init some arrays
+    let deletedSimObjects = [];
+    let currentSimObjects = [];
+    let currentSimObjectIds = [];
+    //put all blocks ids that are currently on the workspace into an array
+    currentSimObjects = workspace.getBlocksByType('addSimObject');
+    currentSimObjects.forEach(block => currentSimObjectIds.push(block.id));
+    //clear memory
+    currentSimObjects = [];
+    if (event.type === Blockly.Events.BLOCK_CREATE
+        && newBlock != null
+        && newBlock.type === 'addSimObject'){
+        console.log('newBlock.id', newBlock.id);
+        addSimObjects([newBlock.id]);
     }
     if (event.type === Blockly.Events.BLOCK_DELETE) {
-        //get all ids of currently rendered 3D-block representations
-        let simObjectsIds = getSimObjectsNames();
-        //if there is a new block added to the workspace store it
-        const newBlock = workspace.getBlockById(event.blockId);
-
-        //init some arrays
-        let deletedSimObjects = [];
-        let currentSimObjects = [];
-        let currentSimObjectIds = [];
-
-        //put all blocks ids that are currently on the workspace into an array
-        currentSimObjects = workspace.getBlocksByType('addSimObject');
-        currentSimObjects.forEach(block => currentSimObjectIds.push(block.id));
-
-        //clear memory
-        currentSimObjects = [];
         deletedSimObjects = [...simObjectsIds].filter(blockId =>
                              !currentSimObjectIds.includes(blockId));
         remSimObjects(deletedSimObjects);
@@ -454,5 +432,9 @@ function watchBlocks(event) {
 >>>>>>> 7eccd06 (Work on the physics simulation. Some cleanup. Minor changes on the watchBlocks function in blockly.js)
     }
 }
+<<<<<<< HEAD
 
 workspace.addChangeListener(watchSpawnBlocks);
+=======
+workspace.addChangeListener(watchBlocks);
+>>>>>>> fc4b4db (Fixed the wrong if/else loop in objects.js/getSimobject and objects.js/getSimObjectIdx functions. Some work on integrating the physics in simulation.js. Some cleanup in blockly.js)
