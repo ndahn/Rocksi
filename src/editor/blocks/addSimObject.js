@@ -98,32 +98,32 @@ Blockly.Blocks['addSimObject'] = {
 		}
         if (event.name === 'POSITION_X' && event.blockId == thisBlock.id) {
             var simObject = getSimObject(thisBlock.id);
-            simObject.x = thisBlock.getFieldValue('POSITION_X');
+            simObject.position.x = thisBlock.getFieldValue('POSITION_X');
             changeSimObjectPosition(simObject);
         }
         if (event.name === 'POSITION_Y' && event.blockId == thisBlock.id) {
             var simObject = getSimObject(thisBlock.id);
-            simObject.y = thisBlock.getFieldValue('POSITION_Y');
+            simObject.position.y = thisBlock.getFieldValue('POSITION_Y');
             changeSimObjectPosition(simObject);
         }
         if (event.name === 'POSITION_Z' && event.blockId == thisBlock.id) {
             var simObject = getSimObject(thisBlock.id);
-            simObject.z = thisBlock.getFieldValue('POSITION_Z');
+            simObject.position.z = thisBlock.getFieldValue('POSITION_Z');
             changeSimObjectPosition(simObject);
         }
         if (event.name === 'ROT_X' && event.blockId == thisBlock.id) {
             var simObject = getSimObject(thisBlock.id);
-            simObject.rotX = thisBlock.getFieldValue('ROT_X');
+            simObject.rotation.x = thisBlock.getFieldValue('ROT_X');
             changeSimObjectOrientation(simObject);
         }
         if (event.name === 'ROT_Y' && event.blockId == thisBlock.id) {
             var simObject = getSimObject(thisBlock.id);
-            simObject.rotY = thisBlock.getFieldValue('ROT_Y');
+            simObject.rotation.y = thisBlock.getFieldValue('ROT_Y');
             changeSimObjectOrientation(simObject);
         }
         if (event.name === 'ROT_Z' && event.blockId == thisBlock.id) {
             var simObject = getSimObject(thisBlock.id);
-            simObject.rotZ = thisBlock.getFieldValue('ROT_Z');
+            simObject.rotation.z = thisBlock.getFieldValue('ROT_Z');
             changeSimObjectOrientation(simObject);
         }
 
