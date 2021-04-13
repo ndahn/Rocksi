@@ -70,7 +70,7 @@ function createMesh(simObject) {
 
 //removes the three mesh and creates a new one with the new type
 export function changeSimObjectType(simObjectName, type) {
-    const idx = getSimObjectIdx(simObjects, simObjectName);
+    const idx = getSimObjectIdx(simObjectName);
     simObjects[idx].type = type;
     remMesh(simObjects[idx]);
     createMesh(simObjects[idx]);
@@ -81,17 +81,17 @@ export function changeSimObjectType(simObjectName, type) {
 //It will pop out and in of existence.
 //We don't need an animation at this point.
 export function changeSimObjectPosition(simObject) {
-    const idx = getSimObjectIdx(simObjects, simObject.name);
+    const idx = getSimObjectIdx(simObject.name);
     simObjects[idx].position.copy(simObject.position);
-    updateBodies([simObjects[idx]])
+    //updateBodies([simObjects[idx]])
     moveMesh(simObjects[idx]);
 
 }
 
 export function changeSimObjectOrientation(simObject) {
-    const idx = getSimObjectIdx(simObjects, simObject.name);
+    const idx = getSimObjectIdx(simObject.name);
     simObjects[idx].rotation.copy(simObject.rotation);
-    updateBodies([simObjects[idx]])
+    //updateBodies([simObjects[idx]])
     rotMesh(simObjects[idx]);
 }
 
@@ -106,9 +106,9 @@ export function addSimObjects(simObjectNames) {
             let newSimObject = new SimObject;
             newSimObject.name = simObjectNames[i];
             simObjects.push(newSimObject);
-            createBody(newSimObject);
+            //createBody(newSimObject);
             createMesh(newSimObject);
-            updateBodies(simObjects);
+            //updateBodies(simObjects);
 
         }
     }
@@ -143,19 +143,20 @@ export function getSimObjects() {
 
 //Returns the simObject by name (the uuid of the blockly block)
 export function getSimObject(simObjectName) {
+    let returnVal = undefined;
         for (let i = 0; i < simObjects.length; i++) {
-            if (simObjects[i].name == simObjectName){ return simObjects[i] }
-            else { return undefined }
+            if (simObjectName == simObjects[i].name) { returnVal = simObjects[i]; }
         }
-
+     return returnVal;
 }
 
 //Returns the index of a simObject in the simObjects array
-export function getSimObjectIdx(simObjects, simObjectName) {
+export function getSimObjectIdx(simObjectName) {
+    let returnVal = undefined;
     for (let i = 0; i < simObjects.length; i++) {
-        if (simObjects[i].name == simObjectName) return i;
-        else return undefined;
+        if (simObjects[i].name == simObjectName){ returnVal = i; }
     }
+    return returnVal;
 }
 
 //Functions for gripping

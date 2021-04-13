@@ -357,6 +357,10 @@ class TheSimulation {
         return this.joint_absolute(jointIdx, angleAbs);
     }
 
+    //Lukas
+    objects(name) {
+        console.log('So much happening right now. Whooo!', name);
+    }
 
     _makeTween(start, target, duration) {
         return new Promise((resolve, reject) => {

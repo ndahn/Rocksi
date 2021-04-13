@@ -1,8 +1,10 @@
 import * as Blockly from 'blockly';
-import {changeSimObjectType,
-        changeSimObjectPosition,
-        changeSimObjectOrientation,
-        getSimObject} from "../../simulator/objects/objects";
+import { changeSimObjectType,
+         changeSimObjectPosition,
+         changeSimObjectOrientation,
+         getSimObject,
+         getSimObjectIdx,
+         getSimObjects } from "../../simulator/objects/objects";
 
 
 Blockly.Blocks['addSimObject'] = {
@@ -16,14 +18,14 @@ Blockly.Blocks['addSimObject'] = {
 				"type": "field_dropdown",
 				"name": "OBJECT_TYPE",
 				"options": [
-				  [
-					"Würfel",
+				[
+				    "Würfel",
 					"cube"
-                  ],
-                  [
-                    "Zylinder",
-                    "cylinder"
-                  ],
+                ],
+                [
+                     "Zylinder",
+                     "cylinder"
+                ],
 				]
 			  },
 			  {
@@ -109,6 +111,7 @@ Blockly.Blocks['addSimObject'] = {
         if (event.name === 'POSITION_Z' && event.blockId == thisBlock.id) {
             var simObject = getSimObject(thisBlock.id);
             simObject.position.z = thisBlock.getFieldValue('POSITION_Z');
+            simObject.position.z = simObject.position.z + simObject.size.z * 0.5
             changeSimObjectPosition(simObject);
         }
         if (event.name === 'ROT_X' && event.blockId == thisBlock.id) {
@@ -130,8 +133,10 @@ Blockly.Blocks['addSimObject'] = {
 	},
 };
 
-//not working right now.
+//Should give the simulation an name to initialize the body of the
+//3D Object and starts the physics engine
 Blockly.JavaScript["addSimObject"] = function (block) {
-    var code = '';
+    var idx = getSimObjectIdx(this.id);
+    var code = 'simulate("objects", ' + idx + ');'
 	return code;
 };
