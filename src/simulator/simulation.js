@@ -370,6 +370,10 @@ class TheSimulation {
         this.joint_absolute(resolve, reject, jointIdx, angleAbs);
     }
 
+    //Lukas
+    objects(name) {
+        console.log('So much happening right now. Whooo!', name);
+    }
 
     _makeTween(start, target, duration, resolve, reject) {
         const robot = this.robot;
