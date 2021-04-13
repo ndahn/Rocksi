@@ -6,7 +6,7 @@ import { addMesh,
          rotMesh,
          addToTCP,
          remFromTCP } from '../scene';
-import { createBody, updateBodys } from '../physics';
+import { createBody, removeBody, updateBodies, updateMeshes } from '../physics';
 
 // TODO: Error checking!
 
@@ -15,21 +15,15 @@ let simObjects = [];
 
 //container for storing simObject properties
 //x, y, z, rotX, rotY, rotZ, name, type, attached
-export class simObject {
+export class SimObject {
     constructor() {
-        this.name = 'default';
+        this.name = undefined;
         this.type = 'cube';
-        //this.position = new THREE.Vector3(3, 3, 0.25);
-        this.x = 5;
-        this.y = 5;
-        this.z = 0;
-        this.rotX = 0;
-        this.rotY = 0;
-        this.rotZ = 0;
-        this.sizeX = .5;
-        this.sizeY = .5;
-        this.sizeZ = .5;
+        this.rotation = new THREE.Euler(0, 0, 0, 'XYZ');
+        this.size = new THREE.Vector3(.5, .5, .5);
+        this.position = new THREE.Vector3(5, 5, this.size.z * .5);
         this.attached = false;
+        this.asleep = false;
     }
 }
 
@@ -39,39 +33,34 @@ export class simObject {
 function createMesh(simObject) {
 
     if (simObject.type === 'cube') {
-        const cubeGeometry = new THREE.BoxBufferGeometry(simObject.sizeX * 10,
-                                                         simObject.sizeY * 10,
-                                                         simObject.sizeZ * 10,
-                                                         10,
-                                                         10);
+        let cubeGeometry = new THREE.BoxBufferGeometry( simObject.size.x,
+                                                        simObject.size.y,
+                                                        simObject.size.z,
+                                                        10,
+                                                        10);
 
-        const cubeMaterial = new THREE.MeshPhongMaterial({ color: randomColor() });
+        let cubeMaterial = new THREE.MeshPhongMaterial({ color: randomColor() });
         let cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cubeMesh.castShadow = true;
-        cubeMesh.position.x  = simObject.x;
-        cubeMesh.position.y  = simObject.y;
-        cubeMesh.position.z  = simObject.z + 0.25;
-        cubeMesh.scale.x = 0.1;
-        cubeMesh.scale.y = 0.1;
-        cubeMesh.scale.z = 0.1;
+        //cubeMesh.castShadow = true;
+        cubeMesh.position.copy(simObject.position);
+        cubeMesh.rotation.copy(simObject.rotation);
         cubeMesh.name = simObject.name;
         addMesh(cubeMesh);
 
     }
 
     if (simObject.type === 'cylinder') {
-        const cylinderGeometry = new THREE.CylinderBufferGeometry(simObject.sizeX,
-                                                                  simObject.sizeY,
-                                                                  simObject.sizeZ,
+        const cylinderGeometry = new THREE.CylinderBufferGeometry(simObject.size.x,
+                                                                  simObject.size.y,
+                                                                  simObject.size.z,
                                                                   10,
                                                                   10);
 
         const cylinderMaterial = new THREE.MeshPhongMaterial({ color: randomColor() });
         const cylinderMesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
-        cylinderMesh.castShadow = true;
-        cylinderMesh.position.x  = simObject.x;
-        cylinderMesh.position.y  = simObject.y;
-        cylinderMesh.position.z  = simObject.z;
+        //cylinderMesh.castShadow = true;
+        cylinderMesh.position.copy(simObject.position);
+        cylinderMesh.rotation.copy(simObject.rotation);
         cylinderMesh.name = simObject.name;
         addMesh(cylinderMesh);
     }
@@ -93,20 +82,17 @@ export function changeSimObjectType(simObjectName, type) {
 //We don't need an animation at this point.
 export function changeSimObjectPosition(simObject) {
     const idx = getSimObjectIdx(simObjects, simObject.name);
-    simObjects[idx].x = simObject.x;
-    simObjects[idx].y = simObject.y;
-    simObjects[idx].z = simObject.z;
+    simObjects[idx].position.copy(simObject.position);
+    updateBodies([simObjects[idx]])
     moveMesh(simObjects[idx]);
-    updateBodys([simObjects[idx]])
+
 }
 
 export function changeSimObjectOrientation(simObject) {
     const idx = getSimObjectIdx(simObjects, simObject.name);
-    simObjects[idx].rotX = simObject.rotX;
-    simObjects[idx].rotY = simObject.rotY;
-    simObjects[idx].rotZ = simObject.rotZ;
+    simObjects[idx].rotation.copy(simObject.rotation);
+    updateBodies([simObjects[idx]])
     rotMesh(simObjects[idx]);
-    updateBodys([simObjects[idx]])
 }
 
 //Takes an array of blockly block uuids and turns them into simObjects
@@ -117,11 +103,13 @@ export function changeSimObjectOrientation(simObject) {
 export function addSimObjects(simObjectNames) {
     for (let i = 0; i < simObjectNames.length; i++) {
         if (simObjects.find(object => object.name === simObjectNames[i]) === undefined){
-            let newSimObject = new simObject;
+            let newSimObject = new SimObject;
             newSimObject.name = simObjectNames[i];
             simObjects.push(newSimObject);
-            createMesh(newSimObject);
             createBody(newSimObject);
+            createMesh(newSimObject);
+            updateBodies(simObjects);
+
         }
     }
 }
@@ -155,30 +143,39 @@ export function getSimObjects() {
 
 //Returns the simObject by name (the uuid of the blockly block)
 export function getSimObject(simObjectName) {
-        const idx = getSimObjectIdx(simObjects, simObjectName);
-        return simObjects[idx]
+        for (let i = 0; i < simObjects.length; i++) {
+            if (simObjects[i].name == simObjectName){ return simObjects[i] }
+            else { return undefined }
+        }
+
 }
 
 //Returns the index of a simObject in the simObjects array
-//I need to implement some form of error checking here.
-function getSimObjectIdx(simObjects, simObjectName) {
+export function getSimObjectIdx(simObjects, simObjectName) {
     for (let i = 0; i < simObjects.length; i++) {
         if (simObjects[i].name == simObjectName) return i;
+        else return undefined;
     }
 }
 
 //Functions for gripping
-
 export function detachFromGripper(mesh) {
     console.log('> Object dropped!');
-    getSimObject(mesh.name).attached = false;
+    let simObject = getSimObject(mesh.name)
+    simObject.attached = false;
+    simObject.position.copy(mesh.position);
     remFromTCP(mesh);
+    createBody(simObject)
+    updateBodies([getSimObject(mesh.name)]);
 }
 
 export function attachToGripper(mesh) {
     console.log('> Object gripped!');
-    getSimObject(mesh.name).attached = true;
+    let simObject = getSimObject(mesh.name)
+    simObject.attached = true;
+    removeBody(simObject);
     addToTCP(mesh);
+    updateBodies([getSimObject(mesh.name)]);
 }
 
 //Determin if a simobject is attached to the TCP
@@ -198,7 +195,6 @@ export function getAttachedObject() {
 }
 
 //Utils
-
 //Random integers. They are essential.
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));

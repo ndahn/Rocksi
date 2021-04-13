@@ -279,7 +279,7 @@ class TheSimulation {
         let mesh;
         //WIP: Determin if something is under the gripper
         //if yes, then close it until the gripper touches the object, Lukas
-        if (isAttached() == false && getMeshByPosition(getTCP()) != undefined) {
+        if (isAttached() == false) {
             mesh = getMeshByPosition(getTCP());
             if (mesh != undefined) {
                 attachToGripper(mesh);
@@ -400,9 +400,9 @@ class TheSimulation {
 
     _animate(time) {
         TWEEN.update(time);
-        this._renderCallback();
-        //Is this the place for the physics update, I dunno. Let's try it! Lukas
+        //testing, Lukas
         updatePhysics();
+        this._renderCallback();
 
         if (this.running) {
             // => captures the 'this' reference
