@@ -32,8 +32,13 @@ import './blocks/physics_done'
 //imports for adding and removing 3D-objects, Lukas
 import { addSimObjects,
          remSimObjects,
+<<<<<<< HEAD
          getSimObjectsNames } from '../simulator/objects/objects'
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
+=======
+         getSimObjectsNames,
+         getSimObjects } from '../simulator/objects/objects'
+>>>>>>> 24ac1b4 (Overhaul of the watchBlocks function in blockly.js. The gripper_close function in simulation.js works now as intended.)
 
 //points to block definition for add_sim_object, Lukas
 import './blocks/add_sim_object'
@@ -405,25 +410,35 @@ function watchSpawnBlocks(event) {
         remSimObjects(event.ids);
 =======
 function watchBlocks(event) {
-    //get all ids of currently rendered 3D-block representations
-    let simObjectsIds = getSimObjectsNames();
     //if there is a new block added to the workspace store it
     const newBlock = workspace.getBlockById(event.blockId);
-    //init some arrays
-    let deletedSimObjects = [];
-    let currentSimObjects = [];
-    let currentSimObjectIds = [];
-    //put all blocks ids that are currently on the workspace into an array
-    currentSimObjects = workspace.getBlocksByType('addSimObject');
-    currentSimObjects.forEach(block => currentSimObjectIds.push(block.id));
-    //clear memory
-    currentSimObjects = [];
+
     if (event.type === Blockly.Events.BLOCK_CREATE
         && newBlock != null
         && newBlock.type === 'addSimObject'){
-        console.log('newBlock.id', newBlock.id);
-        addSimObjects([newBlock.id]);
+
+        //get all ids of currently rendered 3D-block representations
+        let simObjectNames = getSimObjectsNames();
+
+        //In case it is the first block, we can add it right away.
+        if (simObjectNames.length == 0) {
+            console.log('newBlock.id', newBlock.id);
+            addSimObjects([newBlock.id]);
+        }
+        
+        else if (simObjectNames.length > 0) {
+            for (let i = 0; i <  simObjectNames.length; i++) {
+                if (simObjectNames[i].name == newBlock.id) {
+                    console.warn('This simObject already exists: ', newBlock.id);
+                }
+                else {
+                    console.log('newBlock.id', newBlock.id);
+                    addSimObjects([newBlock.id]);
+                }
+            }
+        }
     }
+<<<<<<< HEAD
     if (event.type === Blockly.Events.BLOCK_DELETE) {
         deletedSimObjects = [...simObjectsIds].filter(blockId =>
                              !currentSimObjectIds.includes(blockId));
@@ -436,5 +451,40 @@ function watchBlocks(event) {
 
 workspace.addChangeListener(watchSpawnBlocks);
 =======
+=======
+
+    else if (event.type === Blockly.Events.BLOCK_DELETE) {
+        let currentSimObjectBlocks = workspace.getBlocksByType('addSimObject');
+        let simObjects = getSimObjects();
+        //Determin if there are any simObjects
+        if (simObjects != undefined && simObjects.length > 0) {
+            //Determin if there are more simObjects than simObjectBlocks
+            if (simObjects > currentSimObjectBlocks) {
+                let currentSimObjectBlocksIds = [];
+
+                currentSimObjectBlocks.forEach((block) => {
+                    currentSimObjectBlocksIds.push(block.id)
+                });
+
+                let deletedSimObjectBlocks = simObjects.filter(simObject =>
+                    !currentSimObjectBlocksIds.includes(simObject.name));
+
+                if (deletedSimObjectBlocks.length == 0){
+                    console.error('There are untracked SimObjects! Deletion not possible!');
+                }
+
+                else {
+                    console.log('Deleted SimObjectBlocks: ', deletedSimObjectBlocks);
+                    remSimObjects(deletedSimObjectBlocks);
+                }
+            }
+            else if (simObjects < currentSimObjectBlocks) {
+                console.error('There are untracked SimObjects! Deletion not possible!');
+            }
+        }
+    }
+}
+
+>>>>>>> 24ac1b4 (Overhaul of the watchBlocks function in blockly.js. The gripper_close function in simulation.js works now as intended.)
 workspace.addChangeListener(watchBlocks);
 >>>>>>> fc4b4db (Fixed the wrong if/else loop in objects.js/getSimobject and objects.js/getSimObjectIdx functions. Some work on integrating the physics in simulation.js. Some cleanup in blockly.js)

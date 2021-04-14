@@ -256,10 +256,10 @@ export function resetAllSimObjects () {
 =======
 //Removes the simObject from the simObjects array and calls remMesh
 //I need to implement some form of error checking here.
-export function remSimObjects(simObjectNames) {
-    for (let i = 0; i < simObjectNames.length; i++) {
+export function remSimObjects(simObjectsArray) {
+    for (let i = 0; i < simObjectsArray.length; i++) {
         for (let k = 0; k < simObjects.length; k++) {
-            if (simObjects[k].name == simObjectNames[i]) {
+            if (simObjects[k].name == simObjectsArray[i].name) {
                 remMesh(simObjects[k]);
                 simObjects.splice(k, 1);
             }
@@ -327,14 +327,20 @@ export function getSimObjectsNames() {
 //Returns all simObjects
 export function getSimObjects() {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 24ac1b4 (Overhaul of the watchBlocks function in blockly.js. The gripper_close function in simulation.js works now as intended.)
     let returnVal = undefined;
     if (simObjects.length > 0) {
         returnVal = simObjects;
     }
     return returnVal;
+<<<<<<< HEAD
 =======
         return simObjects
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
+=======
+>>>>>>> 24ac1b4 (Overhaul of the watchBlocks function in blockly.js. The gripper_close function in simulation.js works now as intended.)
 }
 
 //Returns the simObject by name (the uuid of the blockly block)
@@ -405,21 +411,25 @@ export function detachFromGripper(mesh) {
     simObject.attached = false;
     simObject.position.copy(mesh.position);
     remFromTCP(mesh);
-    createBody(simObject)
-    updateBodies([getSimObject(mesh.name)]);
+    //createBody(simObject)
+    //updateBodies([getSimObject(mesh.name)]);
 }
 
 export function attachToGripper(mesh) {
     console.log('> Object gripped!');
     let simObject = getSimObject(mesh.name)
     simObject.attached = true;
-    removeBody(simObject);
+    //removeBody(simObject);
     addToTCP(mesh);
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
 =======
     updateBodies([getSimObject(mesh.name)]);
 >>>>>>> 7eccd06 (Work on the physics simulation. Some cleanup. Minor changes on the watchBlocks function in blockly.js)
+=======
+    //updateBodies([getSimObject(mesh.name)]);
+>>>>>>> 24ac1b4 (Overhaul of the watchBlocks function in blockly.js. The gripper_close function in simulation.js works now as intended.)
 }
 
 //Determin if a simobject is attached to the TCP

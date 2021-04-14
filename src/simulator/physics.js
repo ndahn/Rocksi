@@ -188,8 +188,8 @@ export function createBody(simObject) {
     //});
 
     console.log('Body added: ', body.name);
-    bodies.push(body)
-    world.addBody(body)
+    //bodies.push(body)
+    //world.addBody(body)
 }
 
 //removes a body
