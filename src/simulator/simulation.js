@@ -279,16 +279,15 @@ class TheSimulation {
         let mesh;
         //WIP: Determin if something is under the gripper
         //if yes, then close it until the gripper touches the object, Lukas
-        if (isAttached() == false) {
-            mesh = getMeshByPosition(getTCP());
-            if (mesh != undefined) {
-                attachToGripper(mesh);
-                for (const finger of robot.hand.movable) {
+        mesh = getMeshByPosition(getTCP());
+        if (isAttached() == false && mesh != undefined) {
+            attachToGripper(mesh);
+            for (const finger of robot.hand.movable) {
                     start[finger.name] = finger.angle;
-                    target[finger.name] = finger.limit.upper - getObjectRadius(mesh) *  0.1;//This is just for testing, Lukas
+                    target[finger.name] = finger.limit.lower; //- getObjectRadius(mesh) *  0.1;//This is just for testing, Lukas
 
-                }
             }
+
         }
         //if not, close full
         else {

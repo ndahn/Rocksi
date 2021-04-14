@@ -116,10 +116,10 @@ export function addSimObjects(simObjectNames) {
 
 //Removes the simObject from the simObjects array and calls remMesh
 //I need to implement some form of error checking here.
-export function remSimObjects(simObjectNames) {
-    for (let i = 0; i < simObjectNames.length; i++) {
+export function remSimObjects(simObjectsArray) {
+    for (let i = 0; i < simObjectsArray.length; i++) {
         for (let k = 0; k < simObjects.length; k++) {
-            if (simObjects[k].name == simObjectNames[i]) {
+            if (simObjects[k].name == simObjectsArray[i].name) {
                 remMesh(simObjects[k]);
                 simObjects.splice(k, 1);
             }
@@ -132,13 +132,17 @@ export function remSimObjects(simObjectNames) {
 //I need to implement some form of error checking here.
 export function getSimObjectsNames() {
     let simObjectsNames = [];
-    simObjects.forEach(simObject => simObjectsNames.push(simObject.name));
+    simObjects.forEach(simObject => {simObjectsNames.push(simObject.name)});
     return simObjectsNames
 }
 
 //Returns all simObjects
 export function getSimObjects() {
-        return simObjects
+    let returnVal = undefined;
+    if (simObjects.length > 0) {
+        returnVal = simObjects;
+    }
+    return returnVal;
 }
 
 //Returns the simObject by name (the uuid of the blockly block)
@@ -166,17 +170,17 @@ export function detachFromGripper(mesh) {
     simObject.attached = false;
     simObject.position.copy(mesh.position);
     remFromTCP(mesh);
-    createBody(simObject)
-    updateBodies([getSimObject(mesh.name)]);
+    //createBody(simObject)
+    //updateBodies([getSimObject(mesh.name)]);
 }
 
 export function attachToGripper(mesh) {
     console.log('> Object gripped!');
     let simObject = getSimObject(mesh.name)
     simObject.attached = true;
-    removeBody(simObject);
+    //removeBody(simObject);
     addToTCP(mesh);
-    updateBodies([getSimObject(mesh.name)]);
+    //updateBodies([getSimObject(mesh.name)]);
 }
 
 //Determin if a simobject is attached to the TCP

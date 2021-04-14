@@ -336,6 +336,7 @@ export function getTCP() {
 
 export function getMeshByPosition(position) {
     let meshes = [];
+    let returnVal = undefined;
     let simObjects = getSimObjects();
     for (let i = 0; i < simObjects.length; i++) {
         const mesh = getMesh(simObjects[i]);
@@ -346,10 +347,10 @@ export function getMeshByPosition(position) {
     for (let i = 0; i < meshes.length; i++) {
         //console.log('Mesh is at: ', mesh.position);
         if (meshes[i].position.distanceTo(position) <= 0.5) {
-            return meshes[i]
+            returnVal = meshes[i];
         }
-        else { return undefined; }
     }
+    return returnVal;
 }
 
 export function getObjectRadius(mesh) {
