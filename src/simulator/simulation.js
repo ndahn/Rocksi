@@ -1,7 +1,12 @@
 import { Object3D, Vector3, Euler } from "three"
 
 //function for updating the physics, Lukas
-import { updatePhysics } from './physics'
+import { updatePhysics,
+         createBody,
+         isAsleep,
+         updateMeshes,
+         updateBodies,
+         getBody } from './physics'
 
 var TWEEN = require('@tweenjs/tween.js');
 
@@ -14,7 +19,9 @@ import { getMeshByPosition,
 import { attachToGripper,
          detachFromGripper,
          isAttached,
-         getAttachedObject } from "./objects/objects"
+         getAttachedObject,
+         getSimObjects } from "./objects/objects"
+
 
 function deg2rad(deg) {
     return deg * Math.PI / 180.0;
@@ -52,7 +59,11 @@ class TheSimulation {
             move: 0.5,
             gripper: 0.5
         }
+        //Physics, Lukas
+        //this.step = 0;
+        this.runningPhysics = false;
     }
+
 
     reset() {
         this.unlockJoints();
@@ -303,6 +314,7 @@ class TheSimulation {
             mesh = getMesh(getAttachedObject());
             console.log('mesh sim', mesh);
             detachFromGripper(mesh);
+            //this._animatePhysics()
         }
 
         for (const finger of robot.hand.movable) {
@@ -363,8 +375,29 @@ class TheSimulation {
 
 =======
     //Lukas
-    objects(name) {
-        console.log('So much happening right now. Whooo!', name);
+    createPhysicalObject(simObjectsIdx) {
+        let simObjects = getSimObjects();
+        let body;
+        if (!simObjects[simObjectsIdx].hasBody) {
+            createBody(simObjects[simObjectsIdx]);
+        }
+        else if (simObjects[simObjectsIdx].hasBody) {
+            body = getBody(simObjects[simObjectsIdx]);
+            body.wakeUp();
+        }
+        updateBodies(simObjects);
+        //this._animatePhysics();
+    }
+    _animatePhysics() {
+        updatePhysics();
+        this._renderCallback();
+        if (isAsleep()) {
+            return;
+        }
+        else {
+            console.log('rendering falling stuff...');
+            window.requestAnimationFrame(() => this._animatePhysics());
+        }
     }
 >>>>>>> fc4b4db (Fixed the wrong if/else loop in objects.js/getSimobject and objects.js/getSimObjectIdx functions. Some work on integrating the physics in simulation.js. Some cleanup in blockly.js)
 
@@ -410,8 +443,6 @@ class TheSimulation {
 
     _animate(time) {
         TWEEN.update(time);
-        //testing, Lukas
-        updatePhysics();
         this._renderCallback();
 
         if (this.running) {

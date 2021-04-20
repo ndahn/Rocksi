@@ -13,6 +13,7 @@ import { addMesh,
          remFromTCP } from '../scene';
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
 =======
 import { createBody, updateBodys } from '../physics';
@@ -20,6 +21,13 @@ import { createBody, updateBodys } from '../physics';
 =======
 import { createBody, removeBody, updateBodies, updateMeshes } from '../physics';
 >>>>>>> 7eccd06 (Work on the physics simulation. Some cleanup. Minor changes on the watchBlocks function in blockly.js)
+=======
+import { createBody,
+         removeBody,
+         updateBodies,
+         updateMeshes,
+         getBody } from '../physics';
+>>>>>>> 9c6dcb3 (Physics rendering added to simulation.js. Physics are buggy. You can pick something up and drop it. Physical bodies are added to objects at runtime. A proper cleanup and bug hunting needs to be done.)
 
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 
@@ -111,6 +119,7 @@ export class SimObject {
         this.position = new THREE.Vector3(5, 5, this.size.z * .5);
         this.attached = false;
         this.asleep = false;
+        this.hasBody = false;
     }
 }
 
@@ -229,6 +238,7 @@ export function addSimObjects(simObjectNames) {
             simObjects.push(newSimObject);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             createMesh(newSimObject);
 <<<<<<< HEAD
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
@@ -244,6 +254,9 @@ export function addSimObjects(simObjectNames) {
             //updateBodies(simObjects);
 
 >>>>>>> 7eccd06 (Work on the physics simulation. Some cleanup. Minor changes on the watchBlocks function in blockly.js)
+=======
+            createMesh(newSimObject);
+>>>>>>> 9c6dcb3 (Physics rendering added to simulation.js. Physics are buggy. You can pick something up and drop it. Physical bodies are added to objects at runtime. A proper cleanup and bug hunting needs to be done.)
         }
     }
 }
@@ -260,6 +273,9 @@ export function remSimObjects(simObjectsArray) {
     for (let i = 0; i < simObjectsArray.length; i++) {
         for (let k = 0; k < simObjects.length; k++) {
             if (simObjects[k].name == simObjectsArray[i].name) {
+                if (simObjects[k].hasBody) {
+                    removeBody(simObjects[k]);
+                }
                 remMesh(simObjects[k]);
                 simObjects.splice(k, 1);
             }
@@ -408,16 +424,20 @@ export function getSimObjectByPos(position, accuracy) {
 export function detachFromGripper(mesh) {
     console.log('> Object dropped!');
     let simObject = getSimObject(mesh.name)
+    let body = getBody(simObject);
+    body.wakeUp();
     simObject.attached = false;
     simObject.position.copy(mesh.position);
     remFromTCP(mesh);
-    //createBody(simObject)
-    //updateBodies([getSimObject(mesh.name)]);
+    updateBodies([simObject]);
+    //Update the body
+    body.updateInertiaWorld();
 }
 
 export function attachToGripper(mesh) {
     console.log('> Object gripped!');
     let simObject = getSimObject(mesh.name)
+<<<<<<< HEAD
     simObject.attached = true;
     //removeBody(simObject);
     addToTCP(mesh);
@@ -430,6 +450,20 @@ export function attachToGripper(mesh) {
 =======
     //updateBodies([getSimObject(mesh.name)]);
 >>>>>>> 24ac1b4 (Overhaul of the watchBlocks function in blockly.js. The gripper_close function in simulation.js works now as intended.)
+=======
+    //this is only the case if the Blockly block was processed
+    if (simObject.hasBody) {
+        simObject.attached = true;
+        let body = getBody(simObject);
+        body.sleep();
+        //For some unknown reason cannon does't dispatches this automaticly
+        body.dispatchEvent('sleep');
+        simObject.asleep = true;
+        addToTCP(mesh);
+        updateBodies(getSimObjects());
+    }
+
+>>>>>>> 9c6dcb3 (Physics rendering added to simulation.js. Physics are buggy. You can pick something up and drop it. Physical bodies are added to objects at runtime. A proper cleanup and bug hunting needs to be done.)
 }
 
 //Determin if a simobject is attached to the TCP
