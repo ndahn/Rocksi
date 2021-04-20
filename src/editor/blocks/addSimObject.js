@@ -77,6 +77,8 @@ Blockly.Blocks['addSimObject'] = {
               "precision": 1
             }
 			],
+            "previousStatement": null,
+            "nextStatement": null,
 			"colour": "",
 			"tooltip": "",
 			"helpUrl": ""
@@ -137,6 +139,6 @@ Blockly.Blocks['addSimObject'] = {
 //3D Object and starts the physics engine
 Blockly.JavaScript["addSimObject"] = function (block) {
     var idx = getSimObjectIdx(this.id);
-    var code = 'simulate("objects", ' + idx + ');'
+    var code = 'simulate("createPhysicalObject", ' + idx + ');'
 	return code;
 };
