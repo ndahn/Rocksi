@@ -6,7 +6,11 @@ import { addMesh,
          rotMesh,
          addToTCP,
          remFromTCP } from '../scene';
-import { createBody, removeBody, updateBodies, updateMeshes } from '../physics';
+import { createBody,
+         removeBody,
+         updateBodies,
+         updateMeshes,
+         getBody } from '../physics';
 
 // TODO: Error checking!
 
@@ -24,6 +28,7 @@ export class SimObject {
         this.position = new THREE.Vector3(5, 5, this.size.z * .5);
         this.attached = false;
         this.asleep = false;
+        this.hasBody = false;
     }
 }
 
@@ -106,10 +111,7 @@ export function addSimObjects(simObjectNames) {
             let newSimObject = new SimObject;
             newSimObject.name = simObjectNames[i];
             simObjects.push(newSimObject);
-            //createBody(newSimObject);
             createMesh(newSimObject);
-            //updateBodies(simObjects);
-
         }
     }
 }
@@ -120,6 +122,9 @@ export function remSimObjects(simObjectsArray) {
     for (let i = 0; i < simObjectsArray.length; i++) {
         for (let k = 0; k < simObjects.length; k++) {
             if (simObjects[k].name == simObjectsArray[i].name) {
+                if (simObjects[k].hasBody) {
+                    removeBody(simObjects[k]);
+                }
                 remMesh(simObjects[k]);
                 simObjects.splice(k, 1);
             }
@@ -167,20 +172,31 @@ export function getSimObjectIdx(simObjectName) {
 export function detachFromGripper(mesh) {
     console.log('> Object dropped!');
     let simObject = getSimObject(mesh.name)
+    let body = getBody(simObject);
+    body.wakeUp();
     simObject.attached = false;
     simObject.position.copy(mesh.position);
     remFromTCP(mesh);
-    //createBody(simObject)
-    //updateBodies([getSimObject(mesh.name)]);
+    updateBodies([simObject]);
+    //Update the body
+    body.updateInertiaWorld();
 }
 
 export function attachToGripper(mesh) {
     console.log('> Object gripped!');
     let simObject = getSimObject(mesh.name)
-    simObject.attached = true;
-    //removeBody(simObject);
-    addToTCP(mesh);
-    //updateBodies([getSimObject(mesh.name)]);
+    //this is only the case if the Blockly block was processed
+    if (simObject.hasBody) {
+        simObject.attached = true;
+        let body = getBody(simObject);
+        body.sleep();
+        //For some unknown reason cannon does't dispatches this automaticly
+        body.dispatchEvent('sleep');
+        simObject.asleep = true;
+        addToTCP(mesh);
+        updateBodies(getSimObjects());
+    }
+
 }
 
 //Determin if a simobject is attached to the TCP

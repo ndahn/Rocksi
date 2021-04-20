@@ -2,7 +2,12 @@ import * as Blockly from "blockly"
 import { Object3D, Vector3, Euler } from "three"
 
 //function for updating the physics, Lukas
-import { updatePhysics } from './physics'
+import { updatePhysics,
+         createBody,
+         isAsleep,
+         updateMeshes,
+         updateBodies,
+         getBody } from './physics'
 
 var TWEEN = require('@tweenjs/tween.js');
 
@@ -15,7 +20,9 @@ import { getMeshByPosition,
 import { attachToGripper,
          detachFromGripper,
          isAttached,
-         getAttachedObject } from "./objects/objects"
+         getAttachedObject,
+         getSimObjects } from "./objects/objects"
+
 
 // Velocities to move a joint one unit
 // (m/s for prismatic joints, rad/s for revolute joints)
@@ -61,7 +68,11 @@ class TheSimulation {
             gripper: Blockly.Msg.DEFAULT_SPEED_GRIPPER,
             joint: Blockly.Msg.DEFAULT_SPEED_JOINT,
         }
+        //Physics, Lukas
+        //this.step = 0;
+        this.runningPhysics = false;
     }
+
 
     reset() {
         this.unlockJoints();
@@ -185,7 +196,7 @@ class TheSimulation {
         return pose;
     }
 
-    
+
     wait(ms) {
         return new Promise(resolve => {
             setTimeout(() => resolve('success'), ms);
@@ -315,6 +326,7 @@ class TheSimulation {
             mesh = getMesh(getAttachedObject());
             console.log('mesh sim', mesh);
             detachFromGripper(mesh);
+            //this._animatePhysics()
         }
 
         for (const finger of robot.hand.movable) {
@@ -357,8 +369,29 @@ class TheSimulation {
     }
 
     //Lukas
-    objects(name) {
-        console.log('So much happening right now. Whooo!', name);
+    createPhysicalObject(simObjectsIdx) {
+        let simObjects = getSimObjects();
+        let body;
+        if (!simObjects[simObjectsIdx].hasBody) {
+            createBody(simObjects[simObjectsIdx]);
+        }
+        else if (simObjects[simObjectsIdx].hasBody) {
+            body = getBody(simObjects[simObjectsIdx]);
+            body.wakeUp();
+        }
+        updateBodies(simObjects);
+        //this._animatePhysics();
+    }
+    _animatePhysics() {
+        updatePhysics();
+        this._renderCallback();
+        if (isAsleep()) {
+            return;
+        }
+        else {
+            console.log('rendering falling stuff...');
+            window.requestAnimationFrame(() => this._animatePhysics());
+        }
     }
 
     _makeTween(start, target, duration) {
@@ -403,8 +436,6 @@ class TheSimulation {
 
     _animate(time) {
         TWEEN.update(time);
-        //testing, Lukas
-        updatePhysics();
         this._renderCallback();
 
         if (this.running) {
