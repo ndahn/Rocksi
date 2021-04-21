@@ -60,14 +60,14 @@ class TheSimulation {
             gripper: 0.5
         }
         //Physics, Lukas
-        //this.step = 0;
-        this.runningPhysics = false;
+        this.runningPhysics = true;
     }
 
 
     reset() {
         this.unlockJoints();
         this.setDefaultVelocities();
+        this.runningPhysics = true;
     }
 
     async run(command, ...args) {
@@ -91,6 +91,7 @@ class TheSimulation {
         // As this is called by _onTweenFinished, this prevents having multiple tweens
         // with different end times, but that's not a use case at the moment
         TWEEN.removeAll();
+        this.runningPhysics = false;
     }
 
 
@@ -368,17 +369,20 @@ class TheSimulation {
             body.wakeUp();
         }
         updateBodies(simObjects);
-        //this._animatePhysics();
     }
+
     _animatePhysics() {
-        updatePhysics();
-        this._renderCallback();
-        if (isAsleep()) {
-            return;
-        }
-        else {
-            console.log('rendering falling stuff...');
-            window.requestAnimationFrame(() => this._animatePhysics());
+        if (this.runningPhysics) {
+            updatePhysics();
+            this._renderCallback();
+            if (isAsleep()) {
+                console.log('Physics rendering done!');
+                return;
+            }
+            else {
+                //console.log('rendering falling stuff...');
+                window.requestAnimationFrame(() => this._animatePhysics());
+            }
         }
     }
 
