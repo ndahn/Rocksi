@@ -388,7 +388,7 @@ function watchBlocks(event) {
             console.log('newBlock.id', newBlock.id);
             addSimObjects([newBlock.id]);
         }
-        
+
         else if (simObjectNames.length > 0) {
             for (let i = 0; i <  simObjectNames.length; i++) {
                 if (simObjectNames[i].name == newBlock.id) {
@@ -402,7 +402,7 @@ function watchBlocks(event) {
         }
     }
 
-    else if (event.type === Blockly.Events.BLOCK_DELETE) {
+    if (event.type === Blockly.Events.BLOCK_DELETE) {
         let currentSimObjectBlocks = workspace.getBlocksByType('addSimObject');
         let simObjects = getSimObjects();
         //Determin if there are any simObjects
@@ -431,6 +431,13 @@ function watchBlocks(event) {
                 console.error('There are untracked SimObjects! Deletion not possible!');
             }
         }
+    }
+    if (event.type === Blockly.Events.FINISHED_LOADING) {
+        console.log('FINISHED_LOADING');
+        let loadedBlocks = workspace.getBlocksByType('addSimObject');
+        let loadedBlocksNames = [];
+        loadedBlocks.forEach((block) => { loadedBlocksNames.push(block.id) });
+        addSimObjects(loadedBlocksNames);
     }
 }
 
