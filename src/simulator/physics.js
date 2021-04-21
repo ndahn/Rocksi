@@ -178,12 +178,12 @@ export function updatePhysics() {
 //handels sleep events, gets called by the bodys event listener.
 function bedTimeManagement(event){
     if (event.type == 'sleep') {
-        console.log('Body', event.target.name, 'is sleeping.' );
+        //console.log('Body', event.target.name, 'is sleeping.' );
         let simObject = getSimObject(event.target.name);
         simObject.asleep = true;
     }
     if (event.type == 'wakeup') {
-        console.log('Body ', event.target.name, ' is awake')
+        //console.log('Body ', event.target.name, ' is awake')
         let simObject = getSimObject(event.target.name);
         simObject.asleep = false;
     }
@@ -214,7 +214,7 @@ export function createBody(simObject) {
 
     //body.addEventListener('wakeup', sleeping(event, body));
 
-    console.log('Body added: ', body.name);
+    //console.log('Body added: ', body.name);
     simObject.hasBody = true;
     //body.sleep();
     bodies.push(body)
@@ -287,12 +287,13 @@ export function updateMeshes(simObjects) {
 
 //much better now.
 export function isAsleep() {
+
     const simObjects = getSimObjects();
     let returnVal = true;
     for (var i = 0; i < simObjects.length; i++) {
         if (simObjects[i].asleep == false) {
-            returnVal = false;
-            break;
+           returnVal = false;
+           break;
         }
     }
 <<<<<<< HEAD

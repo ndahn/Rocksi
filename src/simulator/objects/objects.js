@@ -4,6 +4,7 @@ import { BoxBufferGeometry,
          CylinderGeometry } from 'three';
 =======
 import * as THREE from 'three';
+import * as Blockly from 'blockly/core'
 import { addMesh,
          remMesh,
          getMesh,
@@ -29,6 +30,7 @@ import { createBody,
          getBody } from '../physics';
 >>>>>>> 9c6dcb3 (Physics rendering added to simulation.js. Physics are buggy. You can pick something up and drop it. Physical bodies are added to objects at runtime. A proper cleanup and bug hunting needs to be done.)
 
+<<<<<<< HEAD
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 
 import * as Blockly from 'blockly/core'
@@ -41,6 +43,11 @@ import { requestAF,
          getControl } from '../scene';
 
 import { getWorld } from '../physics';
+=======
+//import { updateSimObjectBlock } from '../../editor/blockly';
+
+// TODO: Error checking!
+>>>>>>> c5b82a2 (It is now possible to load addSimObject blocks from xml to the workspace. Field values from addSimObject blocks are now updated then either the block or the 3D object changes.)
 
 let simObjects = [];
 
@@ -157,6 +164,7 @@ function createMesh(simObject) {
         cubeMesh.rotation.copy(simObject.rotation);
         //Monkeypatching...
         cubeMesh.name = simObject.name;
+        updateSimObjectBlock(simObject);
         addMesh(cubeMesh);
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
 
@@ -249,10 +257,16 @@ export function changeSimObjectOrientation(simObject) {
 //undefined it will add a new simObject and call createMesh. I do not think
 //looking for an undefined is a good design choice, but it is working as intended
 export function addSimObjects(simObjectNames) {
+    let workspace = Blockly.getMainWorkspace();
+    let block;
     for (let i = 0; i < simObjectNames.length; i++) {
         if (simObjects.find(simObject => simObject.name === simObjectNames[i]) === undefined){
             let newSimObject = new SimObject;
             newSimObject.name = simObjectNames[i];
+            block = workspace.getBlockById(newSimObject.name);
+            newSimObject.position.x = block.getFieldValue('POSITION_X');
+            newSimObject.position.y = block.getFieldValue('POSITION_Y');
+            newSimObject.position.z = block.getFieldValue('POSITION_Z');
             simObjects.push(newSimObject);
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -546,4 +560,12 @@ function randomColor() {
     }
     return color;
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
+}
+
+function updateSimObjectBlock(simObject) {
+    let workspace = Blockly.getMainWorkspace();
+    let block = workspace.getBlockById(simObject.name);
+    block.setFieldValue(simObject.position.x, 'POSITION_X');
+    block.setFieldValue(simObject.position.y, 'POSITION_Y');
+    block.setFieldValue(simObject.position.z, 'POSITION_Z');
 }
