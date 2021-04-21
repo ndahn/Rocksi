@@ -125,6 +125,19 @@ export class SimObject {
 
 //Functions for creating meshes
 
+function stackSimObject(simObject) {
+        for (let k = 0; k < simObjects.length; k++) {
+            if (simObjects[k].name != simObject.name) {
+                if (simObject.position.distanceTo(simObjects[k].position)
+                    < (simObject.size.z * .5)) {
+
+                    let zShift = simObjects[k].size.z;
+                    simObject.position.z = simObject.position.z + zShift;
+                }
+            }
+        }
+    return simObject;
+}
 //creates a three mesh from an simObject depending on simObject.type
 function createMesh(simObject) {
 
@@ -138,8 +151,11 @@ function createMesh(simObject) {
         let cubeMaterial = new THREE.MeshPhongMaterial({ color: randomColor() });
         let cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
         //cubeMesh.castShadow = true;
+        let shiftedSimObject = stackSimObject(simObject);
+        simObject = shiftedSimObject;
         cubeMesh.position.copy(simObject.position);
         cubeMesh.rotation.copy(simObject.rotation);
+        //Monkeypatching...
         cubeMesh.name = simObject.name;
         addMesh(cubeMesh);
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
@@ -177,6 +193,8 @@ function zShiftCubes(simObject) {
         const cylinderMaterial = new THREE.MeshPhongMaterial({ color: randomColor() });
         const cylinderMesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
         //cylinderMesh.castShadow = true;
+        let shiftedSimObject = stackSimObject(simObject);
+        simObject = shiftedSimObject;
         cylinderMesh.position.copy(simObject.position);
         cylinderMesh.rotation.copy(simObject.rotation);
         cylinderMesh.name = simObject.name;
@@ -229,10 +247,10 @@ export function changeSimObjectOrientation(simObject) {
 //and the corresponding three mesh with the same name.
 //To do this it looks for the uuid in the simObjects array and if returned
 //undefined it will add a new simObject and call createMesh. I do not think
-//looking for an undefined is a good desing choice, but it is working as intended
+//looking for an undefined is a good design choice, but it is working as intended
 export function addSimObjects(simObjectNames) {
     for (let i = 0; i < simObjectNames.length; i++) {
-        if (simObjects.find(object => object.name === simObjectNames[i]) === undefined){
+        if (simObjects.find(simObject => simObject.name === simObjectNames[i]) === undefined){
             let newSimObject = new SimObject;
             newSimObject.name = simObjectNames[i];
             simObjects.push(newSimObject);
@@ -262,11 +280,15 @@ export function addSimObjects(simObjectNames) {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 export function resetAllSimObjects () {
     if (simObjects.length > 0) {
         for (const simObject of simObjects) {
             simObject.reset();
 =======
+=======
+
+>>>>>>> 7e4873f (Physics are now working as intended. When adding a 3D object the objects are now place on top of each other.)
 //Removes the simObject from the simObjects array and calls remMesh
 //I need to implement some form of error checking here.
 export function remSimObjects(simObjectsArray) {
