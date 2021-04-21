@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import * as Blockly from 'blockly/core'
 import { addMesh,
          remMesh,
          getMesh,
@@ -11,6 +12,8 @@ import { createBody,
          updateBodies,
          updateMeshes,
          getBody } from '../physics';
+
+//import { updateSimObjectBlock } from '../../editor/blockly';
 
 // TODO: Error checking!
 
@@ -66,6 +69,7 @@ function createMesh(simObject) {
         cubeMesh.rotation.copy(simObject.rotation);
         //Monkeypatching...
         cubeMesh.name = simObject.name;
+        updateSimObjectBlock(simObject);
         addMesh(cubeMesh);
 
     }
@@ -124,10 +128,16 @@ export function changeSimObjectOrientation(simObject) {
 //undefined it will add a new simObject and call createMesh. I do not think
 //looking for an undefined is a good design choice, but it is working as intended
 export function addSimObjects(simObjectNames) {
+    let workspace = Blockly.getMainWorkspace();
+    let block;
     for (let i = 0; i < simObjectNames.length; i++) {
         if (simObjects.find(simObject => simObject.name === simObjectNames[i]) === undefined){
             let newSimObject = new SimObject;
             newSimObject.name = simObjectNames[i];
+            block = workspace.getBlockById(newSimObject.name);
+            newSimObject.position.x = block.getFieldValue('POSITION_X');
+            newSimObject.position.y = block.getFieldValue('POSITION_Y');
+            newSimObject.position.z = block.getFieldValue('POSITION_Z');
             simObjects.push(newSimObject);
             createMesh(newSimObject);
         }
@@ -248,4 +258,12 @@ function randomColor() {
         color += hexDigits[Math.floor(Math.random() * 16)];
     }
     return color;
+}
+
+function updateSimObjectBlock(simObject) {
+    let workspace = Blockly.getMainWorkspace();
+    let block = workspace.getBlockById(simObject.name);
+    block.setFieldValue(simObject.position.x, 'POSITION_X');
+    block.setFieldValue(simObject.position.y, 'POSITION_Y');
+    block.setFieldValue(simObject.position.z, 'POSITION_Z');
 }
