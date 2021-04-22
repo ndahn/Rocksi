@@ -145,32 +145,53 @@ function stackSimObject(simObject) {
         }
     return simObject;
 }
+
+function createBoxMesh(simObject) {
+    let cubeGeometry = new THREE.BoxBufferGeometry( simObject.size.x,
+                                                    simObject.size.y,
+                                                    simObject.size.z,
+                                                    10,
+                                                    10);
+
+    let cubeMaterial = new THREE.MeshPhongMaterial({ color: randomColor() });
+    let cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
+    cubeMesh.position.copy(simObject.position);
+    cubeMesh.rotation.copy(simObject.rotation);
+    cubeMesh.name = simObject.name;
+    return cubeMesh;
+}
+
+function createCylinderMesh(simObject) {
+    const cylinderGeometry = new THREE.CylinderBufferGeometry(simObject.size.x,
+                                                              simObject.size.y,
+                                                              simObject.size.z,
+                                                              10,
+                                                              10);
+
+    const cylinderMaterial = new THREE.MeshPhongMaterial({ color: randomColor() });
+    const cylinderMesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
+    cylinderMesh.position.copy(simObject.position);
+    cylinderMesh.rotation.copy(simObject.rotation);
+    cylinderMesh.name = simObject.name;
+    return cylinderMesh;
+}
+
 //creates a three mesh from an simObject depending on simObject.type
 function createMesh(simObject) {
-
     if (simObject.type === 'cube') {
-        let cubeGeometry = new THREE.BoxBufferGeometry( simObject.size.x,
-                                                        simObject.size.y,
-                                                        simObject.size.z,
-                                                        10,
-                                                        10);
-
-        let cubeMaterial = new THREE.MeshPhongMaterial({ color: randomColor() });
-        let cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        //cubeMesh.castShadow = true;
         let shiftedSimObject = stackSimObject(simObject);
         simObject = shiftedSimObject;
-        cubeMesh.position.copy(simObject.position);
-        cubeMesh.rotation.copy(simObject.rotation);
-        //Monkeypatching...
-        cubeMesh.name = simObject.name;
         updateSimObjectBlock(simObject);
+        let cubeMesh = createBoxMesh(simObject)
         addMesh(cubeMesh);
+<<<<<<< HEAD
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
 
         default:
             console.error('Unknown SimObject Type: ', simObject.type);
             break;
+=======
+>>>>>>> 9435462 (Two new functions for creating meshes from simObjects.)
     }
 }
 
@@ -192,20 +213,10 @@ function zShiftCubes(simObject) {
         }
 =======
     if (simObject.type === 'cylinder') {
-        const cylinderGeometry = new THREE.CylinderBufferGeometry(simObject.size.x,
-                                                                  simObject.size.y,
-                                                                  simObject.size.z,
-                                                                  10,
-                                                                  10);
-
-        const cylinderMaterial = new THREE.MeshPhongMaterial({ color: randomColor() });
-        const cylinderMesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
-        //cylinderMesh.castShadow = true;
         let shiftedSimObject = stackSimObject(simObject);
         simObject = shiftedSimObject;
-        cylinderMesh.position.copy(simObject.position);
-        cylinderMesh.rotation.copy(simObject.rotation);
-        cylinderMesh.name = simObject.name;
+        updateSimObjectBlock(simObject);
+        let cylinderMesh = createCylinderMesh(simObject);
         addMesh(cylinderMesh);
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
     }
