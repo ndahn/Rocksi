@@ -56,14 +56,31 @@ const dt = 0.02
 let world;
 let bodies = [];
 <<<<<<< HEAD
+<<<<<<< HEAD
 let cubeShape, cubeBody;
 >>>>>>> 3862ed5 (Started to add physics to the simulation. Not really working right now. Object pickup is broken, in this commit. Objects only fall if you move the camera, this is intentional.)
 =======
 
 <<<<<<< HEAD
 //const physicsTween = new TWEEN.Tween();
+=======
+let robotBodies = [];
+>>>>>>> 02567a5 (Fixed the simObjects is undefined error in the isAsleep() function when running a program without simObjects)
 
-//robothitbox(robot)
+function updateRobotBodies() {
+
+}
+
+export function createRobotBody() {
+    const shape = new CANNON.Box(new CANNON.Vec3(3, 3, 3));
+    let body = new CANNON.Body({ mass: 0 });
+    body.addShape(shape);
+    body.position.set(new CANNON.Vec3(0, 0, 0));
+    body.name = 'base';
+    console.log(body.name);
+    robotBodies.push(body);
+    world.addBody(body);
+}
 
 
 function doNothing(){
@@ -293,15 +310,18 @@ export function updateMeshes(simObjects) {
 
 //much better now.
 export function isAsleep() {
-
-    const simObjects = getSimObjects();
     let returnVal = true;
-    for (var i = 0; i < simObjects.length; i++) {
-        if (simObjects[i].asleep == false) {
-           returnVal = false;
-           break;
+    const simObjects = getSimObjects();
+    if (simObjects != undefined) {
+
+        for (var i = 0; i < simObjects.length; i++) {
+            if (simObjects[i].asleep == false) {
+               returnVal = false;
+               break;
+            }
         }
     }
+<<<<<<< HEAD
 <<<<<<< HEAD
     else if (simObjects == undefined) {
         console.warn('You have broken the law, simObjects in isAsleep() are undefined!');
@@ -311,6 +331,10 @@ export function isAsleep() {
     }
 >>>>>>> 3862ed5 (Started to add physics to the simulation. Not really working right now. Object pickup is broken, in this commit. Objects only fall if you move the camera, this is intentional.)
 =======
+=======
+    else {returnVal = true}
+
+>>>>>>> 02567a5 (Fixed the simObjects is undefined error in the isAsleep() function when running a program without simObjects)
     return returnVal;
 >>>>>>> 7e4873f (Physics are now working as intended. When adding a 3D object the objects are now place on top of each other.)
 }
