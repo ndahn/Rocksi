@@ -63,6 +63,7 @@ let cubeShape, cubeBody;
 <<<<<<< HEAD
 //const physicsTween = new TWEEN.Tween();
 
+//robothitbox(robot)
 
 
 function doNothing(){
@@ -75,6 +76,7 @@ function doNothing(){
 export function initCannon() {
     //World
     world = new CANNON.World();
+<<<<<<< HEAD
 <<<<<<< HEAD
     world.gravity.set(0, 0, -9.81);
     world.broadphase = new CANNON.NaiveBroadphase();
@@ -150,8 +152,11 @@ export function isWorldActive() {
     return world.hasActiveBodies;
 =======
     world.gravity.set(0, 0, -9);
+=======
+    world.gravity.set(0, 0, -9.81);
+>>>>>>> c170859 (Changed gravity an solver iterations)
     world.broadphase = new CANNON.NaiveBroadphase();
-    world.solver.iterations = 8;
+    world.solver.iterations = 10;
     world.allowSleep = true;
     //world.addEventListener('sleepEvent', doNothing);
 
@@ -240,6 +245,7 @@ export function removeBody(simObject) {
         }
     }
 }
+
 //Removes every body, not used right now.
 export function removeAllBodies(simObjects) {
     for (var i = 0; i < simObjects.length; i++) {
