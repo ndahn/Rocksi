@@ -14,13 +14,14 @@ const dt = 0.02
 let world;
 let bodies = [];
 
+//robothitbox(robot)
 
 export function initCannon() {
     //World
     world = new CANNON.World();
-    world.gravity.set(0, 0, -9);
+    world.gravity.set(0, 0, -9.81);
     world.broadphase = new CANNON.NaiveBroadphase();
-    world.solver.iterations = 8;
+    world.solver.iterations = 10;
     world.allowSleep = true;
     //world.addEventListener('sleepEvent', doNothing);
 
@@ -109,6 +110,7 @@ export function removeBody(simObject) {
         }
     }
 }
+
 //Removes every body, not used right now.
 export function removeAllBodies(simObjects) {
     for (var i = 0; i < simObjects.length; i++) {
