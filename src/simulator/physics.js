@@ -108,6 +108,7 @@ export function updateMeshes(simObjects) {
         simObjects[i].updateMesh();
     }
 }
+
 //Removes every body, not used right now.
 export function removeAllBodies(simObjects) {
     for (var i = 0; i < simObjects.length; i++) {
