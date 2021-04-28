@@ -13,8 +13,22 @@ import { getMesh, addMesh } from './scene';
 const dt = 0.02
 let world;
 let bodies = [];
+let robotBodies = [];
 
-//robothitbox(robot)
+function updateRobotBodies() {
+
+}
+
+export function createRobotBody() {
+    const shape = new CANNON.Box(new CANNON.Vec3(3, 3, 3));
+    let body = new CANNON.Body({ mass: 0 });
+    body.addShape(shape);
+    body.position.set(new CANNON.Vec3(0, 0, 0));
+    body.name = 'base';
+    console.log(body.name);
+    robotBodies.push(body);
+    world.addBody(body);
+}
 
 export function initCannon() {
     //World
@@ -158,14 +172,18 @@ export function updateMeshes(simObjects) {
 
 //much better now.
 export function isAsleep() {
-
-    const simObjects = getSimObjects();
     let returnVal = true;
-    for (var i = 0; i < simObjects.length; i++) {
-        if (simObjects[i].asleep == false) {
-           returnVal = false;
-           break;
+    const simObjects = getSimObjects();
+    if (simObjects != undefined) {
+
+        for (var i = 0; i < simObjects.length; i++) {
+            if (simObjects[i].asleep == false) {
+               returnVal = false;
+               break;
+            }
         }
     }
+    else {returnVal = true}
+
     return returnVal;
 }
