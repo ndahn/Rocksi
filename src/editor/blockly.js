@@ -23,8 +23,9 @@ import './blocks/set_speed'
 import './blocks/joint_lock'
 import './blocks/joint_unlock'
 
-//points to block definition for addSimObject, Lukas
-import './blocks/addSimObject'
+//points to block definition for add_sim_object, Lukas
+import './blocks/add_sim_object'
+import './blocks/pose'
 
 //imports for adding and removing 3D-objects, Lukas
 import { addSimObjects,
@@ -369,7 +370,7 @@ function onProgramFinished() {
     popSuccess(Blockly.Msg['EXEC_SUCCESS'] || "Program finished");
 }
 
-//Determin if a addSimObject-block was added or removed form the Blockly Workspace.
+//Determin if a add_sim_object-block was added or removed form the Blockly Workspace.
 //If added, add a new 3D-object. If removed remove the 3D-object assosiated with the block.
 //Lukas
 function watchBlocks(event) {
@@ -378,7 +379,7 @@ function watchBlocks(event) {
 
     if (event.type === Blockly.Events.BLOCK_CREATE
         && newBlock != null
-        && newBlock.type === 'addSimObject'){
+        && newBlock.type === 'add_sim_object'){
 
         //get all ids of currently rendered 3D-block representations
         let simObjectNames = getSimObjectsNames();
@@ -403,7 +404,7 @@ function watchBlocks(event) {
     }
 
     if (event.type === Blockly.Events.BLOCK_DELETE) {
-        let currentSimObjectBlocks = workspace.getBlocksByType('addSimObject');
+        let currentSimObjectBlocks = workspace.getBlocksByType('add_sim_object');
         let simObjects = getSimObjects();
         //Determin if there are any simObjects
         if (simObjects != undefined && simObjects.length > 0) {
@@ -434,7 +435,7 @@ function watchBlocks(event) {
     }
     if (event.type === Blockly.Events.FINISHED_LOADING) {
         console.log('FINISHED_LOADING');
-        let loadedBlocks = workspace.getBlocksByType('addSimObject');
+        let loadedBlocks = workspace.getBlocksByType('add_sim_object');
         let loadedBlocksNames = [];
         loadedBlocks.forEach((block) => { loadedBlocksNames.push(block.id) });
         addSimObjects(loadedBlocksNames);
