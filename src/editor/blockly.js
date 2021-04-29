@@ -28,7 +28,14 @@ import './blocks/is_attached'
 import './blocks/physics_done'
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+//points to block definition for add_sim_object, Lukas
+import './blocks/add_sim_object'
+import './blocks/pose'
+
+>>>>>>> bd6d1c4 (Changed file names and added pose block)
 //imports for adding and removing 3D-objects, Lukas
 import { addSimObjects,
          remSimObjects,
@@ -415,7 +422,7 @@ function watchBlocks(event) {
 
     if (event.type === Blockly.Events.BLOCK_CREATE
         && newBlock != null
-        && newBlock.type === 'addSimObject'){
+        && newBlock.type === 'add_sim_object'){
 
         //get all ids of currently rendered 3D-block representations
         let simObjectNames = getSimObjectsNames();
@@ -454,7 +461,7 @@ workspace.addChangeListener(watchSpawnBlocks);
 =======
 
     if (event.type === Blockly.Events.BLOCK_DELETE) {
-        let currentSimObjectBlocks = workspace.getBlocksByType('addSimObject');
+        let currentSimObjectBlocks = workspace.getBlocksByType('add_sim_object');
         let simObjects = getSimObjects();
         //Determin if there are any simObjects
         if (simObjects != undefined && simObjects.length > 0) {
@@ -485,7 +492,7 @@ workspace.addChangeListener(watchSpawnBlocks);
     }
     if (event.type === Blockly.Events.FINISHED_LOADING) {
         console.log('FINISHED_LOADING');
-        let loadedBlocks = workspace.getBlocksByType('addSimObject');
+        let loadedBlocks = workspace.getBlocksByType('add_sim_object');
         let loadedBlocksNames = [];
         loadedBlocks.forEach((block) => { loadedBlocksNames.push(block.id) });
         addSimObjects(loadedBlocksNames);
