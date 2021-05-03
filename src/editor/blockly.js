@@ -374,6 +374,9 @@ function onProgramFinished() {
 //If added, add a new 3D-object. If removed remove the 3D-object assosiated with the block.
 //Lukas
 function watchBlocks(event) {
+    //console.log('wp event.type: ', event.type);
+    //console.log('wp event: ', event);
+
     //if there is a new block added to the workspace store it
     const newBlock = workspace.getBlockById(event.blockId);
 
@@ -419,14 +422,14 @@ function watchBlocks(event) {
                 let deletedSimObjectBlocks = simObjects.filter(simObject =>
                     !currentSimObjectBlocksIds.includes(simObject.name));
 
-                if (deletedSimObjectBlocks.length == 0){
-                    console.error('There are untracked SimObjects! Deletion not possible!');
-                }
+                //if (deletedSimObjectBlocks.length == 0){
+                //    console.error('There are untracked SimObjects! Deletion not possible!');
+                //}
 
-                else {
+                //else {
                     console.log('Deleted SimObjectBlocks: ', deletedSimObjectBlocks);
                     remSimObjects(deletedSimObjectBlocks);
-                }
+                //}
             }
             else if (simObjects < currentSimObjectBlocks) {
                 console.error('There are untracked SimObjects! Deletion not possible!');

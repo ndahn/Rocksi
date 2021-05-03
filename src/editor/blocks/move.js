@@ -1,8 +1,8 @@
 import * as Blockly from "blockly";
 
 Blockly.Blocks["move"] = {
-	deferredStep: true, 
-	
+	deferredStep: true,
+
 	init: function () {
 		this.jsonInit({
 			type: "move",
@@ -11,7 +11,7 @@ Blockly.Blocks["move"] = {
 				{
 					type: "input_value",
 					name: "POSE",
-					check: "Array",
+                    check: ["Pose", "Array"],
 				},
 			],
 			inputsInline: false,
