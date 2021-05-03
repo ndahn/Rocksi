@@ -103,3 +103,58 @@ Blockly.JavaScript["add_sim_object"] = function (block) {
     var code = 'robot("startPhysicalBody", ' + idx + ');'
 	return code;
 };
+
+/*
+if (event.name === 'POSITION_X' && event.blockId == thisBlock.id) {
+    var simObject = getSimObject(thisBlock.id);
+    var fieldValue = thisBlock.getFieldValue('POSITION_X');
+    if (fieldValue != simObject.position.x) {
+        simObject.position.x = thisBlock.getFieldValue('POSITION_X');
+        changeSimObjectPosition(simObject);
+    }
+}
+
+if (event.name === 'POSITION_Y' && event.blockId == thisBlock.id) {
+    var simObject = getSimObject(thisBlock.id);
+    var fieldValue = thisBlock.getFieldValue('POSITION_Y');
+    if (fieldValue != simObject.position.y) {
+        simObject.position.y = thisBlock.getFieldValue('POSITION_Y');
+        changeSimObjectPosition(simObject);
+    }
+}
+
+if (event.name === 'POSITION_Z' && event.blockId == thisBlock.id) {
+    var simObject = getSimObject(thisBlock.id);
+    var fieldValue = thisBlock.getFieldValue('POSITION_Z');
+    if (fieldValue != simObject.position.z) {
+        simObject.position.z = thisBlock.getFieldValue('POSITION_Z');
+        changeSimObjectPosition(simObject);
+    }
+}
+
+if (event.name === 'ROT_X' && event.blockId == thisBlock.id) {
+    var simObject = getSimObject(thisBlock.id);
+    var fieldValue = thisBlock.getFieldValue('ROT_X');
+    if (fieldValue != simObject.rotation.x) {
+        simObject.rotation.x = thisBlock.getFieldValue('ROT_X');
+        changeSimObjectPosition(simObject);
+    }
+}
+
+if (event.name === 'ROT_Y' && event.blockId == thisBlock.id) {
+    var simObject = getSimObject(thisBlock.id);
+    var fieldValue = thisBlock.getFieldValue('ROT_X');
+    if (fieldValue != simObject.rotation.x) {
+        simObject.rotation.x = thisBlock.getFieldValue('ROT_X');
+        changeSimObjectPosition(simObject);
+    }
+}
+
+if (event.name === 'ROT_Z' && event.blockId == thisBlock.id) {
+    var simObject = getSimObject(thisBlock.id);
+    var fieldValue = thisBlock.getFieldValue('ROT_X');
+    if (fieldValue != simObject.rotation.x) {
+        simObject.rotation.x = thisBlock.getFieldValue('ROT_X');
+        changeSimObjectPosition(simObject);
+    }
+} */

@@ -251,6 +251,7 @@ export function randomColour() {
     return colour;
 }
 
+/*
 function updateSimObjectBlock(simObject) {
     let workspace = Blockly.getMainWorkspace();
     let block = workspace.getBlockById(simObject.name);
@@ -258,3 +259,4 @@ function updateSimObjectBlock(simObject) {
     block.setFieldValue(simObject.position.y, 'POSITION_Y');
     block.setFieldValue(simObject.position.z, 'POSITION_Z');
 }
+*/
