@@ -47,7 +47,7 @@ Blockly.Blocks["pose"] = {
 				},
 			],
 			inputsInline: true,
-			output: "Array",
+			output: "Pose",
 			colour: "%{BKY_MOVEMENT_HEX}",
 			tooltip:
 				"Eine Pose im Arbeitsraum (definiert über die Endeffektorpose, d.h. Position und Orientierung)",

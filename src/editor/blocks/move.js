@@ -9,7 +9,7 @@ Blockly.Blocks["move"] = {
 				{
 					type: "input_value",
 					name: "POSE",
-					check: "Array",
+                    check: ["Pose", "Array"],
 				},
 			],
 			inputsInline: false,
