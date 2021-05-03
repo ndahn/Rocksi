@@ -49,6 +49,10 @@ import { getWorld } from '../physics';
 // TODO: Error checking!
 >>>>>>> c5b82a2 (It is now possible to load addSimObject blocks from xml to the workspace. Field values from addSimObject blocks are now updated then either the block or the 3D object changes.)
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 18de391 (Added a type check for the pose block. New add_sim_object block, to be consistent with the block nameing scheme. Blockly.js now does not throw an error then deleting a non sim_object_block)
 let simObjects = [];
 
 <<<<<<< HEAD
@@ -181,7 +185,7 @@ function createMesh(simObject) {
     if (simObject.type === 'cube') {
         let shiftedSimObject = stackSimObject(simObject);
         simObject = shiftedSimObject;
-        updateSimObjectBlock(simObject);
+        //updateSimObjectBlock(simObject);
         let cubeMesh = createBoxMesh(simObject)
         addMesh(cubeMesh);
 <<<<<<< HEAD
@@ -215,7 +219,7 @@ function zShiftCubes(simObject) {
     if (simObject.type === 'cylinder') {
         let shiftedSimObject = stackSimObject(simObject);
         simObject = shiftedSimObject;
-        updateSimObjectBlock(simObject);
+        //updateSimObjectBlock(simObject);
         let cylinderMesh = createCylinderMesh(simObject);
         addMesh(cylinderMesh);
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
@@ -275,9 +279,9 @@ export function addSimObjects(simObjectNames) {
             let newSimObject = new SimObject;
             newSimObject.name = simObjectNames[i];
             block = workspace.getBlockById(newSimObject.name);
-            newSimObject.position.x = block.getFieldValue('POSITION_X');
+            /*newSimObject.position.x = block.getFieldValue('POSITION_X');
             newSimObject.position.y = block.getFieldValue('POSITION_Y');
-            newSimObject.position.z = block.getFieldValue('POSITION_Z');
+            newSimObject.position.z = block.getFieldValue('POSITION_Z');*/
             simObjects.push(newSimObject);
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -573,6 +577,7 @@ function randomColor() {
 >>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
 }
 
+/*
 function updateSimObjectBlock(simObject) {
     let workspace = Blockly.getMainWorkspace();
     let block = workspace.getBlockById(simObject.name);
@@ -580,3 +585,4 @@ function updateSimObjectBlock(simObject) {
     block.setFieldValue(simObject.position.y, 'POSITION_Y');
     block.setFieldValue(simObject.position.z, 'POSITION_Z');
 }
+*/

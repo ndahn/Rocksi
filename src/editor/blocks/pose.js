@@ -80,8 +80,12 @@ Blockly.Blocks["pose"] = {
 				},
 			],
 			inputsInline: true,
+<<<<<<< HEAD
 			output: "Array",
 >>>>>>> bd6d1c4 (Changed file names and added pose block)
+=======
+			output: "Pose",
+>>>>>>> 18de391 (Added a type check for the pose block. New add_sim_object block, to be consistent with the block nameing scheme. Blockly.js now does not throw an error then deleting a non sim_object_block)
 			colour: "%{BKY_MOVEMENT_HEX}",
 			tooltip:
 				"Eine Pose im Arbeitsraum (definiert über die Endeffektorpose, d.h. Position und Orientierung)",

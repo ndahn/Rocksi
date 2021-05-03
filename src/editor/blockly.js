@@ -417,6 +417,9 @@ function watchSpawnBlocks(event) {
         remSimObjects(event.ids);
 =======
 function watchBlocks(event) {
+    //console.log('wp event.type: ', event.type);
+    //console.log('wp event: ', event);
+
     //if there is a new block added to the workspace store it
     const newBlock = workspace.getBlockById(event.blockId);
 
@@ -476,14 +479,14 @@ workspace.addChangeListener(watchSpawnBlocks);
                 let deletedSimObjectBlocks = simObjects.filter(simObject =>
                     !currentSimObjectBlocksIds.includes(simObject.name));
 
-                if (deletedSimObjectBlocks.length == 0){
-                    console.error('There are untracked SimObjects! Deletion not possible!');
-                }
+                //if (deletedSimObjectBlocks.length == 0){
+                //    console.error('There are untracked SimObjects! Deletion not possible!');
+                //}
 
-                else {
+                //else {
                     console.log('Deleted SimObjectBlocks: ', deletedSimObjectBlocks);
                     remSimObjects(deletedSimObjectBlocks);
-                }
+                //}
             }
             else if (simObjects < currentSimObjectBlocks) {
                 console.error('There are untracked SimObjects! Deletion not possible!');
