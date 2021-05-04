@@ -166,11 +166,14 @@ function createBoxMesh(simObject) {
 }
 
 function createCylinderMesh(simObject) {
-    const cylinderGeometry = new THREE.CylinderBufferGeometry(simObject.size.x,
-                                                              simObject.size.y,
-                                                              simObject.size.z,
-                                                              10,
-                                                              10);
+    //ToDo:
+    //change size and retun it
+    //change orientation and return it
+
+    const cylinderGeometry = new THREE.CylinderGeometry(.3,
+                                                        0,
+                                                        .5,
+                                                        10);
 
     const cylinderMaterial = new THREE.MeshPhongMaterial({ color: randomColor() });
     const cylinderMesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
