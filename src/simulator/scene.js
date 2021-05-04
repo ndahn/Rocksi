@@ -23,8 +23,7 @@ import {
 } from "three";
 
 //Imports for managing objects and physics, Lukas
-import { getSimObjects } from './objects/objects';
-import { initCannon, updatePhysics } from './physics'
+import { initCannon } from './physics'
 
 //Imports for managing objects and physics, Lukas
 import { initCannon,
@@ -310,78 +309,10 @@ function render() {
     renderer.render(scene, camera);
 }
 
-//Wrapper functions for adding, removing and changing postions of meshs at various
-//nodes in the scene, Lukas
-//no error checking right now, Lukas
+//Wrapper functions, Lukas
 
-//addMesh needs a valid three mesh.
-export function addMesh(mesh) {
-    scene.add(mesh);
-    requestAnimationFrame(render);
-}
+export function requestAF (){ requestAnimationFrame(render); }
 
-export function remMesh(simObject) {
-    scene.remove(scene.getObjectByName(simObject.name));
-    requestAnimationFrame(render);
-}
+export function getScene () { return scene; }
 
-export function moveMesh(simObject) {
-    const mesh = scene.getObjectByName(simObject.name);
-    mesh.position.copy(simObject.position);
-    requestAnimationFrame(render);
-}
-
-export function rotMesh(simObject) {
-    const mesh = scene.getObjectByName(simObject.name);
-    mesh.rotation.copy(simObject.rotation);
-    requestAnimationFrame(render);
-}
-
-export function getMesh(simObject) {
-    const mesh = scene.getObjectByName(simObject.name);
-    return mesh
-}
-
-export function addToTCP(mesh) {
-    let tcp = robot.tcp.object;
-    tcp.attach(mesh);
-}
-
-export function remFromTCP(mesh) {
-    let tcp = robot.tcp.object;
-    scene.attach(mesh);
-}
-
-export function getTCP() {
-    let tcp;
-    tcp = robot.tcp.object;
-    let position = new Vector3;
-    tcp.getWorldPosition(position);
-    return position;
-}
-
-export function getMeshByPosition(position) {
-    let meshes = [];
-    let returnVal = undefined;
-    let simObjects = getSimObjects();
-    for (let i = 0; i < simObjects.length; i++) {
-        const mesh = getMesh(simObjects[i]);
-        if (mesh != undefined) {
-            meshes.push(mesh);
-        }
-    }
-    for (let i = 0; i < meshes.length; i++) {
-        //console.log('Mesh is at: ', mesh.position);
-        if (meshes[i].position.distanceTo(position) <= 0.5) {
-            returnVal = meshes[i];
-        }
-    }
-    return returnVal;
-}
-
-export function getObjectRadius(mesh) {
-    let box = new Box3().setFromObject( mesh );
-    let sphere = new Sphere;
-    box.getBoundingSphere(sphere);
-    return sphere.radius;
-}
+export function getRobot () { return robot; }

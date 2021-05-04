@@ -20,7 +20,8 @@ import { attachToGripper,
          detachFromGripper,
          isAttached,
          getAttachedObject,
-         getSimObjects } from "./objects/objects"
+         getSimObjects,
+         getSimObjectByPos } from "./objects/objects"
 
 
 function deg2rad(deg) {
@@ -276,18 +277,20 @@ class TheSimulation {
         const robot = this.robot;
         const start = {};
         const target = {};
-        let mesh;
+        //let mesh;
         //WIP: Determin if something is under the gripper
         //if yes, then close it until the gripper touches the object, Lukas
-        mesh = getMeshByPosition(getTCP());
-        if (isAttached() == false && mesh != undefined) {
-            attachToGripper(mesh);
+        //mesh = getMeshByPosition(getTCP());
+        const tcp = robot.tcp.object;
+        let position = new Vector3;
+        tcp.getWorldPosition(position);
+        const simObject = getSimObjectByPos(position, 0.5);
+        if (isAttached() == false && simObject != undefined) {
+            attachToGripper(simObject);
             for (const finger of robot.hand.movable) {
                     start[finger.name] = finger.angle;
-                    target[finger.name] = finger.limit.lower; //- getObjectRadius(mesh) *  0.1;//This is just for testing, Lukas
-
+                    target[finger.name] = finger.limit.upper - (simObject.size.x * 0.2);//This is just for testing, Lukas
             }
-
         }
         //if not, close full
         else {
@@ -308,14 +311,12 @@ class TheSimulation {
         const robot = this.robot;
         const start = {};
         const target = {};
-        let mesh;
+        //let mesh;
 
         //If an object is currently gripped, detach it from the gripper, Lukas
         if (isAttached() == true) {
-            mesh = getMesh(getAttachedObject());
-            console.log('mesh sim', mesh);
-            detachFromGripper(mesh);
-            //this._animatePhysics()
+            const simObject = getAttachedObject();
+            detachFromGripper(simObject);
         }
 
         for (const finger of robot.hand.movable) {
@@ -380,7 +381,6 @@ class TheSimulation {
                 return;
             }
             else {
-                //console.log('rendering falling stuff...');
                 window.requestAnimationFrame(() => this._animatePhysics());
             }
         }
