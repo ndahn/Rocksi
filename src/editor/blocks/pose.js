@@ -91,6 +91,7 @@ Blockly.Blocks["pose"] = {
 				"Eine Pose im Arbeitsraum (definiert über die Endeffektorpose, d.h. Position und Orientierung)",
 			helpUrl: "",
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		});
 		this.setMutator(new ClickableTargetMutator());
@@ -104,10 +105,14 @@ Blockly.Blocks["pose"] = {
             }
         }
 =======
+=======
+
+>>>>>>> 49e5dc3 (The pose block now asks its parent for the field values)
 		});
 		this.setMutator(new ClickableTargetMutator());
 	},
 	onClick: function (e) {
+<<<<<<< HEAD
 		Simulation.getInstance(sim => {
 			const pose = sim.getTaskSpacePose();
 			for (let j = 0; j < 3; j++) {
@@ -119,14 +124,27 @@ Blockly.Blocks["pose"] = {
 			}
 		});
 >>>>>>> bd6d1c4 (Changed file names and added pose block)
+=======
+        var parent = this.getParent();
+        if (parent != null) {
+            var fieldValues = parent.getPosition();
+            for (var i = 0; i < fieldValues.length; i++) {
+                this.setFieldValue(fieldValues[i], fieldKeys[i]);
+            }
+        }
+>>>>>>> 49e5dc3 (The pose block now asks its parent for the field values)
 	},
 };
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> bd6d1c4 (Changed file names and added pose block)
+=======
+
+>>>>>>> 49e5dc3 (The pose block now asks its parent for the field values)
 Blockly.JavaScript["pose"] = function (block) {
     let ret = '["task_space", ';
     for (const key of fieldKeys) {
