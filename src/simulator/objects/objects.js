@@ -17,7 +17,7 @@ import { createBody,
 
 // TODO: Error checking!
 
-//This is not finished right now. Using global variables is not a good practice.
+
 let simObjects = [];
 
 //container for storing simObject properties
@@ -67,11 +67,14 @@ function createBoxMesh(simObject) {
 }
 
 function createCylinderMesh(simObject) {
-    const cylinderGeometry = new THREE.CylinderBufferGeometry(simObject.size.x,
-                                                              simObject.size.y,
-                                                              simObject.size.z,
-                                                              10,
-                                                              10);
+    //ToDo:
+    //change size and retun it
+    //change orientation and return it
+
+    const cylinderGeometry = new THREE.CylinderGeometry(.3,
+                                                        0,
+                                                        .5,
+                                                        10);
 
     const cylinderMaterial = new THREE.MeshPhongMaterial({ color: randomColor() });
     const cylinderMesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
@@ -86,7 +89,7 @@ function createMesh(simObject) {
     if (simObject.type === 'cube') {
         let shiftedSimObject = stackSimObject(simObject);
         simObject = shiftedSimObject;
-        updateSimObjectBlock(simObject);
+        //updateSimObjectBlock(simObject);
         let cubeMesh = createBoxMesh(simObject)
         addMesh(cubeMesh);
     }
@@ -94,7 +97,7 @@ function createMesh(simObject) {
     if (simObject.type === 'cylinder') {
         let shiftedSimObject = stackSimObject(simObject);
         simObject = shiftedSimObject;
-        updateSimObjectBlock(simObject);
+        //updateSimObjectBlock(simObject);
         let cylinderMesh = createCylinderMesh(simObject);
         addMesh(cylinderMesh);
     }
@@ -142,9 +145,9 @@ export function addSimObjects(simObjectNames) {
             let newSimObject = new SimObject;
             newSimObject.name = simObjectNames[i];
             block = workspace.getBlockById(newSimObject.name);
-            newSimObject.position.x = block.getFieldValue('POSITION_X');
+            /*newSimObject.position.x = block.getFieldValue('POSITION_X');
             newSimObject.position.y = block.getFieldValue('POSITION_Y');
-            newSimObject.position.z = block.getFieldValue('POSITION_Z');
+            newSimObject.position.z = block.getFieldValue('POSITION_Z');*/
             simObjects.push(newSimObject);
             createMesh(newSimObject);
         }
@@ -267,6 +270,7 @@ function randomColor() {
     return color;
 }
 
+/*
 function updateSimObjectBlock(simObject) {
     let workspace = Blockly.getMainWorkspace();
     let block = workspace.getBlockById(simObject.name);
@@ -274,3 +278,4 @@ function updateSimObjectBlock(simObject) {
     block.setFieldValue(simObject.position.y, 'POSITION_Y');
     block.setFieldValue(simObject.position.z, 'POSITION_Z');
 }
+*/

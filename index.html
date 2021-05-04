@@ -25,7 +25,8 @@
 					<category name="R" expanded="true">
 						<block type="move"></block>
 						<block type="joint_space_pose"></block>
-						<!--<block type="task_space_pose"></block>  Not working yet! -->
+						<!-- <block type="task_space_pose"></block>  replaced by pose block -->
+                        <block type="pose"></block> <!-- Replaces task_space_pose block -->
 						<block type="default_pose"></block>
 						<block type="gripper_open"></block>
 						<block type="gripper_close"></block>
@@ -34,7 +35,8 @@
 						<block type="set_speed"></block>
 						<block type="joint_lock"></block>
 						<block type="joint_unlock"></block>
-                        <block type="addSimObject"></block>
+                        <block type="add_sim_object"></block>
+                        <!--<block type="addSimObject"></block> replaced by new block add_sim_object -->
                     </category>
 				</xml>
 				<div id="blocks-canvas"></div>
