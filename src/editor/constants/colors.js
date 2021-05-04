@@ -6,3 +6,4 @@ Msg.GRIPPER_HEX = "#59c059";
 Msg.JOINT_HEX = "#ff9f29";
 Msg.SETPARAM_HEX = "#ff6680";
 Msg.UNUSED_HEX = "#7875FF";
+Msg.SIM_OBJECTS_HEX = "#04b099";
