@@ -6,6 +6,7 @@ var TWEEN = require('@tweenjs/tween.js');
 
 import { getSimObjects,
          getSimObject } from './objects/objects';
+
 import { getMesh, addMesh } from './scene';
 
 //Physics setup
@@ -53,8 +54,7 @@ export function initCannon() {
 
 //physics update
 export function updatePhysics() {
-    let simObjects = [];
-    simObjects = getSimObjects();
+    const simObjects = getSimObjects();
     world.step(dt);
     updateMeshes(simObjects);
 }
@@ -62,17 +62,16 @@ export function updatePhysics() {
 //handels sleep events, gets called by the bodys event listener.
 function bedTimeManagement(event){
     if (event.type == 'sleep') {
-        //console.log('Body', event.target.name, 'is sleeping.' );
+
         let simObject = getSimObject(event.target.name);
         simObject.asleep = true;
     }
     if (event.type == 'wakeup') {
-        //console.log('Body ', event.target.name, ' is awake')
+
         let simObject = getSimObject(event.target.name);
         simObject.asleep = false;
     }
 }
-
 
 //only boxes right now
 export function createBody(simObject) {
@@ -85,9 +84,6 @@ export function createBody(simObject) {
     body.sleepSpeedLimit = 0.1;
     body.sleepTimeLimit = 0.5;
 
-    //body.addEventListener("sleepy", function(e){
-    //    bedTimeManagement(e);
-    //});
     body.addEventListener("sleep", function(e){
         bedTimeManagement(e);
     });
@@ -96,18 +92,14 @@ export function createBody(simObject) {
         bedTimeManagement(e);
     });
 
-    //body.addEventListener('wakeup', sleeping(event, body));
-
-    //console.log('Body added: ', body.name);
     simObject.hasBody = true;
-    //body.sleep();
-    bodies.push(body)
-    world.addBody(body)
+    bodies.push(body);
+    world.addBody(body);
 }
 
 export function getBody(simObject) {
     let returnVal = undefined;
-    for (var i = 0; i < bodies.length; i++) {
+    for (let i = 0; i < bodies.length; i++) {
         if (bodies[i].name == simObject.name) {
             returnVal = bodies[i]
         }
@@ -134,48 +126,29 @@ export function removeAllBodies(simObjects) {
 
 //updates the bodies
 export function updateBodies(simObjects) {
-    let meshes = [];
-    for (let i = 0; i <= simObjects.length; i++) {
-        if (simObjects[i] != undefined) {
-            meshes.push(getMesh(simObjects[i]));
-        }
-    }
-    for (let i = 0; i !== meshes.length; i++) {
-        for (let k = 0; k !== bodies.length; k++) {
-            if (meshes[i].name == bodies[k].name) {
-                bodies[k].position.copy(meshes[i].position)
-                bodies[k].quaternion.copy(meshes[i].quaternion)
-            }
+    for (let i = 0; i < simObjects.length; i++) {
+        if (bodies[i] != undefined) {
+            bodies[i].position.copy(simObjects[i].position);
+            bodies[i].quaternion.copy(simObjects[i].quaternion);
         }
     }
 }
 
 //updates the meshes
 export function updateMeshes(simObjects) {
-    let meshes = [];
-    if (simObjects != undefined) {
-        for (let i = 0; i <= simObjects.length; i++) {
-            if (simObjects[i] != undefined) {
-                meshes.push(getMesh(simObjects[i]));
-            }
-        }
-        for (let i = 0; i !== meshes.length; i++) {
-            for (let k = 0; k !== bodies.length; k++) {
-                if (meshes[i].name === bodies[k].name) {
-                    meshes[i].position.copy(bodies[k].position);
-                    meshes[i].quaternion.copy(bodies[k].quaternion);
-                }
-            }
+    for (let i = 0; i < simObjects.length; i++) {
+        if (bodies[i] != undefined) {
+            simObjects[i].position.copy(bodies[i].position);
+            simObjects[i].quaternion.copy(bodies[i].quaternion);
         }
     }
 }
 
-//much better now.
+
 export function isAsleep() {
     let returnVal = true;
     const simObjects = getSimObjects();
     if (simObjects != undefined) {
-
         for (var i = 0; i < simObjects.length; i++) {
             if (simObjects[i].asleep == false) {
                returnVal = false;
@@ -183,7 +156,7 @@ export function isAsleep() {
             }
         }
     }
-    else {returnVal = true}
+    else {returnVal = true;}
 
     return returnVal;
 }

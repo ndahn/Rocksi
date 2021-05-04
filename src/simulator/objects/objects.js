@@ -1,12 +1,11 @@
 import * as THREE from 'three';
+//Drag controls for simObjects, Lukas
+import { DragControls } from 'three/examples/jsm/controls/DragControls.js';
 import * as Blockly from 'blockly/core'
-import { addMesh,
-         remMesh,
-         getMesh,
-         moveMesh,
-         rotMesh,
-         addToTCP,
-         remFromTCP } from '../scene';
+import { requestAF,
+         getScene,
+         getRobot } from '../scene';
+
 import { createBody,
          removeBody,
          updateBodies,
@@ -17,12 +16,11 @@ import { createBody,
 
 // TODO: Error checking!
 
-
 let simObjects = [];
 
-//container for storing simObject properties
+//container for storing simObject properties, deprecated
 //x, y, z, rotX, rotY, rotZ, name, type, attached
-export class SimObject {
+/**export class SimObject {
     constructor() {
         this.name = undefined;
         this.type = 'cube';
@@ -33,10 +31,23 @@ export class SimObject {
         this.asleep = false;
         this.hasBody = false;
     }
+}**/
+
+export class SimObject extends THREE.Mesh {
+    constructor() {
+        super();
+        this.name = undefined;
+        this.type = 'cube';
+        this.attached = false;
+        this.asleep = false;
+        this.hasBody = false;
+    }
+    rotation = new THREE.Euler(0, 0, 0, 'XYZ');
+    size = new THREE.Vector3(.5, .5, .5);
+    position = new THREE.Vector3(5, 5, this.size.z * .5);
 }
 
 //Functions for creating meshes
-
 function stackSimObject(simObject) {
         for (let k = 0; k < simObjects.length; k++) {
             if (simObjects[k].name != simObject.name) {
@@ -52,55 +63,45 @@ function stackSimObject(simObject) {
 }
 
 function createBoxMesh(simObject) {
-    let cubeGeometry = new THREE.BoxBufferGeometry( simObject.size.x,
+    simObject.geometry = new THREE.BoxBufferGeometry( simObject.size.x,
                                                     simObject.size.y,
                                                     simObject.size.z,
                                                     10,
                                                     10);
 
-    let cubeMaterial = new THREE.MeshPhongMaterial({ color: randomColor() });
-    let cubeMesh = new THREE.Mesh(cubeGeometry, cubeMaterial);
-    cubeMesh.position.copy(simObject.position);
-    cubeMesh.rotation.copy(simObject.rotation);
-    cubeMesh.name = simObject.name;
-    return cubeMesh;
+    simObject.material = new THREE.MeshPhongMaterial({ color: randomColor() });
+    return simObject;
 }
 
 function createCylinderMesh(simObject) {
     //ToDo:
     //change size and retun it
     //change orientation and return it
-
-    const cylinderGeometry = new THREE.CylinderGeometry(.3,
+    simObject.geometry = new THREE.CylinderGeometry(.3,
                                                         0,
                                                         .5,
                                                         10);
 
-    const cylinderMaterial = new THREE.MeshPhongMaterial({ color: randomColor() });
-    const cylinderMesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
-    cylinderMesh.position.copy(simObject.position);
-    cylinderMesh.rotation.copy(simObject.rotation);
-    cylinderMesh.name = simObject.name;
-    return cylinderMesh;
+    simObject.material = new THREE.MeshPhongMaterial({ color: randomColor() });
+    return simObject;
 }
 
 //creates a three mesh from an simObject depending on simObject.type
 function createMesh(simObject) {
+    const scene = getScene();
     if (simObject.type === 'cube') {
         let shiftedSimObject = stackSimObject(simObject);
         simObject = shiftedSimObject;
-        //updateSimObjectBlock(simObject);
-        let cubeMesh = createBoxMesh(simObject)
-        addMesh(cubeMesh);
+        simObject = createBoxMesh(simObject);
     }
 
     if (simObject.type === 'cylinder') {
         let shiftedSimObject = stackSimObject(simObject);
         simObject = shiftedSimObject;
-        //updateSimObjectBlock(simObject);
-        let cylinderMesh = createCylinderMesh(simObject);
-        addMesh(cylinderMesh);
+        simObject = createCylinderMesh(simObject);
     }
+    scene.add(simObject);
+    requestAF();
 }
 
 //Functions for simObjects
@@ -108,8 +109,9 @@ function createMesh(simObject) {
 //removes the three mesh and creates a new one with the new type
 export function changeSimObjectType(simObjectName, type) {
     const idx = getSimObjectIdx(simObjectName);
+    const scene = getScene();
     simObjects[idx].type = type;
-    remMesh(simObjects[idx]);
+    scene.remove(simObjects[idx]);
     createMesh(simObjects[idx]);
 }
 
@@ -120,16 +122,13 @@ export function changeSimObjectType(simObjectName, type) {
 export function changeSimObjectPosition(simObject) {
     const idx = getSimObjectIdx(simObject.name);
     simObjects[idx].position.copy(simObject.position);
-    //updateBodies([simObjects[idx]])
-    moveMesh(simObjects[idx]);
-
+    requestAF();
 }
 
 export function changeSimObjectOrientation(simObject) {
     const idx = getSimObjectIdx(simObject.name);
     simObjects[idx].rotation.copy(simObject.rotation);
-    //updateBodies([simObjects[idx]])
-    rotMesh(simObjects[idx]);
+    requestAF();
 }
 
 //Takes an array of blockly block uuids and turns them into simObjects
@@ -145,9 +144,6 @@ export function addSimObjects(simObjectNames) {
             let newSimObject = new SimObject;
             newSimObject.name = simObjectNames[i];
             block = workspace.getBlockById(newSimObject.name);
-            /*newSimObject.position.x = block.getFieldValue('POSITION_X');
-            newSimObject.position.y = block.getFieldValue('POSITION_Y');
-            newSimObject.position.z = block.getFieldValue('POSITION_Z');*/
             simObjects.push(newSimObject);
             createMesh(newSimObject);
         }
@@ -158,14 +154,17 @@ export function addSimObjects(simObjectNames) {
 //Removes the simObject from the simObjects array and calls remMesh
 //I need to implement some form of error checking here.
 export function remSimObjects(simObjectsArray) {
+    const scene = getScene();
     for (let i = 0; i < simObjectsArray.length; i++) {
         for (let k = 0; k < simObjects.length; k++) {
             if (simObjects[k].name == simObjectsArray[i].name) {
                 if (simObjects[k].hasBody) {
                     removeBody(simObjects[k]);
                 }
-                remMesh(simObjects[k]);
+                scene.remove(simObjects[k]);
+                //remMesh(simObjects[k]);
                 simObjects.splice(k, 1);
+                requestAF();
             }
         }
     }
@@ -208,22 +207,25 @@ export function getSimObjectIdx(simObjectName) {
 }
 
 //Functions for gripping
-export function detachFromGripper(mesh) {
-    console.log('> Object dropped!');
-    let simObject = getSimObject(mesh.name)
+export function detachFromGripper(simObject) {
+    const scene = getScene();
+
     let body = getBody(simObject);
     body.wakeUp();
     simObject.attached = false;
-    simObject.position.copy(mesh.position);
-    remFromTCP(mesh);
+
+    scene.attach(simObject);
     updateBodies([simObject]);
     //Update the body
     body.updateInertiaWorld();
+    console.log('> Object dropped!');
 }
 
-export function attachToGripper(mesh) {
+export function attachToGripper(simObject) {
+    const robot = getRobot();
+    const tcp = robot.tcp.object;
     console.log('> Object gripped!');
-    let simObject = getSimObject(mesh.name)
+
     //this is only the case if the Blockly block was processed
     if (simObject.hasBody) {
         simObject.attached = true;
@@ -232,10 +234,20 @@ export function attachToGripper(mesh) {
         //For some unknown reason cannon does't dispatches this automaticly
         body.dispatchEvent('sleep');
         simObject.asleep = true;
-        addToTCP(mesh);
+        tcp.attach(simObject);
+
         updateBodies(getSimObjects());
     }
+}
 
+export function getSimObjectByPos(position, accuracy) {
+    let returnVal = undefined;
+    for (let i = 0; i < simObjects.length; i++) {
+        if (simObjects[i].position.distanceTo(position) <= accuracy) {
+            returnVal = simObjects[i];
+        }
+    }
+    return returnVal;
 }
 
 //Determin if a simobject is attached to the TCP
@@ -269,13 +281,3 @@ function randomColor() {
     }
     return color;
 }
-
-/*
-function updateSimObjectBlock(simObject) {
-    let workspace = Blockly.getMainWorkspace();
-    let block = workspace.getBlockById(simObject.name);
-    block.setFieldValue(simObject.position.x, 'POSITION_X');
-    block.setFieldValue(simObject.position.y, 'POSITION_Y');
-    block.setFieldValue(simObject.position.z, 'POSITION_Z');
-}
-*/
