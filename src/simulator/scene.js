@@ -19,21 +19,8 @@ import {
 	LineBasicMaterial,
 	Raycaster,
 	Vector2,
-<<<<<<< HEAD
 	ArrowHelper
 } from "three";
-=======
-    Sphere,
-    Box3,
-} from "three";
-
-//Imports for managing objects and physics, Lukas
-import { getSimObjects } from './objects/objects';
-<<<<<<< HEAD
->>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
-=======
-import { initCannon, updatePhysics } from './physics'
->>>>>>> 3862ed5 (Started to add physics to the simulation. Not really working right now. Object pickup is broken, in this commit. Objects only fall if you move the camera, this is intentional.)
 
 // In ROS models Z points upwards
 Object3D.DefaultUp = new Vector3(0, 0, 1);
@@ -102,8 +89,6 @@ loadRobotModel(robot.xacro)
 		}
 
 		initScene();
-        //Lukas
-        initCannon();
 		$('.loading-message').hide();
 
 		ik = new IKSolver(scene, robot);
@@ -311,103 +296,8 @@ function updateGroundLine() {
 }
 
 function render() {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 	renderer.render(scene, camera);
 }
 
 //I need the scene, this is for experimenting
 export {scene};
-=======
-=======
-    //for testing
-    updatePhysics();
->>>>>>> 3862ed5 (Started to add physics to the simulation. Not really working right now. Object pickup is broken, in this commit. Objects only fall if you move the camera, this is intentional.)
-=======
->>>>>>> 7eccd06 (Work on the physics simulation. Some cleanup. Minor changes on the watchBlocks function in blockly.js)
-    renderer.render(scene, camera);
-}
-
-//Wrapper functions for adding, removing and changing postions of meshs at various
-//nodes in the scene, Lukas
-//no error checking right now, Lukas
-
-//addMesh needs a valid three mesh.
-export function addMesh(mesh) {
-    scene.add(mesh);
-    requestAnimationFrame(render);
-}
-
-export function remMesh(simObject) {
-    scene.remove(scene.getObjectByName(simObject.name));
-    requestAnimationFrame(render);
-}
-
-export function moveMesh(simObject) {
-    const mesh = scene.getObjectByName(simObject.name);
-    mesh.position.copy(simObject.position);
-    requestAnimationFrame(render);
-}
-
-export function rotMesh(simObject) {
-    const mesh = scene.getObjectByName(simObject.name);
-    mesh.rotation.copy(simObject.rotation);
-    requestAnimationFrame(render);
-}
-
-export function getMesh(simObject) {
-    const mesh = scene.getObjectByName(simObject.name);
-    return mesh
-}
-
-export function addToTCP(mesh) {
-    let tcp = robot.tcp.object;
-    tcp.attach(mesh);
-}
-
-export function remFromTCP(mesh) {
-    let tcp = robot.tcp.object;
-    scene.attach(mesh);
-}
-
-export function getTCP() {
-    let tcp;
-    tcp = robot.tcp.object;
-    let position = new Vector3;
-    tcp.getWorldPosition(position);
-    return position;
-}
-
-export function getMeshByPosition(position) {
-    let meshes = [];
-    let returnVal = undefined;
-    let simObjects = getSimObjects();
-    for (let i = 0; i < simObjects.length; i++) {
-        const mesh = getMesh(simObjects[i]);
-        if (mesh != undefined) {
-            meshes.push(mesh);
-        }
-    }
-    for (let i = 0; i < meshes.length; i++) {
-        //console.log('Mesh is at: ', mesh.position);
-        if (meshes[i].position.distanceTo(position) <= 0.5) {
-            returnVal = meshes[i];
-        }
-    }
-    return returnVal;
-}
-
-export function getObjectRadius(mesh) {
-    let box = new Box3().setFromObject( mesh );
-    let sphere = new Sphere;
-    box.getBoundingSphere(sphere);
-    return sphere.radius;
-}
-<<<<<<< HEAD
->>>>>>> 39c3638 (You can now pickup things with the robot and place them somewhere. Some cleanup done)
-=======
-
-
-//Physics rendering
->>>>>>> 7eccd06 (Work on the physics simulation. Some cleanup. Minor changes on the watchBlocks function in blockly.js)
