@@ -52,22 +52,21 @@ Blockly.Blocks["pose"] = {
 			tooltip:
 				"Eine Pose im Arbeitsraum (definiert über die Endeffektorpose, d.h. Position und Orientierung)",
 			helpUrl: "",
+
 		});
 		this.setMutator(new ClickableTargetMutator());
 	},
 	onClick: function (e) {
-		Simulation.getInstance(sim => {
-			const pose = sim.getTaskSpacePose();
-			for (let j = 0; j < 3; j++) {
-				this.setFieldValue(pose[j].toFixed(1), fieldKeys[j]);
-			}
-			for (let j = 3; j < 6; j++) {
-				let deg = pose[j] * 180.0 / Math.PI;
-				this.setFieldValue(deg.toFixed(0), fieldKeys[j]);
-			}
-		});
+        var parent = this.getParent();
+        if (parent != null) {
+            var fieldValues = parent.getPosition();
+            for (var i = 0; i < fieldValues.length; i++) {
+                this.setFieldValue(fieldValues[i], fieldKeys[i]);
+            }
+        }
 	},
 };
+
 
 
 Blockly.JavaScript["pose"] = function (block) {
