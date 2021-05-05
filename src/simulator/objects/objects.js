@@ -94,6 +94,7 @@ function stackCubes(simObject){
     } else { return; }
 }
 
+<<<<<<< HEAD
 function zShiftCubes(simObject) {
     let returnVal = 0;
     for (let k = 0; k < simObjects.length; k++) {
@@ -115,6 +116,22 @@ export function remSimObjects(ids) {
             simObjects.splice(idx, 1);
         }
     }
+=======
+//Changes the position of a simObject and calls moveMesh with the new position.
+//Note that the movement of the mesh is not animated.
+//It will pop out and in of existence.
+//We don't need an animation at this point.
+export function changeSimObjectPosition() {
+    //const idx = getSimObjectIdx(simObject.name);
+    //simObjects[idx].position.copy(simObject.position);
+    requestAF();
+}
+
+export function changeSimObjectOrientation(simObject) {
+    //let rotatedSimObject = getSimObject(simObject.name);
+    //rotatedSimObject.rotation.copy(simObject.rotation);
+    requestAF();
+>>>>>>> 505a3cf (Objects are now rotated correctly)
 }
 
 export function resetAllSimObjects () {

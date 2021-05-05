@@ -100,12 +100,15 @@ Blockly.Blocks['add_sim_object'] = {
 =======
 import { changeSimObjectType,
          changeSimObjectPosition,
-         changeSimObjectOrientation,
-         getSimObject,
-         getSimObjectIdx,
-         getSimObjects } from "../../simulator/objects/objects";
+         getSimObject } from "../../simulator/objects/objects";
+
+import { Euler } from "three"
 
 const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
+// pi/180 approximation:
+const r2d = .017
+// euler angles...
+var rx, ry, rz;
 
 Blockly.Blocks['add_sim_object'] = {
 	init: function () {
@@ -203,11 +206,13 @@ Blockly.Blocks['add_sim_object'] = {
                 simObject.position.x = inputChild.getFieldValue('X');
                 simObject.position.y = inputChild.getFieldValue('Y');
                 simObject.position.z = inputChild.getFieldValue('Z') + simObject.size.z * 0.5;
-                simObject.rotation.x = inputChild.getFieldValue('ROLL');
-                simObject.rotation.y = inputChild.getFieldValue('PITCH');
-                simObject.rotation.z = inputChild.getFieldValue('YAW');
-                changeSimObjectPosition(simObject);
-                changeSimObjectOrientation(simObject);
+                rx = inputChild.getFieldValue('ROLL') * r2d;
+                ry = inputChild.getFieldValue('PITCH') * r2d;
+                rz = inputChild.getFieldValue('YAW') * r2d;
+                simObject.setRotationFromEuler(new Euler(rx, ry, rz));
+                console.log(simObject.rotation);
+                changeSimObjectPosition();
+                //changeSimObjectOrientation(simObject);
             }
         }
         //change the object type
