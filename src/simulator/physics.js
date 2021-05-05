@@ -41,6 +41,7 @@ export function initRobotHitboxes(robot) {
 		scene.add( cube );
     }**/
 }
+**/
 
 export function initCannon() {
     //World
