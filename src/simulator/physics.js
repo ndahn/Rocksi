@@ -16,6 +16,7 @@ let world;
 let bodies = [];
 let robotBodies = [];
 
+/**
 function updateRobotBodies() {
 
 }
@@ -30,6 +31,7 @@ export function createRobotBody() {
     robotBodies.push(body);
     world.addBody(body);
 }
+**/
 
 export function initCannon() {
     //World
@@ -38,7 +40,6 @@ export function initCannon() {
     world.broadphase = new CANNON.NaiveBroadphase();
     world.solver.iterations = 10;
     world.allowSleep = true;
-    //world.addEventListener('sleepEvent', doNothing);
 
     //Floor
     const floorShape = new CANNON.Plane();
@@ -126,8 +127,10 @@ export function removeAllBodies(simObjects) {
 
 //updates the bodies
 export function updateBodies(simObjects) {
-    for (let i = 0; i < simObjects.length; i++) {
-        if (bodies[i] != undefined) {
+    if (bodies != undefined
+        && simObjects != undefined
+        && bodies.length == simObjects.length) {
+        for (let i = 0; i < simObjects.length; i++) {
             bodies[i].position.copy(simObjects[i].position);
             bodies[i].quaternion.copy(simObjects[i].quaternion);
         }
@@ -136,15 +139,18 @@ export function updateBodies(simObjects) {
 
 //updates the meshes
 export function updateMeshes(simObjects) {
-    for (let i = 0; i < simObjects.length; i++) {
-        if (bodies[i] != undefined) {
+    if (bodies != undefined
+        && simObjects != undefined
+        && bodies.length == simObjects.length) {
+
+        for (let i = 0; i < simObjects.length; i++) {
             simObjects[i].position.copy(bodies[i].position);
             simObjects[i].quaternion.copy(bodies[i].quaternion);
         }
     }
 }
 
-
+//determins if all bodies are asleep
 export function isAsleep() {
     let returnVal = true;
     const simObjects = getSimObjects();
