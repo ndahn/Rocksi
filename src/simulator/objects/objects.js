@@ -42,7 +42,6 @@ export class SimObject extends THREE.Mesh {
         this.asleep = false;
         this.hasBody = false;
     }
-    rotation = new THREE.Euler(0, 0, 0, 'XYZ');
     size = new THREE.Vector3(.5, .5, .5);
     position = new THREE.Vector3(5, 5, this.size.z * .5);
 }
@@ -119,15 +118,15 @@ export function changeSimObjectType(simObjectName, type) {
 //Note that the movement of the mesh is not animated.
 //It will pop out and in of existence.
 //We don't need an animation at this point.
-export function changeSimObjectPosition(simObject) {
-    const idx = getSimObjectIdx(simObject.name);
-    simObjects[idx].position.copy(simObject.position);
+export function changeSimObjectPosition() {
+    //const idx = getSimObjectIdx(simObject.name);
+    //simObjects[idx].position.copy(simObject.position);
     requestAF();
 }
 
 export function changeSimObjectOrientation(simObject) {
-    const idx = getSimObjectIdx(simObject.name);
-    simObjects[idx].rotation.copy(simObject.rotation);
+    //let rotatedSimObject = getSimObject(simObject.name);
+    //rotatedSimObject.rotation.copy(simObject.rotation);
     requestAF();
 }
 
