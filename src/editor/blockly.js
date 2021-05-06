@@ -37,6 +37,7 @@ import './blocks/pose'
 
 >>>>>>> bd6d1c4 (Changed file names and added pose block)
 //imports for adding and removing 3D-objects, Lukas
+<<<<<<< HEAD
 import { addSimObjects,
          remSimObjects,
 <<<<<<< HEAD
@@ -56,6 +57,10 @@ import { addSimObject,
          remSimObjects,
          getSimObjects,
          randomColour } from '../simulator/objects/objects'
+=======
+import { addSimObject,
+         remSimObjects } from '../simulator/objects/objects'
+>>>>>>> f3ee903 (Faster deletion and addition of simObjects. Body and hitbox now part of simObject class. Physics update happens now inside simObject)
 
 
 import { popSuccess, popWarning, popError, popInfo } from '../alert'
@@ -379,6 +384,7 @@ function onProgramFinished() {
 //If added, add a new 3D-object. If removed remove the 3D-object assosiated with the block.
 //Lukas
 <<<<<<< HEAD
+<<<<<<< HEAD
 function watchSpawnBlocks(event) {
     if(Blockly.Events.BLOCK_CREATE === event.type) {
         for (let i = 0; i < event.ids.length; i++) {
@@ -419,32 +425,25 @@ function watchSpawnBlocks(event) {
 function watchBlocks(event) {
     //console.log('wp event.type: ', event.type);
     //console.log('wp event: ', event);
+=======
+/**function watchBlocks(event) {
+    if (event.type === Blockly.Events.BLOCK_CREATE) {
+        const newBlock = workspace.getBlockById(event.blockId);
+        if (newBlock != null && newBlock.type == 'add_sim_object') {
+            console.log('New SimObject Block:', newBlock.id);
+            let newChildren = newBlock.getChildren();
+            let inputChild;
+            if (newChildren != undefined) {
+                for (var i = 0; i < newChildren.length; i++) {
+                    if (newChildren[i].type == 'pose') {
+                        inputChild = newChildren[i];
+                    }
+>>>>>>> f3ee903 (Faster deletion and addition of simObjects. Body and hitbox now part of simObject class. Physics update happens now inside simObject)
 
-    //if there is a new block added to the workspace store it
-    const newBlock = workspace.getBlockById(event.blockId);
-
-    if (event.type === Blockly.Events.BLOCK_CREATE
-        && newBlock != null
-        && newBlock.type === 'add_sim_object'){
-
-        //get all ids of currently rendered 3D-block representations
-        let simObjectNames = getSimObjectsNames();
-
-        //In case it is the first block, we can add it right away.
-        if (simObjectNames.length == 0) {
-            console.log('newBlock.id', newBlock.id);
-            addSimObjects([newBlock.id]);
-        }
-
-        else if (simObjectNames.length > 0) {
-            for (let i = 0; i <  simObjectNames.length; i++) {
-                if (simObjectNames[i].name == newBlock.id) {
-                    console.warn('This simObject already exists: ', newBlock.id);
                 }
-                else {
-                    console.log('newBlock.id', newBlock.id);
-                    addSimObjects([newBlock.id]);
-                }
+            }
+            else {
+                addSimObject(undefined)
             }
         }
     }
@@ -479,29 +478,45 @@ workspace.addChangeListener(watchSpawnBlocks);
                 let deletedSimObjectBlocks = simObjects.filter(simObject =>
                     !currentSimObjectBlocksIds.includes(simObject.name));
 
-                //if (deletedSimObjectBlocks.length == 0){
-                //    console.error('There are untracked SimObjects! Deletion not possible!');
-                //}
-
-                //else {
-                    console.log('Deleted SimObjectBlocks: ', deletedSimObjectBlocks);
-                    remSimObjects(deletedSimObjectBlocks);
-                //}
+                //console.log('Deleted SimObjectBlocks: ', deletedSimObjectBlocks);
+                remSimObjects(deletedSimObjectBlocks);
             }
             else if (simObjects < currentSimObjectBlocks) {
                 console.error('There are untracked SimObjects! Deletion not possible!');
             }
         }
     }
-    if (event.type === Blockly.Events.FINISHED_LOADING) {
-        console.log('FINISHED_LOADING');
-        let loadedBlocks = workspace.getBlocksByType('add_sim_object');
-        let loadedBlocksNames = [];
-        loadedBlocks.forEach((block) => { loadedBlocksNames.push(block.id) });
-        addSimObjects(loadedBlocksNames);
+}*/
+function watchSpawnBlocks(event) {
+    if(Blockly.Events.BLOCK_CREATE === event.type) {
+        const newBlock = workspace.getBlockById(event.blockId);
+        if ('add_sim_object' === newBlock.type) {
+            console.log('Added', newBlock.id);
+            const children = newBlock.getChildren();
+            let inputChild;
+            //console.log('children', children);
+            for (var i = 0; i < children.length; i++) {
+                if (children[i].type == 'pose') {
+                    inputChild = children[i];
+                }
+            }
+            if (inputChild == undefined) {
+                addSimObject(newBlock.id);
+            }
+            else {
+                addSimObject(newBlock.id, true, inputChild);
+            }
+        }
+    }
+    if(Blockly.Events.BLOCK_DELETE === event.type) {
+        remSimObjects(workspace);
     }
 }
 
+<<<<<<< HEAD
 >>>>>>> 24ac1b4 (Overhaul of the watchBlocks function in blockly.js. The gripper_close function in simulation.js works now as intended.)
 workspace.addChangeListener(watchBlocks);
 >>>>>>> fc4b4db (Fixed the wrong if/else loop in objects.js/getSimobject and objects.js/getSimObjectIdx functions. Some work on integrating the physics in simulation.js. Some cleanup in blockly.js)
+=======
+workspace.addChangeListener(watchSpawnBlocks);
+>>>>>>> f3ee903 (Faster deletion and addition of simObjects. Body and hitbox now part of simObject class. Physics update happens now inside simObject)

@@ -97,6 +97,7 @@ Blockly.Blocks["pose"] = {
 		this.setMutator(new ClickableTargetMutator());
 	},
     onchange:function (e) {
+<<<<<<< HEAD
         var parent = this.getParent();
         if (parent != null) {
             var fieldValues = parent.getPosition();
@@ -125,6 +126,8 @@ Blockly.Blocks["pose"] = {
 		});
 >>>>>>> bd6d1c4 (Changed file names and added pose block)
 =======
+=======
+>>>>>>> f3ee903 (Faster deletion and addition of simObjects. Body and hitbox now part of simObject class. Physics update happens now inside simObject)
         var parent = this.getParent();
         if (parent != null) {
             var fieldValues = parent.getPosition();
@@ -132,8 +135,12 @@ Blockly.Blocks["pose"] = {
                 this.setFieldValue(fieldValues[i], fieldKeys[i]);
             }
         }
+<<<<<<< HEAD
 >>>>>>> 49e5dc3 (The pose block now asks its parent for the field values)
 	},
+=======
+	}, 
+>>>>>>> f3ee903 (Faster deletion and addition of simObjects. Body and hitbox now part of simObject class. Physics update happens now inside simObject)
 };
 
 

@@ -13,17 +13,11 @@ let robotBodies = [];
 let initDone = false;
 const debugOn = false;
 
-<<<<<<< HEAD
 function debug() {
     if (debugOn) {
         const scene = getScene();
         cannonDebugger(scene, world.bodies);
     }
-=======
-/**
-function updateRobotBodies() {
-
->>>>>>> 34c3179 (Bugfix: Simulator runs now without errors when running a program withoout simObjects in the scene)
 }
 
 export function initRobotHitboxes(robot) {
@@ -109,7 +103,6 @@ export function removeAllBodies(simObjects) {
     }
 }
 
-<<<<<<< HEAD
 export function updateMeshes(simObjects) {
     let limit = simObjects.length;
     for (let i = 0; i < limit; i++) {
@@ -125,46 +118,4 @@ export function updateBodies(simObjects) {
 
 export function isWorldActive() {
     return world.hasActiveBodies;
-=======
-//updates the bodies
-export function updateBodies(simObjects) {
-    if (bodies != undefined
-        && simObjects != undefined
-        && bodies.length == simObjects.length) {
-        for (let i = 0; i < simObjects.length; i++) {
-            bodies[i].position.copy(simObjects[i].position);
-            bodies[i].quaternion.copy(simObjects[i].quaternion);
-        }
-    }
-}
-
-//updates the meshes
-export function updateMeshes(simObjects) {
-    if (bodies != undefined
-        && simObjects != undefined
-        && bodies.length == simObjects.length) {
-
-        for (let i = 0; i < simObjects.length; i++) {
-            simObjects[i].position.copy(bodies[i].position);
-            simObjects[i].quaternion.copy(bodies[i].quaternion);
-        }
-    }
-}
-
-//determins if all bodies are asleep
-export function isAsleep() {
-    let returnVal = true;
-    const simObjects = getSimObjects();
-    if (simObjects != undefined) {
-        for (var i = 0; i < simObjects.length; i++) {
-            if (simObjects[i].asleep == false) {
-               returnVal = false;
-               break;
-            }
-        }
-    }
-    else {returnVal = true;}
-
-    return returnVal;
->>>>>>> 34c3179 (Bugfix: Simulator runs now without errors when running a program withoout simObjects in the scene)
 }

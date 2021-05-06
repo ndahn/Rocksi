@@ -6,7 +6,18 @@ import { TransformControls } from 'three/examples/jsm/controls/TransformControls
 
 import * as Blockly from 'blockly/core'
 
+<<<<<<< HEAD
 import { SimObject } from './simObject'
+=======
+import { createBody,
+         removeBody,
+         updateBodies,
+         updateMeshes,
+         getBody,
+         bedTimeManagement } from '../physics';
+
+import * as CANNON from 'cannon-es'
+>>>>>>> f3ee903 (Faster deletion and addition of simObjects. Body and hitbox now part of simObject class. Physics update happens now inside simObject)
 
 import { requestAF,
          getScene,
@@ -17,6 +28,80 @@ import { getWorld } from '../physics';
 
 let simObjects = [];
 
+<<<<<<< HEAD
+=======
+//container for storing simObject properties, deprecated
+//x, y, z, rotX, rotY, rotZ, name, type, attached
+/**export class SimObject {
+    constructor() {
+        this.name = undefined;
+        this.type = 'cube';
+        this.rotation = new THREE.Euler(0, 0, 0, 'XYZ');
+        this.size = new THREE.Vector3(.5, .5, .5);
+        this.position = new THREE.Vector3(5, 5, this.size.z * .5);
+        this.attached = false;
+        this.asleep = false;
+        this.hasBody = false;
+    }
+}**/
+
+export class SimObject extends THREE.Mesh {
+    constructor() {
+        super();
+        this.name = undefined;
+        this.type = 'cube';
+        this.attached = false;
+        this.asleep = false;
+        this.hasBody = false;
+        this.movable = true;
+        this.initPosition = new THREE.Vector3(5, 5, this.size.z * .5);
+        this.body = null;
+    }
+    size = new THREE.Vector3(.5, .5, .5);
+    position = new THREE.Vector3(5, 5, this.size.z * .5);
+
+    render() {
+        requestAF();
+    }
+
+    createBody() {
+        const shape = new CANNON.Box(new CANNON.Vec3(0.25, 0.25, 0.25))
+        const body = new CANNON.Body({ mass: 5 })
+        body.addShape(shape)
+        body.position.set(this.position)
+        body.allowSleep = true;
+        body.sleepSpeedLimit = 0.1;
+        body.sleepTimeLimit = 0.5;
+
+        body.addEventListener("sleep", function(e){
+            bedTimeManagement(e);
+        });
+
+        body.addEventListener("wakeup", function(e){
+            bedTimeManagement(e);
+        });
+        body.name = this.name;
+        this.hasBody = true;
+        this.body = body;
+    }
+
+    updateBody() {
+        if (this.hasBody) {
+            this.body.position.copy(this.position);
+            this.body.quaternion.copy(this.quaternion);
+        }
+    }
+
+    updateMesh() {
+        if (this.hasBody) {
+            this.position.copy(this.body.position);
+            this.quaternion.copy(this.body.quaternion);
+        }
+    }
+
+}
+
+>>>>>>> f3ee903 (Faster deletion and addition of simObjects. Body and hitbox now part of simObject class. Physics update happens now inside simObject)
 //Functions for creating meshes
 function createBoxMesh(simObject) {
     const geometry = new BoxBufferGeometry( simObject.size.x,
@@ -61,6 +146,7 @@ export function addSimObject(blockUUID, fieldValues, pickedColour) {
         newSimObject.setFieldValues(fieldValues);
         newSimObject.updateFromFieldValues();
     }
+<<<<<<< HEAD
     if (pickedColour != undefined) {
         newSimObject.colour = pickedColour;
         console.log(pickedColour);
@@ -71,6 +157,10 @@ export function addSimObject(blockUUID, fieldValues, pickedColour) {
     newSimObject.add();
     newSimObject.updateFieldValues();
     simObjects.push(newSimObject);
+=======
+    scene.add(simObject);
+    simObject.render();
+>>>>>>> f3ee903 (Faster deletion and addition of simObjects. Body and hitbox now part of simObject class. Physics update happens now inside simObject)
 }
 
 //Functions for positioning simObjects
@@ -94,6 +184,7 @@ function stackCubes(simObject){
     } else { return; }
 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 function zShiftCubes(simObject) {
     let returnVal = 0;
@@ -139,7 +230,28 @@ export function resetAllSimObjects () {
         for (const simObject of simObjects) {
             simObject.reset();
         }
+=======
+
+//Takes an array of blockly block uuids and turns them into simObjects
+//and the corresponding three mesh with the same name.
+//To do this it looks for the uuid in the simObjects array and if returned
+//undefined it will add a new simObject and call createMesh. I do not think
+//looking for an undefined is a good design choice, but it is working as intended
+export function addSimObject(simObjectName, changeInitPos = false, inputChild = undefined) {
+    let newSimObject = new SimObject;
+    newSimObject.name = simObjectName;
+    if (changeInitPos == true) {
+        newSimObject.position.x = inputChild.getFieldValue('X');
+        newSimObject.position.y = inputChild.getFieldValue('Y');
+        newSimObject.position.z = inputChild.getFieldValue('Z') + newSimObject.size.z * 0.5;
+        let rx = inputChild.getFieldValue('ROLL') * .017;
+        let ry = inputChild.getFieldValue('PITCH') * .017;
+        let rz = inputChild.getFieldValue('YAW') * .017;
+        newSimObject.setRotationFromEuler(new THREE.Euler(rx, ry, rz));
+>>>>>>> f3ee903 (Faster deletion and addition of simObjects. Body and hitbox now part of simObject class. Physics update happens now inside simObject)
     }
+    simObjects.push(newSimObject);
+    createMesh(newSimObject);
 }
 
 //transformControl event functions
@@ -171,6 +283,7 @@ export function setTCSimObjects(raycaster) {
     }
 }
 
+<<<<<<< HEAD
 //Called by onClick in scene.js
 export function setTCSimObjectsOnClick(raycaster) {
     const intersections = raycaster.intersectObjects(simObjects);
@@ -186,8 +299,53 @@ export function setTCSimObjectsOnClick(raycaster) {
         }
         scene.add(intersect.object.control);
         intersect.object.render();
+=======
+//Removes the simObject from the simObjects array and from the threejs scene
+export function remSimObjects(blocklyWorkspace) {
+    const scene = getScene();
+    let simObjectBlocksIds = [];
+    let simObjectsToKeep = [];
+    let i;
+    const simObjectBlocks = blocklyWorkspace.getBlocksByType('add_sim_object');
+    simObjectBlocks.forEach((block) => {
+        simObjectBlocksIds.push(block.id);});
+
+    //removes all
+    if (simObjectBlocksIds.length == 0) {
+        for (i = 0; i < simObjects.length; i++) {
+            if (simObjects[i].hasBody) {
+                removeBody(simObjects[i]);
+            }
+            scene.remove(simObjects[i]);
+        }
+        simObjects = [];
     }
+
+    else if (simObjectBlocksIds.length != 0){
+        for (i = 0; i < simObjects.length; i++) {
+            for (let k = 0; k < simObjectBlocksIds.length; k++) {
+                if (simObjectBlocksIds[k] == simObjects[i].name) {
+                    simObjectsToKeep.push(simObjects[i]);
+                }
+            }
+        }
+
+        for (i = 0; i < simObjects.length; i++) {
+            if (simObjects[i].hasBody) {
+                removeBody(simObjects[i]);
+            }
+            scene.remove(simObjects[i]);
+        }
+        simObjects = simObjectsToKeep;
+        for (i = 0; i < simObjects.length; i++) {
+            scene.add(simObjects[i]);
+        }
+
+>>>>>>> f3ee903 (Faster deletion and addition of simObjects. Body and hitbox now part of simObject class. Physics update happens now inside simObject)
+    }
+    requestAF();
 }
+
 
 //Returns a list with all names of simObjects (the uuids of the blockly blocks)
 //currently in the simObjects array
