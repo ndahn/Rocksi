@@ -1,13 +1,15 @@
 import * as Blockly from 'blockly';
 import { changeSimObjectType,
          changeSimObjectPosition,
-         getSimObject } from "../../simulator/objects/objects";
+         getSimObject,
+         getSimObjectIdx,
+         addSimObject } from "../../simulator/objects/objects";
 
 import { Euler } from "three"
 
 const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
 // pi/180 approximation:
-const r2d = .017
+const d2r = .017
 // euler angles...
 var rx, ry, rz;
 
@@ -68,18 +70,20 @@ Blockly.Blocks['add_sim_object'] = {
         var thisBlock = this;
         var fieldValues = [];
         var simObject = getSimObject(thisBlock.id);
-        var xyz = ['x', 'y', 'z'];
-        for (var i = 0; i < 2; i++) {
-            fieldValues.push(simObject.position[xyz[i]]);
+        if (simObject != undefined && !simObject.hasBody) {
+            var xyz = ['x', 'y', 'z'];
+            for (var i = 0; i < 2; i++) {
+                fieldValues.push(simObject.position[xyz[i]]);
+            }
+            fieldValues.push(simObject.position.z - simObject.size.z * 0.5)
+            for (var i = 0; i < 3; i++) {
+                fieldValues.push(simObject.rotation[xyz[i]]);
+            }
         }
-        fieldValues.push(simObject.position.z - simObject.size.z * 0.5)
-        for (var i = 0; i < 3; i++) {
-            fieldValues.push(simObject.rotation[xyz[i]]);
-        }
+
         return fieldValues;
     },
 	onchange: function (event) {
-
         var thisBlock = this;
         var children = thisBlock.getChildren();
         var inputChild;
@@ -89,43 +93,39 @@ Blockly.Blocks['add_sim_object'] = {
                 inputChild = children[i];
             }
         }
-
-        if (inputChild != undefined) {
-            //If a pose block is attached, fill the field values.
-            if (event.newParentId == thisBlock.id) {
-                var simObject = getSimObject(thisBlock.id);
-                inputChild.setFieldValue(simObject.position.x, 'X');
-                inputChild.setFieldValue(simObject.position.y, 'Y');
-                inputChild.setFieldValue(simObject.position.z - simObject.size.z * 0.5, 'Z');
-                inputChild.setFieldValue(simObject.rotation.x, 'ROLL');
-                inputChild.setFieldValue(simObject.rotation.y, 'PITCH');
-                inputChild.setFieldValue(simObject.rotation.z, 'YAW');
-            }
+        /**
+        //If a pose block is attached, fill the field values.
+        if (event.newParentId == thisBlock.id && inputChild != undefined) {
+            var simObject = getSimObject(thisBlock.id);
+            inputChild.setFieldValue(simObject.position.x, 'X');
+            inputChild.setFieldValue(simObject.position.y, 'Y');
+            inputChild.setFieldValue(simObject.position.z - simObject.size.z * 0.5, 'Z');
+            inputChild.setFieldValue(simObject.rotation.x, 'ROLL');
+            inputChild.setFieldValue(simObject.rotation.y, 'PITCH');
+            inputChild.setFieldValue(simObject.rotation.z, 'YAW');
+        }**/
             //If a field value changes, change the simObject position and orientation.
-            if (event.blockId == inputChild.id && fieldKeys.includes(event.name)) {
-                var simObject = getSimObject(thisBlock.id);
-                simObject.position.x = inputChild.getFieldValue('X');
-                simObject.position.y = inputChild.getFieldValue('Y');
-                simObject.position.z = inputChild.getFieldValue('Z') + simObject.size.z * 0.5;
-                rx = inputChild.getFieldValue('ROLL') * r2d;
-                ry = inputChild.getFieldValue('PITCH') * r2d;
-                rz = inputChild.getFieldValue('YAW') * r2d;
-                simObject.setRotationFromEuler(new Euler(rx, ry, rz));
-                console.log(simObject.rotation);
-                changeSimObjectPosition();
-                //changeSimObjectOrientation(simObject);
-            }
+        if (inputChild != undefined && event.blockId === inputChild.id && fieldKeys.includes(event.name)) {
+            var simObject = getSimObject(thisBlock.id);
+            simObject.position.x = inputChild.getFieldValue('X');
+            simObject.position.y = inputChild.getFieldValue('Y');
+            simObject.position.z = inputChild.getFieldValue('Z') + simObject.size.z * 0.5;
+            rx = inputChild.getFieldValue('ROLL') * d2r;
+            ry = inputChild.getFieldValue('PITCH') * d2r;
+            rz = inputChild.getFieldValue('YAW') * d2r;
+            simObject.setRotationFromEuler(new Euler(rx, ry, rz));
+            simObject.render();
         }
         //change the object type
         if (event.name === 'OBJECT_TYPE' && event.blockId == thisBlock.id) {
             switch (event.newValue) {
                 case 'cube':
                     console.log('You are changing Block.id: ', thisBlock.id);
-                    changeSimObjectType(thisBlock.id, 'cube');
+                    changeSimObjectType(simObject, 'cube');
                     break;
                 case 'cylinder':
                     console.log('You are changing Block.id: ', thisBlock.id);
-                    changeSimObjectType(thisBlock.id, 'cylinder');
+                    changeSimObjectType(simObject, 'cylinder');
                     break;
                 default:
                     console.error('Error: Can not change object Type of ', thisBlock.id);

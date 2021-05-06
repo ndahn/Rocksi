@@ -38,7 +38,7 @@ export function initCannon() {
     world = new CANNON.World();
     world.gravity.set(0, 0, -9.81);
     world.broadphase = new CANNON.NaiveBroadphase();
-    world.solver.iterations = 10;
+    world.solver.iterations = 5;
     world.allowSleep = true;
 
     //Floor
@@ -61,7 +61,7 @@ export function updatePhysics() {
 }
 
 //handels sleep events, gets called by the bodys event listener.
-function bedTimeManagement(event){
+export function bedTimeManagement(event){
     if (event.type == 'sleep') {
 
         let simObject = getSimObject(event.target.name);
@@ -74,7 +74,9 @@ function bedTimeManagement(event){
     }
 }
 
+//deprecated
 //only boxes right now
+/**
 export function createBody(simObject) {
     const shape = new CANNON.Box(new CANNON.Vec3(0.25, 0.25, 0.25))
     let body = new CANNON.Body({ mass: 5 })
@@ -98,6 +100,10 @@ export function createBody(simObject) {
     world.addBody(body);
 }
 
+**/
+
+/**
+//deprecated
 export function getBody(simObject) {
     let returnVal = undefined;
     for (let i = 0; i < bodies.length; i++) {
@@ -107,8 +113,20 @@ export function getBody(simObject) {
     }
     return returnVal;
 }
+**/
+
+export function addBody(simObject) {
+    simObject.createBody();
+    world.addBody(simObject.body)
+}
+
+export function removeBody(simObject) {
+        world.removeBody(simObject.body)
+        simObject.body = null;
+}
 
 //removes a body
+/** deprecated
 export function removeBody(simObject) {
     for (let i = 0; i !== bodies.length; i++) {
         if (bodies[i].name == simObject.name) {
@@ -117,6 +135,7 @@ export function removeBody(simObject) {
         }
     }
 }
+**/
 
 //Removes every body, not used right now.
 export function removeAllBodies(simObjects) {
@@ -125,14 +144,31 @@ export function removeAllBodies(simObjects) {
     }
 }
 
+export function updateMeshes(simObjects) {
+    for (let i = 0; i < simObjects.length; i++) {
+        simObjects[i].updateMesh();
+    }
+}
+
+export function updateBodies(simObjects) {
+    for (let i = 0; i < simObjects.length; i++) {
+        simObjects[i].updateBody();
+    }
+}
+
+/** deprecated
 //updates the bodies
 export function updateBodies(simObjects) {
     if (bodies != undefined
         && simObjects != undefined
         && bodies.length == simObjects.length) {
-        for (let i = 0; i < simObjects.length; i++) {
-            bodies[i].position.copy(simObjects[i].position);
-            bodies[i].quaternion.copy(simObjects[i].quaternion);
+        for (let k = 0; k < simObjects.length; k++) {
+            for (let i = 0; i < simObjects.length; i++) {
+                if (simObjects[k].name == bodies[i].name) {
+                    bodies[i].position.copy(simObjects[k].position);
+                    bodies[i].quaternion.copy(simObjects[k].quaternion);
+                }
+            }
         }
     }
 }
@@ -142,13 +178,17 @@ export function updateMeshes(simObjects) {
     if (bodies != undefined
         && simObjects != undefined
         && bodies.length == simObjects.length) {
-
-        for (let i = 0; i < simObjects.length; i++) {
-            simObjects[i].position.copy(bodies[i].position);
-            simObjects[i].quaternion.copy(bodies[i].quaternion);
+        for (let k = 0; k < simObjects.length; k++) {
+            for (let i = 0; i < simObjects.length; i++) {
+                if (simObjects[k].name == bodies[i].name) {
+                    simObjects[k].position.copy(bodies[i].position);
+                    simObjects[k].quaternion.copy(bodies[i].quaternion);
+                }
+            }
         }
     }
 }
+**/
 
 //determins if all bodies are asleep
 export function isAsleep() {
