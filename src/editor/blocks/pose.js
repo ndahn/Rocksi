@@ -67,7 +67,7 @@ Blockly.Blocks["pose"] = {
                 this.setFieldValue(fieldValues[i], fieldKeys[i]);
             }
         }
-	},
+	}, 
 };
 
 

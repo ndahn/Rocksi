@@ -2,7 +2,7 @@ import { Object3D, Vector3, Euler } from "three"
 
 //function for updating the physics, Lukas
 import { updatePhysics,
-         createBody,
+         addBody,
          isAsleep,
          updateMeshes,
          updateBodies,
@@ -13,8 +13,7 @@ var TWEEN = require('@tweenjs/tween.js');
 //Stuff for the gripper,Lukas
 import { getMeshByPosition,
          getTCP,
-         getObjectRadius,
-         getMesh } from "./scene"
+         getObjectRadius } from "./scene"
 
 import { attachToGripper,
          detachFromGripper,
@@ -363,10 +362,10 @@ class TheSimulation {
         let simObjects = getSimObjects();
         let body;
         if (!simObjects[simObjectsIdx].hasBody) {
-            createBody(simObjects[simObjectsIdx]);
+            addBody(simObjects[simObjectsIdx]);
         }
         else if (simObjects[simObjectsIdx].hasBody) {
-            body = getBody(simObjects[simObjectsIdx]);
+            body = simObjects[simObjectsIdx].body;
             body.wakeUp();
         }
         updateBodies(simObjects);

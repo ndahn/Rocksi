@@ -7,7 +7,7 @@ import { Euler } from "three"
 
 const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
 // pi/180 approximation:
-const r2d = .017
+const d2r = .017
 // euler angles...
 var rx, ry, rz;
 
@@ -64,6 +64,7 @@ Blockly.Blocks['add_sim_object'] = {
         if (simObject != undefined) {
             fieldValues = simObject.getFieldValues();
         }
+
         return fieldValues;
     },
 

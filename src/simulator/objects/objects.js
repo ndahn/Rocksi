@@ -125,6 +125,8 @@ export function resetAllSimObjects () {
             updateBodies(simObjects);
         }
     }
+    simObjects.push(newSimObject);
+    createMesh(newSimObject);
 }
 
 //transformControl event functions
@@ -172,7 +174,9 @@ export function setTCSimObjectsOnClick(raycaster) {
         scene.add(intersect.object.control);
         intersect.object.render();
     }
+    requestAF();
 }
+
 
 //Returns a list with all names of simObjects (the uuids of the blockly blocks)
 //currently in the simObjects array

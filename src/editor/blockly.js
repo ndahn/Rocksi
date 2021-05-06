@@ -402,13 +402,6 @@ function watchSpawnBlocks(event) {
         console.log('Deleted: ', event.ids);
         remSimObjects(event.ids);
     }
-    if (event.type === Blockly.Events.FINISHED_LOADING) {
-        console.log('FINISHED_LOADING');
-        let loadedBlocks = workspace.getBlocksByType('add_sim_object');
-        let loadedBlocksNames = [];
-        loadedBlocks.forEach((block) => { loadedBlocksNames.push(block.id) });
-        addSimObjects(loadedBlocksNames);
-    }
 }
 
 workspace.addChangeListener(watchSpawnBlocks);
