@@ -56,7 +56,7 @@ Blockly.Blocks["pose"] = {
 		});
 		this.setMutator(new ClickableTargetMutator());
 	},
-	onClick: function (e) {
+    onchange:function (e) {
         var parent = this.getParent();
         if (parent != null) {
             var fieldValues = parent.getPosition();
@@ -64,7 +64,7 @@ Blockly.Blocks["pose"] = {
                 this.setFieldValue(fieldValues[i], fieldKeys[i]);
             }
         }
-	},
+	}, 
 };
 
 
