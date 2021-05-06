@@ -3,11 +3,10 @@ import { Object3D, Vector3, Euler } from "three"
 
 //function for updating the physics, Lukas
 import { updatePhysics,
-         addBody,
+         addBodyToWorld,
          isAsleep,
          updateMeshes,
-         updateBodies,
-         getBody } from './physics'
+         updateBodies } from './physics'
 
 var TWEEN = require('@tweenjs/tween.js');
 
@@ -297,7 +296,7 @@ class TheSimulation {
         tcp.getWorldPosition(position);
         const simObject = getSimObjectByPos(position, 0.5);
         if (isAttached() == false && simObject != undefined) {
-            attachToGripper(simObject);
+            simObject.attachToGripper();
             for (const finger of robot.hand.movable) {
                     start[finger.name] = finger.angle;
                     target[finger.name] = finger.limit.upper - (simObject.size.x * 0.2);//This is just for testing, Lukas
@@ -327,7 +326,7 @@ class TheSimulation {
         //If an object is currently gripped, detach it from the gripper, Lukas
         if (isAttached() == true) {
             const simObject = getAttachedObject();
-            detachFromGripper(simObject);
+            simObject.detachFromGripper();
         }
 
         for (const finger of robot.hand.movable) {
@@ -370,17 +369,13 @@ class TheSimulation {
     }
 
     //Lukas
-    createPhysicalObject(simObjectsIdx) {
+    startPhysicalBody(simObjectsIdx) {
         let simObjects = getSimObjects();
-        let body;
-        if (!simObjects[simObjectsIdx].hasBody) {
-            addBody(simObjects[simObjectsIdx]);
+        simObjects[simObjectsIdx].reset();
+        if (simObjects[simObjectsIdx].body != null) {
+            simObjects[simObjectsIdx].body.wakeUp();
+            simObjects[simObjectsIdx].updateBody();
         }
-        else if (simObjects[simObjectsIdx].hasBody) {
-            body = simObjects[simObjectsIdx].body;
-            body.wakeUp();
-        }
-        updateBodies(simObjects);
     }
 
     _animatePhysics() {

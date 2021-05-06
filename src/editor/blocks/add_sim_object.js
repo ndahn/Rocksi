@@ -70,14 +70,14 @@ Blockly.Blocks['add_sim_object'] = {
         var thisBlock = this;
         var fieldValues = [];
         var simObject = getSimObject(thisBlock.id);
-        if (simObject != undefined && !simObject.hasBody) {
+        if (simObject != undefined) {
             var xyz = ['x', 'y', 'z'];
             for (var i = 0; i < 2; i++) {
-                fieldValues.push(simObject.position[xyz[i]]);
+                fieldValues.push(simObject.spawnPosition[xyz[i]]);
             }
-            fieldValues.push(simObject.position.z - simObject.size.z * 0.5)
+            fieldValues.push(simObject.spawnPosition.z - simObject.size.z * 0.5)
             for (var i = 0; i < 3; i++) {
-                fieldValues.push(simObject.rotation[xyz[i]]);
+                fieldValues.push(simObject.spawnRotation[xyz[i]]);
             }
         }
 
@@ -93,31 +93,22 @@ Blockly.Blocks['add_sim_object'] = {
                 inputChild = children[i];
             }
         }
-        /**
-        //If a pose block is attached, fill the field values.
-        if (event.newParentId == thisBlock.id && inputChild != undefined) {
-            var simObject = getSimObject(thisBlock.id);
-            inputChild.setFieldValue(simObject.position.x, 'X');
-            inputChild.setFieldValue(simObject.position.y, 'Y');
-            inputChild.setFieldValue(simObject.position.z - simObject.size.z * 0.5, 'Z');
-            inputChild.setFieldValue(simObject.rotation.x, 'ROLL');
-            inputChild.setFieldValue(simObject.rotation.y, 'PITCH');
-            inputChild.setFieldValue(simObject.rotation.z, 'YAW');
-        }**/
-            //If a field value changes, change the simObject position and orientation.
         if (inputChild != undefined && event.blockId === inputChild.id && fieldKeys.includes(event.name)) {
             var simObject = getSimObject(thisBlock.id);
-            simObject.position.x = inputChild.getFieldValue('X');
-            simObject.position.y = inputChild.getFieldValue('Y');
-            simObject.position.z = inputChild.getFieldValue('Z') + simObject.size.z * 0.5;
+            simObject.spawnPosition.x = inputChild.getFieldValue('X');
+            simObject.spawnPosition.y = inputChild.getFieldValue('Y');
+            simObject.spawnPosition.z = inputChild.getFieldValue('Z') + simObject.size.z * 0.5;
             rx = inputChild.getFieldValue('ROLL') * d2r;
             ry = inputChild.getFieldValue('PITCH') * d2r;
             rz = inputChild.getFieldValue('YAW') * d2r;
-            simObject.setRotationFromEuler(new Euler(rx, ry, rz));
+            simObject.spawnRotation.copy(new Euler(rx, ry, rz));
+            simObject.setRotationFromEuler(simObject.spawnRotation);
+            simObject.position.copy(simObject.spawnPosition);
+            simObject.updateBody();
             simObject.render();
         }
         //change the object type
-        if (event.name === 'OBJECT_TYPE' && event.blockId == thisBlock.id) {
+        /**if (event.name === 'OBJECT_TYPE' && event.blockId == thisBlock.id) {
             switch (event.newValue) {
                 case 'cube':
                     console.log('You are changing Block.id: ', thisBlock.id);
@@ -130,7 +121,7 @@ Blockly.Blocks['add_sim_object'] = {
                 default:
                     console.error('Error: Can not change object Type of ', thisBlock.id);
             }
-        }
+        }**/
     }
 };
 
@@ -139,6 +130,6 @@ Blockly.Blocks['add_sim_object'] = {
 //3D Object and starts the physics engine
 Blockly.JavaScript["add_sim_object"] = function (block) {
     var idx = getSimObjectIdx(this.id);
-    var code = 'simulate("createPhysicalObject", ' + idx + ');'
+    var code = 'simulate("startPhysicalBody", ' + idx + ');'
 	return code;
 };

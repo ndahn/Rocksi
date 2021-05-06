@@ -379,6 +379,7 @@ function onProgramFinished() {
         }
     }
 }*/
+
 function watchSpawnBlocks(event) {
     if(Blockly.Events.BLOCK_CREATE === event.type) {
         const newBlock = workspace.getBlockById(event.blockId);
