@@ -25,7 +25,10 @@ import './blocks/joint_unlock'
 import './blocks/comment'
 import './blocks/wait'
 import './blocks/is_attached'
+<<<<<<< HEAD
 import './blocks/physics_done'
+=======
+>>>>>>> 974c96b (Added a block that gives a boolean value of gripper status. Fixed a faulty function call in attachToGripper method of the simObject)
 
 <<<<<<< HEAD
 <<<<<<< HEAD

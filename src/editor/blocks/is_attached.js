@@ -8,7 +8,11 @@ Blockly.Blocks["is_attached"] = {
 			type: "is_attached",
 			message0: "Gegriffen?",
 			output: "Boolean",
+<<<<<<< HEAD
 			style: 'objects_blocks',
+=======
+			colour: "%{BKY_SIM_OBJECTS_HEX}",
+>>>>>>> 974c96b (Added a block that gives a boolean value of gripper status. Fixed a faulty function call in attachToGripper method of the simObject)
 			tooltip:
 				"Gibt Wahr zurück wenn der Roboter etwas gegriffen hat",
 			helpUrl: "",
