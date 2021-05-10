@@ -114,19 +114,16 @@ export class SimObject extends THREE.Mesh {
         console.log('> Object dropped!');
     }
 
-    attachToGripper(simObject) {
+    attachToGripper() {
         const robot = getRobot();
         const tcp = robot.tcp.object;
-        //this is only the case if the Blockly block was processed
-        if (this.hasBody) {
-            this.attached = true;
-            this.body.sleep();
-            //For some unknown reason cannon does't dispatches this automaticly
-            this.body.dispatchEvent('sleep');
-            this.asleep = true;
-            tcp.attach(simObject);
-            this.updateBody();
-        }
+        this.attached = true;
+        this.body.sleep();
+        //For some unknown reason cannon does't dispatches this automaticly
+        this.body.dispatchEvent('sleep');
+        this.asleep = true;
+        tcp.attach(this);
+        this.updateBody();
         console.log('> Object gripped!');
     }
 }
