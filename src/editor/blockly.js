@@ -22,6 +22,7 @@ import './blocks/joint_relative'
 import './blocks/set_speed'
 import './blocks/joint_lock'
 import './blocks/joint_unlock'
+import './blocks/is_attached'
 
 //points to block definition for add_sim_object, Lukas
 import './blocks/add_sim_object'
