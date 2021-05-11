@@ -10,17 +10,11 @@ import { updatePhysics,
 
 var TWEEN = require('@tweenjs/tween.js');
 
-//Stuff for the gripper,Lukas
-import { getMeshByPosition,
-         getTCP,
-         getObjectRadius } from "./scene"
-
-import { attachToGripper,
-         detachFromGripper,
-         isAttached,
+import { isAttached,
          getAttachedObject,
          getSimObjects,
-         getSimObjectByPos } from "./objects/objects"
+         getSimObjectByPos,
+         resetAllSimObjects } from "./objects/objects"
 
 
 function deg2rad(deg) {
@@ -60,7 +54,7 @@ class TheSimulation {
             gripper: 0.5
         }
         //Physics, Lukas
-        this.runningPhysics = true;
+        this.runningPhysics = false;
     }
 
 
@@ -375,13 +369,12 @@ class TheSimulation {
         if (this.runningPhysics) {
             updatePhysics();
             this._renderCallback();
-            if (isAsleep()) {
+            if (!isWorldActive()) {
                 console.log('Physics rendering done!');
                 return;
             }
-            else {
-                window.requestAnimationFrame(() => this._animatePhysics());
-            }
+            window.requestAnimationFrame(() => this._animatePhysics());
+
         }
     }
 
@@ -426,6 +419,7 @@ class TheSimulation {
     }
 
     _animate(time) {
+
         TWEEN.update(time);
         this._renderCallback();
         //Is this the place for the physics update, I dunno. Let's try it! Lukas
