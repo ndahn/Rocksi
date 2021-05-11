@@ -36,7 +36,7 @@ export class SimObject extends THREE.Mesh {
 
     createBody() {
         //place holder
-        if (true) {
+        if ('cube' == this.type) {
             const shape = new CANNON.Box(new CANNON.Vec3(0.25, 0.25, 0.25))
             let body = new CANNON.Body({ mass: 5 })
             body.addShape(shape)
@@ -84,6 +84,7 @@ export class SimObject extends THREE.Mesh {
         const scene = getScene();
         const world = getWorld();
         if (this.hasBody) { world.removeBody(this.body); }
+        if (this.isAttached) { scene.attach(this) }
         scene.remove(this);
         this.render();
     }
@@ -180,10 +181,10 @@ function createMesh(simObject) {
 }
 
 //Functions for simObjects
-export function addSimObject(simObjectName, changeInitPos = false, inputChild = undefined) {
+export function addSimObject(simObjectName, changeSpawnPos = false, inputChild = undefined) {
     let newSimObject = new SimObject;
     newSimObject.name = simObjectName;
-    if (changeInitPos == true && inputChild != undefined) {
+    if (changeSpawnPos == true && inputChild != undefined) {
         newSimObject.spawnPosition.x = inputChild.getFieldValue('X');
         newSimObject.spawnPosition.y = inputChild.getFieldValue('Y');
         newSimObject.spawnPosition.z = inputChild.getFieldValue('Z') + newSimObject.size.z * 0.5;
@@ -203,39 +204,14 @@ export function addSimObject(simObjectName, changeInitPos = false, inputChild = 
 
 
 //Removes the simObject from the simObjects array and from the threejs scene
-export function remSimObjects(blocklyWorkspace) {
-    let simObjectBlocksIds = [];
-    let simObjectsToKeep = [];
-    let i, k;
-    const simObjectBlocks = blocklyWorkspace.getBlocksByType('add_sim_object');
-    simObjectBlocks.forEach((block) => {
-        simObjectBlocksIds.push(block.id);});
-
-    //removes all
-    if (simObjectBlocksIds.length == 0) {
-        for (i = 0; i < simObjects.length; i++) {
-            simObjects[i].remove();
+export function remSimObjects(ids) {
+    for (const id of ids) {
+        const deletedSimObject = simObjects.find(simObject => simObject.name === id);
+        const idx = simObjects.findIndex(simObject => simObject.name === id);
+        if (deletedSimObject != undefined) {
+            deletedSimObject.remove();
+            simObjects.splice(idx, 1);
         }
-        simObjects = [];
-    }
-
-    else if (simObjectBlocksIds.length != 0){
-        for (i = 0; i < simObjects.length; i++) {
-            for (k = 0; k < simObjectBlocksIds.length; k++) {
-                if (simObjectBlocksIds[k] == simObjects[i].name) {
-                    simObjectsToKeep.push(simObjects[i]);
-                }
-            }
-        }
-
-        for (i = 0; i < simObjects.length; i++) {
-            simObjects[i].remove();
-        }
-        simObjects = simObjectsToKeep;
-        for (i = 0; i < simObjects.length; i++) {
-            simObjects[i].add();
-        }
-
     }
 }
 
