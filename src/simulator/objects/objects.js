@@ -12,6 +12,7 @@ import { updateBodies,
 
 import * as CANNON from 'cannon-es'
 
+
 let simObjects = [];
 
 export class SimObject extends THREE.Mesh {
@@ -20,7 +21,7 @@ export class SimObject extends THREE.Mesh {
         this.name = undefined;
         this.type = 'cube';
         this.attached = false;
-        this.asleep = false;
+        //this.asleep = false;
         this.hasBody = false;
         this.movable = true;
         this.spawnPosition = new THREE.Vector3(5, 5, this.size.z * .5);
@@ -36,29 +37,23 @@ export class SimObject extends THREE.Mesh {
 
     createBody() {
         //place holder
+        let body;
         if ('cube' == this.type) {
-            const shape = new CANNON.Box(new CANNON.Vec3(0.25, 0.25, 0.25))
-            let body = new CANNON.Body({ mass: 5 })
+            const shape = new CANNON.Box(new CANNON.Vec3(0.251, 0.251, 0.251))
+            body = new CANNON.Body({ mass: 0.01 })
             body.addShape(shape)
-            body.position.set(this.position)
-            body.allowSleep = true;
-            body.sleepSpeedLimit = 0.1;
-            body.sleepTimeLimit = 0.5;
-
-            body.addEventListener("sleep", function(event){
-                bedTimeManagement(event);
-            });
-
-            body.addEventListener("wakeup", function(event){
-                bedTimeManagement(event);
-            });
-            body.name = this.name;
-            this.hasBody = true;
-            this.body = body;
-            this.body.sleep();
-            this.asleep = true;
-            this.updateBody();
         }
+        body.material = new CANNON.Material({ friction: 4, restitution: -1});
+        body.position.set(this.position)
+        body.allowSleep = true;
+        body.sleepSpeedLimit = 0.2;
+        body.sleepTimeLimit = 0.2;
+        body.name = this.name;
+        this.hasBody = true;
+        this.body = body;
+        this.body.sleep();
+        console.log(this.body);
+        this.updateBody();
 
     }
 
@@ -215,6 +210,13 @@ export function remSimObjects(ids) {
     }
 }
 
+export function resetAllSimObjects () {
+    if (simObjects.length > 0) {
+        for (const simObject of simObjects) {
+            simObject.reset();
+        }
+    }
+}
 
 //Returns a list with all names of simObjects (the uuids of the blockly blocks)
 //currently in the simObjects array

@@ -16,6 +16,7 @@
     "blockly": "^4.20201217.0",
     "blocks": "^0.3.5",
     "cannon-es": "github:pmndrs/cannon-es",
+    "cannon-es-debugger": "^0.1.2",
     "css-element-queries": "^1.2.3",
     "js-interpreter": "^2.2.0",
     "lozad": "^1.16.0",

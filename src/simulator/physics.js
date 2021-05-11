@@ -3,33 +3,48 @@ import * as CANNON from 'cannon-es';
 import * as THREE from 'three';
 import { getSimObjects,
          getSimObject } from './objects/objects';
-
+import { getScene } from './scene';
+import cannonDebugger from 'cannon-es-debugger'
 //Physics setup
 //variables for the physics simulation
 const dt = 0.02
 let world;
 let robotBodies = [];
 let initDone = false;
+const debugOn = true;
+
+function debug() {
+    if (debugOn) {
+        const scene = getScene();
+        cannonDebugger(scene, world.bodies);
+    }
+}
 
 export function initCannon() {
     //World
     world = new CANNON.World();
     world.gravity.set(0, 0, -9.81);
     world.broadphase = new CANNON.NaiveBroadphase();
-    world.solver.iterations = 5;
+    //const solver = new CANNON.GSSolver()
+    //world.solver = solver;
+    world.solver.tolerance = 0.001
+    world.quatNormalizeFast = true;
+    world.solver.iterations = 15;
     world.allowSleep = true;
 
     //Floor
     const floorShape = new CANNON.Plane();
     const floorBody = new CANNON.Body({ mass: 0 });
     floorBody.addShape(floorShape);
+    floorBody.material = new CANNON.Material({ friction: 4, restitution: -2});
     floorBody.quaternion.setFromEuler(0, 0, -Math.PI / 2);
     floorBody.allowSleep = true;
     floorBody.sleepSpeedLimit = 0.2;
-    floorBody.sleepTimeLimit = 1;
+    floorBody.sleepTimeLimit = 0.1;
     world.addBody(floorBody);
     initDone = true;
-    console.log('Physics init done!');
+    console.log('Physics init done');
+    debug();
 }
 
 export function getWorld() {
@@ -48,22 +63,9 @@ export function updatePhysics() {
     updateMeshes(simObjects);
 }
 
-//handels sleep events, gets called by the bodys event listener.
-export function bedTimeManagement(event){
-    if (event.type == 'sleep') {
-
-        let simObject = getSimObject(event.target.name);
-        simObject.asleep = true;
-    }
-    if (event.type == 'wakeup') {
-
-        let simObject = getSimObject(event.target.name);
-        simObject.asleep = false;
-    }
-}
-
 export function addBodyToWorld(simObject) {
-    world.addBody(simObject.body)
+    world.addBody(simObject.body);
+    //debug();
 }
 
 export function removeBodyFromWorld(simObject) {
@@ -79,8 +81,10 @@ export function removeAllBodies(simObjects) {
 }
 
 export function updateMeshes(simObjects) {
-    for (let i = 0; i < simObjects.length; i++) {
-        simObjects[i].updateMesh();
+    if (simObjects != undefined) {
+        for (const simObject of simObjects) {
+            simObject.updateMesh();
+        }
     }
 }
 
@@ -90,19 +94,6 @@ export function updateBodies(simObjects) {
     }
 }
 
-//determins if all bodies are asleep
-export function isAsleep() {
-    let returnVal = true;
-    const simObjects = getSimObjects();
-    if (simObjects != undefined) {
-        for (var i = 0; i < simObjects.length; i++) {
-            if (simObjects[i].asleep == false) {
-               returnVal = false;
-               break;
-            }
-        }
-    }
-    else {returnVal = true;}
-
-    return returnVal;
+export function isWorldActive() {
+    return world.hasActiveBodies;
 }
