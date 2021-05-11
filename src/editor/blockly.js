@@ -334,76 +334,28 @@ function onProgramFinished() {
 //Determin if a add_sim_object-block was added or removed form the Blockly Workspace.
 //If added, add a new 3D-object. If removed remove the 3D-object assosiated with the block.
 //Lukas
-/**function watchBlocks(event) {
-    if (event.type === Blockly.Events.BLOCK_CREATE) {
-        const newBlock = workspace.getBlockById(event.blockId);
-        if (newBlock != null && newBlock.type == 'add_sim_object') {
-            console.log('New SimObject Block:', newBlock.id);
-            let newChildren = newBlock.getChildren();
-            let inputChild;
-            if (newChildren != undefined) {
-                for (var i = 0; i < newChildren.length; i++) {
-                    if (newChildren[i].type == 'pose') {
-                        inputChild = newChildren[i];
-                    }
-
-                }
-            }
-            else {
-                addSimObject(undefined)
-            }
-        }
-    }
-
-    if (event.type === Blockly.Events.BLOCK_DELETE) {
-        let currentSimObjectBlocks = workspace.getBlocksByType('add_sim_object');
-        let simObjects = getSimObjects();
-        //Determin if there are any simObjects
-        if (simObjects != undefined && simObjects.length > 0) {
-            //Determin if there are more simObjects than simObjectBlocks
-            if (simObjects > currentSimObjectBlocks) {
-                let currentSimObjectBlocksIds = [];
-
-                currentSimObjectBlocks.forEach((block) => {
-                    currentSimObjectBlocksIds.push(block.id)
-                });
-
-                let deletedSimObjectBlocks = simObjects.filter(simObject =>
-                    !currentSimObjectBlocksIds.includes(simObject.name));
-
-                //console.log('Deleted SimObjectBlocks: ', deletedSimObjectBlocks);
-                remSimObjects(deletedSimObjectBlocks);
-            }
-            else if (simObjects < currentSimObjectBlocks) {
-                console.error('There are untracked SimObjects! Deletion not possible!');
-            }
-        }
-    }
-}*/
-
 function watchSpawnBlocks(event) {
-    if(Blockly.Events.BLOCK_CREATE === event.type) {
+    if(Blockly.Events.BLOCK_CREATE === event.type && 'add_sim_object' === event.xml.attributes[0].value ) {
         const newBlock = workspace.getBlockById(event.blockId);
-        if ('add_sim_object' === newBlock.type) {
-            console.log('Added', newBlock.id);
-            const children = newBlock.getChildren();
-            let inputChild;
-            //console.log('children', children);
-            for (var i = 0; i < children.length; i++) {
-                if (children[i].type == 'pose') {
-                    inputChild = children[i];
-                }
+        console.log('Added: ', newBlock.id);
+        const children = newBlock.getChildren();
+        let inputChild;
+        //console.log('children', children);
+        for (var i = 0; i < children.length; i++) {
+            if (children[i].type == 'pose') {
+                inputChild = children[i];
             }
-            if (inputChild == undefined) {
-                addSimObject(newBlock.id);
-            }
-            else {
-                addSimObject(newBlock.id, true, inputChild);
-            }
+        }
+        if (inputChild != undefined) {
+            addSimObject(newBlock.id, true, inputChild);
+        }
+        else {
+            addSimObject(newBlock.id);
         }
     }
     if(Blockly.Events.BLOCK_DELETE === event.type) {
-        remSimObjects(workspace);
+        console.log('Deleted: ', event.ids);
+        remSimObjects(event.ids);
     }
 }
 
