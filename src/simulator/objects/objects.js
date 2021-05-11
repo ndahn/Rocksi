@@ -2,9 +2,74 @@ import { BoxBufferGeometry,
          MeshPhongMaterial,
          CylinderGeometry } from 'three';
 
+<<<<<<< HEAD
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 
 import * as Blockly from 'blockly/core'
+=======
+    render() {
+        requestAF();
+    }
+
+    createBody() {
+        //place holder
+        if ('cube' == this.type) {
+            const shape = new CANNON.Box(new CANNON.Vec3(0.25, 0.25, 0.25))
+            let body = new CANNON.Body({ mass: 5 })
+            body.addShape(shape)
+            body.position.set(this.position)
+            body.allowSleep = true;
+            body.sleepSpeedLimit = 0.1;
+            body.sleepTimeLimit = 0.5;
+
+            body.addEventListener("sleep", function(event){
+                bedTimeManagement(event);
+            });
+
+            body.addEventListener("wakeup", function(event){
+                bedTimeManagement(event);
+            });
+            body.name = this.name;
+            this.hasBody = true;
+            this.body = body;
+            this.body.sleep();
+            this.asleep = true;
+            this.updateBody();
+        }
+
+    }
+
+    updateBody() {
+        this.body.position.copy(this.position);
+        this.body.quaternion.copy(this.quaternion);
+    }
+
+    updateMesh() {
+        this.position.copy(this.body.position);
+        this.quaternion.copy(this.body.quaternion);
+    }
+    add() {
+        const scene = getScene();
+        const world = getWorld();
+        if (!this.hasBody) { this.createBody(); }
+        if (this.hasBody && this.body != undefined) { world.addBody(this.body); }
+        scene.add(this);
+        this.render();
+    }
+
+    remove() {
+        const scene = getScene();
+        const world = getWorld();
+        if (this.hasBody) { world.removeBody(this.body); }
+        if (this.isAttached) { scene.attach(this) }
+        scene.remove(this);
+        this.render();
+    }
+
+    update() {
+
+    }
+>>>>>>> 8c318aa (Better performance loding, deleting and adding simObjects)
 
 import { SimObject } from './simObject'
 
@@ -53,6 +118,7 @@ function addGeometry(simObject) {
     }
 }
 
+<<<<<<< HEAD
 export function addSimObject(blockUUID, fieldValues, pickedColour) {
     let newSimObject = new SimObject;
     newSimObject.name = blockUUID;
@@ -72,6 +138,20 @@ export function addSimObject(blockUUID, fieldValues, pickedColour) {
     newSimObject.updateFieldValues();
     simObjects.push(newSimObject);
 }
+=======
+//Functions for simObjects
+export function addSimObject(simObjectName, changeSpawnPos = false, inputChild = undefined) {
+    let newSimObject = new SimObject;
+    newSimObject.name = simObjectName;
+    if (changeSpawnPos == true && inputChild != undefined) {
+        newSimObject.spawnPosition.x = inputChild.getFieldValue('X');
+        newSimObject.spawnPosition.y = inputChild.getFieldValue('Y');
+        newSimObject.spawnPosition.z = inputChild.getFieldValue('Z') + newSimObject.size.z * 0.5;
+        let rx = inputChild.getFieldValue('ROLL') * .017;
+        let ry = inputChild.getFieldValue('PITCH') * .017;
+        let rz = inputChild.getFieldValue('YAW') * .017;
+        newSimObject.spawnRotation.copy(new THREE.Euler(rx, ry, rz));
+>>>>>>> 8c318aa (Better performance loding, deleting and adding simObjects)
 
 //Functions for positioning simObjects
 function setSpawnPosition(simObject) {
@@ -114,6 +194,7 @@ export function remSimObjects(ids) {
             deletedSimObject.remove();
             simObjects.splice(idx, 1);
         }
+<<<<<<< HEAD
     }
 }
 
@@ -151,6 +232,8 @@ export function setTCSimObjects(raycaster) {
             //Switches the highlighting of the corresponding Blockly block off.
             workspace.highlightBlock(null);
         }
+=======
+>>>>>>> 8c318aa (Better performance loding, deleting and adding simObjects)
     }
 }
 
