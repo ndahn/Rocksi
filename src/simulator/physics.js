@@ -11,7 +11,11 @@ const dt = 0.02
 let world;
 let robotBodies = [];
 let initDone = false;
+<<<<<<< HEAD
 const debugOn = false;
+=======
+const debugOn = true;
+>>>>>>> 7c6800e (Added cannon-es-debugger module. Bodys now have friction and a more adequate mass.)
 
 function debug() {
     if (debugOn) {
@@ -19,6 +23,7 @@ function debug() {
         cannonDebugger(scene, world.bodies);
     }
 }
+<<<<<<< HEAD
 
 export function initRobotHitboxes(robot) {
     /**console.log('Robot: ', robot);
@@ -42,6 +47,8 @@ export function initRobotHitboxes(robot) {
     }**/
 }
 **/
+=======
+>>>>>>> 7c6800e (Added cannon-es-debugger module. Bodys now have friction and a more adequate mass.)
 
 export function initCannon() {
     //World
@@ -52,7 +59,11 @@ export function initCannon() {
     //world.solver = solver;
     world.solver.tolerance = 0.001
     world.quatNormalizeFast = true;
+<<<<<<< HEAD
     world.solver.iterations = 10;
+=======
+    world.solver.iterations = 15;
+>>>>>>> 7c6800e (Added cannon-es-debugger module. Bodys now have friction and a more adequate mass.)
     world.allowSleep = true;
 
     //Floor
@@ -104,9 +115,16 @@ export function removeAllBodies(simObjects) {
 }
 
 export function updateMeshes(simObjects) {
+<<<<<<< HEAD
     let limit = simObjects.length;
     for (let i = 0; i < limit; i++) {
         simObjects[i].updateMesh();
+=======
+    if (simObjects != undefined) {
+        for (const simObject of simObjects) {
+            simObject.updateMesh();
+        }
+>>>>>>> 7c6800e (Added cannon-es-debugger module. Bodys now have friction and a more adequate mass.)
     }
 }
 
