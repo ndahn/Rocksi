@@ -77,7 +77,7 @@ class TheSimulation {
             //if every body isAsleep this will do nothing, Lukas
             //this has to run now in order to account
             //for any physical interaction in the scene
-            resetAllSimObjects();
+            //resetAllSimObjects();
         }
         catch (e) {
             console.error('Failed to run command \'' + command + '(' + args + ')\':' + e);
