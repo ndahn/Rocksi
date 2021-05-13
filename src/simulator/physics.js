@@ -29,7 +29,7 @@ export function initCannon() {
     //world.solver = solver;
     world.solver.tolerance = 0.001
     world.quatNormalizeFast = true;
-    world.solver.iterations = 15;
+    world.solver.iterations = 10;
     world.allowSleep = true;
 
     //Floor
@@ -81,10 +81,9 @@ export function removeAllBodies(simObjects) {
 }
 
 export function updateMeshes(simObjects) {
-    if (simObjects != undefined) {
-        for (const simObject of simObjects) {
-            simObject.updateMesh();
-        }
+    let limit = simObjects.length;
+    for (let i = 0; i < limit; i++) {
+        simObjects[i].updateMesh();
     }
 }
 
