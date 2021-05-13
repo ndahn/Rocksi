@@ -374,21 +374,21 @@ class TheSimulation {
         simObjects[simObjectsIdx].updateBody();
         simObjects[simObjectsIdx].body.wakeUp();
         this.runningPhysics = true;
-        this._animatePhysics();
+        if (simObjectsIdx < 1) {
+            this._animatePhysics();
+        }
+
 
     }
 
     _animatePhysics() {
-        if (this.runningPhysics) {
-            updatePhysics();
-            this._renderCallback();
-            if (!isWorldActive()) {
-                console.log('Physics rendering done!');
-                return;
-            }
-            window.requestAnimationFrame(() => this._animatePhysics());
-
+        updatePhysics();
+        this._renderCallback();
+        if (!isWorldActive()) {
+            console.log('Physics rendering done!');
+            return;
         }
+        window.requestAnimationFrame(() => this._animatePhysics());
     }
 >>>>>>> fc4b4db (Fixed the wrong if/else loop in objects.js/getSimobject and objects.js/getSimObjectIdx functions. Some work on integrating the physics in simulation.js. Some cleanup in blockly.js)
 
