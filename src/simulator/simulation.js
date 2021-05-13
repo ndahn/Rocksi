@@ -364,12 +364,10 @@ class TheSimulation {
     //Lukas
     startPhysicalBody(simObjectsIdx) {
         let simObjects = getSimObjects();
+        simObjects[simObjectsIdx].reset();
         simObjects[simObjectsIdx].updateBody();
         simObjects[simObjectsIdx].body.wakeUp();
-        //if (simObjectsIdx + 1 == simObjects.length) {
-            this.runningPhysics = true;
-
-        //}
+        this.runningPhysics = true;
         this._animatePhysics();
 
     }
