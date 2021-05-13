@@ -60,10 +60,14 @@ export function initCannon() {
     world.solver.tolerance = 0.001
     world.quatNormalizeFast = true;
 <<<<<<< HEAD
+<<<<<<< HEAD
     world.solver.iterations = 10;
 =======
     world.solver.iterations = 15;
 >>>>>>> 7c6800e (Added cannon-es-debugger module. Bodys now have friction and a more adequate mass.)
+=======
+    world.solver.iterations = 10;
+>>>>>>> a05b7c7 (Changed the sleepSpeedLimit for the simulation. Fewer micro collisions and jitter.)
     world.allowSleep = true;
 
     //Floor
@@ -116,6 +120,7 @@ export function removeAllBodies(simObjects) {
 
 export function updateMeshes(simObjects) {
 <<<<<<< HEAD
+<<<<<<< HEAD
     let limit = simObjects.length;
     for (let i = 0; i < limit; i++) {
         simObjects[i].updateMesh();
@@ -125,6 +130,11 @@ export function updateMeshes(simObjects) {
             simObject.updateMesh();
         }
 >>>>>>> 7c6800e (Added cannon-es-debugger module. Bodys now have friction and a more adequate mass.)
+=======
+    let limit = simObjects.length;
+    for (let i = 0; i < limit; i++) {
+        simObjects[i].updateMesh();
+>>>>>>> a05b7c7 (Changed the sleepSpeedLimit for the simulation. Fewer micro collisions and jitter.)
     }
 }
 
