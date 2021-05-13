@@ -50,6 +50,28 @@ export function initRobotHitboxes(robot) {
 =======
 >>>>>>> 7c6800e (Added cannon-es-debugger module. Bodys now have friction and a more adequate mass.)
 
+export function initRobotHitboxes(robot) {
+    console.log('Robot: ', robot);
+    const scene = getScene();
+    const links = robot.arm.links;
+    let i = 1;
+    let linkWorldPosition = new THREE.Vector3();
+    let linkWorldQuat = new THREE.Vector2();
+    for (const link of links) {
+		link.getWorldPosition(linkWorldPosition);
+        //link.getWorldQuaternion(linkWorldQuat);
+		const geometry = new THREE.BoxGeometry( 1,2,1 );
+		const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+		const cube = new THREE.Mesh( geometry, material );
+        cube.position.copy(linkWorldPosition);
+        //cube.quaternion.copy(linkWorldQuat);
+		cube.visible = false;
+		const box = new THREE.BoxHelper( cube );
+		scene.add( box );
+		scene.add( cube );
+    }
+}
+
 export function initCannon() {
     //World
     world = new CANNON.World();
