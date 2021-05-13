@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { BoxBufferGeometry,
          MeshPhongMaterial,
          CylinderGeometry } from 'three';
@@ -6,6 +7,17 @@ import { BoxBufferGeometry,
 <<<<<<< HEAD
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 =======
+=======
+import * as THREE from 'three';
+import { DragControls } from 'three/examples/jsm/controls/DragControls.js';
+import * as Blockly from 'blockly/core'
+import { requestAF,
+         getScene,
+         getRobot } from '../scene';
+
+import { getWorld } from '../physics';
+
+>>>>>>> b4701d7 (The spawnPosition is now assigned in addSimObject and not at creation)
 import * as CANNON from 'cannon-es'
 
 
@@ -20,13 +32,17 @@ export class SimObject extends THREE.Mesh {
         //this.asleep = false;
         this.hasBody = false;
         this.movable = true;
-        this.spawnPosition = new THREE.Vector3(5, 5, this.size.z * .5);
+        this.spawnPosition = new THREE.Vector3(5, 0, this.size.z * .5);
         this.spawnRotation = new THREE.Euler(0, 0, 0);
         this.body = undefined;
     }
     size = new THREE.Vector3(.5, .5, .5);
+<<<<<<< HEAD
     position = new THREE.Vector3(5, 0, this.size.z * .5);
 >>>>>>> 7c6800e (Added cannon-es-debugger module. Bodys now have friction and a more adequate mass.)
+=======
+
+>>>>>>> b4701d7 (The spawnPosition is now assigned in addSimObject and not at creation)
 
 import * as Blockly from 'blockly/core'
 =======
@@ -51,7 +67,6 @@ import * as Blockly from 'blockly/core'
         this.hasBody = true;
         this.body = body;
         this.body.sleep();
-        console.log(this.body);
         this.updateBody();
 
     }
@@ -95,9 +110,35 @@ import { requestAF,
          getRobot,
          getControl } from '../scene';
 
+<<<<<<< HEAD
 import { getWorld } from '../physics';
 
 let simObjects = [];
+=======
+    detachFromGripper() {
+        const scene = getScene();
+        this.attached = false;
+        scene.attach(this);
+        this.updateBody();
+        this.body.wakeUp();
+        this.body.updateInertiaWorld();
+        this.body.applyImpulse();
+        console.log('> Object dropped!');
+    }
+
+    attachToGripper() {
+        const robot = getRobot();
+        const tcp = robot.tcp.object;
+        this.attached = true;
+        this.body.sleep();
+        //For some unknown reason cannon does't dispatches this automaticly
+        this.body.dispatchEvent('sleep');
+        tcp.attach(this);
+        this.updateBody();
+        console.log('> Object gripped!');
+    }
+}
+>>>>>>> b4701d7 (The spawnPosition is now assigned in addSimObject and not at creation)
 
 //Functions for creating meshes
 function createBoxMesh(simObject) {
