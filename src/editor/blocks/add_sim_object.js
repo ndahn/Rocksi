@@ -76,6 +76,7 @@ Blockly.Blocks['add_sim_object'] = {
             simObject.updateFromFieldValues();
             simObject.render();
         }
+<<<<<<< HEAD
 
         if (colour != null && event.blockId === colour.id) {
             var simObject = getSimObject(this.id);
@@ -92,6 +93,8 @@ Blockly.Blocks['add_sim_object'] = {
 
             simObject.render();
         }
+=======
+>>>>>>> 7f9d945 (Programms are now loaded correct.)
     }
 };
 

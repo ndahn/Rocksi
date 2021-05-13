@@ -360,6 +360,7 @@ function onProgramFinished() {
 //If added, add a new 3D-object. If removed remove the 3D-object assosiated with the block.
 //Lukas
 function watchSpawnBlocks(event) {
+<<<<<<< HEAD
     if(Blockly.Events.BLOCK_CREATE === event.type) {
         for (let i = 0; i < event.ids.length; i++) {
             const newBlock = workspace.getBlockById(event.ids[i]);
@@ -388,8 +389,29 @@ function watchSpawnBlocks(event) {
                 }
                 console.log(pickedColour);
                 addSimObject(newBlock.id, fieldValues, pickedColour);
+=======
+
+    if(Blockly.Events.BLOCK_CREATE === event.type) {
+        for (let i = 0; i < event.ids.length; i++) {
+            console.log(event.ids[i]);
+            const newBlock = workspace.getBlockById(event.ids[i]);
+            if (newBlock.type == 'add_sim_object') {
+                const children = newBlock.getChildren();
+                let inputChild;
+                for (const child of children) {
+                    if (child.type == 'pose') {
+                        inputChild = child;
+                    }
+                }
+                addSimObject(newBlock.id, true, inputChild);
+>>>>>>> 7f9d945 (Programms are now loaded correct.)
             }
+
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7f9d945 (Programms are now loaded correct.)
     }
 
     if(Blockly.Events.BLOCK_DELETE === event.type) {
