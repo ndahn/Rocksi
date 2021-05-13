@@ -366,16 +366,13 @@ class TheSimulation {
     }
 
     _animatePhysics() {
-        if (this.runningPhysics) {
-            updatePhysics();
-            this._renderCallback();
-            if (!isWorldActive()) {
-                console.log('Physics rendering done!');
-                return;
-            }
-            window.requestAnimationFrame(() => this._animatePhysics());
-
+        updatePhysics();
+        this._renderCallback();
+        if (!isWorldActive()) {
+            console.log('Physics rendering done!');
+            return;
         }
+        window.requestAnimationFrame(() => this._animatePhysics());
     }
 
     _makeTween(start, target, duration) {
