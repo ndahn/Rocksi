@@ -107,21 +107,6 @@ Blockly.Blocks['add_sim_object'] = {
             simObject.updateBody();
             simObject.render();
         }
-        //change the object type
-        /**if (event.name === 'OBJECT_TYPE' && event.blockId == thisBlock.id) {
-            switch (event.newValue) {
-                case 'cube':
-                    console.log('You are changing Block.id: ', thisBlock.id);
-                    changeSimObjectType(simObject, 'cube');
-                    break;
-                case 'cylinder':
-                    console.log('You are changing Block.id: ', thisBlock.id);
-                    changeSimObjectType(simObject, 'cylinder');
-                    break;
-                default:
-                    console.error('Error: Can not change object Type of ', thisBlock.id);
-            }
-        }**/
     }
 };
 
