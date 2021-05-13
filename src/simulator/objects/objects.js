@@ -5,10 +5,7 @@ import { requestAF,
          getScene,
          getRobot } from '../scene';
 
-import { updateBodies,
-         updateMeshes,
-         bedTimeManagement,
-         getWorld } from '../physics';
+import { getWorld } from '../physics';
 
 import * as CANNON from 'cannon-es'
 
@@ -24,12 +21,12 @@ export class SimObject extends THREE.Mesh {
         //this.asleep = false;
         this.hasBody = false;
         this.movable = true;
-        this.spawnPosition = new THREE.Vector3(5, 5, this.size.z * .5);
+        this.spawnPosition = new THREE.Vector3(5, 0, this.size.z * .5);
         this.spawnRotation = new THREE.Euler(0, 0, 0);
         this.body = undefined;
     }
     size = new THREE.Vector3(.5, .5, .5);
-    position = new THREE.Vector3(5, 0, this.size.z * .5);
+
 
     render() {
         requestAF();
@@ -52,7 +49,6 @@ export class SimObject extends THREE.Mesh {
         this.hasBody = true;
         this.body = body;
         this.body.sleep();
-        console.log(this.body);
         this.updateBody();
 
     }
@@ -101,12 +97,12 @@ export class SimObject extends THREE.Mesh {
 
     detachFromGripper() {
         const scene = getScene();
-        this.body.wakeUp();
         this.attached = false;
         scene.attach(this);
         this.updateBody();
-        //Update the body
+        this.body.wakeUp();
         this.body.updateInertiaWorld();
+        this.body.applyImpulse();
         console.log('> Object dropped!');
     }
 
@@ -117,7 +113,6 @@ export class SimObject extends THREE.Mesh {
         this.body.sleep();
         //For some unknown reason cannon does't dispatches this automaticly
         this.body.dispatchEvent('sleep');
-        this.asleep = true;
         tcp.attach(this);
         this.updateBody();
         console.log('> Object gripped!');
