@@ -373,24 +373,26 @@ function onProgramFinished() {
 //If added, add a new 3D-object. If removed remove the 3D-object assosiated with the block.
 //Lukas
 function watchSpawnBlocks(event) {
-    if(Blockly.Events.BLOCK_CREATE === event.type && 'add_sim_object' === event.xml.attributes[0].value ) {
-        const newBlock = workspace.getBlockById(event.blockId);
-        console.log('Added: ', newBlock.id);
-        const children = newBlock.getChildren();
-        let inputChild;
-        //console.log('children', children);
-        for (var i = 0; i < children.length; i++) {
-            if (children[i].type == 'pose') {
-                inputChild = children[i];
+
+    if(Blockly.Events.BLOCK_CREATE === event.type) {
+        for (let i = 0; i < event.ids.length; i++) {
+            console.log(event.ids[i]);
+            const newBlock = workspace.getBlockById(event.ids[i]);
+            if (newBlock.type == 'add_sim_object') {
+                const children = newBlock.getChildren();
+                let inputChild;
+                for (const child of children) {
+                    if (child.type == 'pose') {
+                        inputChild = child;
+                    }
+                }
+                addSimObject(newBlock.id, true, inputChild);
             }
+
         }
-        if (inputChild != undefined) {
-            addSimObject(newBlock.id, true, inputChild);
-        }
-        else {
-            addSimObject(newBlock.id);
-        }
+
     }
+
     if(Blockly.Events.BLOCK_DELETE === event.type) {
         console.log('Deleted: ', event.ids);
         remSimObjects(event.ids);
