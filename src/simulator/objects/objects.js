@@ -29,7 +29,7 @@ export class SimObject extends THREE.Mesh {
         this.name = undefined;
         this.type = 'cube';
         this.attached = false;
-        //this.asleep = false;
+        this.asleep = false;
         this.hasBody = false;
         this.movable = true;
         this.spawnPosition = new THREE.Vector3(5, 0, this.size.z * .5);
@@ -51,7 +51,6 @@ import * as Blockly from 'blockly/core'
     }
 
     createBody() {
-        //place holder
         let body;
         if ('cube' == this.type) {
             const shape = new CANNON.Box(new CANNON.Vec3(0.251, 0.251, 0.251))
@@ -82,11 +81,18 @@ import * as Blockly from 'blockly/core'
     }
     add() {
         const scene = getScene();
-        const world = getWorld();
-        if (!this.hasBody) { this.createBody(); }
-        if (this.hasBody && this.body != undefined) { world.addBody(this.body); }
         scene.add(this);
         this.render();
+    }
+
+    addBodyToWorld() {
+        const world = getWorld();
+        world.addBody(this.body);
+    }
+
+    removeBodyFromWorld() {
+        const world = getWorld();
+        world.removeBody(this.body);
     }
 
     remove() {
@@ -105,10 +111,23 @@ import * as Blockly from 'blockly/core'
 
 import { SimObject } from './simObject'
 
+<<<<<<< HEAD
 import { requestAF,
          getScene,
          getRobot,
          getControl } from '../scene';
+=======
+    reset() {
+        if (this.hasBody) {
+            const world = getWorld();
+            world.removeBody(this.body);
+        }
+        this.position.copy(this.spawnPosition);
+        this.setRotationFromEuler(this.spawnRotation);
+        this.updateBody();
+        this.render();
+    }
+>>>>>>> 7642a05 (simObject.reset removes the body from the cannon world.)
 
 <<<<<<< HEAD
 import { getWorld } from '../physics';
@@ -224,12 +243,21 @@ function setSpawnPosition(simObject) {
     }
 }
 
+<<<<<<< HEAD
 function stackCubes(simObject){
     const shift = zShiftCubes(simObject);
     if (shift > 0) {
         simObject.spawnPosition.z = simObject.spawnPosition.z + shift;
         return stackCubes(simObject);
     } else { return; }
+=======
+    createMesh(newSimObject);
+    newSimObject.position.copy(newSimObject.spawnPosition);
+    newSimObject.setRotationFromEuler(newSimObject.spawnRotation);
+    newSimObject.createBody();
+    newSimObject.add();
+    simObjects.push(newSimObject);
+>>>>>>> 7642a05 (simObject.reset removes the body from the cannon world.)
 }
 
 function zShiftCubes(simObject) {
