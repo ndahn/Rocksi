@@ -22,6 +22,13 @@ import {
 	ArrowHelper
 } from "three";
 
+<<<<<<< HEAD
+=======
+//Imports for managing objects and physics, Lukas
+import { initCannon,
+         initRobotHitboxes } from './physics'
+
+>>>>>>> 6414c7e (Added call to initRobotHitboxes.)
 // In ROS models Z points upwards
 Object3D.DefaultUp = new Vector3(0, 0, 1);
 
@@ -89,6 +96,12 @@ loadRobotModel(robot.xacro)
 		}
 
 		initScene();
+<<<<<<< HEAD
+=======
+        //Lukas
+        initCannon();
+        initRobotHitboxes(robot);
+>>>>>>> 6414c7e (Added call to initRobotHitboxes.)
 		$('.loading-message').hide();
 
 		ik = new IKSolver(scene, robot);
