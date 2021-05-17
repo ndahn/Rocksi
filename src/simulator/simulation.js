@@ -68,16 +68,11 @@ class TheSimulation {
     reset() {
         this.unlockJoints();
         this.setDefaultVelocities();
-        this.runningPhysics = true;
     }
 
     run(command, ...args) {
         try {
             this[command](...args);
-            //if every body isAsleep this will do nothing, Lukas
-            //this has to run now in order to account
-            //for any physical interaction in the scene
-            //resetAllSimObjects();
         }
         catch (e) {
             console.error('Failed to run command \'' + command + '(' + args + ')\':' + e);
@@ -380,13 +375,13 @@ class TheSimulation {
 
     //Lukas
     startPhysicalBody(simObjectsIdx) {
-        let simObjects = getSimObjects();
-        simObjects[simObjectsIdx].reset();
-        simObjects[simObjectsIdx].updateBody();
+        const simObjects = getSimObjects();
         simObjects[simObjectsIdx].body.wakeUp();
-        this.runningPhysics = true;
-        if (simObjectsIdx < 1) {
+        simObjects[simObjectsIdx].addBodyToWorld();
+        simObjects[simObjectsIdx].updateBody();
+        if (!this.runningPhysics) {
             this._animatePhysics();
+            this.runningPhysics = true;
         }
 
 
@@ -397,6 +392,7 @@ class TheSimulation {
         this._renderCallback();
         if (!isWorldActive()) {
             console.log('Physics rendering done!');
+            this.runningPhysics = false;
             return;
         }
         window.requestAnimationFrame(() => this._animatePhysics());
