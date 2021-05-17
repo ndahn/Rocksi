@@ -35,9 +35,13 @@ import './blocks/pose'
 //imports for adding and removing 3D-objects, Lukas
 import { addSimObject,
          remSimObjects,
+<<<<<<< HEAD
          getSimObjects,
          randomColour } from '../simulator/objects/objects'
 
+=======
+         getSimObjects } from '../simulator/objects/objects'
+>>>>>>> f09f389 (The Run-Button now resets all simObjects)
 
 import { popSuccess, popWarning, popError, popInfo } from '../alert'
 
@@ -288,8 +292,18 @@ var interpreter = null;
 
 function compileProgram() {
     simulation.reset();
+<<<<<<< HEAD
     const visible = false;
     simulation.resetSimObjects(visible);
+=======
+    //This resets all simObjects
+    const simObjects = getSimObjects();
+    for (const simObject of simObjects) {
+        simObject.reset();
+    }
+
+
+>>>>>>> f09f389 (The Run-Button now resets all simObjects)
     let code = Blockly.JavaScript.workspaceToCode(workspace);
     console.log(code);
     interpreter = new Interpreter(code, simulationAPI);
