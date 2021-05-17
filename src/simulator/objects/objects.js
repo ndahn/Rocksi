@@ -138,10 +138,9 @@ let simObjects = [];
         const scene = getScene();
         this.attached = false;
         scene.attach(this);
+        this.addBodyToWorld();
         this.updateBody();
-        this.body.wakeUp();
         this.body.updateInertiaWorld();
-        this.body.applyImpulse();
         console.log('> Object dropped!');
     }
 
@@ -149,10 +148,9 @@ let simObjects = [];
         const robot = getRobot();
         const tcp = robot.tcp.object;
         this.attached = true;
-        this.body.sleep();
-        //For some unknown reason cannon does't dispatches this automaticly
-        this.body.dispatchEvent('sleep');
+        this.removeBodyFromWorld();
         tcp.attach(this);
+        //This is important, otherwise the 3D-object will not attach correctly.
         this.updateBody();
         console.log('> Object gripped!');
     }

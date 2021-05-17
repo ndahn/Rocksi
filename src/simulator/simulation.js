@@ -12,7 +12,8 @@ import { isAttached,
          getAttachedObject,
          getSimObjects,
          getSimObjectByPos,
-         resetAllSimObjects } from "./objects/objects"
+         resetAllSimObjects,
+         getSimObjectIdx } from "./objects/objects"
 
 
 function deg2rad(deg) {
@@ -307,6 +308,10 @@ class TheSimulation {
         if (isAttached() == true) {
             const simObject = getAttachedObject();
             simObject.detachFromGripper();
+            const idx = getSimObjectIdx(simObject.name);
+            if (!this.runningPhysics) {
+                this.startPhysicalBody(idx);
+            }
         }
 
         for (const finger of robot.hand.movable) {
