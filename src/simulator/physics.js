@@ -11,7 +11,7 @@ const dt = 0.02
 let world;
 let robotBodies = [];
 let initDone = false;
-const debugOn = true;
+const debugOn = false;
 
 function debug() {
     if (debugOn) {
@@ -21,7 +21,7 @@ function debug() {
 }
 
 export function initRobotHitboxes(robot) {
-    console.log('Robot: ', robot);
+    /**console.log('Robot: ', robot);
     const scene = getScene();
     const links = robot.arm.links;
     let i = 1;
@@ -39,7 +39,7 @@ export function initRobotHitboxes(robot) {
 		const box = new THREE.BoxHelper( cube );
 		scene.add( box );
 		scene.add( cube );
-    }
+    }**/
 }
 
 export function initCannon() {

@@ -13,7 +13,8 @@ import { isAttached,
          getAttachedObject,
          getSimObjects,
          getSimObjectByPos,
-         resetAllSimObjects } from "./objects/objects"
+         resetAllSimObjects,
+         getSimObjectIdx } from "./objects/objects"
 
 
 // Velocities to move a joint one unit
@@ -331,6 +332,10 @@ class TheSimulation {
         if (isAttached() == true) {
             const simObject = getAttachedObject();
             simObject.detachFromGripper();
+            const idx = getSimObjectIdx(simObject.name);
+            if (!this.runningPhysics) {
+                this.startPhysicalBody(idx);
+            }
         }
 
         for (const finger of robot.hand.movable) {
