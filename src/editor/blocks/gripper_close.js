@@ -9,7 +9,7 @@ Blockly.Blocks["gripper_close"] = {
 			message0: "Greifer schließen",
 			previousStatement: null,
 			nextStatement: null,
-			colour: "%{BKY_GRIPPER_HEX}",
+			style: 'objects_blocks',
 			tooltip: "Schließt den Greifer vollständig",
 			helpUrl: "",
 		});

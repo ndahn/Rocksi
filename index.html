@@ -22,15 +22,38 @@
 			</button>
 			<div id="split-pane-1" class="split blocks-container">
 				<xml id="blocks-toolbox" style="display: none">
-					<category name="R" expanded="true">
+					<category name="Bewegung" expanded="true">
 						<block type="move"></block>
 						<block type="joint_space_pose"></block>
 						<!--<block type="task_space_pose"></block>  Not working yet! -->
 						<block type="default_pose"></block>
-						<block type="gripper_open"></block>
-						<block type="gripper_close"></block>
 						<block type="joint_absolute"></block>
 						<block type="joint_relative"></block>
+					</category>
+					<category name="Objekte">
+						<!-- Spawn Blöcke von Lukas -->
+						<block type="gripper_open"></block>
+						<block type="gripper_close"></block>
+						<block type="colour_picker" ></block>
+						<block type="colour_random"></block>
+					</category>
+					<category name="Logik">
+						<block type="controls_if"></block>
+						<block type="controls_whileUntil"></block>
+						<block type="controls_repeat">
+							<value name="TIMES">
+								<shadow type="math_number">
+									<field name="NUM">10</field>
+								</shadow>
+							</value>
+						</block>
+						<block type="logic_boolean"></block>
+						<block type="logic_negate"></block>
+						<block type="controls_flow_statements"></block>
+					</category>
+					<category name="Extras">
+						<block type="comment"></block>
+						<block type="wait"></block>
 						<block type="set_speed"></block>
 						<block type="joint_lock"></block>
 						<block type="joint_unlock"></block>

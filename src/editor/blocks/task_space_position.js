@@ -33,7 +33,7 @@ Blockly.Blocks["task_space_position"] = {
 			],
 			inputsInline: true,
 			output: "Array",
-			colour: "%{BKY_MOVEMENT_HEX}",
+			style: 'movement_blocks',
 			tooltip:
 				"Eine Position im Arbeitsraum (definiert über die Position des Endeffektors)",
 			helpUrl: "",

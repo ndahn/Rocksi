@@ -46,7 +46,7 @@ Blockly.Blocks["joint_unlock"] = {
 			inputsInline: false,
 			previousStatement: null,
 			nextStatement: "Array",
-			colour: "%{BKY_SETPARAM_HEX}",
+			style: 'extras_blocks',
 			tooltip:
 				"Erlaubt Änderungen des Gelenkwinkels für das gewählte Gelenk",
 			helpUrl: "",

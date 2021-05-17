@@ -22,6 +22,8 @@ import './blocks/joint_relative'
 import './blocks/set_speed'
 import './blocks/joint_lock'
 import './blocks/joint_unlock'
+import './blocks/comment'
+import './blocks/wait'
 
 import { popSuccess, popWarning, popError } from '../alert'
 
@@ -68,6 +70,7 @@ var workspace = Blockly.inject(
         trashcan: false,
         collapse: false,
         disable: true,
+        theme: Blockly.Themes.Rocksi,
     });
 
 // Open the toolbox and keep it open

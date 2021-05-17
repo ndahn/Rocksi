@@ -9,7 +9,7 @@ Blockly.Blocks["gripper_open"] = {
 			message0: "Greifer öffnen",
 			previousStatement: null,
 			nextStatement: null,
-			colour: "%{BKY_GRIPPER_HEX}",
+			style: 'objects_blocks',
 			tooltip: "Öffnet den Greifer auf volle Weite",
 			helpUrl: "",
 		});

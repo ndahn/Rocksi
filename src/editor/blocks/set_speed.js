@@ -35,7 +35,7 @@ Blockly.Blocks["set_speed"] = {
 			],
 			previousStatement: null,
 			nextStatement: null,
-			"colour": "%{BKY_SETPARAM_HEX}",
+			style: 'extras_blocks',
 			"tooltip": "Ändere die Bewegungsgeschwindigkeit des Roboters bei bestimmten Bewegungen.",
 			"helpUrl": ""
 		  });

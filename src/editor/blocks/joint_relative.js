@@ -51,7 +51,7 @@ Blockly.Blocks["joint_relative"] = {
 			inputsInline: false,
 			previousStatement: null,
 			nextStatement: "Array",
-			colour: "%{BKY_JOINT_HEX}",
+			colour: "%{BKY_MOVEMENT_HEX}",
 			tooltip:
 				"Drehe ein einzelnes Gelenk um den angegebenen Winkel",
 			helpUrl: "",

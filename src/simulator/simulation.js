@@ -188,6 +188,11 @@ class TheSimulation {
         return pose;
     }
 
+    
+    wait(resolve, reject, ms) {
+        setTimeout(resolve, ms);
+    }
+
 
     move(resolve, reject, pose) {
         if (!pose) {
