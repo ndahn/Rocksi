@@ -61,7 +61,6 @@ class TheSimulation {
     reset() {
         this.unlockJoints();
         this.setDefaultVelocities();
-        this.runningPhysics = true;
     }
 
     async run(command, ...args) {
@@ -352,11 +351,14 @@ class TheSimulation {
     }
 
     //Lukas
-    createPhysicalObject(simObjectsIdx) {
-        let simObjects = getSimObjects();
-        let body;
-        if (!simObjects[simObjectsIdx].hasBody) {
-            addBody(simObjects[simObjectsIdx]);
+    startPhysicalBody(simObjectsIdx) {
+        const simObjects = getSimObjects();
+        simObjects[simObjectsIdx].body.wakeUp();
+        simObjects[simObjectsIdx].addBodyToWorld();
+        simObjects[simObjectsIdx].updateBody();
+        if (!this.runningPhysics) {
+            this._animatePhysics();
+            this.runningPhysics = true;
         }
         else if (simObjects[simObjectsIdx].hasBody) {
             body = simObjects[simObjectsIdx].body;
@@ -370,6 +372,7 @@ class TheSimulation {
         this._renderCallback();
         if (!isWorldActive()) {
             console.log('Physics rendering done!');
+            this.runningPhysics = false;
             return;
         }
         window.requestAnimationFrame(() => this._animatePhysics());
