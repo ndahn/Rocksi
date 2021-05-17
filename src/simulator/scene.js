@@ -24,7 +24,8 @@ import {
 } from "three";
 
 //Imports for managing objects and physics, Lukas
-import { initCannon } from './physics'
+import { initCannon,
+         initRobotHitboxes } from './physics'
 
 // In ROS models Z points upwards
 Object3D.DefaultUp = new Vector3(0, 0, 1);
@@ -88,6 +89,7 @@ loadRobotModel(robot.xacro)
 		initScene();
         //Lukas
         initCannon();
+        initRobotHitboxes(robot);
 		$('.loading-message').hide();
 
 		ik = new IKSolver(scene, robot);
