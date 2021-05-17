@@ -30,7 +30,8 @@ import './blocks/pose'
 
 //imports for adding and removing 3D-objects, Lukas
 import { addSimObject,
-         remSimObjects } from '../simulator/objects/objects'
+         remSimObjects,
+         getSimObjects } from '../simulator/objects/objects'
 
 import { popSuccess, popWarning, popError } from '../alert'
 
@@ -297,6 +298,12 @@ var executionContext = null;
 
 function runProgram() {
     simulation.reset();
+    //This resets all simObjects
+    const simObjects = getSimObjects();
+    for (const simObject of simObjects) {
+        simObject.reset();
+    }
+
 
     const interpreter = new Interpreter('', simulationAPI);
     let blocks = workspace.getAllBlocks(true);
