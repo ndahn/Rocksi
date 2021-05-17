@@ -23,7 +23,8 @@ import {
 } from "three";
 
 //Imports for managing objects and physics, Lukas
-import { initCannon } from './physics'
+import { initCannon,
+         initRobotHitboxes } from './physics'
 
 //Imports for managing objects and physics, Lukas
 import { initCannon,
@@ -99,7 +100,6 @@ loadRobotModel(robot.xacro)
         //Lukas
         initCannon();
         initRobotHitboxes(robot);
-        initCannon();
 		$('.loading-message').hide();
 
 		ik = new IKSolver(scene, robot);
