@@ -18,7 +18,7 @@ export class SimObject extends THREE.Mesh {
         this.name = undefined;
         this.type = 'cube';
         this.attached = false;
-        //this.asleep = false;
+        this.asleep = false;
         this.hasBody = false;
         this.movable = true;
         this.spawnPosition = new THREE.Vector3(5, 0, this.size.z * .5);
@@ -33,7 +33,6 @@ export class SimObject extends THREE.Mesh {
     }
 
     createBody() {
-        //place holder
         let body;
         if ('cube' == this.type) {
             const shape = new CANNON.Box(new CANNON.Vec3(0.251, 0.251, 0.251))
@@ -64,11 +63,18 @@ export class SimObject extends THREE.Mesh {
     }
     add() {
         const scene = getScene();
-        const world = getWorld();
-        if (!this.hasBody) { this.createBody(); }
-        if (this.hasBody && this.body != undefined) { world.addBody(this.body); }
         scene.add(this);
         this.render();
+    }
+
+    addBodyToWorld() {
+        const world = getWorld();
+        world.addBody(this.body);
+    }
+
+    removeBodyFromWorld() {
+        const world = getWorld();
+        world.removeBody(this.body);
     }
 
     remove() {
@@ -89,6 +95,10 @@ export class SimObject extends THREE.Mesh {
     }
 
     reset() {
+        if (this.hasBody) {
+            const world = getWorld();
+            world.removeBody(this.body);
+        }
         this.position.copy(this.spawnPosition);
         this.setRotationFromEuler(this.spawnRotation);
         this.updateBody();
@@ -188,6 +198,7 @@ export function addSimObject(simObjectName, changeSpawnPos = false, inputChild =
     createMesh(newSimObject);
     newSimObject.position.copy(newSimObject.spawnPosition);
     newSimObject.setRotationFromEuler(newSimObject.spawnRotation);
+    newSimObject.createBody();
     newSimObject.add();
     simObjects.push(newSimObject);
 }
