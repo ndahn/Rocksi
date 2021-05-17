@@ -63,6 +63,7 @@ class TheSimulation {
         }
         //Physics, Lukas
         this.runningPhysics = false;
+        this.gripperWasOpen = false;
     }
 
 
@@ -300,7 +301,7 @@ class TheSimulation {
         let position = new Vector3;
         tcp.getWorldPosition(position);
         const simObject = getSimObjectByPos(position, 0.5);
-        if (isAttached() == false && simObject != undefined) {
+        if (isAttached() == false && simObject != undefined && this.gripperWasOpen) {
             simObject.attachToGripper();
             for (const finger of robot.hand.movable) {
                     start[finger.name] = finger.angle;
@@ -318,6 +319,7 @@ class TheSimulation {
         const duration = getDuration(robot, target, this.velocities.gripper);
         let tween = this._makeTween(start, target, duration, resolve, reject);
         this._start(tween);
+        this.gripperWasOpen = false;
     }
 
     gripper_open(resolve, reject) {
@@ -346,6 +348,7 @@ class TheSimulation {
         const duration = getDuration(robot, target, this.velocities.gripper);
         let tween = this._makeTween(start, target, duration, resolve, reject);
         this._start(tween);
+        this.gripperWasOpen = true;
     }
 
     joint_absolute(resolve, reject, jointIdx, angle) {
