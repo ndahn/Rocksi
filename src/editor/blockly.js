@@ -326,6 +326,13 @@ function executeProgram() {
     catch (e) {
         onProgramError(e);
     }
+    else {
+        setTimeout(() => {
+            console.log('Reset in 5 seconds...');
+            step();
+        }, waitToFinish );
+    }
+
 }
 
 function waitForPhysicsSim() {
