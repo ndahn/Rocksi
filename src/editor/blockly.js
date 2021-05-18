@@ -60,7 +60,11 @@ import Simulation from '../simulator/simulation'
 var blocklyArea = document.querySelector('.blocks-container');
 var blocklyDiv = document.getElementById('blocks-canvas');
 
+<<<<<<< HEAD
 const waitToFinish = 200; //Time to wait for the physics simulation to finish. Lukas
+=======
+const waitToFinish = 5000; //Time to wait for the physics simulation to finish. Lukas
+>>>>>>> a165be5 (Blockly now waits for the physics sim.)
 
 var workspace = Blockly.inject(
     blocklyDiv,
@@ -313,6 +317,13 @@ function pauseExecution() {
     if (interpreter) {
         interpreter.paused_ = true;
     }
+    else {
+        setTimeout(() => {
+            console.log('Reset in 5 seconds...');
+            step();
+        }, waitToFinish );
+    }
+
 }
 
 function executeProgram() {
