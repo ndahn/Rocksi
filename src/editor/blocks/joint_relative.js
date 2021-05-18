@@ -1,8 +1,6 @@
 import * as Blockly from "blockly";
 
 Blockly.Blocks["joint_relative"] = {
-	deferredStep: true, 
-	
 	init: function () {
 		this.jsonInit({
 			type: "joint_relative",
@@ -64,6 +62,6 @@ Blockly.JavaScript["joint_relative"] = function (block) {
 	var joint = block.getFieldValue('JOINT');
 	var angle = block.getFieldValue('ANGLE');
 
-	var code = 'simulateAsync("joint_relative", ' + joint + ', ' + angle + ');';
+	var code = 'robot("joint_relative", ' + joint + ', ' + angle + ');';
 	return code;
 };

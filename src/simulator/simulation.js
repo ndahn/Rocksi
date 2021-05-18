@@ -53,32 +53,14 @@ class TheSimulation {
         this.setDefaultVelocities();
     }
 
-    run(command, ...args) {
+    async run(command, ...args) {
         try {
-            this[command](...args);
+            await this[command](...args);
         }
         catch (e) {
             console.error('Failed to run command \'' + command + '(' + args + ')\':' + e);
             throw (e);
         }
-    }
-
-    runAsync(finishCallback, errorCallback, command, ...args) {
-        let p = new Promise((resolve, reject) => {
-            try {
-                this.run(command, resolve, reject, ...args);
-            }
-            catch (e) {
-                reject(e);
-            }
-        });
-
-        p.then(msg => {
-            console.log(command + '(' + args + '):' + msg);
-            finishCallback();
-        }).catch(e => {
-            errorCallback(e)
-        });
     }
 
     cancel() {
@@ -189,15 +171,16 @@ class TheSimulation {
     }
 
     
-    wait(resolve, reject, ms) {
-        setTimeout(resolve, ms);
+    wait(ms) {
+        return new Promise(resolve => {
+            setTimeout(() => resolve('success'), ms);
+        });
     }
 
 
-    move(resolve, reject, pose) {
+    move(pose) {
         if (!pose) {
-            reject('move failed: missing pose');
-            return;
+            throw new Error('move failed: missing pose');
         }
 
         // Seems to be a weird bug in js-interpreter concerning varargs and arrays
@@ -268,11 +251,11 @@ class TheSimulation {
         }
 
         const duration = getDuration(robot, target, this.velocities.move);
-        let tween = this._makeTween(start, target, duration, resolve, reject);
-        this._start(tween);
+        let tween = this._makeTween(start, target, duration);
+        return tween;
     }
 
-    gripper_close(resolve, reject) {
+    gripper_close() {
         console.log('> Closing hand');
         
         const robot = this.robot;
@@ -285,11 +268,11 @@ class TheSimulation {
         }
 
         const duration = getDuration(robot, target, this.velocities.gripper);
-        let tween = this._makeTween(start, target, duration, resolve, reject);
-        this._start(tween);
+        let tween = this._makeTween(start, target, duration);
+        return tween;
     }
 
-    gripper_open(resolve, reject) {
+    gripper_open() {
         console.log('> Opening hand');
 
         const robot = this.robot;
@@ -302,17 +285,16 @@ class TheSimulation {
         }
         
         const duration = getDuration(robot, target, this.velocities.gripper);
-        let tween = this._makeTween(start, target, duration, resolve, reject);
-        this._start(tween);
+        let tween = this._makeTween(start, target, duration);
+        return tween;
     }
 
-    joint_absolute(resolve, reject, jointIdx, angle) {
+    joint_absolute(jointIdx, angle) {
         console.log('> Setting joint ' + jointIdx + ' to ' + angle + ' degrees');
 
         if (this.lockedJointIndices.includes(jointIdx)) {
             console.log('> ... but joint ' + jointIdx + ' is locked');
-            resolve('locked');
-            return;
+            throw new Error('locked');
         }
 
         const robot = this.robot;
@@ -324,60 +306,57 @@ class TheSimulation {
         target[joint.name] = clampJointAngle(joint, deg2rad(angle));
 
         const duration = getDuration(robot, target, this.velocities.joint);
-        let tween = this._makeTween(start, target, duration, resolve, reject);
-        this._start(tween);
+        let tween = this._makeTween(start, target, duration);
+        return tween;
     }
 
-    joint_relative(resolve, reject, jointIdx, angle) {
+    joint_relative(jointIdx, angle) {
         console.log('> Rotating joint ' + jointIdx + ' by ' + angle + ' degrees');
         
         const joint = this.robot.arm.movable[jointIdx - 1];
         let angleAbs = joint.angle * 180.0 / Math.PI + angle;  // degrees
-        this.joint_absolute(resolve, reject, jointIdx, angleAbs);
+        return this.joint_absolute(jointIdx, angleAbs);
     }
 
 
-    _makeTween(start, target, duration, resolve, reject) {
-        const robot = this.robot;
+    _makeTween(start, target, duration) {
+        return new Promise((resolve, reject) => {
+            const robot = this.robot;
 
-        // Locked joints should not be animated
-        for (const jidx of this.lockedJointIndices) {
-            const name = robot.arm.movable[jidx].name;
-            delete target[name];
-        }
+            // Locked joints should not be animated
+            for (const jidx of this.lockedJointIndices) {
+                const name = robot.arm.movable[jidx].name;
+                delete target[name];
+            }
 
-        let tween = new TWEEN.Tween(start)
-            .to(target, duration)
-            .easing(TWEEN.Easing.Quadratic.Out);
+            let tween = new TWEEN.Tween(start)
+                .to(target, duration)
+                .easing(TWEEN.Easing.Quadratic.Out);
 
-        tween.onUpdate(object => {
-            for (const j in object) {
-                robot.model.joints[j].setJointValue(object[j]);
+            tween.onUpdate(object => {
+                for (const j in object) {
+                    robot.model.joints[j].setJointValue(object[j]);
+                }
+            });
+
+            tween.onComplete(object => {
+                this.running = false;
+                resolve('success');
+            });
+
+            tween.onStop(object => {
+                this.running = false;
+                reject('tween obsolete');
+            });
+
+            tween.start();
+
+            if (!this.running) {
+                this.running = true;
+                // => captures the 'this' reference
+                window.requestAnimationFrame(() => this._animate());
             }
         });
-
-        tween.onComplete(object => {
-            this.running = false;
-            resolve('success');
-        });
-
-        tween.onStop(object => {
-            this.running = false;
-            reject('tween obsolete');
-        })
-
-        return tween;
-    }
-
-    _start(tween) {
-        if (this.running) {
-            return;
-        }
-
-        this.running = true;
-        tween.start();
-        // => captures the 'this' reference
-        window.requestAnimationFrame(() => this._animate());
     }
 
     _animate(time) {

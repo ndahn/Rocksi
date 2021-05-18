@@ -1,8 +1,6 @@
 import * as Blockly from "blockly";
 
 Blockly.Blocks["gripper_open"] = {
-	deferredStep: true, 
-	
 	init: function () {
 		this.jsonInit({
 			type: "gripper_open",
@@ -17,6 +15,6 @@ Blockly.Blocks["gripper_open"] = {
 };
 
 Blockly.JavaScript["gripper_open"] = function (block) {
-	var code = 'simulateAsync("gripper_open");';
+	var code = 'robot("gripper_open");';
 	return code;
 };

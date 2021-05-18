@@ -25,6 +25,6 @@ Blockly.Blocks["wait"] = {
 
 Blockly.JavaScript["wait"] = function (block) {
 	var time = block.getFieldValue('TIME');
-	var code = 'simulateAsync("wait", ' + (time * 1000) + ');';
+	var code = 'robot("wait", ' + (time * 1000) + ');';
 	return code;
 };

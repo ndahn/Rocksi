@@ -1,8 +1,6 @@
 import * as Blockly from "blockly";
 
 Blockly.Blocks["joint_unlock"] = {
-	deferredStep: false, 
-	
 	init: function () {
 		this.jsonInit({
 			type: "joint_unlock",
@@ -57,6 +55,6 @@ Blockly.Blocks["joint_unlock"] = {
 
 Blockly.JavaScript["joint_unlock"] = function (block) {
 	var joint = block.getFieldValue('JOINT');
-	var code = 'simulate("unlockJoint", ' + joint + ');';
+	var code = 'robot("unlockJoint", ' + joint + ');';
 	return code;
 };

@@ -1,8 +1,6 @@
 import * as Blockly from "blockly";
 
 Blockly.Blocks["move"] = {
-	deferredStep: true, 
-	
 	init: function () {
 		this.jsonInit({
 			type: "move",
@@ -29,6 +27,6 @@ Blockly.Blocks["move"] = {
 Blockly.JavaScript["move"] = function (block) {
 	var pose = Blockly.JavaScript.valueToCode(block, 'POSE', Blockly.JavaScript.ORDER_COMMA) || 0;
 
-	var code = 'simulateAsync("move", ' + pose + ');';
+	var code = 'robot("move", ' + pose + ');';
 	return code;
 };

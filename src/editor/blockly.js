@@ -181,6 +181,7 @@ var contextLoadWorkspace = {
     callback: function (scope) {
         let upload = document.createElement('input');
         upload.setAttribute('type', 'file');
+        upload.setAttribute('accept', '.xml');
         upload.style.display = 'none';
         
         upload.onchange = (fileSelectedEvent) => {
@@ -252,17 +253,18 @@ function simulationAPI(interpreter, globalObject) {
     }
     interpreter.setProperty(globalObject, 'highlightBlock',
         interpreter.createNativeFunction(wrapper));
-    
-    wrapper = function (command, ...args) {
-        return simulation.run(command, ...args);
+
+    wrapper = async function (command, ...args) {
+        try {
+            executionContext.continue = false;
+            await simulation.run(command, ...args);
+            step();
+        }
+        catch (e) {
+            onProgramError(e);
+        }
     }
-    interpreter.setProperty(globalObject, 'simulate',
-        interpreter.createNativeFunction(wrapper));
-    
-    wrapper = function(command, ...args) {
-        return simulation.runAsync(step, onProgramError, command, ...args);
-    }
-    interpreter.setProperty(globalObject, 'simulateAsync',
+    interpreter.setProperty(globalObject, 'robot',
         interpreter.createNativeFunction(wrapper));
 }
 
@@ -270,10 +272,11 @@ function simulationAPI(interpreter, globalObject) {
 // Keeps track of program execution (i.e. which block we're on)
 class ExecutionContext {
     constructor(blocks, interpreter) {
-        this.blocks = blocks
-        this.pos = 0
-        this.interpreter = interpreter
-        this.code = []
+        this.blocks = blocks;
+        this.pos = 0;
+        this.interpreter = interpreter;
+        this.code = [];
+        this.continue = true;
 
         return this
     }
@@ -292,31 +295,36 @@ var executionContext = null;
 function runProgram() {
     simulation.reset();
 
+    //let code = Blockly.JavaScript.workspaceToCode(workspace);
+    //console.log(code);
     const interpreter = new Interpreter('', simulationAPI);
     let blocks = workspace.getAllBlocks(true);
     executionContext = new ExecutionContext(blocks, interpreter);
     
     generator.init(workspace);
-    step();
+    step()
 }
 
 function step() {
-    let block = executionContext.nextBlock();
-    if (block) {
-        try {
-            runBlock(block);
+    executionContext.continue = true;
+
+    // Blocks are being run until a block interacts with the robot, which will 
+    // pause execution until the robot is done and then call step() again. See
+    // simulationAPI above.
+    while (executionContext.continue) {
+        let block = executionContext.nextBlock();
+        if (block) {
+            try {
+                runBlock(block);
+            }
+            catch (e) {
+                onProgramError(e);
+            }
         }
-        catch (e) {
-            onProgramError(e);
+        else {
+            onProgramFinished();
+            break;
         }
-        // Command blocks with deferredStep will use a callback to continue execution, 
-        // otherwise we have to trigger the next block here.
-        if (!block.deferredStep) {
-            step();
-        }
-    }
-    else {
-        onProgramFinished();
     }
 }
 
@@ -339,7 +347,7 @@ function runBlock(block) {
         executionContext.code.push(line);
     }
 
-    // Execute just the block
+    // Execute just the block instead of the complete workspace
     console.log(line);
     executionContext.interpreter.appendCode(line);
     executionContext.interpreter.run();
