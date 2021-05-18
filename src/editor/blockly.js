@@ -225,13 +225,12 @@ runButton.onclick = function () {
             popWarning(Blockly.Msg['EMPTY_PROGRAM'] || "Empty program");
         }
 
-        runProgram();
+        compileProgram();
+        executeProgram();
     }
     else {
+        executionContext.pauseExecution();
         simulation.cancel();
-        if (executionContext.interpreter) {
-            executionContext.interpreter.paused_ = true;
-        }
     }
 
     return false;
@@ -256,9 +255,9 @@ function simulationAPI(interpreter, globalObject) {
 
     wrapper = async function (command, ...args) {
         try {
-            executionContext.continue = false;
+            pauseExecution();
             await simulation.run(command, ...args);
-            step();
+            executeProgram();
         }
         catch (e) {
             onProgramError(e);
@@ -269,91 +268,45 @@ function simulationAPI(interpreter, globalObject) {
 }
 
 
-// Keeps track of program execution (i.e. which block we're on)
-class ExecutionContext {
-    constructor(blocks, interpreter) {
-        this.blocks = blocks;
-        this.pos = 0;
-        this.interpreter = interpreter;
-        this.code = [];
-        this.continue = true;
+var interpreter = null;
 
-        return this
-    }
-
-    nextBlock() {
-        return this.finished() ? null : this.blocks[this.pos++];
-    }
-
-    finished() {
-        return this.pos >= this.blocks.length;
-    }
-}
-
-var executionContext = null;
-
-function runProgram() {
+function compileProgram() {
     simulation.reset();
 
-    //let code = Blockly.JavaScript.workspaceToCode(workspace);
-    //console.log(code);
-    const interpreter = new Interpreter('', simulationAPI);
-    let blocks = workspace.getAllBlocks(true);
-    executionContext = new ExecutionContext(blocks, interpreter);
+    let code = Blockly.JavaScript.workspaceToCode(workspace);
+    console.log(code);
+    interpreter = new Interpreter(code, simulationAPI);
+}
+
+function pauseExecution() {
+    if (interpreter) {
+        interpreter.paused_ = true;
+    }
+}
+
+function executeProgram() {
+    if (!interpreter) {
+        throw new Error('Program has not been compiled yet');
+    }
+
+    interpreter.paused_ = false;
     
-    generator.init(workspace);
-    step()
-}
-
-function step() {
-    executionContext.continue = true;
-
-    // Blocks are being run until a block interacts with the robot, which will 
-    // pause execution until the robot is done and then call step() again. See
-    // simulationAPI above.
-    while (executionContext.continue) {
-        let block = executionContext.nextBlock();
-        if (block) {
-            try {
-                runBlock(block);
-            }
-            catch (e) {
-                onProgramError(e);
-            }
-        }
-        else {
+    try {
+        // Blocks are being executed until a block interacts with the robot, which will 
+        // pause execution until the robot is done and then calls run() again. 
+        // See simulationAPI above.
+        let hasMore = interpreter.run();
+        if (!hasMore) {
             onProgramFinished();
-            break;
         }
     }
-}
-
-function runBlock(block) {
-    // Copied from blockly/core/generator.js
-    let line = generator.blockToCode(block, true);
-    if (Array.isArray(line)) {
-        line = line[0];
+    catch (e) {
+        onProgramError(e);
     }
-    if (line) {
-        if (block.outputConnection) {
-            line = generator.scrubNakedValue(line);
-            if (generator.STATEMENT_PREFIX && !block.suppressPrefixSuffix) {
-                line = generator.injectId(generator.STATEMENT_PREFIX, block) + line;
-            }
-            if (generator.STATEMENT_SUFFIX && !block.suppressPrefixSuffix) {
-                line = line + generator.injectId(generator.STATEMENT_SUFFIX, block);
-            }
-        }
-        executionContext.code.push(line);
-    }
-
-    // Execute just the block instead of the complete workspace
-    console.log(line);
-    executionContext.interpreter.appendCode(line);
-    executionContext.interpreter.run();
 }
 
 function onProgramError(e) {
+    interpreter = null;
     workspace.highlightBlock(null);
     runButton.classList.remove('running');
     console.error('Program execution failed: ', e);
@@ -362,9 +315,7 @@ function onProgramError(e) {
 }
 
 function onProgramFinished() {
-    // The generator may add some finalizing code in generator.finish(code), but if we 
-    // got this far it is most likely not required. Previous commit has a version executing
-    // These final statements.
+    interpreter = null;
     workspace.highlightBlock(null);
     runButton.classList.remove('running');
     console.log('Execution finished');
