@@ -50,6 +50,8 @@ import Simulation from '../simulator/simulation'
 var blocklyArea = document.querySelector('.blocks-container');
 var blocklyDiv = document.getElementById('blocks-canvas');
 
+const waitToFinish = 5000; //Time to wait for the physics simulation to finish. Lukas
+
 var workspace = Blockly.inject(
     blocklyDiv,
     {
@@ -298,13 +300,8 @@ var executionContext = null;
 
 function runProgram() {
     simulation.reset();
-    //This resets all simObjects
-    const simObjects = getSimObjects();
-    for (const simObject of simObjects) {
-        simObject.reset();
-    }
-
-
+    const visable = false;
+    simulation.resetSimObjects(visable);
     const interpreter = new Interpreter('', simulationAPI);
     let blocks = workspace.getAllBlocks(true);
     executionContext = new ExecutionContext(blocks, interpreter);
@@ -329,8 +326,23 @@ function step() {
         }
     }
     else {
+        waitForPhysicsTimeout();
+    }
+}
+
+//Wait waitToFinish in ms than call step() again until getPhysicsDone retruns true. Lukas
+function waitForPhysicsTimeout(){
+    if (simulation.getPhysicsDone()) {
+        simulation.resetSimObjects();
         onProgramFinished();
     }
+    else {
+        setTimeout(() => {
+            console.log('Reset in 5 seconds...');
+            step();
+        }, waitToFinish );
+    }
+
 }
 
 function runBlock(block) {
