@@ -32,6 +32,18 @@ export class SimObject extends THREE.Mesh {
         requestAF();
     }
 
+    makeVisable() {
+        const scene = getScene();
+        scene.add(this);
+        this.render();
+    }
+
+    hide() {
+        const scene = getScene();
+        scene.remove(this);
+        this.render();
+    }
+
     createBody() {
         let body;
         if ('cube' == this.type) {
@@ -111,6 +123,7 @@ export class SimObject extends THREE.Mesh {
         scene.attach(this);
         this.addBodyToWorld();
         this.updateBody();
+        this.body.wakeUp();
         this.body.updateInertiaWorld();
         console.log('> Object dropped!');
     }
