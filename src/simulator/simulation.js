@@ -53,15 +53,30 @@ class TheSimulation {
             move: 0.5,
             gripper: 0.5
         }
-        //Physics, Lukas
+        //Physics and triggers, Lukas
         this.runningPhysics = false;
         this.gripperWasOpen = false;
+        this.physicsDone = false;
+        this.lastSimObjectProcessed = false;
     }
 
 
     reset() {
         this.unlockJoints();
         this.setDefaultVelocities();
+
+        this.physicsDone = false;
+        this.lastSimObjectProcessed = false;
+        this.runningPhysics = false;
+    }
+
+    resetSimObjects(visable = true) {
+        const simObjects = getSimObjects();
+        for (const simObject of simObjects) {
+            simObject.reset();
+            if (visable) { simObject.makeVisable(); }
+            else if (!visable) { simObject.hide(); }
+        }
     }
 
     async run(command, ...args) {
@@ -356,25 +371,36 @@ class TheSimulation {
     //Lukas
     startPhysicalBody(simObjectsIdx) {
         const simObjects = getSimObjects();
-        simObjects[simObjectsIdx].body.wakeUp();
+        simObjects[simObjectsIdx].makeVisable();
+
         simObjects[simObjectsIdx].addBodyToWorld();
         simObjects[simObjectsIdx].updateBody();
+        simObjects[simObjectsIdx].body.wakeUp();
+        if (simObjectsIdx + 1 == simObjects.length) {
+            this.lastSimObjectProcessed = true;
+        }
         if (!this.runningPhysics) {
             this._animatePhysics();
             this.runningPhysics = true;
         }
-        else if (simObjects[simObjectsIdx].hasBody) {
-            body = simObjects[simObjectsIdx].body;
-            body.wakeUp();
+    }
+
+    getPhysicsDone() {
+        if ( !this.runningPhysics
+             && this.lastSimObjectProcessed
+             && !isWorldActive()) {
+                 this.physicsDone = true;
         }
-        updateBodies(simObjects);
+        else { this.physicsDone = false; }
+
+        return this.physicsDone;
     }
 
     _animatePhysics() {
         updatePhysics();
         this._renderCallback();
         if (!isWorldActive()) {
-            console.log('Physics rendering done!');
+            console.log('Physics rendering halted.');
             this.runningPhysics = false;
             return;
         }
