@@ -16,13 +16,13 @@
 	<body>
 		<div class="main-container">
 			<button id="blocks-btn" class="tab-label">
-				<i class="fas fa-code-branch"></i>
+				<i class="fas fa-puzzle-piece"></i>
 				<!-- <i class="fas fa-shapes"></i> -->
 				<!-- <i class="fas fa-project-diagram"></i> -->
 			</button>
 			<div id="split-pane-1" class="split blocks-container">
 				<xml id="blocks-toolbox" style="display: none">
-					<category name="Bewegung" expanded="true">
+					<category name="Bewegung" categorystyle="movement_category">
 						<block type="move"></block>
 						<block type="joint_space_pose"></block>
 						<!--<block type="task_space_pose"></block>  Not working yet! -->
@@ -30,14 +30,14 @@
 						<block type="joint_absolute"></block>
 						<block type="joint_relative"></block>
 					</category>
-					<category name="Objekte">
+					<category name="Objekte" categorystyle="objects_category">
 						<!-- Spawn Blöcke von Lukas -->
 						<block type="gripper_open"></block>
 						<block type="gripper_close"></block>
 						<block type="colour_picker" ></block>
 						<block type="colour_random"></block>
 					</category>
-					<category name="Logik">
+					<category name="Logik" categorystyle="logic_category">
 						<block type="controls_if"></block>
 						<block type="controls_whileUntil"></block>
 						<block type="controls_repeat">
@@ -51,7 +51,7 @@
 						<block type="logic_negate"></block>
 						<block type="controls_flow_statements"></block>
 					</category>
-					<category name="Extras">
+					<category name="Extras" categorystyle="extras_category">
 						<block type="comment"></block>
 						<block type="wait"></block>
 						<block type="set_speed"></block>
@@ -66,7 +66,7 @@
 			</div>
 
 			<button id="viewport-btn" class="tab-label">
-				<i class="fas fa-cubes"></i>
+				<i class="fas fa-eye"></i>
 			</button>
 			<div id="split-pane-2" class="split sim-container">
 				<div class="loading-message">

@@ -48,6 +48,10 @@ a {
 	background-color: #F9C80E;
 }
 
+#blocks-btn i {
+	transform: rotate(90deg) scaleX(-1);
+}
+
 #viewport-btn {
 	top: 25%;
 	background-color: #F86624;

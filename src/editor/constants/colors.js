@@ -35,5 +35,7 @@ Blockly.Themes.Rocksi = Blockly.Theme.defineTheme('rocksi', {
         'extras_blocks': {
             'colourPrimary': Msg.EXTRAS_HEX,
         },
+    },
+    'categoryStyles': {
     }
 });
