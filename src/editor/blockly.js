@@ -340,7 +340,9 @@ function onProgramError(e) {
 }
 
 function onProgramFinished() {
-    interpreter = null;
+    // The generator may add some finalizing code in generator.finish(code), but if we
+    // got this far it is most likely not required. Previous commit has a version executing
+    // These final statements.
     workspace.highlightBlock(null);
     runButton.classList.remove('running');
     console.log('Execution finished');
