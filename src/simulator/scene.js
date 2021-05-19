@@ -49,6 +49,10 @@ switch (selectedRobot.toLowerCase()) {
 		robot = require('./robots/franka');
 		break;
 	
+	case 'niryo':
+		robot = require('./robots/niryo');
+		break;
+	
 	default:
 		throw ('Unknown robot \'' + selectedRobot + '\'');
 }
