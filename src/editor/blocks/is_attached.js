@@ -8,7 +8,7 @@ Blockly.Blocks["is_attached"] = {
 			type: "is_attached",
 			message0: "Gegriffen?",
 			output: "Boolean",
-			colour: "%{BKY_SIM_OBJECTS_HEX}",
+			style: 'objects_blocks',
 			tooltip:
 				"Gibt Wahr zurück wenn der Roboter etwas gegriffen hat",
 			helpUrl: "",

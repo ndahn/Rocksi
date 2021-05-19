@@ -61,7 +61,7 @@ Blockly.Blocks['add_sim_object'] = {
             inputsInline: false,
             previousStatement: null,
             nextStatement: null,
-            colour: "%{BKY_SIM_OBJECTS_HEX}",
+            style: 'objects_blocks',
             tooltip: "Ich bin kein hilfreicher Tooltip!",
             helpUrl: "www.google.com",
         });
@@ -115,6 +115,6 @@ Blockly.Blocks['add_sim_object'] = {
 //3D Object and starts the physics engine
 Blockly.JavaScript["add_sim_object"] = function (block) {
     var idx = getSimObjectIdx(this.id);
-    var code = 'simulate("startPhysicalBody", ' + idx + ');'
+    var code = 'robot("startPhysicalBody", ' + idx + ');'
 	return code;
 };

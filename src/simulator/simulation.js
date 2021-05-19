@@ -349,14 +349,9 @@ class TheSimulation {
         }
 
         const duration = getDuration(robot, target, this.velocities.gripper);
-<<<<<<< HEAD
         let tween = this._makeTween(start, target, duration);
-        return tween;
-=======
-        let tween = this._makeTween(start, target, duration, resolve, reject);
-        this._start(tween);
         this.gripperWasOpen = true;
->>>>>>> 9aaed87 (The gripper has to be open before something is gripped.)
+        return tween;
     }
 
     joint_absolute(jointIdx, angle) {
