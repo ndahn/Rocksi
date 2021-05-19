@@ -1,15 +1,13 @@
 import * as Blockly from "blockly";
 
 Blockly.Blocks["gripper_close"] = {
-	deferredStep: true, 
-	
 	init: function () {
 		this.jsonInit({
 			type: "gripper_close",
 			message0: "Greifer schließen",
 			previousStatement: null,
 			nextStatement: null,
-			colour: "%{BKY_GRIPPER_HEX}",
+			style: 'objects_blocks',
 			tooltip: "Schließt den Greifer vollständig",
 			helpUrl: "",
 		});
@@ -17,6 +15,6 @@ Blockly.Blocks["gripper_close"] = {
 };
 
 Blockly.JavaScript["gripper_close"] = function (block) {
-	var code = 'simulateAsync("gripper_close");';
+	var code = 'robot("gripper_close");';
 	return code;
 };

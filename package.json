@@ -26,6 +26,9 @@
     "urdf-loader": "^0.9.3",
     "xacro-parser": "github:ndahn/xacro-parser"
   },
+  "browserslist": [
+    "since 2017-06"
+  ],  
   "devDependencies": {
     "@tweenjs/tween.js": "^18.6.4",
     "@types/three": "^0.103.2",

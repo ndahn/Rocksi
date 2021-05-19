@@ -1,8 +1,6 @@
 import * as Blockly from "blockly";
 
 Blockly.Blocks["joint_absolute"] = {
-	deferredStep: true, 
-	
 	init: function () {
 		this.jsonInit({
 			type: "joint_absolute",
@@ -51,7 +49,7 @@ Blockly.Blocks["joint_absolute"] = {
 			inputsInline: false,
 			previousStatement: null,
 			nextStatement: "Array",
-			colour: "%{BKY_JOINT_HEX}",
+			style: 'movement_blocks',
 			tooltip:
 				"Bewege ein einzelnes Gelenk in eine bestimmte Position",
 			helpUrl: "",
@@ -64,6 +62,6 @@ Blockly.JavaScript["joint_absolute"] = function (block) {
 	var joint = block.getFieldValue('JOINT');
 	var angle = block.getFieldValue('ANGLE');
 
-	var code = 'simulateAsync("joint_absolute", ' + joint + ', ' + angle + ');';
+	var code = 'robot("joint_absolute", ' + joint + ', ' + angle + ');';
 	return code;
 };

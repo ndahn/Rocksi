@@ -24,7 +24,6 @@
 .blocklyTreeRow {
 	margin: 3px;
 	padding: 20px !important;
-	color: rgb(85, 119, 238);
 	background-color: transparent !important;
 	cursor: pointer;
 }
@@ -33,15 +32,48 @@
 	display: none !important;
 }
 
-#blockly-0\.label {
-	display: none;
+.blocklyTreeLabel {
+	display: inline-flex;
+	align-items: center;
 }
 
-#blockly-0::after {
-	content: '\f12e';
+#blockly-0\.label {
+	color: #4c97ff;
+}
+
+#blockly-1\.label {
+	color: #59c059;
+}
+
+#blockly-2\.label {
+	color: #ff9f29;
+}
+
+#blockly-3\.label {
+	color: #ff6680;
+}
+
+.blocklyTreeLabel::before {
 	font-family: 'Font Awesome 5 Free';
 	font-size: 2.2em;
 	font-weight: bold;
+	margin-right: .4em;
+}
+
+#blockly-0\.label::before {
+	content: '\f0b2';
+}
+
+#blockly-1\.label::before {
+	content: '\f1b3';
+}
+
+#blockly-2\.label::before {
+	content: '\f074';
+}
+
+#blockly-3\.label::before {
+	content: '\f6be';
 }
 
 #blockly-0 {

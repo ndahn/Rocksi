@@ -22,6 +22,8 @@ import './blocks/joint_relative'
 import './blocks/set_speed'
 import './blocks/joint_lock'
 import './blocks/joint_unlock'
+import './blocks/comment'
+import './blocks/wait'
 
 import { popSuccess, popWarning, popError } from '../alert'
 
@@ -68,6 +70,7 @@ var workspace = Blockly.inject(
         trashcan: false,
         collapse: false,
         disable: true,
+        theme: Blockly.Themes.Rocksi,
     });
 
 // Open the toolbox and keep it open
@@ -178,6 +181,7 @@ var contextLoadWorkspace = {
     callback: function (scope) {
         let upload = document.createElement('input');
         upload.setAttribute('type', 'file');
+        upload.setAttribute('accept', '.xml');
         upload.style.display = 'none';
         
         upload.onchange = (fileSelectedEvent) => {
@@ -221,13 +225,12 @@ runButton.onclick = function () {
             popWarning(Blockly.Msg['EMPTY_PROGRAM'] || "Empty program");
         }
 
-        runProgram();
+        compileProgram();
+        executeProgram();
     }
     else {
+        executionContext.pauseExecution();
         simulation.cancel();
-        if (executionContext.interpreter) {
-            executionContext.interpreter.paused_ = true;
-        }
     }
 
     return false;
@@ -249,100 +252,61 @@ function simulationAPI(interpreter, globalObject) {
     }
     interpreter.setProperty(globalObject, 'highlightBlock',
         interpreter.createNativeFunction(wrapper));
-    
-    wrapper = function (command, ...args) {
-        return simulation.run(command, ...args);
-    }
-    interpreter.setProperty(globalObject, 'simulate',
-        interpreter.createNativeFunction(wrapper));
-    
-    wrapper = function(command, ...args) {
-        return simulation.runAsync(step, onProgramError, command, ...args);
-    }
-    interpreter.setProperty(globalObject, 'simulateAsync',
-        interpreter.createNativeFunction(wrapper));
-}
 
-
-// Keeps track of program execution (i.e. which block we're on)
-class ExecutionContext {
-    constructor(blocks, interpreter) {
-        this.blocks = blocks
-        this.pos = 0
-        this.interpreter = interpreter
-        this.code = []
-
-        return this
-    }
-
-    nextBlock() {
-        return this.finished() ? null : this.blocks[this.pos++];
-    }
-
-    finished() {
-        return this.pos >= this.blocks.length;
-    }
-}
-
-var executionContext = null;
-
-function runProgram() {
-    simulation.reset();
-
-    const interpreter = new Interpreter('', simulationAPI);
-    let blocks = workspace.getAllBlocks(true);
-    executionContext = new ExecutionContext(blocks, interpreter);
-    
-    generator.init(workspace);
-    step();
-}
-
-function step() {
-    let block = executionContext.nextBlock();
-    if (block) {
+    wrapper = async function (command, ...args) {
         try {
-            runBlock(block);
+            pauseExecution();
+            await simulation.run(command, ...args);
+            executeProgram();
         }
         catch (e) {
             onProgramError(e);
         }
-        // Command blocks with deferredStep will use a callback to continue execution, 
-        // otherwise we have to trigger the next block here.
-        if (!block.deferredStep) {
-            step();
-        }
     }
-    else {
-        onProgramFinished();
+    interpreter.setProperty(globalObject, 'robot',
+        interpreter.createNativeFunction(wrapper));
+}
+
+
+var interpreter = null;
+
+function compileProgram() {
+    simulation.reset();
+
+    let code = Blockly.JavaScript.workspaceToCode(workspace);
+    console.log(code);
+    interpreter = new Interpreter(code, simulationAPI);
+}
+
+function pauseExecution() {
+    if (interpreter) {
+        interpreter.paused_ = true;
     }
 }
 
-function runBlock(block) {
-    // Copied from blockly/core/generator.js
-    let line = generator.blockToCode(block, true);
-    if (Array.isArray(line)) {
-        line = line[0];
-    }
-    if (line) {
-        if (block.outputConnection) {
-            line = generator.scrubNakedValue(line);
-            if (generator.STATEMENT_PREFIX && !block.suppressPrefixSuffix) {
-                line = generator.injectId(generator.STATEMENT_PREFIX, block) + line;
-            }
-            if (generator.STATEMENT_SUFFIX && !block.suppressPrefixSuffix) {
-                line = line + generator.injectId(generator.STATEMENT_SUFFIX, block);
-            }
-        }
-        executionContext.code.push(line);
+function executeProgram() {
+    if (!interpreter) {
+        throw new Error('Program has not been compiled yet');
     }
 
-    // Execute just the block
-    console.log(line);
-    executionContext.interpreter.appendCode(line);
-    executionContext.interpreter.run();
+    interpreter.paused_ = false;
+    
+    try {
+        // Blocks are being executed until a block interacts with the robot, which will 
+        // pause execution until the robot is done and then calls run() again. 
+        // See simulationAPI above.
+        let hasMore = interpreter.run();
+        if (!hasMore) {
+            onProgramFinished();
+        }
+    }
+    catch (e) {
+        onProgramError(e);
+    }
 }
 
 function onProgramError(e) {
+    interpreter = null;
     workspace.highlightBlock(null);
     runButton.classList.remove('running');
     console.error('Program execution failed: ', e);
@@ -351,9 +315,7 @@ function onProgramError(e) {
 }
 
 function onProgramFinished() {
-    // The generator may add some finalizing code in generator.finish(code), but if we 
-    // got this far it is most likely not required. Previous commit has a version executing
-    // These final statements.
+    interpreter = null;
     workspace.highlightBlock(null);
     runButton.classList.remove('running');
     console.log('Execution finished');

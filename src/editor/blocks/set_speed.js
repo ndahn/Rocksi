@@ -35,7 +35,7 @@ Blockly.Blocks["set_speed"] = {
 			],
 			previousStatement: null,
 			nextStatement: null,
-			"colour": "%{BKY_SETPARAM_HEX}",
+			style: 'extras_blocks',
 			"tooltip": "Ändere die Bewegungsgeschwindigkeit des Roboters bei bestimmten Bewegungen.",
 			"helpUrl": ""
 		  });
@@ -71,6 +71,6 @@ Blockly.JavaScript["set_speed"] = function (block) {
 	var motion = block.getFieldValue('MOTION_TYPE');
 	var speed = block.getFieldValue('SPEED');
 	
-	var code = 'simulate("setParam", "velocity/' + motion + '", ' + speed + ');';
+	var code = 'robot("setParam", "velocity/' + motion + '", ' + speed + ');';
 	return code;
 };

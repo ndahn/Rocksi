@@ -1,8 +1,6 @@
 import * as Blockly from "blockly";
 
 Blockly.Blocks["move"] = {
-	deferredStep: true, 
-	
 	init: function () {
 		this.jsonInit({
 			type: "move",
@@ -17,7 +15,7 @@ Blockly.Blocks["move"] = {
 			inputsInline: false,
 			previousStatement: null,
 			nextStatement: "Array",
-			colour: "%{BKY_MOVEMENT_HEX}",
+			style: 'movement_blocks',
 			tooltip:
 				"Füge rechts eine Joint oder Task Space Pose hinzu, zu der sich der Roboter bewegen soll",
 			helpUrl: "",
@@ -29,6 +27,6 @@ Blockly.Blocks["move"] = {
 Blockly.JavaScript["move"] = function (block) {
 	var pose = Blockly.JavaScript.valueToCode(block, 'POSE', Blockly.JavaScript.ORDER_COMMA) || 0;
 
-	var code = 'simulateAsync("move", ' + pose + ');';
+	var code = 'robot("move", ' + pose + ');';
 	return code;
 };

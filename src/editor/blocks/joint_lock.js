@@ -1,8 +1,6 @@
 import * as Blockly from "blockly";
 
 Blockly.Blocks["joint_lock"] = {
-	deferredStep: false, 
-	
 	init: function () {
 		this.jsonInit({
 			type: "joint_lock",
@@ -46,7 +44,7 @@ Blockly.Blocks["joint_lock"] = {
 			inputsInline: false,
 			previousStatement: null,
 			nextStatement: "Array",
-			colour: "%{BKY_SETPARAM_HEX}",
+			style: 'extras_blocks',
 			tooltip:
 				"Verhindert Änderungen des Gelenkwinkels für das gewählte Gelenk",
 			helpUrl: "",
@@ -57,6 +55,6 @@ Blockly.Blocks["joint_lock"] = {
 
 Blockly.JavaScript["joint_lock"] = function (block) {
 	var joint = block.getFieldValue('JOINT');
-	var code = 'simulate("lockJoint", ' + joint + ');';
+	var code = 'robot("lockJoint", ' + joint + ');';
 	return code;
 };

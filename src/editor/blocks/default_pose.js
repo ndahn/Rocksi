@@ -7,7 +7,7 @@ Blockly.Blocks["default_pose"] = {
 			type: "default_pose",
 			message0: "Startpose",
 			output: "Array",
-			colour: "%{BKY_MOVEMENT_HEX}",
+			style: 'movement_blocks',
 			tooltip:
 				"Die Standard-Pose des Roboters",
 			helpUrl: "",
