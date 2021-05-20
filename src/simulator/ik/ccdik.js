@@ -12,7 +12,7 @@ class CCDIK {
         jointLimits = {},
         apply = false
     } = {}) {
-        if (typeof joints === 'undefined') {
+        if (!joints.length) {
             joints = robot.arm.movable;
         }
 

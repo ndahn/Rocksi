@@ -57,6 +57,7 @@ switch (selectedRobot.toLowerCase()) {
 		throw ('Unknown robot \'' + selectedRobot + '\'');
 }
 
+
 let container;
 let camera, scene, renderer;
 let raycaster;
@@ -100,7 +101,15 @@ function loadRobotModel(url) {
 		xacroLoader.inOrder = true;
 		xacroLoader.requirePrefix = true;
 		xacroLoader.localProperties = true;
-		xacroLoader.rospackCommands.find = (...args) => path.join(robot.root, ...args);
+		
+		xacroLoader.rospackCommands.find = (...args) => {
+			return path.join(robot.root, ...args);
+		}
+
+		for (let cmd in robot.rosMacros) {
+			xacroLoader.rospackCommands[cmd] = robot.rosMacros[cmd];
+		}
+
 		xacroLoader.load(
 			url,
 			(xml) => {
