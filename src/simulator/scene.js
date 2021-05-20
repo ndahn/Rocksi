@@ -26,7 +26,8 @@ import {
 import { initCannon,
          initRobotHitboxes } from './physics';
 
-import { initTcSimObjects } from './objects/objects';
+import { setTCSimObjects,
+         setTCSimObjectsOnClick } from './objects/objects';
 
 //Imports for managing objects and physics, Lukas
 import { initCannon,
@@ -239,6 +240,7 @@ function initScene() {
 		transformControl.visible = false;
 		raycaster = new Raycaster();
 		container.addEventListener('mousemove', onMouseMove);
+        container.addEventListener('click', onClick); //Only used for TransformControls for simObjects, Lukas
 	}
 
 	let domParent = document.querySelector('.sim-container');
@@ -263,6 +265,7 @@ function onMouseMove(evt) {
 
 	raycaster.setFromCamera(mouseXY, camera);
 	const intersections = raycaster.intersectObjects([tcptarget]);
+    setTCSimObjects(raycaster); //does this for all TransformControls of simObjects
 	let showTC = intersections.length > 0;
 
 	if (showTC !== transformControl.visible) {
@@ -311,7 +314,10 @@ function render() {
     renderer.render(scene, camera);
 }
 
-//Wrapper functions, Lukas
+//functions for simObject stuff, Lukas
+function onClick() {
+    setTCSimObjectsOnClick(raycaster);
+}
 
 export function requestAF () { requestAnimationFrame(render); }
 

@@ -177,6 +177,45 @@ export function setTCSimObjectsOnClick(raycaster) {
     requestAF();
 }
 
+//transformControl event functions
+
+//Called by mousemove in scene.js
+export function setTCSimObjects(raycaster) {
+    const intersections = raycaster.intersectObjects(simObjects);
+    const showControls = intersections.length > 0;
+    if (showControls) {
+        for (const intersect of intersections) {
+            if (intersect.object.control.visible != showControls) {
+                intersect.object.control.visible = showControls;
+                intersect.object.render();
+            }
+        }
+    } else {
+        for (const simObject of simObjects) {
+            simObject.control.visible = false;
+        }
+    }
+}
+
+//Called by onClick in scene.js
+export function setTCSimObjectsOnClick(raycaster) {
+    const intersections = raycaster.intersectObjects(simObjects);
+    const scene = getScene();
+    for (let intersect of intersections) {
+        const mode = intersect.object.control.getMode();
+        scene.remove(intersect.object.control);
+        if (mode == 'translate'){
+            intersect.object.control.setMode('rotate');
+        }
+        if (mode == 'rotate'){
+            intersect.object.control.setMode('translate');
+        }
+        scene.add(intersect.object.control);
+        intersect.object.render();
+
+    }
+}
+
 
 //Returns a list with all names of simObjects (the uuids of the blockly blocks)
 //currently in the simObjects array
@@ -250,7 +289,7 @@ export function randomColour() {
     const hexDigits = '0123456789ABCDEF';
     let colour = '#';
     for (let i = 0; i < 6; i++) {
-        colour += hexDigits[Math.floor(Math.random() * 16)];
+        color += hexDigits[Math.floor(Math.random() * 16)];
     }
-    return colour;
+    return color;
 }
