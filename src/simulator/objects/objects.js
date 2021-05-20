@@ -159,47 +159,47 @@ function stackSimObject(simObject) {
     return simObject;
 }
 
-function createBoxMesh(simObject) {
+function createBoxMesh(simObject, colour) {
     simObject.geometry = new THREE.BoxBufferGeometry( simObject.size.x,
                                                     simObject.size.y,
                                                     simObject.size.z,
                                                     10,
                                                     10);
 
-    simObject.material = new THREE.MeshPhongMaterial({ color: randomColour() });
+    simObject.material = new THREE.MeshPhongMaterial({ color: colour });
     return simObject;
 }
 
-function createCylinderMesh(simObject) {
+function createCylinderMesh(simObject, colour) {
     simObject.geometry = new THREE.CylinderGeometry(.3,
                                                         0,
                                                         .5,
                                                         10);
 
-    simObject.material = new THREE.MeshPhongMaterial({ color: randomColour() });
+    simObject.material = new THREE.MeshPhongMaterial({ color: colour });
     return simObject;
 }
 
 //creates a three mesh from an simObject depending on simObject.type
-function createMesh(simObject) {
+function createMesh(simObject, colour) {
     if (simObject.type === 'cube') {
         let shiftedSimObject = stackSimObject(simObject);
         simObject = shiftedSimObject;
-        simObject = createBoxMesh(simObject);
+        simObject = createBoxMesh(simObject, colour);
     }
 
     if (simObject.type === 'cylinder') {
         let shiftedSimObject = stackSimObject(simObject);
         simObject = shiftedSimObject;
-        simObject = createCylinderMesh(simObject);
+        simObject = createCylinderMesh(simObject, colour);
     }
 }
 
 //Functions for simObjects
-export function addSimObject(simObjectName, changeSpawnPos = false, inputChild = undefined) {
+export function addSimObject(blockUUID, inputChild, colourChild) {
     let newSimObject = new SimObject;
-    newSimObject.name = simObjectName;
-    if (changeSpawnPos == true && inputChild != undefined) {
+    newSimObject.name = blockUUID;
+    if (inputChild != undefined) {
         newSimObject.spawnPosition.x = inputChild.getFieldValue('X');
         newSimObject.spawnPosition.y = inputChild.getFieldValue('Y');
         newSimObject.spawnPosition.z = inputChild.getFieldValue('Z') + newSimObject.size.z * 0.5;
@@ -209,8 +209,18 @@ export function addSimObject(simObjectName, changeSpawnPos = false, inputChild =
         newSimObject.spawnRotation.copy(new THREE.Euler(rx, ry, rz));
 
     }
+    if (colourChild != undefined) {
+        if (colourChild.type == 'colour_random') {
+            var colour = randomColour();
+            console.log('Colour: ',colour);
+        }
+        if (colourChild.type == 'colour_picker') {
+            var colour = colourChild.getFieldValue('COLOUR');
+            console.log('Colour: ',colour);
+        }
+    }
 
-    createMesh(newSimObject);
+    createMesh(newSimObject, colour);
     newSimObject.position.copy(newSimObject.spawnPosition);
     newSimObject.setRotationFromEuler(newSimObject.spawnRotation);
     newSimObject.createBody();

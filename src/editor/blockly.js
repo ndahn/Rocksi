@@ -354,13 +354,19 @@ function watchSpawnBlocks(event) {
             const newBlock = workspace.getBlockById(event.ids[i]);
             if (newBlock.type == 'add_sim_object') {
                 const children = newBlock.getChildren();
-                let inputChild;
+                let inputChild, colourChild;
                 for (const child of children) {
                     if (child.type == 'pose') {
                         inputChild = child;
                     }
+                    if (child.type == 'colour_picker') {
+                        colourChild = child;
+                    }
+                    if (child.type == 'colour_random') {
+                        colourChild = child;
+                    }
                 }
-                addSimObject(newBlock.id, true, inputChild);
+                addSimObject(newBlock.id, inputChild, colourChild);
             }
 
         }
