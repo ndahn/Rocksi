@@ -42,6 +42,8 @@ class Franka extends Robot {
 			"panda_finger_joint2",
 			"panda_rightfinger",
 		];
+
+		this.modelScale = 10;
 		
 		this.defaultPose = {
 			panda_joint1: 0.5,

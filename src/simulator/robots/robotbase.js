@@ -54,6 +54,8 @@ export default class Robot {
             EN: '',
         };
 
+        this.modelScale = 1;
+
         // Names of links and joints grouped by what they belong to
         this.partNames = {
             arm: [],   // "joint_1", "joint_2", ...
@@ -92,7 +94,9 @@ export default class Robot {
     init(model) {
         this.model = model;
 		this.joints = model.joints;
-		this.links = model.links;
+        this.links = model.links;
+        
+        this.model.scale.set(this.modelScale, this.modelScale, this.modelScale);
 
 		this.tcp.object.position.set(...this.tcp.position);
 		this.tcp.object.quaternion.multiply(

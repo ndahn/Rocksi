@@ -79,7 +79,7 @@ loadRobotModel(robot.xacro)
 
 		for (const j in robot.defaultPose) {
 			try {
-				model.joints[j].setJointValue(robot.defaultPose[j]);
+				robot.joints[j].setJointValue(robot.defaultPose[j]);
 			} catch (e) {
 				console.error('Failed to set default joint pose for joint ' + j + ': ' + e);
 			}
@@ -159,7 +159,6 @@ function initScene() {
 	// }
 
 	// Robot
-	robot.model.scale.set(10.0, 10.0, 10.0);
 	scene.add(robot.model);
 
 	// Lights

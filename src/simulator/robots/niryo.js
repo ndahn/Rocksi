@@ -32,6 +32,8 @@ class Niryo extends Robot {
 			"mors_2"
 		];
 
+		this.modelScale = 20;
+
 		this.defaultPose = {
 			joint_1: -0.11,
 			joint_2: 0.32,
