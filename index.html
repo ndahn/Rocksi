@@ -33,7 +33,16 @@
 					</category>
 					<category name="Objekte" categorystyle="objects_category">
 						<!-- Spawn Blöcke von Lukas -->
-                        <block type="add_sim_object"></block>
+                        <block type="add_sim_object">
+                            <value name="COLOUR">
+                                <shadow type="colour_random"/>
+                            </value>
+                            <value name="POSE">
+                                <shadow type="pose">
+                                    <field name="X">5</field>
+                                </shadow>
+                            </value>
+                        </block>
                         <block type="is_attached"></block>
 						<block type="gripper_open"></block>
 						<block type="gripper_close"></block>
