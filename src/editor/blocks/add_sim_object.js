@@ -97,6 +97,19 @@ Blockly.Blocks['add_sim_object'] = {
 
             simObject.render();
         }
+        if (colourChild != undefined && event.blockId === colourChild.id) {
+            var simObject = getSimObject(thisBlock.id);
+            if (colourChild.type == 'colour_random') {
+                var colour = randomColour();
+                console.log('Colour: ',colour);
+            }
+            if (colourChild.type == 'colour_picker') {
+                var colour = colourChild.getFieldValue('COLOUR');
+                console.log('Colour: ',colour);
+            }
+            simObject.setColour(colour);
+            simObject.render();
+        }
     }
 };
 
