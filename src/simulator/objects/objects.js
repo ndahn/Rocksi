@@ -98,6 +98,10 @@ export class SimObject extends THREE.Mesh {
         this.render();
     }
 
+    setColour(colour) {
+        this.material = new THREE.MeshPhongMaterial({ color: colour });
+    }
+
     update() {
 
     }
@@ -162,7 +166,7 @@ function createBoxMesh(simObject) {
                                                     10,
                                                     10);
 
-    simObject.material = new THREE.MeshPhongMaterial({ color: randomColor() });
+    simObject.material = new THREE.MeshPhongMaterial({ color: randomColour() });
     return simObject;
 }
 
@@ -172,7 +176,7 @@ function createCylinderMesh(simObject) {
                                                         .5,
                                                         10);
 
-    simObject.material = new THREE.MeshPhongMaterial({ color: randomColor() });
+    simObject.material = new THREE.MeshPhongMaterial({ color: randomColour() });
     return simObject;
 }
 
@@ -304,7 +308,7 @@ function getRandomInt(max) {
 }
 
 //random colors for fancy cubes
-function randomColor() {
+export function randomColour() {
     const hexDigits = '0123456789ABCDEF';
     let color = '#';
     for (let i = 0; i < 6; i++) {

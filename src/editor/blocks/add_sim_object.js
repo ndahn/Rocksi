@@ -3,7 +3,8 @@ import { changeSimObjectType,
          changeSimObjectPosition,
          getSimObject,
          getSimObjectIdx,
-         addSimObject } from "../../simulator/objects/objects";
+         addSimObject,
+         randomColour } from "../../simulator/objects/objects";
 
 import { Euler } from "three"
 
@@ -38,16 +39,9 @@ Blockly.Blocks['add_sim_object'] = {
             message1: "in der Farbe %1 ",
             args1: [
                 {
-                    "type": "field_colour",
-                    "name": "OBJECT_COLOUR",
-                    "colour": "#ff4040",
-                    "colourOptions":
-                        ['#ff4040', '#ff8080', '#ffc0c0',
-                        '#4040ff', '#8080ff', '#c0c0ff'],
-                    "colourTitles":
-                        ['dark pink', 'pink', 'light pink',
-                        'dark blue', 'blue', 'light blue'],
-                    "columns": 3
+                    type: "input_value",
+                    name: "COLOUR",
+                    check: "Colour",
                 },
             ],
             message2: "an Position %1 ",
@@ -87,10 +81,17 @@ Blockly.Blocks['add_sim_object'] = {
         var thisBlock = this;
         var children = thisBlock.getChildren();
         var inputChild;
+        var colourChild;
         //console.log('children', children);
         for (var i = 0; i < children.length; i++) {
             if (children[i].type == 'pose') {
                 inputChild = children[i];
+            }
+            if (children[i].type == 'colour_picker') {
+                colourChild = children[i];
+            }
+            if (children[i].type == 'colour_random') {
+                colourChild = children[i];
             }
         }
         if (inputChild != undefined && event.blockId === inputChild.id && fieldKeys.includes(event.name)) {
@@ -105,6 +106,19 @@ Blockly.Blocks['add_sim_object'] = {
             simObject.setRotationFromEuler(simObject.spawnRotation);
             simObject.position.copy(simObject.spawnPosition);
             simObject.updateBody();
+            simObject.render();
+        }
+        if (colourChild != undefined && event.blockId === colourChild.id) {
+            var simObject = getSimObject(thisBlock.id);
+            if (colourChild.type == 'colour_random') {
+                var colour = randomColour();
+                console.log('Colour: ',colour);
+            }
+            if (colourChild.type == 'colour_picker') {
+                var colour = colourChild.getFieldValue('COLOUR');
+                console.log('Colour: ',colour);
+            }
+            simObject.setColour(colour);
             simObject.render();
         }
     }

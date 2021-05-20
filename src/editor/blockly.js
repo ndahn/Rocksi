@@ -284,13 +284,8 @@ var interpreter = null;
 
 function compileProgram() {
     simulation.reset();
-    //This resets all simObjects
-    const simObjects = getSimObjects();
-    for (const simObject of simObjects) {
-        simObject.reset();
-    }
-
-
+    const visable = false;
+    simulation.resetSimObjects(visable);
     let code = Blockly.JavaScript.workspaceToCode(workspace);
     console.log(code);
     interpreter = new Interpreter(code, simulationAPI);
@@ -303,7 +298,6 @@ function pauseExecution() {
     else {
         setTimeout(() => {
             console.log('Reset in 5 seconds...');
-            step();
         }, waitToFinish );
     }
 
