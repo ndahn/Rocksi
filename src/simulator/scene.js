@@ -24,7 +24,9 @@ import {
 
 //Imports for managing objects and physics, Lukas
 import { initCannon,
-         initRobotHitboxes } from './physics'
+         initRobotHitboxes } from './physics';
+
+import { initTcSimObjects } from './objects/objects';
 
 //Imports for managing objects and physics, Lukas
 import { initCannon,
@@ -99,7 +101,7 @@ loadRobotModel(robot.xacro)
 		initScene();
         //Lukas
         initCannon();
-        initRobotHitboxes(robot);
+        //initRobotHitboxes(robot); Not working... Lukas
 		$('.loading-message').hide();
 
 		ik = new IKSolver(scene, robot);
@@ -311,8 +313,17 @@ function render() {
 
 //Wrapper functions, Lukas
 
-export function requestAF (){ requestAnimationFrame(render); }
+export function requestAF () { requestAnimationFrame(render); }
 
 export function getScene () { return scene; }
 
 export function getRobot () { return robot; }
+
+export function getControl () {
+    const contObj = {
+        camera: camera,
+        orbitControls: controls,
+        renderer: renderer,
+    }
+    return contObj;
+}
