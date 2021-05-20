@@ -30,6 +30,9 @@ export class SimObject extends THREE.Mesh {
     }
     size = new THREE.Vector3(.5, .5, .5);
 
+    checkPosition() {
+
+    }
 
     render() {
         requestAF();
@@ -98,12 +101,18 @@ export class SimObject extends THREE.Mesh {
         });
 
         this.control.addEventListener('objectChange', () => {
-            this.spawnPosition.copy(this.position);
+            this.spawnPosition.copy(this.position); //lazy does it...
+            this.spawnRotation.copy(this.rotation);
         });
+        this.control.addEventListener('onclick', () => {console.log('Got ya, you clicked.');});
 
         this.control.attach(this);
         scene.add(this.control);
+
+        this.control.visible = false;
+
     }
+
 
     addBodyToWorld() {
         const world = getWorld();
@@ -122,6 +131,9 @@ export class SimObject extends THREE.Mesh {
         if (this.hasBody) { world.removeBody(this.body); }
         if (this.isAttached) { scene.attach(this) }
 
+        this.control.visible = true; //otherwise the renderer throws an error.
+                                     //I suspect that threejs removes the
+                                     //controls if visible is false.
         scene.remove(this.control);
         scene.remove(this);
 
@@ -282,6 +294,46 @@ export function resetAllSimObjects () {
     }
 }
 
+//transformControl event functions
+
+//Called by mousemove in scene.js
+export function setTCSimObjects(raycaster) {
+    const intersections = raycaster.intersectObjects(simObjects);
+    const showControls = intersections.length > 0;
+    if (showControls) {
+        for (const intersect of intersections) {
+            if (intersect.object.control.visible != showControls) {
+                intersect.object.control.visible = showControls;
+                intersect.object.render();
+            }
+        }
+    } else {
+        for (const simObject of simObjects) {
+            simObject.control.visible = false;
+        }
+    }
+}
+
+//Called by onClick in scene.js
+export function setTCSimObjectsOnClick(raycaster) {
+    const intersections = raycaster.intersectObjects(simObjects);
+    const scene = getScene();
+    for (let intersect of intersections) {
+        const mode = intersect.object.control.getMode();
+        scene.remove(intersect.object.control);
+        if (mode == 'translate'){
+            intersect.object.control.setMode('rotate');
+        }
+        if (mode == 'rotate'){
+            intersect.object.control.setMode('translate');
+        }
+        scene.add(intersect.object.control);
+        intersect.object.render();
+
+    }
+}
+
+
 //Returns a list with all names of simObjects (the uuids of the blockly blocks)
 //currently in the simObjects array
 //I need to implement some form of error checking here.
@@ -359,41 +411,3 @@ export function randomColour() {
     }
     return color;
 }
-
-/**
-export function attachToGripper(simObject) {
-    const robot = getRobot();
-    const tcp = robot.tcp.object;
-    //this is only the case if the Blockly block was processed
-    if (simObject.hasBody) {
-        simObject.attached = true;
-        simObject.body.sleep();
-        //For some unknown reason cannon does't dispatches this automaticly
-        simObject.body.dispatchEvent('sleep');
-        simObject.asleep = true;
-        tcp.attach(simObject);
-        simObject.updateBody();
-    }
-    console.log('> Object gripped!');
-}
-//Functions for gripping
-export function detachFromGripper(simObject) {
-    const scene = getScene();
-    simObject.body.wakeUp();
-    simObject.attached = false;
-
-    scene.attach(simObject);
-    simObject.updateBody();
-    //Update the body
-    simObject.body.updateInertiaWorld();
-    console.log('> Object dropped!');
-}
-//removes the three mesh and creates a new one with the new type
-export function changeSimObjectType(simObjectName, type) {
-    const idx = getSimObjectIdx(simObjectName);
-    const scene = getScene();
-    simObjects[idx].type = type;
-    scene.remove(simObjects[idx]);
-    createMesh(simObjects[idx]);
-}
-**/
