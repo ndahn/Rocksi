@@ -1,9 +1,11 @@
 import * as THREE from 'three';
 import { DragControls } from 'three/examples/jsm/controls/DragControls.js';
+import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 import * as Blockly from 'blockly/core'
 import { requestAF,
          getScene,
-         getRobot } from '../scene';
+         getRobot,
+         getControl } from '../scene';
 
 import { getWorld } from '../physics';
 
@@ -24,6 +26,7 @@ export class SimObject extends THREE.Mesh {
         this.spawnPosition = new THREE.Vector3(5, 0, this.size.z * .5);
         this.spawnRotation = new THREE.Euler(0, 0, 0);
         this.body = undefined;
+        this.control = null;
     }
     size = new THREE.Vector3(.5, .5, .5);
 
@@ -34,12 +37,14 @@ export class SimObject extends THREE.Mesh {
 
     makeVisable() {
         const scene = getScene();
+        scene.add(this.control);
         scene.add(this);
         this.render();
     }
 
     hide() {
         const scene = getScene();
+        scene.remove(this.control);
         scene.remove(this);
         this.render();
     }
@@ -73,10 +78,31 @@ export class SimObject extends THREE.Mesh {
         this.position.copy(this.body.position);
         this.quaternion.copy(this.body.quaternion);
     }
+
     add() {
         const scene = getScene();
         scene.add(this);
+        this.initTransformControl();
         this.render();
+    }
+
+    initTransformControl() {
+        const controlObj = getControl();
+        const scene = getScene();
+
+        this.control = new TransformControls(controlObj.camera, controlObj.renderer.domElement);
+        this.control.addEventListener('change', render => {this.render()});
+
+        this.control.addEventListener('dragging-changed', (event) => {
+            controlObj.orbitControls.enabled = ! event.value;
+        });
+
+        this.control.addEventListener('objectChange', () => {
+            this.spawnPosition.copy(this.position);
+        });
+
+        this.control.attach(this);
+        scene.add(this.control);
     }
 
     addBodyToWorld() {
@@ -92,9 +118,13 @@ export class SimObject extends THREE.Mesh {
     remove() {
         const scene = getScene();
         const world = getWorld();
+
         if (this.hasBody) { world.removeBody(this.body); }
         if (this.isAttached) { scene.attach(this) }
+
+        scene.remove(this.control);
         scene.remove(this);
+
         this.render();
     }
 
@@ -125,6 +155,7 @@ export class SimObject extends THREE.Mesh {
         const scene = getScene();
         this.attached = false;
         scene.attach(this);
+        scene.add(this.control);
         this.addBodyToWorld();
         this.updateBody();
         this.body.wakeUp();
@@ -134,8 +165,10 @@ export class SimObject extends THREE.Mesh {
 
     attachToGripper() {
         const robot = getRobot();
+        const scene = getScene();
         const tcp = robot.tcp.object;
         this.attached = true;
+        scene.remove(this.control);
         this.removeBodyFromWorld();
         tcp.attach(this);
         //This is important, otherwise the 3D-object will not attach correctly.

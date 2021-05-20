@@ -25,7 +25,9 @@ import {
 
 //Imports for managing objects and physics, Lukas
 import { initCannon,
-         initRobotHitboxes } from './physics'
+         initRobotHitboxes } from './physics';
+
+import { initTcSimObjects } from './objects/objects';
 
 // In ROS models Z points upwards
 Object3D.DefaultUp = new Vector3(0, 0, 1);
@@ -65,7 +67,7 @@ let raycaster;
 let mouseXY = new Vector2();
 
 let tcptarget, groundLine;
-let transformControl;
+let transformControl, controls; //I need them for the simObjects. They need to be disabled when moving a simObject.
 let ik;
 
 const canHover = window.matchMedia('(hover: hover)').matches;
@@ -89,7 +91,7 @@ loadRobotModel(robot.xacro)
 		initScene();
         //Lukas
         initCannon();
-        initRobotHitboxes(robot);
+        //initRobotHitboxes(robot); Not working... Lukas
 		$('.loading-message').hide();
 
 		ik = new IKSolver(scene, robot);
@@ -176,7 +178,7 @@ function initScene() {
 	container.appendChild(renderer.domElement);
 
 	// Scene controls
-	const controls = new OrbitControls(camera, renderer.domElement);
+	controls = new OrbitControls(camera, renderer.domElement);
 	controls.damping = 0.2;
 	controls.addEventListener("change", render);
 
@@ -287,82 +289,17 @@ function render() {
 
 //Wrapper functions, Lukas
 
-export function requestAF (){ requestAnimationFrame(render); }
+export function requestAF () { requestAnimationFrame(render); }
 
 export function getScene () { return scene; }
 
 export function getRobot () { return robot; }
 
-/**deprecated
-export function getTCP() {
-    let tcp;
-    tcp = robot.tcp.object;
-    let position = new Vector3;
-    tcp.getWorldPosition(position);
-    return position;
-}
-//addMesh needs a valid three mesh, or an extention of the mesh class like a simObject.
-export function addMesh(simObject) {
-    scene.add(simObject);
-    requestAnimationFrame(render);
-}
-
-export function remMesh(simObject) {
-    scene.remove(simObject);
-    requestAnimationFrame(render);
-}
-
-export function addToTCP(simObject) {
-    let tcp = robot.tcp.object;
-    tcp.attach(simObject);
-}
-
-export function remFromTCP(simObject) {
-    //let tcp = robot.tcp.object;
-    scene.attach(simObject);
-}
-
-export function getMeshByPosition(position) {
-    let meshes = [];
-    let returnVal = undefined;
-    let simObjects = getSimObjects();
-    for (let i = 0; i < simObjects.length; i++) {
-        const mesh = getMesh(simObjects[i]);
-        if (mesh != undefined) {
-            meshes.push(mesh);
-        }
+export function getControl () {
+    const contObj = {
+        camera: camera,
+        orbitControls: controls,
+        renderer: renderer,
     }
-    for (let i = 0; i < meshes.length; i++) {
-        //console.log('Mesh is at: ', mesh.position);
-        if (meshes[i].position.distanceTo(position) <= 0.5) {
-            returnVal = meshes[i];
-        }
-    }
-    return returnVal;
+    return contObj;
 }
-
-export function getObjectRadius(mesh) {
-    let box = new Box3().setFromObject( mesh );
-    let sphere = new Sphere;
-    box.getBoundingSphere(sphere);
-    return sphere.radius;
-}
-
-//deprecated
-export function moveMesh(simObject) {
-    //const mesh = scene.getObjectByName(simObject.name);
-    //mesh.position.copy(simObject.position);
-    requestAnimationFrame(render);
-}
-
-export function rotMesh(simObject) {
-    //const mesh = scene.getObjectByName(simObject.name);
-    //mesh.rotation.copy(simObject.rotation);
-    requestAnimationFrame(render);
-}
-
-export function getMesh(simObject) {
-    //const mesh = scene.getObjectByName(simObject.name);
-    return simObject;
-}
-**/
