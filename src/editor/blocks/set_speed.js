@@ -1,9 +1,7 @@
 import * as Blockly from "blockly";
-import Simulation from "../../simulator/simulation";
 
 Blockly.Blocks["set_speed"] = {
 	init: function () {
-		Simulation.getInstance().then
 		this.jsonInit({
 			"type": "set_speed",
 			"message0": "Geschwindigkeit %1 %2 %%",

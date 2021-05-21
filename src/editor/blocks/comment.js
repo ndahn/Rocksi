@@ -4,7 +4,7 @@ Blockly.Blocks["comment"] = {
 	init: function () {
 		this.jsonInit({
 			type: "comment",
-			message0: "// %1",
+			message0: "Kommentar %1",
 			args0: [
 				{
 					type: "field_input",

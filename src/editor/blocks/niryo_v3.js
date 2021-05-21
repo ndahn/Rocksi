@@ -52,12 +52,10 @@ Simulation.getInstance().then(sim => simulation = sim);
 // Movement
 
 NiryoGenerator_v3["move"] = function (block) {
-    let poseBlock = block.getInputTargetBlock('POSE');
-    let pose = NiryoGenerator_v3.blockToCode(pose, true);
-
-    // Output blocks should only have one type ever!
-    let argType = poseBlock.outputConnection.getCheck()[0];
-    switch (argType) {
+    let pose = Blockly.JavaScript.valueToCode(block, 'POSE', Blockly.JavaScript.ORDER_COMMA) || 0;
+    let poseType = block.getInputTargetBlock('POSE').outputConnection.getCheck()[0];
+    
+    switch (poseType) {
         case 'joint_space_pose':
             return 'n.move_joints(*' + pose + ')';
         
@@ -65,14 +63,12 @@ NiryoGenerator_v3["move"] = function (block) {
             return 'n.move_pose(*' + pose + ')';
         
         default:
-            throw new Error('Invalid move argument \'' + argType + '\'');
+            throw new Error('Invalid move argument \'' + poseType + '\'');
     }
 };
 
 NiryoGenerator_v3["default_pose"] = function (block) {
-    let pose = simulation.robot.defaultPose;
-    let ret = '[' + pose.toString() + ']';
-
+    let ret = '[' + block.defaultPose.toString() + ']';
     return [ret, Blockly.NiryoGenerator_v3.ORDER_COLLECTION];
 };
 
@@ -82,7 +78,8 @@ NiryoGenerator_v3["joint_space_pose"] = function (block) {
         pose.push(block.getFieldValue('JOINT_' + i));
     }
 
-    return [ret.toString(), Blockly.NiryoGenerator_v3.ORDER_COLLECTION];
+	let code = '[' + ret.toString() + ']';
+    return [code, Blockly.NiryoGenerator_v3.ORDER_COLLECTION];
 };
 
 NiryoGenerator_v3["task_space_pose"] = function (block) {
@@ -91,7 +88,8 @@ NiryoGenerator_v3["task_space_pose"] = function (block) {
         pose.push(block.getFieldValue(key));
     }
 
-    return [pose.toString(), Blockly.NiryoGenerator_v3.ORDER_COLLECTION];
+    let code = '[' + pose.toString() + ']';
+    return [code, Blockly.NiryoGenerator_v3.ORDER_COLLECTION];
 };
 
 NiryoGenerator_v3["joint_absolute"] = function (block) {

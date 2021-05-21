@@ -25,10 +25,9 @@ Blockly.Blocks["move"] = {
 
 
 Blockly.JavaScript["move"] = function (block) {
-	let poseBlock = block.getInputTargetBlock('POSE');
-    let pose = JavaScript.blockToCode(pose, true);
-	let poseType = poseBlock.outputConnection.getCheck()[0];
+	let pose = Blockly.JavaScript.valueToCode(block, 'POSE', Blockly.JavaScript.ORDER_COMMA) || 0;
+	let poseType = block.getInputTargetBlock('POSE').outputConnection.getCheck()[0];
 
-	var code = 'robot("move", ' + poseType + ', ' + pose + ');';
+	var code = 'robot("move", "' + poseType + '", ' + pose + ');';
 	return code;
 };

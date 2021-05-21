@@ -71,6 +71,7 @@ class TheSimulation {
 
 
     setParam(param, value) {
+        console.log('> Setting ' + param + ' to ' + value);
         try {
             if (param.startsWith('velocity')) {
                 let motion = param.split('/')[1];
@@ -90,7 +91,7 @@ class TheSimulation {
                 throw ('unknown parameter');
             }
         } catch (e) {
-            console.warn('Failed to set ' + param + ': ' + e);
+            console.warn('! Failed to set ' + param + ': ' + e);
         }
     }
 
@@ -108,7 +109,7 @@ class TheSimulation {
         console.log('> Locking joint ' + jointIdx);
         
         if (this.lockedJointIndices.includes(jointIdx)) {
-            console.warn('> ... but joint ' + jointIdx + ' is already locked');
+            console.warn('! ... but joint ' + jointIdx + ' is already locked');
             return;
         }
 
@@ -120,7 +121,7 @@ class TheSimulation {
         let idx = this.lockedJointIndices.indexOf(jointIdx);
         
         if (idx < 0) {
-            console.warn('> ... but joint ' + jointIdx + ' is not locked');
+            console.warn('! ... but joint ' + jointIdx + ' is not locked');
             return;
         }
 
@@ -161,13 +162,14 @@ class TheSimulation {
 
     
     wait(ms) {
+        console.log('> Waiting ' + ms + ' ms');
         return new Promise(resolve => {
             setTimeout(() => resolve('success'), ms);
         });
     }
 
 
-    move(pose, poseType) {
+    move(poseType, pose) {
         if (!pose) {
             throw new Error('move failed: missing pose');
         }
@@ -234,7 +236,7 @@ class TheSimulation {
                 break;
 
             default:
-                console.error('move: unknown configuration space \'' + space + '\'');
+                console.error('# unknown configuration space \'' + poseType + '\'');
                 return;
         }
 
@@ -363,23 +365,22 @@ class TheSimulation {
  * Singleton with async getter, will be initialized by the robot simulator.
  */
 const Simulation = {
-    _simulation: null,
+    instance: null,
     _awaiting: [],
 
     getInstance: function () {
-        if (this._simulation) {
-            return new Promise.resolve(this._simulation);
+        if (this.instance) {
+            return Promise.resolve(this.instance);
         }
         else {
-            let p = new Promise();
-            this._awaiting.push(p);
+            let p = new Promise(resolve => this._awaiting.push(resolve));
             return p;
         }
     },
 
     init: function(robot, ik, renderCallback) {
-        let s = this._simulation = new TheSimulation(robot, ik, renderCallback);
-        this._awaiting.forEach(p.resolve(s));
+        this.instance = new TheSimulation(robot, ik, renderCallback);
+        this._awaiting.forEach(p => p(this.instance));
         this._awaiting = []
     }
 };

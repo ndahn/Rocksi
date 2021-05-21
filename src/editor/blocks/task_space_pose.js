@@ -1,7 +1,7 @@
 import * as Blockly from "blockly";
-
 import ClickableTargetMutator from '../mutators/clickable_target_mutator'
 import Simulation from '../../simulator/simulation'
+
 
 Blockly.Blocks["task_space_pose"] = {
 	init: function () {
@@ -71,11 +71,11 @@ Blockly.Blocks["task_space_pose"] = {
 
 
 Blockly.JavaScript["task_space_pose"] = function (block) {
-    let ret = '[';
+    let pose = [];
     for (const key of ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW']) {
-        ret += block.getFieldValue(key) + ', ';
+        pose.push(block.getFieldValue(key));
     }
-    ret = ret.slice(0, -1) + ']'
 
-    return [ret, Blockly.JavaScript.ORDER_COLLECTION];
+    let code = '[' + pose.toString() + ']';
+    return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
