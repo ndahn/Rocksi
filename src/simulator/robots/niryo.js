@@ -35,23 +35,23 @@ class Niryo extends Robot {
 		this.modelScale = 20;
 
 		this.defaultPose = {
-			joint_1: -0.11,
+			joint_1: 0,
 			joint_2: 0.32,
 			joint_3: -0.68,
-			joint_4: -0.1,
+			joint_4: 0,
 			joint_5: -0.73,
 			joint_6: -0.01,
 		};
 
-		this.tcp.parent = 'joint_to_gripper';
-		this.tcp.position = [0, -0.08, 0];
+		this.tcp.parent = 'hand_link';
+		this.tcp.position = [0, 0, 0.1];
 		
 		this.ikEnabled = [
 			"joint_1",
 			"joint_2",
 			"joint_3",
-			"joint_5",
 			// "joint_4",
+			"joint_5",
 			// "joint_6",
 		];
 	}

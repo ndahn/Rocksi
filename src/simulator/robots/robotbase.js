@@ -123,7 +123,7 @@ export default class Robot {
 
 			if (this.isJoint(child)) {
 				container.joints.push(child);
-				if (child._jointType !== "fixed") {
+				if (this.isMovable(child)) {
 					container.movable.push(child);
 				}
 			} else if (this.isLink(child)) {
@@ -162,8 +162,14 @@ export default class Robot {
         return this.partNames.hand.includes(part.name);
     }
 
+    isMovable(part) {
+        return this.isJoint(part) && part._jointType !== "fixed";
+    }
+
 	isIKEnabled(part) {
-		return this.ikEnabled.includes(part.name);
+        return this.ikEnabled.length > 0
+            ? this.ikEnabled.includes(part.name)
+            : this.isMovable(part) && this.isArm(part);
     }
     
 
