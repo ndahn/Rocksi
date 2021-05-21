@@ -8,7 +8,7 @@ Blockly.Blocks["wait"] = {
 			args0: [
 				{
 					"type": "field_number",
-					"name": "TIME",
+					"name": "SECONDS",
 					"value": 1,
 					"min": 0,
 					"precision": 1
@@ -24,7 +24,6 @@ Blockly.Blocks["wait"] = {
 };
 
 Blockly.JavaScript["wait"] = function (block) {
-	var time = block.getFieldValue('TIME');
-	var code = 'robot("wait", ' + (time * 1000) + ');';
-	return code;
+	let time = block.getFieldValue('SECONDS');
+	return code = 'robot("wait", ' + (time * 1000) + ');';
 };

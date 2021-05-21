@@ -3,17 +3,17 @@ import Simulation from '../../simulator/simulation'
 
 Blockly.Blocks["default_pose"] = {
 	init: function () {
-		this.jsonInit({
-			type: "default_pose",
-			message0: "Startpose",
-			output: "Array",
-			style: 'movement_blocks',
-			tooltip:
-				"Die Standard-Pose des Roboters",
-			helpUrl: "",
-		});
+		Simulation.getInstance().then(sim => {
+			this.jsonInit({
+				type: "default_pose",
+				message0: "Startpose",
+				output: "JointspacePose",
+				style: 'movement_blocks',
+				tooltip:
+					"Die Standard-Pose des Roboters",
+				helpUrl: "",
+			});
 
-		Simulation.getInstance(sim => {
 			const pose = [];
 			const robot = sim.robot;
 			const defaults = robot.defaultPose;
@@ -33,10 +33,9 @@ Blockly.Blocks["default_pose"] = {
 			this.defaultPose = pose;
 		});
 	},
-	defaultPose: new Array(7).fill(0)
 };
 
 Blockly.JavaScript["default_pose"] = function (block) {
-    let ret = '["joint_space", ' + this.defaultPose.toString() + ']';
-    return [ret, Blockly.JavaScript.ORDER_ATOMIC];
+    let ret = '[' + this.defaultPose.toString() + ']';
+    return [ret, Blockly.JavaScript.ORDER_COLLECTION];
 };

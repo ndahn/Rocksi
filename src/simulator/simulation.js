@@ -2,12 +2,6 @@ import * as Blockly from "blockly"
 import { Object3D, Vector3, Euler } from "three"
 var TWEEN = require('@tweenjs/tween.js');
 
-// Velocities to move a joint one unit 
-// (m/s for prismatic joints, rad/s for revolute joints)
-Blockly.Msg.DEFAULT_SPEED_MOVE = 0.5;
-Blockly.Msg.DEFAULT_SPEED_GRIPPER = 0.1;
-Blockly.Msg.DEFAULT_SPEED_JOINT = 0.7;
-
 
 function deg2rad(deg) {
     return deg * Math.PI / 180.0;
@@ -42,9 +36,8 @@ class TheSimulation {
 
         this.running = false;
         this.velocities = {
-            move: Blockly.Msg.DEFAULT_SPEED_MOVE,
-            gripper: Blockly.Msg.DEFAULT_SPEED_GRIPPER,
-            joint: Blockly.Msg.DEFAULT_SPEED_JOINT,
+            move: 0.5,
+            gripper: 0.5
         }
     }
 
@@ -89,11 +82,8 @@ class TheSimulation {
                     case 'gripper':
                         this.velocities.gripper = value;
                         break;
-                    case 'joint':
-                        this.velocities.joint = value;
-                        break;
                     default:
-                        throw ('invalid value \'' + value + '\'');
+                        throw ('invalid parameter \'' + param + '=' + value + '\'');
                 }
             }
             else {
@@ -108,9 +98,8 @@ class TheSimulation {
         console.log('> Resetting velocities to defaults');
 
         this.velocities = {
-            move: Blockly.Msg.DEFAULT_SPEED_MOVE,
-            gripper: Blockly.Msg.DEFAULT_SPEED_GRIPPER,
-            joint: Blockly.Msg.DEFAULT_SPEED_JOINT,
+            move: 0.5,
+            gripper: 0.5
         }
     }
 
@@ -178,7 +167,7 @@ class TheSimulation {
     }
 
 
-    move(pose) {
+    move(pose, poseType) {
         if (!pose) {
             throw new Error('move failed: missing pose');
         }
@@ -198,9 +187,8 @@ class TheSimulation {
         const start = {};
         const target = {};
 
-        const space = pose.shift();
-        switch (space) {
-            case 'task_space':
+        switch (poseType) {
+            case 'TaskspacePose':
                 // Task space pose
                 console.log('> Moving robot to task space pose ' + pose);
 
@@ -233,7 +221,7 @@ class TheSimulation {
                 
                 break;
 
-            case 'joint_space':
+            case 'JointspacePose':
                 // Joint space pose
                 console.log('> Moving robot to joint space pose ' + pose);
 
@@ -250,7 +238,7 @@ class TheSimulation {
                 return;
         }
 
-        const duration = getDuration(robot, target, this.velocities.move);
+        const duration = getDuration(robot, target, this.velocities.move * robot.maxSpeed.move);
         let tween = this._makeTween(start, target, duration);
         return tween;
     }
@@ -267,7 +255,7 @@ class TheSimulation {
             target[finger.name] = finger.limit.lower;  // fully closed
         }
 
-        const duration = getDuration(robot, target, this.velocities.gripper);
+        const duration = getDuration(robot, target, this.velocities.gripper * robot.maxSpeed.gripper);
         let tween = this._makeTween(start, target, duration);
         return tween;
     }
@@ -284,7 +272,7 @@ class TheSimulation {
             target[finger.name] = finger.limit.upper;  // fully opened
         }
         
-        const duration = getDuration(robot, target, this.velocities.gripper);
+        const duration = getDuration(robot, target, this.velocities.gripper * robot.maxSpeed.gripper);
         let tween = this._makeTween(start, target, duration);
         return tween;
     }
@@ -305,7 +293,7 @@ class TheSimulation {
         start[joint.name] = joint.angle;
         target[joint.name] = clampJointAngle(joint, deg2rad(angle));
 
-        const duration = getDuration(robot, target, this.velocities.joint);
+        const duration = getDuration(robot, target, this.velocities.move * robot.maxSpeed.move);
         let tween = this._makeTween(start, target, duration);
         return tween;
     }
@@ -378,21 +366,20 @@ const Simulation = {
     _simulation: null,
     _awaiting: [],
 
-    getInstance: function(callback) {
-        let s = this._simulation;
-        if (s) {
-            // Immediate callback
-            callback(s);
+    getInstance: function () {
+        if (this._simulation) {
+            return new Promise.resolve(this._simulation);
         }
         else {
-            // Wait for simulation to be initialized
-            this._awaiting.push(callback);
+            let p = new Promise();
+            this._awaiting.push(p);
+            return p;
         }
     },
 
     init: function(robot, ik, renderCallback) {
         let s = this._simulation = new TheSimulation(robot, ik, renderCallback);
-        this._awaiting.forEach(cb => cb(s));
+        this._awaiting.forEach(p.resolve(s));
         this._awaiting = []
     }
 };

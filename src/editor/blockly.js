@@ -240,7 +240,7 @@ runButton.onclick = function () {
 // Get simulation instance - this is the interface to our 3D robot
 var simulation = null;
 
-Simulation.getInstance(sim => {
+Simulation.getInstance().then(sim => {
     // Once the simulation is available we can enable the run button
     simulation = sim;
     runButton.disabled = false;

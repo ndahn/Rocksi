@@ -9,12 +9,12 @@ Blockly.Blocks["move"] = {
 				{
 					type: "input_value",
 					name: "POSE",
-					check: "Array",
+					check: ["JointspacePose", "TaskspacePose"],
 				},
 			],
 			inputsInline: false,
 			previousStatement: null,
-			nextStatement: "Array",
+			nextStatement: null,
 			style: 'movement_blocks',
 			tooltip:
 				"Füge rechts eine Joint oder Task Space Pose hinzu, zu der sich der Roboter bewegen soll",
@@ -25,8 +25,10 @@ Blockly.Blocks["move"] = {
 
 
 Blockly.JavaScript["move"] = function (block) {
-	var pose = Blockly.JavaScript.valueToCode(block, 'POSE', Blockly.JavaScript.ORDER_COMMA) || 0;
+	let poseBlock = block.getInputTargetBlock('POSE');
+    let pose = JavaScript.blockToCode(pose, true);
+	let poseType = poseBlock.outputConnection.getCheck()[0];
 
-	var code = 'robot("move", ' + pose + ');';
+	var code = 'robot("move", ' + poseType + ', ' + pose + ');';
 	return code;
 };

@@ -1,4 +1,6 @@
 import Robot from './robotbase'
+import { NiryoGenerator_v3 } from '../../editor/blocks/niryo_v3'
+
 
 class Niryo extends Robot {
 	constructor() {
@@ -54,7 +56,10 @@ class Niryo extends Robot {
 			"joint_5",
 			// "joint_6",
 		];
+
+		this.generator = NiryoGenerator_v3;
 	}
 }
+
 
 module.exports = new Niryo();
