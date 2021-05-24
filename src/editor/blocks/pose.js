@@ -16,34 +16,37 @@ Blockly.Blocks["pose"] = {
 					"type": "field_number",
 					"name": fieldKeys[i++],
 					"value": 0,
-					"precision": 0.1
+					"precision": 0.1,
 				},
 				{
 					"type": "field_number",
 					"name": fieldKeys[i++],
 					"value": 0,
-					"precision": 0.1
+					"precision": 0.1,
 				},
 				{
 					"type": "field_number",
 					"name": fieldKeys[i++],
 					"value": 0,
-					"precision": 0.1
+					"precision": 0.1,
 				},
 				{
-					type: "field_angle",
-					name: fieldKeys[i++],
-					angle: 0,
+					"type": "field_angle",
+					"name": fieldKeys[i++],
+					"angle": 0,
+                    "precision": 0.1,
 				},
 				{
-					type: "field_angle",
-					name: fieldKeys[i++],
-					angle: 0,
+					"type": "field_angle",
+					"name": fieldKeys[i++],
+					"angle": 0,
+                    "precision": 0.1,
 				},
 				{
-					type: "field_angle",
-					name: fieldKeys[i++],
-					angle: 0,
+					"type": "field_angle",
+					"name": fieldKeys[i++],
+					"angle": 0,
+                    "precision": 0.1
 				},
 			],
 			inputsInline: true,
@@ -60,11 +63,12 @@ Blockly.Blocks["pose"] = {
         var parent = this.getParent();
         if (parent != null) {
             var fieldValues = parent.getPosition();
+            console.log('fieldValues Child',fieldValues);
             for (var i = 0; i < fieldValues.length; i++) {
                 this.setFieldValue(fieldValues[i], fieldKeys[i]);
             }
         }
-	}, 
+	},
 };
 
 
