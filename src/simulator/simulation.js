@@ -78,12 +78,13 @@ class TheSimulation {
         this.runningPhysics = false;
     }
 
-    resetSimObjects(visable = true) {
+    //Lukas
+    resetSimObjects(visible = true) {
         const simObjects = getSimObjects();
         for (const simObject of simObjects) {
             simObject.reset();
-            if (visable) { simObject.makeVisable(); }
-            else if (!visable) { simObject.hide(); }
+            if (visible) { simObject.makeVisable(); }
+            else if (!visible) { simObject.hide(); }
         }
     }
 
