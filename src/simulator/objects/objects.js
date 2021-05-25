@@ -183,16 +183,21 @@ export function setTCSimObjectsOnClick(raycaster) {
 export function setTCSimObjects(raycaster) {
     const intersections = raycaster.intersectObjects(simObjects);
     const showControls = intersections.length > 0;
+    const workspace = Blockly.getMainWorkspace();
     if (showControls) {
         for (const intersect of intersections) {
             if (intersect.object.control.visible != showControls) {
                 intersect.object.control.visible = showControls;
                 intersect.object.render();
+                //Highlights the corresponding Blockly block.
+                workspace.highlightBlock(intersect.object.name);
             }
         }
     } else {
         for (const simObject of simObjects) {
             simObject.control.visible = false;
+            //Switches the highlighting of the corresponding Blockly block off.
+            workspace.highlightBlock(null);
         }
     }
 }
