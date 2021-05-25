@@ -94,18 +94,28 @@ export class SimObject extends THREE.Mesh {
         const scene = getScene();
 
         this.control = new TransformControls(controlObj.camera, controlObj.renderer.domElement);
-        this.control.addEventListener('change', render => {this.render()});
+        this.control.addEventListener('change', render => {
+            //Sometimes the controls are not visible, but they will change the position/rotation.
+            //this is here to counter this behaviour
+            if (!this.control.visible) {
+                this.position.copy(this.spawnPosition);
+                this.setRotationFromEuler(this.spawnRotation);
+            }
+            this.render()
+        });
 
         this.control.addEventListener('dragging-changed', (event) => {
             controlObj.orbitControls.enabled = ! event.value;
         });
 
         this.control.addEventListener('objectChange', () => {
+            if (this.control.visible) {
+                if (this.position.z < 0) { this.position.z = 0; }
 
-            if (this.position.z < 0) { this.position.z = 0; }
+                this.spawnPosition.copy(this.position);
+                this.spawnRotation.copy(this.rotation);
+            }
 
-            this.spawnPosition.copy(this.position);
-            this.spawnRotation.copy(this.rotation);
         });
 
         this.control.attach(this);
@@ -299,20 +309,24 @@ export function resetAllSimObjects () {
 //Called by mousemove in scene.js
 export function setTCSimObjects(raycaster) {
     const intersections = raycaster.intersectObjects(simObjects);
-    const showControls = intersections.length > 0;
+    const intersected = intersections.length == 1;
     const workspace = Blockly.getMainWorkspace();
-    if (showControls) {
-        for (const intersect of intersections) {
-            if (intersect.object.control.visible != showControls) {
-                intersect.object.control.visible = showControls;
-                intersect.object.render();
-                //Highlights the corresponding Blockly block.
-                workspace.highlightBlock(intersect.object.name);
-            }
+    if (intersected) {
+        console.log('intersections.length', intersections.length);
+
+        if (intersections[0].object.control.visible != intersected) {
+            intersections[0].object.control.visible = intersected;
+            const colour = intersections[0].object.material.color.getHex();
+            intersections[0].object.material.emissive.setHex(colour);
+            intersections[0].object.render();
+            //Highlights the corresponding Blockly block.
+            workspace.highlightBlock(intersections[0].object.name);
         }
     } else {
         for (const simObject of simObjects) {
             simObject.control.visible = false;
+            simObject.material.emissive.setHex(0x000000);
+            simObject.render();
             //Switches the highlighting of the corresponding Blockly block off.
             workspace.highlightBlock(null);
         }
