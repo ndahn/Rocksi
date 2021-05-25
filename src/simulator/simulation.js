@@ -81,10 +81,12 @@ class TheSimulation {
     //Lukas
     resetSimObjects(visible = true) {
         const simObjects = getSimObjects();
-        for (const simObject of simObjects) {
-            simObject.reset();
-            if (visible) { simObject.makeVisable(); }
-            else if (!visible) { simObject.hide(); }
+        if (simObjects != undefined) {
+            for (const simObject of simObjects) {
+                simObject.reset();
+                if (visible) { simObject.makeVisible(); }
+                else if (!visible) { simObject.hide(); }
+            }
         }
     }
 
