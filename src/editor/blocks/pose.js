@@ -59,13 +59,13 @@ Blockly.Blocks["pose"] = {
 		});
 		this.setMutator(new ClickableTargetMutator());
 	},
-    onchange:function (e) {
+    onClick:function (e) {
         var parent = this.getParent();
         if (parent != null) {
             var fieldValues = parent.getPosition();
-            console.log('fieldValues Child',fieldValues);
+            //console.log('fieldValues Child',fieldValues);
             for (var i = 0; i < fieldValues.length; i++) {
-                this.setFieldValue(fieldValues[i], fieldKeys[i]);
+                this.setFieldValue(fieldValues[i].toFixed(0), fieldKeys[i]);
             }
         }
 	},
