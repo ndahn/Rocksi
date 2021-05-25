@@ -389,7 +389,7 @@ class TheSimulation {
     //Lukas
     startPhysicalBody(simObjectsIdx) {
         const simObjects = getSimObjects();
-        simObjects[simObjectsIdx].makeVisable();
+        simObjects[simObjectsIdx].makeVisible();
 
         simObjects[simObjectsIdx].addBodyToWorld();
         simObjects[simObjectsIdx].updateBody();
