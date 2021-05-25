@@ -241,7 +241,7 @@ runButton.onclick = function () {
         executeProgram();
     }
     else {
-        executionContext.pauseExecution();
+        //executionContext.pauseExecution();
         simulation.cancel();
     }
 
