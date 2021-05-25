@@ -110,7 +110,7 @@ export class SimObject extends THREE.Mesh {
 
         this.control.addEventListener('objectChange', () => {
             if (this.control.visible) {
-                if (this.position.z < 0) { this.position.z = 0; }
+                if (this.position.z < 0) { this.position.z = this.size.z * .5; }
 
                 this.spawnPosition.copy(this.position);
                 this.spawnRotation.copy(this.rotation);
