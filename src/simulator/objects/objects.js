@@ -30,9 +30,10 @@ export class SimObject extends THREE.Mesh {
     }
     size = new THREE.Vector3(.5, .5, .5);
 
-    checkPosition() {
+    _checkPosition() {
 
     }
+
 
     render() {
         requestAF();
@@ -101,10 +102,15 @@ export class SimObject extends THREE.Mesh {
         });
 
         this.control.addEventListener('objectChange', () => {
+            if (this.position.z < 0) {
+                this.position.z = 0;
+            }
             this.spawnPosition.copy(this.position); //lazy does it...
-            this.spawnRotation.copy(this.rotation);
+            if (!this.spawnRotation.equals(this.rotation)) {
+                this.spawnRotation.copy(this.rotation);
+            }
+
         });
-        this.control.addEventListener('onclick', () => {console.log('Got ya, you clicked.');});
 
         this.control.attach(this);
         scene.add(this.control);
@@ -329,7 +335,6 @@ export function setTCSimObjectsOnClick(raycaster) {
         }
         scene.add(intersect.object.control);
         intersect.object.render();
-
     }
 }
 
@@ -405,9 +410,9 @@ function getRandomInt(max) {
 //random colors for fancy cubes
 export function randomColour() {
     const hexDigits = '0123456789ABCDEF';
-    let color = '#';
+    let colour = '#';
     for (let i = 0; i < 6; i++) {
-        color += hexDigits[Math.floor(Math.random() * 16)];
+        colour += hexDigits[Math.floor(Math.random() * 16)];
     }
-    return color;
+    return colour;
 }
