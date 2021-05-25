@@ -15,6 +15,7 @@ import * as Alert from '../../alert'
 const NiryoGenerator_v3 = new Blockly.Generator();
 Object.assign(NiryoGenerator_v3, Blockly.Python);
 NiryoGenerator_v3.name_ = 'Niryo';
+NiryoGenerator_v3.FILE_EXTENSION = '.py';
 
 NiryoGenerator_v3.finish_orig = NiryoGenerator_v3.finish;
 NiryoGenerator_v3.finish = function (code) {

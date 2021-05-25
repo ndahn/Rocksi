@@ -157,6 +157,7 @@ var contextSaveWorkspace = {
     id: 'saveWorkspace',
     weight: 99,
 };
+Blockly.ContextMenuRegistry.registry.register(contextLoadWorkspace);
 
 // Right click menu item for loading a workspace
 var contextLoadWorkspace = {
@@ -200,9 +201,49 @@ var contextLoadWorkspace = {
     id: 'loadWorkspace',
     weight: 99,
 };
-
-Blockly.ContextMenuRegistry.registry.register(contextLoadWorkspace);
 Blockly.ContextMenuRegistry.registry.register(contextSaveWorkspace);
+
+
+// Robot specific code export
+Simulation.getInstance().then(sim => {
+    const robot = sim.robot;
+    const generator = robot.generator;
+    if (!generator) {
+        return;
+    }
+
+    let contextExportRobotCode = {
+        displayText: function () {
+            return Blockly.Msg['CODE_EXPORT'] || 'Code Export';
+        },
+    
+        preconditionFn: function (scope) {
+            if (scope.workspace.getTopBlocks(false).length > 0) {
+                return 'enabled';
+            }
+            return 'disabled';
+        },
+    
+        callback: function (scope) {
+            let code = generator.workspaceToCode(scope.workspace);
+            
+            let download = document.createElement('a');
+            download.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(code));
+            download.setAttribute('download', robot.name + (generator.FILE_EXTENSION || '.txt'));
+            download.style.display = 'none';
+    
+            document.body.appendChild(download);
+            download.click();
+            document.body.removeChild(download);
+        },
+    
+        scopeType: Blockly.ContextMenuRegistry.ScopeType.WORKSPACE,
+        id: 'codeExport',
+        weight: 99,
+    };
+    Blockly.ContextMenuRegistry.registry.register(contextExportRobotCode);
+});
+
 
 
 // Run button

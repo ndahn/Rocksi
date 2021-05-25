@@ -6,7 +6,8 @@ export const MODELS_ROOT = path.join(process.env.PUBLIC_URL || '', "/models/");
 
 
 export default class Robot {
-    constructor(packagename, xacro) {
+    constructor(name, packagename, xacro) {
+        this.name = name;
         this._package = packagename + '/';
         this._xacro = xacro;
 

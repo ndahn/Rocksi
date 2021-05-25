@@ -3,7 +3,7 @@ import Robot from './robotbase'
 
 class Franka extends Robot {
 	constructor() {
-		super("franka_description", "robots/panda_arm_hand.urdf.xacro");
+		super("Franka", "franka_description", "robots/panda_arm_hand.urdf.xacro");
 
 		this.info.EN = "Franka Emika's robot features 7 joint degrees of freedem as well as a high degree " +
 			"of sensitivity. This allows it to move similar to a human arm and react to even " +

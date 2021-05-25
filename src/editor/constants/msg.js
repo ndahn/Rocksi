@@ -8,6 +8,7 @@ Msg['DELETE_X_BLOCKS'] = "\u2298 Lösche %1 Blöcke";
 Msg['DELETE_ALL_BLOCKS'] = "\u2298 Löschen";
 Msg['LOAD'] = "\u{1F845} Programm laden";
 Msg['SAVE'] = "\u{1F847} Programm speichern";
+Msg['CODE_EXPORT'] = "\u26D7 Code exportieren";
 
 Msg['DUPLICATE_BLOCK'] = "\u25D0 Klonen";
 Msg['ADD_COMMENT'] = "\u270E Kommentar";
