@@ -34,12 +34,11 @@ export class SimObject extends THREE.Mesh {
 
     }
 
-
     render() {
         requestAF();
     }
 
-    makeVisable() {
+    makeVisible() {
         const scene = getScene();
         scene.add(this.control);
         scene.add(this);
@@ -102,23 +101,18 @@ export class SimObject extends THREE.Mesh {
         });
 
         this.control.addEventListener('objectChange', () => {
-            if (this.position.z < 0) {
-                this.position.z = 0;
-            }
-            this.spawnPosition.copy(this.position); //lazy does it...
-            if (!this.spawnRotation.equals(this.rotation)) {
-                this.spawnRotation.copy(this.rotation);
-            }
 
+            if (this.position.z < 0) { this.position.z = 0; }
+
+            this.spawnPosition.copy(this.position);
+            this.spawnRotation.copy(this.rotation);
         });
 
         this.control.attach(this);
         scene.add(this.control);
 
         this.control.visible = false;
-
     }
-
 
     addBodyToWorld() {
         const world = getWorld();
@@ -306,16 +300,21 @@ export function resetAllSimObjects () {
 export function setTCSimObjects(raycaster) {
     const intersections = raycaster.intersectObjects(simObjects);
     const showControls = intersections.length > 0;
+    const workspace = Blockly.getMainWorkspace();
     if (showControls) {
         for (const intersect of intersections) {
             if (intersect.object.control.visible != showControls) {
                 intersect.object.control.visible = showControls;
                 intersect.object.render();
+                //Highlights the corresponding Blockly block.
+                workspace.highlightBlock(intersect.object.name);
             }
         }
     } else {
         for (const simObject of simObjects) {
             simObject.control.visible = false;
+            //Switches the highlighting of the corresponding Blockly block off.
+            workspace.highlightBlock(null);
         }
     }
 }
