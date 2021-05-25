@@ -212,7 +212,6 @@ export function setTCSimObjectsOnClick(raycaster) {
         }
         scene.add(intersect.object.control);
         intersect.object.render();
-
     }
 }
 
@@ -289,7 +288,7 @@ export function randomColour() {
     const hexDigits = '0123456789ABCDEF';
     let colour = '#';
     for (let i = 0; i < 6; i++) {
-        color += hexDigits[Math.floor(Math.random() * 16)];
+        colour += hexDigits[Math.floor(Math.random() * 16)];
     }
-    return color;
+    return colour;
 }
