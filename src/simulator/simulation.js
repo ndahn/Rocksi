@@ -56,7 +56,7 @@ class TheSimulation {
         //Physics and triggers, Lukas
         this.runningPhysics = false;
         this.gripperWasOpen = false;
-        this.physicsDone = false;
+        this.physicsDone = true;
         this.lastSimObjectProcessed = false;
     }
 
@@ -104,6 +104,9 @@ class TheSimulation {
         // with different end times, but that's not a use case at the moment
         TWEEN.removeAll();
         this.runningPhysics = false;
+        this.physicsDone = true;
+        this.lastSimObjectProcessed = true;
+
     }
 
 
@@ -389,12 +392,21 @@ class TheSimulation {
     }
 
     getPhysicsDone() {
-        if ( !this.runningPhysics
-             && this.lastSimObjectProcessed
-             && !isWorldActive()) {
-                 this.physicsDone = true;
+        const simObjects = getSimObjects();
+        if (simObjects != undefined) {
+
+            if ( !this.runningPhysics
+                 && this.lastSimObjectProcessed
+                 && !isWorldActive()) {
+                     this.physicsDone = true;
+            }
+
+            else { this.physicsDone = false;
+            }
         }
-        else { this.physicsDone = false; }
+        if (simObjects === undefined) {
+            this.physicsDone = true;
+        }
 
         return this.physicsDone;
     }
