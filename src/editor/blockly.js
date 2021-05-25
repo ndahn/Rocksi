@@ -293,6 +293,7 @@ var interpreter = null;
 
 function compileProgram() {
     simulation.reset();
+    deleteRaycaster();
     const visible = false;
     simulation.resetSimObjects(visible);
     let code = Blockly.JavaScript.workspaceToCode(workspace);
@@ -359,6 +360,7 @@ function onProgramFinished() {
     runButton.classList.remove('running');
     console.log('Execution finished');
     popSuccess(Blockly.Msg['EXEC_SUCCESS'] || "Program finished");
+    createRaycaster();
 }
 
 //Determin if a add_sim_object-block was added or removed form the Blockly Workspace.
