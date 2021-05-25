@@ -284,8 +284,8 @@ var interpreter = null;
 
 function compileProgram() {
     simulation.reset();
-    const visable = false;
-    simulation.resetSimObjects(visable);
+    const visible = false;
+    simulation.resetSimObjects(visible);
     let code = Blockly.JavaScript.workspaceToCode(workspace);
     console.log(code);
     interpreter = new Interpreter(code, simulationAPI);
@@ -300,7 +300,6 @@ function pauseExecution() {
             console.log('Reset in 5 seconds...');
         }, waitToFinish );
     }
-
 }
 
 function executeProgram() {
@@ -316,7 +315,15 @@ function executeProgram() {
         // See simulationAPI above.
         let hasMore = interpreter.run();
         if (!hasMore) {
-            onProgramFinished();
+            if (simulation.getPhysicsDone()) {
+                onProgramFinished();
+            }
+            else {
+                console.log('Reset in 5 seconds...');
+                setTimeout(() => {
+                    executeProgram();
+                }, waitToFinish );}
+
         }
     }
     catch (e) {
@@ -338,6 +345,7 @@ function onProgramFinished() {
     // got this far it is most likely not required. Previous commit has a version executing
     // These final statements.
     workspace.highlightBlock(null);
+    simulation.resetSimObjects(true);
     runButton.classList.remove('running');
     console.log('Execution finished');
     popSuccess(Blockly.Msg['EXEC_SUCCESS'] || "Program finished");
