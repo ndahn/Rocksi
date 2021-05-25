@@ -73,7 +73,7 @@ class TheSimulation {
         this.unlockJoints();
         this.setDefaultVelocities();
 
-        this.physicsDone = false;
+        this.physicsDone = true;
         this.lastSimObjectProcessed = false;
         this.runningPhysics = false;
     }
@@ -413,13 +413,13 @@ class TheSimulation {
             if ( !this.runningPhysics
                  && this.lastSimObjectProcessed
                  && !isWorldActive()) {
-                     this.physicsDone = true;
-            }
 
-            else { this.physicsDone = false;
-            }
+                     this.physicsDone = true;
+
+            } else { this.physicsDone = false; }
         }
-        if (simObjects === undefined) {
+
+        else {
             this.physicsDone = true;
         }
 
