@@ -3,7 +3,8 @@ import Simulation from '../../simulator/simulation';
 import * as Alert from '../../alert'
 
 
-// Old version uses slightly different imports and init:
+// Version 2 uses slightly different imports and init. Also some commands 
+// are named differently.
 /*
 	from niryo_one_python_api.niryo_one_api import *
 	import rospy

@@ -10,20 +10,10 @@ import './constants/params'
 Blockly.setLocale(BlocklyDE);
 Blockly.setLocale(BlocklyDECustom);
 
-import './blocks/move'
-import './blocks/joint_space_pose'
-import './blocks/task_space_pose'
-import './blocks/task_space_position'
-import './blocks/default_pose'
-import './blocks/gripper_open'
-import './blocks/gripper_close'
-import './blocks/joint_absolute'
-import './blocks/joint_relative'
-import './blocks/set_speed'
-import './blocks/joint_lock'
-import './blocks/joint_unlock'
-import './blocks/comment'
-import './blocks/wait'
+import './blocks/movement'
+import './blocks/objects'
+import './blocks/extras'
+import './generators/javascript'
 
 import { popSuccess, popWarning, popError } from '../alert'
 

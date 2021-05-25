@@ -1,5 +1,5 @@
 import Robot from './robotbase'
-import { NiryoGenerator_v3 } from '../../editor/blocks/niryo_v3'
+import { NiryoGenerator_v3 } from '../../editor/generators/niryo_v3'
 
 
 class Niryo extends Robot {
