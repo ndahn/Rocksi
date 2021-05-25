@@ -35,6 +35,9 @@ import { addSimObject,
          remSimObjects,
          getSimObjects } from '../simulator/objects/objects'
 
+import { createRaycaster,
+         deleteRaycaster } from '../simulator/scene'
+
 import { popSuccess, popWarning, popError } from '../alert'
 
 const generator = Blockly.JavaScript;
@@ -52,7 +55,7 @@ import Simulation from '../simulator/simulation'
 var blocklyArea = document.querySelector('.blocks-container');
 var blocklyDiv = document.getElementById('blocks-canvas');
 
-const waitToFinish = 5000; //Time to wait for the physics simulation to finish. Lukas
+const waitToFinish = 2000; //Time to wait for the physics simulation to finish. Lukas
 
 var workspace = Blockly.inject(
     blocklyDiv,
@@ -284,6 +287,7 @@ var interpreter = null;
 
 function compileProgram() {
     simulation.reset();
+    deleteRaycaster();
     const visible = false;
     simulation.resetSimObjects(visible);
     let code = Blockly.JavaScript.workspaceToCode(workspace);
@@ -345,9 +349,11 @@ function onProgramFinished() {
     // These final statements.
     workspace.highlightBlock(null);
     simulation.resetSimObjects(true);
+
     runButton.classList.remove('running');
     console.log('Execution finished');
     popSuccess(Blockly.Msg['EXEC_SUCCESS'] || "Program finished");
+    createRaycaster();
 }
 
 //Determin if a add_sim_object-block was added or removed form the Blockly Workspace.
