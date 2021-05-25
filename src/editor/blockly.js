@@ -323,7 +323,6 @@ function executeProgram() {
                 setTimeout(() => {
                     executeProgram();
                 }, waitToFinish );}
-
         }
     }
     catch (e) {

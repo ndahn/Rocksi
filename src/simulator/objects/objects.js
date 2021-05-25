@@ -11,7 +11,6 @@ import { getWorld } from '../physics';
 
 import * as CANNON from 'cannon-es'
 
-
 let simObjects = [];
 
 export class SimObject extends THREE.Mesh {
