@@ -38,7 +38,7 @@ import { addSimObject,
 import { createRaycaster,
          deleteRaycaster } from '../simulator/scene'
 
-import { popSuccess, popWarning, popError } from '../alert'
+import { popSuccess, popWarning, popError, popInfo } from '../alert'
 
 const generator = Blockly.JavaScript;
 generator.STATEMENT_PREFIX = 'highlightBlock(%1);\n'
@@ -324,6 +324,7 @@ function executeProgram() {
             }
             else {
                 console.log('Reset in 5 seconds...');
+                popInfo('Die Würfel sind noch nicht gefallen. Bitte warten...');
                 setTimeout(() => {
                     executeProgram();
                 }, waitToFinish );}
