@@ -23,19 +23,33 @@ export class SimObject extends THREE.Mesh {
         this.hasBody = false;
         this.movable = true;
         this.spawnPosition = new THREE.Vector3(5, 0, this.size.z * .5);
-        this.spawnRotation = new THREE.Euler(0, 0, 0);
+        this.spawnRotation = new THREE.Euler(1, 0, 0);
         this.body = undefined;
         this.control = null;
+        this.fieldValues = this._calcFieldValues();
     }
     size = new THREE.Vector3(.5, .5, .5);
 
-    _checkPosition() {
-
+    _calcFieldValues() {
+        let fieldValues = [];
+        let radValues = [];
+        this.spawnPosition.toArray(fieldValues);
+        this.spawnRotation.toArray(radValues); //NaN error... TODO: fix it :D 
+        console.log('init radValues: ', radValues);
+        for (let i = 0; i < 2; i++) {
+            let val = this._radToDeg(radValues[i]);
+            //val = val.toFixed(0);
+            console.log('init val: ', radValues[i]);
+            fieldValues.push(val);
+        }
+        console.log('init fieldValues: ',fieldValues);
+        return fieldValues;
     }
 
-    render() {
-        requestAF();
-    }
+    _radToDeg (rad) { return rad * Math.Pi/180; }
+    _degToRad (deg) { return deg * 180/Math.Pi; }
+
+    render() { requestAF(); }
 
     makeVisible() {
         const scene = getScene();
@@ -79,6 +93,30 @@ export class SimObject extends THREE.Mesh {
     updateMesh() {
         this.position.copy(this.body.position);
         this.quaternion.copy(this.body.quaternion);
+    }
+
+    getValues() {
+        return this.fieldValues;
+    }
+
+    setValues(fieldValues) {
+        this.fieldValues = fieldValues;
+        this._updateFromFieldValues(fieldValues);
+    }
+
+    _updateFromFieldValues(fieldValues) {
+        let posArray = [];
+        let eulArray = [];
+        for (let i = 0; i < 2; i++) {
+            posArray.push(fieldValues[i]);
+            eulArray.push(this._degToRad(fieldValues[i + 3]).toFixed(2));
+        }
+
+        for (let i = 0; i < 2; i++) {
+            this.spawnPosition.setComponent(i, posArray[i]);
+        }
+
+        this.spawnRotation.fromArray(eulArray);
     }
 
     add() {

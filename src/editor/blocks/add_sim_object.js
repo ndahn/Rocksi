@@ -63,22 +63,11 @@ Blockly.Blocks['add_sim_object'] = {
         var fieldValues = [];
         var simObject = getSimObject(thisBlock.id);
         if (simObject != undefined) {
-
-            fieldValues.push(simObject.spawnPosition.x);
-            fieldValues.push(simObject.spawnPosition.y);
-            fieldValues.push(simObject.spawnPosition.z - 0.5 * simObject.size.z);
-
-            var rx = simObject.spawnRotation.x * 180.0 / Math.PI;
-            fieldValues.push(rx);
-
-            var ry = simObject.spawnRotation.y * 180.0 / Math.PI;
-            fieldValues.push(ry);
-
-            var rz = simObject.spawnRotation.z * 180.0 / Math.PI;
-            fieldValues.push(rz);
+            fieldValues = simObject.getValues()
         }
         return fieldValues;
     },
+
 	onchange: function (event) {
         var thisBlock = this;
         var children = thisBlock.getChildren();
@@ -98,25 +87,11 @@ Blockly.Blocks['add_sim_object'] = {
 
         if (inputChild != undefined && event.blockId === inputChild.id && fieldKeys.includes(event.name)) {
             var simObject = getSimObject(thisBlock.id);
-
-            simObject.spawnPosition.x = inputChild.getFieldValue('X');
-            simObject.spawnPosition.y = inputChild.getFieldValue('Y');
-            simObject.spawnPosition.z = inputChild.getFieldValue('Z') + simObject.size.z * 0.5;
-
-            rx = inputChild.getFieldValue('ROLL');
-            ry = inputChild.getFieldValue('PITCH');
-            rz = inputChild.getFieldValue('YAW');
-
-            rx * Math.PI / 180.0;
-            ry * Math.PI / 180.0;
-            rz * Math.PI / 180.0;
-
-            var fieldRotation = new Euler(rx.toFixed(1), ry.toFixed(1), rz.toFixed(1));
-            simObject.spawnRotation.copy(fieldRotation);
-
-            simObject.setRotationFromEuler(simObject.spawnRotation);
-            simObject.position.copy(simObject.spawnPosition);
-
+            var fieldValues = [];
+            for (let i = 0; i < fieldKeys.lenght; i++) {
+                fieldValues.push(inputChild.getFieldValue(fieldKeys[i]));
+            }
+            simObject.setValues(fieldValues);
             simObject.render();
         }
 
