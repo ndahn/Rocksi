@@ -237,7 +237,7 @@ runButton.onclick = function () {
         if (workspace.getTopBlocks(false).length == 0) {
             popWarning(Blockly.Msg['EMPTY_PROGRAM'] || "Empty program");
         }
-
+        //event listener off, lukas
         compileProgram();
         executeProgram();
     }
@@ -320,6 +320,7 @@ function executeProgram() {
                 onProgramFinished();
             }
             else {
+                //new function for this -> Lukas
                 console.log('Reset in ' + waitToFinish * 0.001 + ' seconds...');
                 popInfo('Bitte ' + waitToFinish * 0.001 + ' Sekunden warten...');
                 setTimeout(() => {
@@ -336,6 +337,7 @@ function onProgramError(e) {
     interpreter = null;
     workspace.highlightBlock(null);
     runButton.classList.remove('running');
+    simulation.resetSimObjects(true);
     console.error('Program execution failed: ', e);
     popError(e + '\n'
         + (Blockly.Msg['SEE_CONSOLE'] || 'See console for additional details.'));
@@ -378,9 +380,7 @@ function watchSpawnBlocks(event) {
                 }
                 addSimObject(newBlock.id, inputChild, colourChild);
             }
-
         }
-
     }
 
     if(Blockly.Events.BLOCK_DELETE === event.type) {
