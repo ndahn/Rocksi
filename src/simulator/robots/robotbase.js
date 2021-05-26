@@ -6,7 +6,8 @@ export const MODELS_ROOT = path.join(process.env.PUBLIC_URL || '', "/models/");
 
 
 export default class Robot {
-    constructor(packagename, xacro) {
+    constructor(name, packagename, xacro) {
+        this.name = name;
         this._package = packagename + '/';
         this._xacro = xacro;
 
@@ -88,6 +89,17 @@ export default class Robot {
             //     upper: 1.57,
             // },
         };
+
+        // Velocities to move a joint one unit 
+        // (m/s for prismatic joints, rad/s for revolute joints)
+        this.maxSpeed = {
+            move: 1.0,
+            gripper: 0.2
+        };
+
+        // Blockly Generator instance that can convert the blockly workspace 
+        // into code that can be run on the robot
+        this.generator = null;
     }
 
 

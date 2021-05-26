@@ -10,20 +10,10 @@ import './constants/params'
 Blockly.setLocale(BlocklyDE);
 Blockly.setLocale(BlocklyDECustom);
 
-import './blocks/move'
-import './blocks/joint_space_pose'
-import './blocks/task_space_pose'
-import './blocks/task_space_position'
-import './blocks/default_pose'
-import './blocks/gripper_open'
-import './blocks/gripper_close'
-import './blocks/joint_absolute'
-import './blocks/joint_relative'
-import './blocks/set_speed'
-import './blocks/joint_lock'
-import './blocks/joint_unlock'
-import './blocks/comment'
-import './blocks/wait'
+import './blocks/movement'
+import './blocks/objects'
+import './blocks/extras'
+import './generators/javascript'
 
 import { popSuccess, popWarning, popError } from '../alert'
 
@@ -167,6 +157,8 @@ var contextSaveWorkspace = {
     id: 'saveWorkspace',
     weight: 99,
 };
+Blockly.ContextMenuRegistry.registry.register(contextSaveWorkspace);
+
 
 // Right click menu item for loading a workspace
 var contextLoadWorkspace = {
@@ -210,9 +202,50 @@ var contextLoadWorkspace = {
     id: 'loadWorkspace',
     weight: 99,
 };
-
 Blockly.ContextMenuRegistry.registry.register(contextLoadWorkspace);
-Blockly.ContextMenuRegistry.registry.register(contextSaveWorkspace);
+
+
+// Robot specific code export
+Simulation.getInstance().then(sim => {
+    const robot = sim.robot;
+    const generator = robot.generator;
+    if (!generator) {
+        return;
+    }
+
+    let contextExportRobotCode = {
+        displayText: function () {
+            return Blockly.Msg['CODE_EXPORT'] || 'Code Export';
+        },
+    
+        preconditionFn: function (scope) {
+            if (scope.workspace.getTopBlocks(false).length > 0) {
+                return 'enabled';
+            }
+            return 'disabled';
+        },
+    
+        callback: function (scope) {
+            let code = generator.workspaceToCode(scope.workspace);
+            console.log(code);
+            
+            let download = document.createElement('a');
+            download.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(code));
+            download.setAttribute('download', robot.name + (generator.FILE_EXTENSION || '.txt'));
+            download.style.display = 'none';
+    
+            document.body.appendChild(download);
+            download.click();
+            document.body.removeChild(download);
+        },
+    
+        scopeType: Blockly.ContextMenuRegistry.ScopeType.WORKSPACE,
+        id: 'codeExport',
+        weight: 99,
+    };
+    Blockly.ContextMenuRegistry.registry.register(contextExportRobotCode);
+});
+
 
 
 // Run button
@@ -229,7 +262,7 @@ runButton.onclick = function () {
         executeProgram();
     }
     else {
-        executionContext.pauseExecution();
+        pauseExecution();
         simulation.cancel();
     }
 
@@ -240,7 +273,7 @@ runButton.onclick = function () {
 // Get simulation instance - this is the interface to our 3D robot
 var simulation = null;
 
-Simulation.getInstance(sim => {
+Simulation.getInstance().then(sim => {
     // Once the simulation is available we can enable the run button
     simulation = sim;
     runButton.disabled = false;

@@ -14,7 +14,17 @@ Blockly.Blocks["gripper_open"] = {
 	},
 };
 
-Blockly.JavaScript["gripper_open"] = function (block) {
-	var code = 'robot("gripper_open");';
-	return code;
+Blockly.Blocks["gripper_close"] = {
+	init: function () {
+		this.jsonInit({
+			type: "gripper_close",
+			message0: "Greifer schließen",
+			previousStatement: null,
+			nextStatement: null,
+			style: 'objects_blocks',
+			tooltip: "Schließt den Greifer vollständig",
+			helpUrl: "",
+		});
+	},
 };
+

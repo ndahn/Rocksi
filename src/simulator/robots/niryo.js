@@ -1,8 +1,10 @@
 import Robot from './robotbase'
+import NiryoGenerator from '../../editor/generators/niryo_v3'
+
 
 class Niryo extends Robot {
 	constructor() {
-		super("niryo_robot_description", "urdf/ned/niryo_ned_gripper.urdf.xacro");
+		super("Niryo", "niryo_robot_description", "urdf/ned/niryo_ned_gripper.urdf.xacro");
 
 		this.info.DE = 'Niryo';
 		this.info.EN = 'Niryo';
@@ -54,7 +56,10 @@ class Niryo extends Robot {
 			"joint_5",
 			// "joint_6",
 		];
+
+		this.generator = NiryoGenerator;
 	}
 }
+
 
 module.exports = new Niryo();

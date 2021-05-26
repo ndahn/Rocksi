@@ -1,9 +1,7 @@
 import * as Blockly from "blockly";
-
 import ClickableTargetMutator from '../mutators/clickable_target_mutator'
 import Simulation from '../../simulator/simulation'
 
-const fieldKeys = ['X', 'Y', 'Z'];
 
 Blockly.Blocks["task_space_position"] = {
 	init: function () {
@@ -14,19 +12,19 @@ Blockly.Blocks["task_space_position"] = {
 			args0: [
 				{
 					"type": "field_number",
-					"name": fieldKeys[i++],
+					"name": "X",
 					"value": 0,
 					"precision": 0.1
 				},
 				{
 					"type": "field_number",
-					"name": fieldKeys[i++],
+					"name": "Y",
 					"value": 0,
 					"precision": 0.1
 				},
 				{
 					"type": "field_number",
-					"name": fieldKeys[i++],
+					"name": "Z",
 					"value": 0,
 					"precision": 0.1
 				},
@@ -43,8 +41,9 @@ Blockly.Blocks["task_space_position"] = {
 	onClick: function (e) {
 		Simulation.getInstance(sim => {
 			const pose = sim.getTaskSpacePose();
+			const keys = ['X', 'Y', 'Z'];
 			for (let j = 0; j < 3; j++) {
-				this.setFieldValue(pose[j].toFixed(1), fieldKeys[j]);
+				this.setFieldValue(pose[j].toFixed(1), keys[j]);
 			}
 		});
 	},
@@ -52,11 +51,11 @@ Blockly.Blocks["task_space_position"] = {
 
 
 Blockly.JavaScript["task_space_position"] = function (block) {
-    let ret = '["task_space", ';
-    for (const key of fieldKeys) {
-        ret += block.getFieldValue(key) + ', ';
+    let pose = [];
+    for (const key of ['X', 'Y', 'Z']) {
+        pose.push(block.getFieldValue(key));
     }
-    ret = ret.slice(0, -1) + ']'
 
-    return [ret, Blockly.JavaScript.ORDER_ATOMIC];
+    let code = '[' + pose.toString() + ']';
+    return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
