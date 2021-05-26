@@ -1,3 +1,4 @@
+import 'blockly/python'
 import * as Blockly from 'blockly'
 import Simulation from '../../simulator/simulation';
 import * as Alert from '../../alert'
@@ -12,22 +13,20 @@ import * as Alert from '../../alert'
 
 	n = NiryoOne()
 */
-const NiryoGenerator_v3 = new Blockly.Generator();
-Object.assign(NiryoGenerator_v3, Blockly.Python);
-NiryoGenerator_v3.name_ = 'Niryo';
-NiryoGenerator_v3.FILE_EXTENSION = '.py';
+const NiryoGenerator_v3 = Blockly.Python;
+export default NiryoGenerator_v3;
 
 NiryoGenerator_v3.finish_orig = NiryoGenerator_v3.finish;
 NiryoGenerator_v3.finish = function (code) {
-    let n = NiryoGenerator_v3;
+    const n = NiryoGenerator_v3;
     n.definitions_["import_niryo_roswrapper"] = "from niryo_robot_python_ros_wrapper.ros_wrapper import *";
-    n.definitions_["import_sys"] = "import_sys";
+    n.definitions_["import_sys"] = "import sys";
     n.definitions_["import_rospy"] = "import rospy";
 
     n.definitions_["niryo_init"] =
           "rospy.init_node('rocksi_niryo_code')\n"
         + "n = NiryoRosWrapper()\n"
-        + "n.calibrate_auto()";
+        + "n.calibrate_auto()\n";
 	
     code =
         "try:\n" +
@@ -39,6 +38,7 @@ NiryoGenerator_v3.finish = function (code) {
 };
 
 
+NiryoGenerator_v3.FILE_EXTENSION = '.py';
 NiryoGenerator_v3.MAX_MOVE_SPEED = 100;
 NiryoGenerator_v3.MAX_GRIPPER_SPEED = 1000;
 NiryoGenerator_v3.GRIPPER_SPEED = 100;
@@ -58,11 +58,11 @@ NiryoGenerator_v3["move"] = function (block) {
     let poseType = block.getInputTargetBlock('POSE').outputConnection.getCheck()[0];
     
     switch (poseType) {
-        case 'joint_space_pose':
-            return 'n.move_joints(*' + pose + ')';
+        case 'JointspacePose':
+            return 'n.move_joints(*' + pose + ')\n';
         
-        case 'task_space_pose':
-            return 'n.move_pose(*' + pose + ')';
+        case 'TaskspacePose':
+            return 'n.move_pose(*' + pose + ')\n';
         
         default:
             throw new Error('Invalid move argument \'' + poseType + '\'');
@@ -102,7 +102,7 @@ NiryoGenerator_v3["joint_absolute"] = function (block) {
     let code =
           "pose = n.get_joints()\n"
         + "pose[" + (joint - 1) + "] = " + rad + '\n'
-        + "n.move_joints(*pose)";
+        + "n.move_joints(*pose)\n";
     
     return code;
 };
@@ -115,7 +115,7 @@ NiryoGenerator_v3["joint_relative"] = function (block) {
     let code =
           "pose = n.get_joints()\n"
         + "pose[" + (joint - 1) + "] += " + rad + '\n'
-        + "n.move_joints(*pose)";
+        + "n.move_joints(*pose)\n";
     
     return code;
 };
@@ -124,12 +124,12 @@ NiryoGenerator_v3["joint_relative"] = function (block) {
 // Objects
 
 NiryoGenerator_v3["gripper_open"] = function (block) {
-    let code = 'n.open_gripper(' + NiryoGenerator_v3.GRIPPER_SPEED + ')';
+    let code = 'n.open_gripper(' + NiryoGenerator_v3.GRIPPER_SPEED + ')\n';
     return code;
 };
 
-NiryoGenerator_v3["gripper_open"] = function (block) {
-    let code = 'n.close_gripper(' + NiryoGenerator_v3.GRIPPER_SPEED + ')';
+NiryoGenerator_v3["gripper_close"] = function (block) {
+    let code = 'n.close_gripper(' + NiryoGenerator_v3.GRIPPER_SPEED + ')\n';
     return code;
 };
 
@@ -141,12 +141,12 @@ NiryoGenerator_v3["gripper_open"] = function (block) {
 // Extras
 
 NiryoGenerator_v3["comment"] = function (block) {
-    return "# " + block.getFieldValue('COMMENT');
+    return "# " + block.getFieldValue('COMMENT') + '\n';
 };
 
 NiryoGenerator_v3["wait"] = function (block) {
     let seconds = block.getFieldValue('SECONDS');
-    return "n.wait(" + seconds + ")";
+    return "n.wait(" + seconds + ")\n";
 };
 
 NiryoGenerator_v3["set_speed"] = function (block) {
@@ -157,12 +157,12 @@ NiryoGenerator_v3["set_speed"] = function (block) {
         case 'move':
             // Set directly on the robot
             let v = (speed * NiryoGenerator_v3.MAX_MOVE_SPEED).toFixed(0);
-            return 'set_arm_max_velocity(' + v + ')';
+            return 'set_arm_max_velocity(' + v + ')\n';
         
         case 'gripper':
             // Used by gripper_open/_close
             NiryoGenerator_v3.GRIPPER_SPEED = (speed * NiryoGenerator_v3.MAX_GRIPPER_SPEED).toFixed(0);
-            return null;
+            return '';
         
         default:
             throw new Error('Unknown motion type ' + motion);

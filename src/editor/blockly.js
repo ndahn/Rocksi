@@ -157,7 +157,8 @@ var contextSaveWorkspace = {
     id: 'saveWorkspace',
     weight: 99,
 };
-Blockly.ContextMenuRegistry.registry.register(contextLoadWorkspace);
+Blockly.ContextMenuRegistry.registry.register(contextSaveWorkspace);
+
 
 // Right click menu item for loading a workspace
 var contextLoadWorkspace = {
@@ -201,7 +202,7 @@ var contextLoadWorkspace = {
     id: 'loadWorkspace',
     weight: 99,
 };
-Blockly.ContextMenuRegistry.registry.register(contextSaveWorkspace);
+Blockly.ContextMenuRegistry.registry.register(contextLoadWorkspace);
 
 
 // Robot specific code export
@@ -226,6 +227,7 @@ Simulation.getInstance().then(sim => {
     
         callback: function (scope) {
             let code = generator.workspaceToCode(scope.workspace);
+            console.log(code);
             
             let download = document.createElement('a');
             download.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(code));
@@ -260,7 +262,7 @@ runButton.onclick = function () {
         executeProgram();
     }
     else {
-        executionContext.pauseExecution();
+        pauseExecution();
         simulation.cancel();
     }
 

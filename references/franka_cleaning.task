@@ -1,0 +1,1816 @@
+{
+  "id": "0_aufr_umen",
+  "containers": [
+    {
+      "elements": [
+        {
+          "id": "cartesian_motion2",
+          "parameter": {
+            "acceleration": 0.3,
+            "cartesian_impedance": {
+              "access": [
+                "parent",
+                "parameter",
+                "cartesian_impedance"
+              ]
+            },
+            "joint_impedance": {
+              "access": [
+                "parent",
+                "parameter",
+                "joint_impedance"
+              ]
+            },
+            "motion": {
+              "access": [
+                "parameter",
+                "poses",
+                1,
+                "relative_trajectories",
+                1
+              ]
+            },
+            "origin": {
+              "joint_angles": [],
+              "pose": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ]
+            },
+            "relative_to": {
+              "pose": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ]
+            },
+            "safety": {
+              "access": [
+                "parent",
+                "parameter",
+                "safety"
+              ]
+            },
+            "speed": {
+              "access": [
+                "parent",
+                "parameter",
+                "speed"
+              ]
+            },
+            "velocity": 0.45
+          },
+          "name": "Cart Motion",
+          "link": "cartesian_motion",
+          "componentProviders": {
+            "acceleration": {
+              "linkConfig": null,
+              "componentLookupTable": []
+            },
+            "motion": {
+              "linkConfig": {
+                "components": [
+                  "robot-pose-carousel"
+                ],
+                "sourceDistance": 2,
+                "parameters": {
+                  "points": [
+                    "motion"
+                  ]
+                }
+              },
+              "componentLookupTable": [
+                {
+                  "name": "robot-pose-carousel",
+                  "sourcePath": {
+                    "id": "0_aufr_umen",
+                    "indices": []
+                  },
+                  "dependencies": []
+                }
+              ]
+            },
+            "velocity": {
+              "linkConfig": null,
+              "componentLookupTable": []
+            }
+          },
+          "enabled": true,
+          "isTracePoint": false
+        },
+        {
+          "id": "cartesian_motion5",
+          "parameter": {
+            "acceleration": 0.15,
+            "cartesian_impedance": {
+              "access": [
+                "parent",
+                "parameter",
+                "cartesian_impedance"
+              ]
+            },
+            "joint_impedance": {
+              "access": [
+                "parent",
+                "parameter",
+                "joint_impedance"
+              ]
+            },
+            "motion": {
+              "access": [
+                "parameter",
+                "poses",
+                4,
+                "relative_trajectories",
+                1
+              ]
+            },
+            "origin": {
+              "joint_angles": [],
+              "pose": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ]
+            },
+            "relative_to": {
+              "pose": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ]
+            },
+            "safety": {
+              "access": [
+                "parent",
+                "parameter",
+                "safety"
+              ]
+            },
+            "speed": {
+              "access": [
+                "parent",
+                "parameter",
+                "speed"
+              ]
+            },
+            "velocity": 0.25
+          },
+          "name": "Cart Motion",
+          "link": "cartesian_motion",
+          "componentProviders": {
+            "acceleration": {
+              "linkConfig": null,
+              "componentLookupTable": []
+            },
+            "motion": {
+              "linkConfig": {
+                "components": [
+                  "robot-pose-carousel"
+                ],
+                "sourceDistance": 2,
+                "parameters": {
+                  "points": [
+                    "motion"
+                  ]
+                }
+              },
+              "componentLookupTable": [
+                {
+                  "name": "robot-pose-carousel",
+                  "sourcePath": {
+                    "id": "0_aufr_umen",
+                    "indices": []
+                  },
+                  "dependencies": []
+                }
+              ]
+            },
+            "velocity": {
+              "linkConfig": null,
+              "componentLookupTable": []
+            }
+          },
+          "enabled": true,
+          "isTracePoint": false
+        },
+        {
+          "id": "cartesian_motion6",
+          "parameter": {
+            "acceleration": 0.95,
+            "cartesian_impedance": {
+              "access": [
+                "parent",
+                "parameter",
+                "cartesian_impedance"
+              ]
+            },
+            "joint_impedance": {
+              "access": [
+                "parent",
+                "parameter",
+                "joint_impedance"
+              ]
+            },
+            "motion": {
+              "access": [
+                "parameter",
+                "poses",
+                5,
+                "relative_trajectories",
+                1
+              ]
+            },
+            "origin": {
+              "joint_angles": [],
+              "pose": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ]
+            },
+            "relative_to": {
+              "pose": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ]
+            },
+            "safety": {
+              "access": [
+                "parent",
+                "parameter",
+                "safety"
+              ]
+            },
+            "speed": {
+              "access": [
+                "parent",
+                "parameter",
+                "speed"
+              ]
+            },
+            "velocity": 0.95
+          },
+          "name": "Cart Motion",
+          "link": "cartesian_motion",
+          "componentProviders": {
+            "acceleration": {
+              "linkConfig": null,
+              "componentLookupTable": []
+            },
+            "motion": {
+              "linkConfig": {
+                "components": [
+                  "robot-pose-carousel"
+                ],
+                "sourceDistance": 2,
+                "parameters": {
+                  "points": [
+                    "motion"
+                  ]
+                }
+              },
+              "componentLookupTable": [
+                {
+                  "name": "robot-pose-carousel",
+                  "sourcePath": {
+                    "id": "0_aufr_umen",
+                    "indices": []
+                  },
+                  "dependencies": []
+                }
+              ]
+            },
+            "velocity": {
+              "linkConfig": null,
+              "componentLookupTable": []
+            }
+          },
+          "enabled": true,
+          "isTracePoint": false
+        },
+        {
+          "id": "cartesian_motion",
+          "parameter": {
+            "acceleration": 0.1,
+            "cartesian_impedance": {
+              "access": [
+                "parent",
+                "parameter",
+                "cartesian_impedance"
+              ]
+            },
+            "joint_impedance": {
+              "access": [
+                "parent",
+                "parameter",
+                "joint_impedance"
+              ]
+            },
+            "motion": {
+              "access": [
+                "parameter",
+                "poses",
+                3,
+                "relative_trajectories",
+                1
+              ]
+            },
+            "origin": {
+              "joint_angles": [],
+              "pose": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ]
+            },
+            "relative_to": {
+              "pose": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ]
+            },
+            "safety": {
+              "access": [
+                "parent",
+                "parameter",
+                "safety"
+              ]
+            },
+            "speed": {
+              "access": [
+                "parent",
+                "parameter",
+                "speed"
+              ]
+            },
+            "velocity": 0.25
+          },
+          "name": "Cart Motion",
+          "link": "cartesian_motion",
+          "componentProviders": {
+            "acceleration": {
+              "linkConfig": null,
+              "componentLookupTable": []
+            },
+            "motion": {
+              "linkConfig": {
+                "components": [
+                  "robot-pose-carousel"
+                ],
+                "sourceDistance": 2,
+                "parameters": {
+                  "points": [
+                    "motion"
+                  ]
+                }
+              },
+              "componentLookupTable": [
+                {
+                  "name": "robot-pose-carousel",
+                  "sourcePath": {
+                    "id": "0_aufr_umen",
+                    "indices": []
+                  },
+                  "dependencies": []
+                }
+              ]
+            },
+            "velocity": {
+              "linkConfig": null,
+              "componentLookupTable": []
+            }
+          },
+          "enabled": true,
+          "isTracePoint": false
+        },
+        {
+          "id": "cartesian_motion4",
+          "parameter": {
+            "acceleration": 0.15,
+            "cartesian_impedance": {
+              "access": [
+                "parent",
+                "parameter",
+                "cartesian_impedance"
+              ]
+            },
+            "joint_impedance": {
+              "access": [
+                "parent",
+                "parameter",
+                "joint_impedance"
+              ]
+            },
+            "motion": {
+              "access": [
+                "parameter",
+                "poses",
+                2,
+                "relative_trajectories",
+                1
+              ]
+            },
+            "origin": {
+              "joint_angles": [],
+              "pose": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ]
+            },
+            "relative_to": {
+              "pose": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ]
+            },
+            "safety": {
+              "access": [
+                "parent",
+                "parameter",
+                "safety"
+              ]
+            },
+            "speed": {
+              "access": [
+                "parent",
+                "parameter",
+                "speed"
+              ]
+            },
+            "velocity": 0.25
+          },
+          "name": "Cart Motion",
+          "link": "cartesian_motion",
+          "componentProviders": {
+            "acceleration": {
+              "linkConfig": null,
+              "componentLookupTable": []
+            },
+            "motion": {
+              "linkConfig": {
+                "components": [
+                  "robot-pose-carousel"
+                ],
+                "sourceDistance": 2,
+                "parameters": {
+                  "points": [
+                    "motion"
+                  ]
+                }
+              },
+              "componentLookupTable": [
+                {
+                  "name": "robot-pose-carousel",
+                  "sourcePath": {
+                    "id": "0_aufr_umen",
+                    "indices": []
+                  },
+                  "dependencies": []
+                }
+              ]
+            },
+            "velocity": {
+              "linkConfig": null,
+              "componentLookupTable": []
+            }
+          },
+          "enabled": true,
+          "isTracePoint": false
+        },
+        {
+          "id": "gripper_move_skill",
+          "parameter": {
+            "cartesian_impedance": {
+              "access": [
+                "parent",
+                "parameter",
+                "cartesian_impedance"
+              ]
+            },
+            "joint_impedance": {
+              "access": [
+                "parent",
+                "parameter",
+                "joint_impedance"
+              ]
+            },
+            "safety": {
+              "access": [
+                "parent",
+                "parameter",
+                "safety"
+              ]
+            },
+            "speed": 0.1,
+            "width": 0.078
+          },
+          "name": "Gripper Move",
+          "link": "gripper_move_skill",
+          "componentProviders": {
+            "gripper-width": {
+              "linkConfig": null,
+              "componentLookupTable": []
+            },
+            "speed": {
+              "linkConfig": null,
+              "componentLookupTable": []
+            }
+          },
+          "enabled": true,
+          "isTracePoint": false
+        }
+      ],
+      "relativePath": [
+        "timeline_body"
+      ],
+      "isTracePoint": false
+    }
+  ],
+  "name": "Aufräumen",
+  "contextMenu": "<step id=\"speed\" name=\"Robot speed\" label=\"Set the speed of the robot's motions.\"\n  configured=\"parameter('speed')()\" class=\"flex-column\">\n  <h2 data-bind=\"html: step.label\"><br></h2>\n  <linear-slider params=\"\n    value: parameter('speed').multiply(100).round(),\n    min: 1, max: 100, increment: 1,\n    unit: '%',\n    step: step\n    \"/>\n</step>\n<step id=\"cart-comp\" name=\"Cartesian Compliance\" class=\"flex-column\"\n  label=\"Set the compliance along and around each cartesian axis. Greater compliance is given by lower values.\">\n  <h2 data-bind=\"html: step.label\"></h2>\n  <toggle-slider params=\"\n    parameters: [\n      { value: parameter('cartesian_impedance.K_x').add(-10).multiply(1/30).round(),\n        label: 'K-x',\n        min: 0, max: 100, increment: 1,\n        unit: '%'\n      },\n      { value: parameter('cartesian_impedance.K_y').add(-10).multiply(1/30).round(),\n        label: 'K-y',\n        min: 0, max: 100, increment: 1,\n        unit: '%'\n      },\n      { value: parameter('cartesian_impedance.K_z').add(-10).multiply(1/30).round(),\n        label: 'K-z',\n        min: 0, max: 100, increment: 1,\n        unit: '%'\n      },\n      { value: parameter('cartesian_impedance.K_x_rot').add(-1).multiply(1/3).round(),\n        label: 'K-x_rot',\n        min: 0, max: 100, increment: 1,\n        unit: '%'\n      },\n      { value: parameter('cartesian_impedance.K_y_rot').add(-1).multiply(1/3).round(),\n        label: 'K-y_rot',\n        min: 0, max: 100, increment: 1,\n        unit: '%'\n      },\n      { value: parameter('cartesian_impedance.K_z_rot').add(-1).multiply(1/3).round(),\n        label: 'K-z_rot',\n        min: 0, max: 100, increment: 1,\n        unit: '%'\n      },\n    ],\n    step: step\n  \"/>\n</step>\n<step id=\"joint-comp\" name=\"Joint Compliance\" class=\"flex-column\"\n  label=\"Set the compliance for each joint. Greater compliance is given by lower values.\">\n  <h2 data-bind=\"html: step.label\"></h2>\n  <toggle-slider params=\"\n    parameters: [\n      { value: parameter('joint_impedance.K_j0').add(-1).multiply(1/60).round(),\n        label: 'Joint 1',\n        min: 0, max: 100, increment: 1,\n        unit: '%'\n      },\n      { value: parameter('joint_impedance.K_j1').add(-1).multiply(1/60).round(),\n        label: 'Joint 2',\n        min: 0, max: 100, increment: 1,\n        unit: '%'\n      },\n      { value: parameter('joint_impedance.K_j2').add(-1).multiply(1/60).round(),\n        label: 'Joint 3',\n        min: 0, max: 100, increment: 1,\n        unit: '%'\n      },\n      { value: parameter('joint_impedance.K_j3').add(-1).multiply(1/60).round(),\n        label: 'Joint 4',\n        min: 0, max: 100, increment: 1,\n        unit: '%'\n      },\n      { value: parameter('joint_impedance.K_j4').add(-1).multiply(1/60).round(),\n        label: 'Joint 5',\n        min: 0, max: 100, increment: 1,\n        unit: '%'\n      },\n      { value: parameter('joint_impedance.K_j5').add(-1).multiply(1/60).round(),\n        label: 'Joint 6',\n        min: 0, max: 100, increment: 1,\n        unit: '%'\n      },\n      { value: parameter('joint_impedance.K_j6').add(-1).multiply(1/60).round(),\n        label: 'Joint 7',\n        min: 0, max: 100, increment: 1,\n        unit: '%'\n      },\n    ],\n    step: step\n  \"/>\n</step>\n<step id=\"all-force\" name=\"Force Thresholds\" class=\"flex-column\"\n  label=\"Set the force thresholds along and around each cartesian axis. Higher values will be interpreted as collisions.\">\n  <h2 data-bind=\"html: step.label\"></h2>\n  <toggle-slider params=\"\n    parameters: [\n      {value: parameter('safety.force_thresholds.x'), label: 'x', min: 3, max: 100, increment: 1, unit: 'N'},\n      {value: parameter('safety.force_thresholds.y'), label: 'y', min: 3, max: 100, increment: 1, unit: 'N'},\n      {value: parameter('safety.force_thresholds.z'), label: 'z', min: 3, max: 100, increment: 1, unit: 'N'},\n      {value: parameter('safety.force_thresholds.x_rot'), label: 'x-rot', min: 1, max: 30, increment: 1, unit: 'Nm'},\n      {value: parameter('safety.force_thresholds.y_rot'), label: 'y-rot', min: 1, max: 30, increment: 1, unit: 'Nm'},\n      {value: parameter('safety.force_thresholds.z_rot'), label: 'z-rot', min: 1, max: 30, increment: 1, unit: 'Nm'},\n    ],\n    step: step\n  \"/>\n</step>\n<step id=\"all-torque\" name=\"Torque Thresholds\" class=\"flex-column\"\n  label=\"Set the torque thresholds for each joint. Higher values will be interpreted as collisions.\">\n  <h2 data-bind=\"html: step.label\"></h2>\n  <toggle-slider params=\"\n    parameters: [\n      {value: parameter('safety.torque_thresholds.j0'), label: 'Joint 1', min: 3, max: 100, increment: 1, unit: 'Nm'},\n      {value: parameter('safety.torque_thresholds.j1'), label: 'Joint 2', min: 3, max: 100, increment: 1, unit: 'Nm'},\n      {value: parameter('safety.torque_thresholds.j2'), label: 'Joint 3', min: 3, max: 100, increment: 1, unit: 'Nm'},\n      {value: parameter('safety.torque_thresholds.j3'), label: 'Joint 4', min: 2, max: 80, increment: 1, unit: 'Nm'},\n      {value: parameter('safety.torque_thresholds.j4'), label: 'Joint 5', min: 2, max: 80, increment: 1, unit: 'Nm'},\n      {value: parameter('safety.torque_thresholds.j5'), label: 'Joint 6', min: 1, max: 40, increment: 1, unit: 'Nm'},\n      {value: parameter('safety.torque_thresholds.j6'), label: 'Joint 7', min: 1, max: 40, increment: 1, unit: 'Nm'},\n    ],\n    step: step\n  \"/>\n</step>",
+  "components": "<component name=\"grid-widget\">\n  <template src=\"base/grid_widget.html\"></template>\n  <viewmodel src=\"base/grid_widget.js\"></viewmodel>\n</component>\n<component name=\"alternative-selector\">\n  <template src=\"base/alternative_selector.html\"></template>\n  <viewmodel src=\"base/alternative_selector.js\"></viewmodel>\n</component>\n<component name=\"reset-strategy-picker\">\n  <template src=\"base/reset_strategy_picker.html\"></template>\n  <viewmodel src=\"base/reset_strategy_picker.js\"></viewmodel>\n</component>\n<component name=\"trajectory-teaching-base\">\n  <template src=\"base/trajectory_teaching_base.html\"></template>\n  <viewmodel src=\"base/trajectory_teaching_base.js\"></viewmodel>\n</component>\n<component name=\"trajectory-teaching\" linkable>\n  <template src=\"base/trajectory_teaching.html\"></template>\n  <viewmodel src=\"base/trajectory_teaching.js\"></viewmodel>\n</component>\n<component name=\"approach-retract-teaching\">\n  <template src=\"base/approach_retract_teaching.html\"></template>\n  <viewmodel src=\"base/approach_retract_teaching.js\"></viewmodel>\n</component>\n<component name=\"pose-teaching single-pose-teaching\" linkable>\n  <template src=\"base/pose_teaching.html\"></template>\n  <viewmodel src=\"base/pose_teaching.js\"></viewmodel>\n</component>\n<component name=\"two-pose-teaching\" linkable>\n  <template src=\"base/two_pose_teaching.html\"></template>\n  <viewmodel src=\"base/two_pose_teaching.js\"></viewmodel>\n</component>\n<component name=\"robot-pose single-robot-pose\" linkable>\n  <template src=\"base/robot_pose.html\"></template>\n  <viewmodel src=\"base/robot_pose.js\"></viewmodel>\n</component>\n<component name=\"robot-pose-carousel\" linkable>\n  <template src=\"base/robot_pose_carousel.html\"></template>\n  <viewmodel src=\"base/robot_pose_carousel.js\"></viewmodel>\n</component>\n<component name=\"haptic-gestures\">\n  <template src=\"base/haptic_gestures.html\"></template>\n  <viewmodel src=\"base/haptic_gestures.js\"></viewmodel>\n</component>\n<component name=\"points-list\">\n  <template src=\"base/points_list.html\"></template>\n  <viewmodel src=\"base/points_list.js\"></viewmodel>\n</component>",
+  "parameter": {
+    "cartesian_impedance": {
+      "K_x": 2500,
+      "K_x_rot": 250,
+      "K_y": 2500,
+      "K_y_rot": 250,
+      "K_z": 2500,
+      "K_z_rot": 250
+    },
+    "current_teaching_reference": {
+      "pose": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    "joint_impedance": {
+      "K_j0": 3500,
+      "K_j1": 3500,
+      "K_j2": 3500,
+      "K_j3": 3000,
+      "K_j4": 2500,
+      "K_j5": 2000,
+      "K_j6": 1000
+    },
+    "poses": [
+      {
+        "gripper_closed_width": -1,
+        "gripper_open_width": -1,
+        "pose": {
+          "joint_angles": [],
+          "pose": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "relative_trajectories": [
+          [
+            {
+              "joint_angles": [
+                0.5749596559373396,
+                0.18693079139668686,
+                -1.0838424951531305,
+                -2.4897753332037675,
+                0.31760986257923973,
+                2.561178010017457,
+                -0.018207057017290397
+              ],
+              "pose": [
+                0.9993434503400561,
+                0.034803033336993305,
+                0.009064437885761344,
+                0,
+                0.034830499826948524,
+                -0.999379422895118,
+                -0.0028900305939918154,
+                0,
+                0.008958403349057953,
+                0.0032039137328670475,
+                -0.999954739948878,
+                0,
+                0.4047576709441433,
+                -0.24169638586376846,
+                0.14955940983301214,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                1.1657727336130652,
+                0.2735851225248715,
+                -0.5901766200316599,
+                -2.288572918416647,
+                0.3037754771047168,
+                2.552074803152102,
+                1.1554370481967926
+              ],
+              "pose": [
+                0.9990747011426544,
+                -0.0238779552769669,
+                0.035501150540724315,
+                0,
+                -0.022263329377659125,
+                -0.9987201876953876,
+                -0.04520041765205158,
+                0,
+                0.03653571270831657,
+                0.04436907419164127,
+                -0.9983468971015395,
+                0,
+                0.45591892866362543,
+                0.2901435479371231,
+                0.15257919334567016,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                0.49124604803219174,
+                0.30011685785071807,
+                -0.8369736717402473,
+                -2.3080215537195365,
+                0.39811029840840234,
+                2.4745476551708814,
+                -0.05214506755465614
+              ],
+              "pose": [
+                0.9808411933158455,
+                0.19442193391521023,
+                0.011463507692930386,
+                0,
+                0.19460151518690905,
+                -0.9807169297742795,
+                -0.017472860163070814,
+                0,
+                0.007845499855304028,
+                0.019369289898240327,
+                -0.9997816155245396,
+                0,
+                0.48926716545868626,
+                -0.1810654684489099,
+                0.1522009525939801,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                0.9669701352836857,
+                0.5604693597111389,
+                -0.5170116676029406,
+                -1.8644075729036902,
+                0.3920925208859973,
+                2.371453093835306,
+                1.1677610715990876
+              ],
+              "pose": [
+                0.9895309177902545,
+                -0.14030367669004057,
+                0.03352891208556826,
+                0,
+                -0.1392999523501357,
+                -0.9897672452167268,
+                -0.030611606827319202,
+                0,
+                0.0374814615715921,
+                0.02562104882758423,
+                -0.9989688192808781,
+                0,
+                0.5699006527772634,
+                0.3048795443472129,
+                0.14795809794683068,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                0.30592910220684466,
+                0.5167325979685844,
+                -0.6419454981902913,
+                -1.9777905409646954,
+                0.5368861964977296,
+                2.375109544956357,
+                -0.0428761038038298
+              ],
+              "pose": [
+                0.9840981408612363,
+                0.1652309430284163,
+                0.06504099876698295,
+                0,
+                0.16794194557455133,
+                -0.9850289988047243,
+                -0.03865386567479561,
+                0,
+                0.057681565768444465,
+                0.048963251917031714,
+                -0.9971336103713533,
+                0,
+                0.5895127086323502,
+                -0.17703468108760417,
+                0.14791639888388824,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                1.0720172038607403,
+                0.1926337111686407,
+                -0.6421493620954364,
+                -2.4023820952157817,
+                0.25870155502488734,
+                2.55974748245875,
+                1.1064013082983326
+              ],
+              "pose": [
+                0.9952353594714616,
+                -0.09738586208640759,
+                0.0018220934679341431,
+                0,
+                -0.09728047678052393,
+                -0.9947481020287736,
+                -0.031519347212706286,
+                0,
+                0.004882156816304106,
+                0.031192515284822586,
+                -0.999501471502182,
+                0,
+                0.4576085785265455,
+                0.20318582334379653,
+                0.14825550439199348,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                0.66506787191751,
+                0.543326800864814,
+                -0.6876747324642789,
+                -1.952973680733658,
+                0.5020498193237517,
+                2.360119234230783,
+                0.49575374635143404
+              ],
+              "pose": [
+                0.9992830045679966,
+                -0.017884630396654277,
+                0.03308116803168782,
+                0,
+                -0.017429815967286155,
+                -0.9997406366052781,
+                -0.013985990727449845,
+                0,
+                0.03332336384055329,
+                0.013399622149460028,
+                -0.9993547936286702,
+                0,
+                0.6206080335055142,
+                0.012872403066625859,
+                0.1510210875414937,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                0.6003222499775552,
+                -0.30286035544018725,
+                -0.840360381059066,
+                -2.853665589702499,
+                -0.29753367867048175,
+                2.591207923412323,
+                0.7014570789773587
+              ],
+              "pose": [
+                0.9914778690037138,
+                0.12975797625785784,
+                -0.010735444775490731,
+                0,
+                0.1285359416604735,
+                -0.9886085994856322,
+                -0.07818117181086962,
+                0,
+                -0.020758183319353807,
+                0.0761364769830055,
+                -0.9968813042172555,
+                0,
+                0.3467091020347938,
+                -0.04403597564912924,
+                0.1481382133156029,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                0.9318103547163101,
+                0.45936312916723554,
+                -0.6840431751027303,
+                -2.0930779153767856,
+                0.47388155030514895,
+                2.4859907463391657,
+                0.782381519584868
+              ],
+              "pose": [
+                0.9954058387588847,
+                -0.0602334990411455,
+                0.07429595318178521,
+                0,
+                -0.05838979295562763,
+                -0.9979258973331495,
+                -0.02674476419105501,
+                0,
+                0.0757542449793745,
+                0.02228419814814866,
+                -0.9968774793727156,
+                0,
+                0.5759816988645956,
+                0.1513628225149029,
+                0.14856221159240846,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                0.7487795877646248,
+                -0.22315669145566927,
+                -1.315701889679118,
+                -2.690313787716355,
+                -0.391662654234545,
+                2.5960821178214752,
+                0.3274879849080183
+              ],
+              "pose": [
+                0.9719699958161369,
+                0.23485619339099445,
+                0.009881425012560355,
+                0,
+                0.23497536552221765,
+                -0.9718988790858807,
+                -0.013412431938961623,
+                0,
+                0.006453877441318312,
+                0.015358668571766917,
+                -0.9998612197528589,
+                0,
+                0.35818406206878983,
+                -0.19250143147566237,
+                0.14725531013063786,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                1.4176245940443417,
+                0.37796630770201173,
+                -0.8649001681833054,
+                -2.253451404706004,
+                0.4090734237697721,
+                2.466614232432178,
+                1.126163897515623
+              ],
+              "pose": [
+                0.9967619281966091,
+                -0.07701273014489984,
+                0.022703409316995233,
+                0,
+                -0.07756913989731817,
+                -0.9966703326601775,
+                0.024739107337368973,
+                0,
+                0.020722987300812956,
+                -0.02642059294320108,
+                -0.9994360960390914,
+                0,
+                0.4621411163081683,
+                0.27510029327908114,
+                0.14837681866105537,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                0.8096432165708013,
+                0.28324881688236514,
+                -1.1600672335996791,
+                -2.404847049419441,
+                0.45880773121936774,
+                2.42443034436879,
+                -0.2849378729661307
+              ],
+              "pose": [
+                0.9333124825741355,
+                0.3589596997346505,
+                -0.007516032126221137,
+                0,
+                0.35806435996415115,
+                -0.932117485471228,
+                -0.05410780261169564,
+                0,
+                -0.026428854382354594,
+                0.047809184824366135,
+                -0.9985067839040784,
+                0,
+                0.4510615105207825,
+                -0.1716394498435344,
+                0.15715412252402872,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                1.4401398609023677,
+                0.25512935807912,
+                -1.0586433252960172,
+                -2.450804381233,
+                0.4523692862666949,
+                2.5423824750509736,
+                0.8411553453604416
+              ],
+              "pose": [
+                0.9992403836769368,
+                -0.038721459175596884,
+                -0.00022611875041305025,
+                0,
+                -0.038710821869288925,
+                -0.9987907655379089,
+                -0.029987094684387434,
+                0,
+                0.0009353167505345428,
+                0.029973646326026327,
+                -0.9995502517174903,
+                0,
+                0.45242191205801546,
+                0.1653025998599173,
+                0.14474439796306404,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                1.0817701542695681,
+                0.3047489759409042,
+                -1.1853258339847623,
+                -2.3946052386803136,
+                0.4568310981260708,
+                2.4555618803215298,
+                0.04814024990537739
+              ],
+              "pose": [
+                0.9594283372962538,
+                0.2818979552739095,
+                -0.0033993097156834883,
+                0,
+                0.2818889914409426,
+                -0.9594326479978151,
+                -0.0028874489635180053,
+                0,
+                -0.004075453145758412,
+                0.001812107259426432,
+                -0.9999900534250015,
+                0,
+                0.4895356514896526,
+                -0.0620277046618645,
+                0.16277496692589655,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                1.215482969611159,
+                0.4805010658352361,
+                -0.9654852700904767,
+                -2.137226028645884,
+                0.5628088593085608,
+                2.405745749524149,
+                0.8204087459843282
+              ],
+              "pose": [
+                0.9879639055369251,
+                -0.14144254866282857,
+                0.062466580546699436,
+                0,
+                -0.14142897422080208,
+                -0.989927706624167,
+                -0.004661309888549993,
+                0,
+                0.062497909650420624,
+                -0.004229459917600674,
+                -0.9980361330924513,
+                0,
+                0.5560258950785952,
+                0.15182546015120266,
+                0.16917536983518888,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                0.4994766878411972,
+                -0.09584680643901286,
+                -0.6522495498324603,
+                -2.675563686567686,
+                -0.11270891327107392,
+                2.554276818738302,
+                0.5434863471190139
+              ],
+              "pose": [
+                0.9815353042867915,
+                0.18677369496875373,
+                -0.04104607420403315,
+                0,
+                0.1865228348555691,
+                -0.9823910194441297,
+                -0.009892618165788609,
+                0,
+                -0.04217178746680933,
+                0.0020539634064824543,
+                -0.999108263190821,
+                0,
+                0.4019462028872576,
+                -0.055382934563169735,
+                0.1540497864661035,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                0.6648112932096687,
+                0.19675963250904324,
+                -0.532669574569436,
+                -2.359752140001836,
+                0.17821311145358615,
+                2.541210743109385,
+                0.7442572630324416
+              ],
+              "pose": [
+                0.9991683730395424,
+                0.03605736484404837,
+                0.01852500092375829,
+                0,
+                0.03611605037108667,
+                -0.9993339256355649,
+                -0.0028430407335986,
+                0,
+                0.018410503797792355,
+                0.003509793825168988,
+                -0.9998243519224845,
+                0,
+                0.5101269116891559,
+                0.0625605890168391,
+                0.15461209268813908,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                0.7460649760221474,
+                0.3557408787608601,
+                -1.008174340243725,
+                -2.3566345789613616,
+                0.4541013708173125,
+                2.524270855108897,
+                0.4829969758995705
+              ],
+              "pose": [
+                0.9542940788454695,
+                -0.29789719777196033,
+                0.023681586545217986,
+                0,
+                -0.29865365593224963,
+                -0.9534847927108133,
+                0.04066313771374812,
+                0,
+                0.010466799378911984,
+                -0.04587806724247395,
+                -0.9988922109301167,
+                0,
+                0.48888025207351327,
+                -0.15157057036175386,
+                0.14553190265001897,
+                1
+              ]
+            }
+          ]
+        ],
+        "teaching_reference": {
+          "pose": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1
+          ]
+        }
+      },
+      {
+        "gripper_closed_width": -1,
+        "gripper_open_width": -1,
+        "pose": {
+          "joint_angles": [],
+          "pose": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "relative_trajectories": [
+          [
+            {
+              "joint_angles": [
+                0.7131857868746792,
+                -0.04902316978667183,
+                -1.1105582012795536,
+                -2.1110526738034294,
+                -0.020714993141302852,
+                2.1051646390178678,
+                1.0247775601554248
+              ],
+              "pose": [
+                0.8101236043997875,
+                -0.5861633758597173,
+                0.009643095781148178,
+                0,
+                -0.5857166082364116,
+                -0.809983801021938,
+                -0.02903521688046839,
+                0,
+                0.02483061018609839,
+                0.01787433733628424,
+                -0.9995318648560307,
+                0,
+                0.4983571506326235,
+                -0.21146749622563246,
+                0.32302565235651803,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                0.711280509569773,
+                0.05228792363005405,
+                -1.118262536592704,
+                -2.212765176029161,
+                0.08129128435585234,
+                2.0887692828178404,
+                0.9449279895623276
+              ],
+              "pose": [
+                0.8077742135320433,
+                -0.5709988671216557,
+                -0.1464303950677006,
+                0,
+                -0.5764409080059208,
+                -0.817102351844383,
+                0.006353982129006994,
+                0,
+                -0.1232791102935839,
+                0.07927741331130614,
+                -0.9892003602424995,
+                0,
+                0.4616841986051652,
+                -0.19044064272445368,
+                0.2539574014622246,
+                1
+              ]
+            }
+          ]
+        ],
+        "teaching_reference": {
+          "pose": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1
+          ]
+        }
+      },
+      {
+        "gripper_closed_width": -1,
+        "gripper_open_width": -1,
+        "pose": {
+          "joint_angles": [],
+          "pose": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "relative_trajectories": [
+          [
+            {
+              "joint_angles": [
+                0.8068104700121963,
+                0.31618014285020657,
+                -1.0259352634656485,
+                -2.38602944337276,
+                0.47849542547596813,
+                2.533765960852305,
+                0.7572689290791567
+              ],
+              "pose": [
+                0.8458542699393566,
+                -0.5324348036565587,
+                0.03200751133356596,
+                0,
+                -0.5324384993568588,
+                -0.846408217281664,
+                -0.009117073099413264,
+                0,
+                0.031946282698011697,
+                -0.009330495733059774,
+                -0.9994460349969647,
+                0,
+                0.48876889921871075,
+                -0.1257527485665178,
+                0.1485507541591743,
+                1
+              ]
+            }
+          ]
+        ],
+        "teaching_reference": {
+          "pose": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1
+          ]
+        }
+      },
+      {
+        "gripper_closed_width": -1,
+        "gripper_open_width": -1,
+        "pose": {
+          "joint_angles": [],
+          "pose": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "relative_trajectories": [
+          [
+            {
+              "joint_angles": [
+                0.7639700897312316,
+                0.37217827241755236,
+                -1.129454553342116,
+                -2.090249781930538,
+                0.4725400866368882,
+                2.2112673182487486,
+                0.43816489505049405
+              ],
+              "pose": [
+                0.9602030331052065,
+                -0.27894315795194097,
+                0.013475783783079773,
+                0,
+                -0.27827822063889335,
+                -0.9597436326321536,
+                -0.03787002034984523,
+                0,
+                0.023497333145104993,
+                0.03261351918211419,
+                -0.9991917902493123,
+                0,
+                0.5447776741777265,
+                -0.16790569794004426,
+                0.235305959863925,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                0.7189818258647281,
+                0.3115687492956211,
+                -1.1314948373520761,
+                -2.012985362113633,
+                0.7122889436217393,
+                1.629556945736734,
+                0.418026900792816
+              ],
+              "pose": [
+                0.9174072557061194,
+                -0.21856780536668158,
+                -0.33252486904917017,
+                0,
+                -0.36139463826816864,
+                -0.807393539024517,
+                -0.46635859107954,
+                0,
+                -0.1665506636855026,
+                0.548024011142875,
+                -0.8197137058978536,
+                0,
+                0.49978066144449795,
+                -0.07512802653962353,
+                0.2732243770909971,
+                1
+              ]
+            }
+          ]
+        ],
+        "teaching_reference": {
+          "pose": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1
+          ]
+        }
+      },
+      {
+        "gripper_closed_width": -1,
+        "gripper_open_width": -1,
+        "pose": {
+          "joint_angles": [],
+          "pose": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "relative_trajectories": [
+          [
+            {
+              "joint_angles": [
+                0.7234711389597369,
+                0.31329553471706845,
+                -1.1318074011384396,
+                -2.010680678621139,
+                0.7106104839775297,
+                1.6378556114170284,
+                0.4119866061108157
+              ],
+              "pose": [
+                0.9220833633159227,
+                -0.21369357011713197,
+                -0.3226113390564544,
+                0,
+                -0.3506924673489031,
+                -0.8138827165215857,
+                -0.4632391002424027,
+                0,
+                -0.16357972527989742,
+                0.5402928363707534,
+                -0.8254243299320655,
+                0,
+                0.5019683305894445,
+                -0.07466333333046896,
+                0.2731753600826896,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                0.7187863565474406,
+                0.3147205173377318,
+                -1.1369278224354609,
+                -2.010475884126767,
+                0.7106227935287688,
+                1.6384181834019078,
+                0.9013780134787187
+              ],
+              "pose": [
+                0.6436978551960928,
+                -0.5787529736859716,
+                -0.5006783534034636,
+                0,
+                -0.7487993428751241,
+                -0.6113326965729611,
+                -0.2560324688624916,
+                0,
+                -0.1579045353391399,
+                0.5397255644772722,
+                -0.8268993123524898,
+                0,
+                0.5013948865648591,
+                -0.07967425855278396,
+                0.2733851784374076,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                0.7192288625199242,
+                0.3146480685744296,
+                -1.1292231077562298,
+                -2.0154231508489664,
+                0.711211826496654,
+                1.6558465440323138,
+                0.3532569946169486
+              ],
+              "pose": [
+                0.9414845802437685,
+                -0.177005816125473,
+                -0.286803893143344,
+                0,
+                -0.30022219123881555,
+                -0.8271540625817315,
+                -0.47504056620830704,
+                0,
+                -0.15314901085640154,
+                0.53335853013518,
+                -0.8319098862291191,
+                0,
+                0.5032125092655896,
+                -0.07810699472581917,
+                0.2703348263993411,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                0.7217840906695315,
+                0.3237506515364433,
+                -1.1270229787939574,
+                -2.0213290244319904,
+                0.7114458001587126,
+                1.656344510224925,
+                0.8469257729720686
+              ],
+              "pose": [
+                0.6824676555422536,
+                -0.5476727740964211,
+                -0.48401774611412585,
+                0,
+                -0.7121180798292984,
+                -0.6474049110570934,
+                -0.27154275615563395,
+                0,
+                -0.16464206119339592,
+                0.5300071404189485,
+                -0.8318566119175342,
+                0,
+                0.5011687355265841,
+                -0.07601141317071305,
+                0.26501118754594405,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                0.7210394666834643,
+                0.3190693026110723,
+                -1.1262645832363185,
+                -2.020048796232445,
+                0.7114859824313058,
+                1.654323572622405,
+                0.4160128252141416
+              ],
+              "pose": [
+                0.9187638966930081,
+                -0.22496721116557555,
+                -0.32441239639550007,
+                0,
+                -0.3597758516215159,
+                -0.8154311925437379,
+                -0.4534468587584642,
+                0,
+                -0.1625284412182073,
+                0.5333366174684838,
+                -0.8301424927459476,
+                0,
+                0.5015034297681595,
+                -0.07552485132041574,
+                0.2669491801760408,
+                1
+              ]
+            },
+            {
+              "joint_angles": [
+                0.7185317616626918,
+                0.32582332195102326,
+                -1.1294486677722826,
+                -2.0236247361627195,
+                0.7114407092917815,
+                1.6578577267308168,
+                0.837791771126845
+              ],
+              "pose": [
+                0.6843230038579436,
+                -0.547342157362443,
+                -0.4817668897567326,
+                0,
+                -0.7107536196725287,
+                -0.6482476489901431,
+                -0.27310258988585073,
+                0,
+                -0.16282682783770566,
+                0.5293181364194159,
+                -0.8326522290811373,
+                0,
+                0.5001183844116874,
+                -0.07909386247371283,
+                0.26379498535458995,
+                1
+              ]
+            }
+          ]
+        ],
+        "teaching_reference": {
+          "pose": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1
+          ]
+        }
+      }
+    ],
+    "safety": {
+      "force_thresholds": {
+        "x": 10,
+        "x_rot": 5,
+        "y": 10,
+        "y_rot": 5,
+        "z": 10,
+        "z_rot": 5
+      },
+      "torque_thresholds": {
+        "j0": 10,
+        "j1": 10,
+        "j2": 10,
+        "j3": 8,
+        "j4": 8,
+        "j5": 4,
+        "j6": 4
+      }
+    },
+    "speed": 0.5
+  },
+  "valid": true
+}

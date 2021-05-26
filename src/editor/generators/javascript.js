@@ -9,7 +9,7 @@ Blockly.JavaScript["move"] = function (block) {
 	let pose = Blockly.JavaScript.valueToCode(block, 'POSE', Blockly.JavaScript.ORDER_COMMA) || 0;
 	let poseType = block.getInputTargetBlock('POSE').outputConnection.getCheck()[0];
 
-	var code = 'robot("move", "' + poseType + '", ' + pose + ');';
+	var code = 'robot("move", "' + poseType + '", ' + pose + ');\n';
 	return code;
 };
 
@@ -42,14 +42,14 @@ Blockly.JavaScript["joint_absolute"] = function (block) {
 	let joint = block.getFieldValue('JOINT');
 	let angle = block.getFieldValue('DEGREES');
 
-	return code = 'robot("joint_absolute", ' + joint + ', ' + angle + ');';
+	return code = 'robot("joint_absolute", ' + joint + ', ' + angle + ');\n';
 };
 
 Blockly.JavaScript["joint_relative"] = function (block) {
 	let joint = block.getFieldValue('JOINT');
 	let angle = block.getFieldValue('DEGREES');
 
-	return code = 'robot("joint_relative", ' + joint + ', ' + angle + ');';
+	return code = 'robot("joint_relative", ' + joint + ', ' + angle + ');\n';
 };
 
 
@@ -58,12 +58,12 @@ Blockly.JavaScript["joint_relative"] = function (block) {
  * ======= */
 
 Blockly.JavaScript["gripper_open"] = function (block) {
-	var code = 'robot("gripper_open");';
+	var code = 'robot("gripper_open");\n';
 	return code;
 };
 
 Blockly.JavaScript["gripper_close"] = function (block) {
-	var code = 'robot("gripper_close");';
+	var code = 'robot("gripper_close");\n';
 	return code;
 };
 
@@ -73,28 +73,28 @@ Blockly.JavaScript["gripper_close"] = function (block) {
  * ====== */
 
 Blockly.JavaScript["comment"] = function (block) {
-	return "// " + block.getFieldValue('COMMENT');
+	return "// " + block.getFieldValue('COMMENT') + '\n';
 };
 
 Blockly.JavaScript["wait"] = function (block) {
 	let time = block.getFieldValue('SECONDS');
-	return 'robot("wait", ' + (time * 1000) + ');';
+	return 'robot("wait", ' + (time * 1000) + ');\n';
 };
 
 Blockly.JavaScript["set_speed"] = function (block) {
 	var motion = block.getFieldValue('MOTION_TYPE');
 	var speed = block.getFieldValue('SPEED');
 	
-	var code = 'robot("setParam", "velocity/' + motion + '", ' + speed/100 + ');';
+	var code = 'robot("setParam", "velocity/' + motion + '", ' + speed/100 + ');\n';
 	return code;
 };
 
 Blockly.JavaScript["joint_lock"] = function (block) {
 	let joint = block.getFieldValue('JOINT');
-	return code = 'robot("lockJoint", ' + joint + ');';
+	return code = 'robot("lockJoint", ' + joint + ');\n';
 };
 
 Blockly.JavaScript["joint_unlock"] = function (block) {
 	let joint = block.getFieldValue('JOINT');
-	return code = 'robot("unlockJoint", ' + joint + ');';
+	return code = 'robot("unlockJoint", ' + joint + ');\n';
 };
