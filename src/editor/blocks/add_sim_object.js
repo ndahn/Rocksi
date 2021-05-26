@@ -62,21 +62,7 @@ Blockly.Blocks['add_sim_object'] = {
         const simObject = getSimObject(this.id);
 
         if (simObject != undefined) {
-            fieldValues = simObject.getFieldValues();
-        }
-
-            fieldValues.push(simObject.spawnPosition.x);
-            fieldValues.push(simObject.spawnPosition.y);
-            fieldValues.push(simObject.spawnPosition.z - 0.5 * simObject.size.z);
-
-            var rx = simObject.spawnRotation.x * 180.0 / Math.PI;
-            fieldValues.push(rx);
-
-            var ry = simObject.spawnRotation.y * 180.0 / Math.PI;
-            fieldValues.push(ry);
-
-            var rz = simObject.spawnRotation.z * 180.0 / Math.PI;
-            fieldValues.push(rz);
+            fieldValues = simObject.getValues()
         }
         return fieldValues;
     },
@@ -108,23 +94,6 @@ Blockly.Blocks['add_sim_object'] = {
                 simObject.setColour(pickColour);
             }
 
-            simObject.render();
-        }
-
-        if (colourChild != undefined && event.blockId === colourChild.id) {
-            var simObject = getSimObject(thisBlock.id);
-
-            if (colourChild.type == 'colour_random') {
-                var colour = randomColour();
-                console.log('Colour: ',colour);
-            }
-
-            if (colourChild.type == 'colour_picker') {
-                var colour = colourChild.getFieldValue('COLOUR');
-                console.log('Colour: ',colour);
-            }
-
-            simObject.setColour(colour);
             simObject.render();
         }
     }
