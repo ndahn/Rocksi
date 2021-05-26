@@ -64,7 +64,7 @@ switch (selectedRobot.toLowerCase()) {
 
 let container;
 let camera, scene, renderer;
-let raycaster = null;
+let raycaster;
 let mouseXY = new Vector2();
 
 let tcptarget, groundLine;
@@ -72,17 +72,6 @@ let transformControl, controls; //I need them for the simObjects. They need to b
 let ik;
 
 const canHover = window.matchMedia('(hover: hover)').matches;
-
-//Lukas
-export function createRaycaster() {
-    raycaster = new Raycaster();
-    console.log('created raycaster');
-}
-
-export function deleteRaycaster() {
-    raycaster = null;
-    console.log('deleted raycaster');
-}
 
 //loadCached('robots', './models/export/franka_description.zip')
 //    .then(result => loadRobotModel(result))
@@ -227,8 +216,7 @@ function initScene() {
 
 	if (canHover) {
 		transformControl.visible = false;
-        createRaycaster(); //lukas
-        //raycaster = new Raycaster();
+        raycaster = new Raycaster();
 		container.addEventListener('mousemove', onMouseMove);
         container.addEventListener('click', onClick); //Only used for TransformControls for simObjects, Lukas
 	}
@@ -251,17 +239,14 @@ function onMouseMove(evt) {
 	mouseXY.x = (evt.offsetX / container.clientWidth) * 2 - 1;
 	mouseXY.y = -(evt.offsetY / container.clientHeight) * 2 + 1;
 
-    //Lukas
-    if (raycaster != null) {
-        raycaster.setFromCamera(mouseXY, camera);
-        const intersections = raycaster.intersectObjects([tcptarget]);
-        setTCSimObjects(raycaster); //does this for all TransformControls of simObjects
-        let showTC = intersections.length > 0;
+    raycaster.setFromCamera(mouseXY, camera);
+    const intersections = raycaster.intersectObjects([tcptarget]);
+    setTCSimObjects(raycaster); //does this for all TransformControls of simObjects
+    let showTC = intersections.length > 0;
 
-        if (showTC !== transformControl.visible) {
-            transformControl.visible = showTC;
-            requestAnimationFrame(render);
-        }
+    if (showTC !== transformControl.visible) {
+        transformControl.visible = showTC;
+        requestAnimationFrame(render);
     }
 }
 
@@ -307,9 +292,7 @@ function render() {
 
 //functions for simObject stuff, Lukas
 function onClick() {
-    if (raycaster != null) {
-        setTCSimObjectsOnClick(raycaster);
-    }
+    setTCSimObjectsOnClick(raycaster);
 }
 
 export function requestAF () { requestAnimationFrame(render); }

@@ -35,8 +35,6 @@ import { addSimObject,
          remSimObjects,
          getSimObjects } from '../simulator/objects/objects'
 
-import { createRaycaster,
-         deleteRaycaster } from '../simulator/scene'
 
 import { popSuccess, popWarning, popError, popInfo } from '../alert'
 
@@ -287,7 +285,6 @@ var interpreter = null;
 
 function compileProgram() {
     simulation.reset();
-    deleteRaycaster();
     const visible = false;
     simulation.resetSimObjects(visible);
     let code = Blockly.JavaScript.workspaceToCode(workspace);
@@ -323,8 +320,8 @@ function executeProgram() {
                 onProgramFinished();
             }
             else {
-                console.log('Reset in 5 seconds...');
-                popInfo('Die Würfel sind noch nicht gefallen. Bitte warten...');
+                console.log('Reset in ' + waitToFinish * 0.001 + ' seconds...');
+                popInfo('Bitte ' + waitToFinish * 0.001 + ' Sekunden warten...');
                 setTimeout(() => {
                     executeProgram();
                 }, waitToFinish );}
@@ -354,7 +351,6 @@ function onProgramFinished() {
     runButton.classList.remove('running');
     console.log('Execution finished');
     popSuccess(Blockly.Msg['EXEC_SUCCESS'] || "Program finished");
-    createRaycaster();
 }
 
 //Determin if a add_sim_object-block was added or removed form the Blockly Workspace.
@@ -364,7 +360,7 @@ function watchSpawnBlocks(event) {
 
     if(Blockly.Events.BLOCK_CREATE === event.type) {
         for (let i = 0; i < event.ids.length; i++) {
-            console.log(event.ids[i]);
+            //console.log(event.ids[i]);
             const newBlock = workspace.getBlockById(event.ids[i]);
             if (newBlock.type == 'add_sim_object') {
                 const children = newBlock.getChildren();
