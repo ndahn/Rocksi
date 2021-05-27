@@ -359,26 +359,30 @@ function onProgramFinished() {
 //If added, add a new 3D-object. If removed remove the 3D-object assosiated with the block.
 //Lukas
 function watchSpawnBlocks(event) {
-
     if(Blockly.Events.BLOCK_CREATE === event.type) {
         for (let i = 0; i < event.ids.length; i++) {
-            //console.log(event.ids[i]);
             const newBlock = workspace.getBlockById(event.ids[i]);
-            if (newBlock.type == 'add_sim_object') {
-                const children = newBlock.getChildren();
-                let inputChild, colourChild;
-                for (const child of children) {
-                    if (child.type == 'pose') {
-                        inputChild = child;
+            if (newBlock.type === 'add_sim_object') {
+                const pose = newBlock.getInputTargetBlock('POSE');
+                const colour = newBlock.getInputTargetBlock('COLOUR');
+                const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
+                let fieldValues = [];
+                let pickedColour;
+                if (pose != null) {
+                    for (let i = 0; i < fieldKeys.length; i++) {
+                        fieldValues.push(pose.getFieldValue(fieldKeys[i]));
                     }
-                    if (child.type == 'colour_picker') {
-                        colourChild = child;
-                    }
-                    if (child.type == 'colour_random') {
-                        colourChild = child;
+                } else {
+                    fieldValues = undefined;
+                }
+                if (colour != null) {
+                    if (colour.type == 'colour_picker') {
+                        pickedColour = color.getFieldValue('COLOUR');
+                    } else {
+                        pickedColour = undefined;
                     }
                 }
-                addSimObject(newBlock.id, inputChild, colourChild);
+                addSimObject(newBlock.id, fieldValues, pickedColour);
             }
         }
     }
