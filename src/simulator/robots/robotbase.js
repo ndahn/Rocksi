@@ -1,4 +1,4 @@
-import { Object3D, Quaternion, Euler } from "three";
+import { Object3D, Quaternion, Euler, Bone } from "three";
 const path = require('path');
 
 
@@ -218,4 +218,35 @@ export default class Robot {
 	getTCPParent() {
 		return this.model.frames[this.tcp.parent];
     }
+
+
+    createSkeleton() {
+		let parent = new Bone();
+		let bones = [parent];
+		let pos = new Vector3();
+
+		for (let joint of this.arm.movable) {
+			let link = this.getLinkForJoint(joint);
+			link.getWorldPosition(pos);
+			
+			let bone = new Bone();
+			bone.robotJoint = joint;
+			parent.add(bone);
+			parent.lookAt(pos);
+			parent.updateMatrixWorld();  // crucial for worldToLocal!
+			bone.position.copy(bone.worldToLocal(pos));
+			
+			bones.push(bone);
+			parent = bone;
+		}
+
+        let tcpBone = new Bone();
+        this.tcp.object.getWorldPosition(pos);
+        tcpBone.lookAt(pos);
+        tcpBone.updateMatrixWorld();
+        tcpBone.position.copy(tcpBone.worldToLocal(pos));
+        bones.push(tcpBone);
+
+		return bones;
+	}
 }

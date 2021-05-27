@@ -1,5 +1,4 @@
-import { Vector3, Quaternion, Euler, Matrix4, AxesHelper, ArrowHelper } from "three"
-import { toDeg, showPoints } from '../utils.js'
+import { Vector3, SkeletonHelper } from "three"
 
 var FIK = require("@aminere/fullik")
 // FIK uses its own namespace which is kindof dumb...
@@ -10,52 +9,66 @@ class FABRIK {
 	constructor(scene, robot) {
 		this._solver = new FIK.Structure3D();
 		this._solver.setFixedBaseMode(true);
+		this._ikchain = new FIK.Chain3D(0xbb0077);
+		this.skeleton = this.createSkeleton(robot);
 
-		let chain = new FIK.Chain3D(0xbb0077);
-		const revolute = [];
-		const fixed = [];
-		const other = [];
+		// Skeleton visualization
+        /* 
+		let root = this.skeleton[0];
+		root.position.y = 2;
+        let helper = new SkeletonHelper(root);
+        scene.add(helper);
+        scene.add(root);
+		*/
+		
+		// Base bone
+		let bonePos = new Vector3();
+		let nextPos = new Vector3();
+		let difference = new Vector3();
+		
+		for (let i = 1; i < this.skeleton.length - 1; i++) {
+			let bone = this.skeleton[i];
+			let next = this.skeleton[i+1];
+			let joint = bone.robotJoint;
 
-		for (let i = 0; i < robot.jointsOrdered.length; i++) {
-			const joint = robot.jointsOrdered[i];
-			let link = robot.getLinkForJoint(joint);
+			bone.getWorldPosition(bonePos);
+			next.getWorldPosition(nextPos);
+			difference.addVectors(bonePos, nextPos.negate());
 
-			let p = new Vector3();
-			p = joint.getWorldPosition(p);
-			p.z += 1 + i/10;
+			let distance = difference.length();
+			let direction = FIK.V3(...difference);
+			let jointAxis = FIK.V3(...joint.axis);
 			
-			if (joint.axis) {
-				let q = new Quaternion().setFromAxisAngle(joint.axis, 0);
-				q.multiplyQuaternions(joint.origQuaternion || joint.quaternion, q);
-				let e = new Euler().setFromQuaternion(q);
-				let axis = e.toVector3();
-				//axis.applyMatrix4(robot.loadedModel.matrixWorld);
-				let arrow = new ArrowHelper(axis, p);
-				scene.add(arrow);
-			}
+			// TODO
+			// let angleReferenceVector = ???;
+			// chain.addConsecutiveHingedBone(direction, distance, 'local', jointAxis, joint.limit.lower, joint.limit.upper, jointReference);
+
+			this._ikchain.addConsecutiveFreelyRotatingHingedBone(direction, distance, 'local', jointAxis);
+		}
+
+		this._solver.add(this._ikchain, robot.tcp.object);
+	}
+
+	solve(target, tip, joints, {
+        apply = false,
+    } = {}) {
+		this._solver.update();
+		let solution = {};
+
+		for (let i = 0; i < this._ikchain.bones.length; i++) {
+			let ikBone = this._ikchain.bones[i];
+			let angle = ikBone.rotor;
 			
-			switch (joint._jointType) {
-				case 'revolute':
-					revolute.push(p);
-					break;
-				
-				case 'fixed':
-					fixed.push(p);
-					break;
-				
-				default:
-					console.log(joint._jointType)
-					other.push(p);
-					break;
+			let joint = this.skeleton[i];
+			solution[joint.name] = angle;
+			
+			if (apply) {
+				joint.setJointValue(angle);
 			}
 		}
 
-		showPoints(scene, revolute);
-		showPoints(scene, fixed, 0xff0000);
-		showPoints(scene, other, 0x0000ff);
+		return solution;
 	}
-
-	solve = undefined;
 };
 
 export default FABRIK;

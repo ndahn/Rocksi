@@ -42,7 +42,7 @@ class Niryo extends Robot {
 			joint_3: -0.68,
 			joint_4: 0,
 			joint_5: -0.73,
-			joint_6: -0.01,
+			joint_6: -0.01
 		};
 
 		this.tcp.parent = 'hand_link';

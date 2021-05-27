@@ -1,4 +1,4 @@
-import { Vector3, Quaternion, Object3D } from 'three'
+import { Vector3 } from 'three'
 
 /*
  * Cyclic Coordinate Descent
