@@ -23,31 +23,68 @@ export class SimObject extends THREE.Mesh {
         this.hasBody = false;
         this.movable = true;
         this.spawnPosition = new THREE.Vector3(5, 0, this.size.z * .5);
-        this.spawnRotation = new THREE.Euler(1, 0, 0);
+        this.spawnRotation = new THREE.Euler(0, 0, 0);
         this.body = undefined;
-        this.control = null;
+        this.control = null; //undefined...
         this.fieldValues = this._calcFieldValues();
+        this.colour = '#eb4034'
     }
     size = new THREE.Vector3(.5, .5, .5);
 
     _calcFieldValues() {
         let fieldValues = [];
         let radValues = [];
+
         this.spawnPosition.toArray(fieldValues);
-        this.spawnRotation.toArray(radValues); //NaN error... TODO: fix it :D 
-        console.log('init radValues: ', radValues);
-        for (let i = 0; i < 2; i++) {
+        this.spawnRotation.toArray(radValues);
+        //console.log('_calcFieldValues', this.spawnPosition);
+        for (let i = 0; i < 3; i++) {
             let val = this._radToDeg(radValues[i]);
-            //val = val.toFixed(0);
-            console.log('init val: ', radValues[i]);
-            fieldValues.push(val);
+            fieldValues.push(parseInt(val.toFixed()));
         }
-        console.log('init fieldValues: ',fieldValues);
+
         return fieldValues;
     }
 
-    _radToDeg (rad) { return rad * Math.Pi/180; }
-    _degToRad (deg) { return deg * 180/Math.Pi; }
+    updateFieldValues() {
+        this.fieldValues = this._calcFieldValues();
+    }
+
+    _radToDeg (rad) { return rad * 180 / Math.PI; }
+    _degToRad (deg) { return  deg * Math.PI / 180.0; }
+
+    getFieldValues() {
+        return this.fieldValues;
+    }
+
+    setFieldValues(fieldValues) {
+        this.fieldValues = fieldValues;
+    }
+
+    _fieldValuesToPos(fieldValues) {
+        let posArray = [];
+        let eulArray = [];
+        for (let i = 0; i < 3; i++) {
+            posArray.push(fieldValues[i]);
+            eulArray.push(parseFloat(this._degToRad(fieldValues[i + 3]).toFixed(3)));
+        }
+
+        for (let i = 0; i < 2; i++) {
+            this.spawnPosition.setComponent(i, posArray[i]);
+        }
+        this.spawnPosition.setComponent(2, posArray[2] + this.size.z * .5);
+        this.spawnRotation.fromArray(eulArray);
+    }
+
+    updateFromFieldValues() {
+        this._fieldValuesToPos(this.fieldValues)
+        this.updatePos(this.spawnPosition, this.spawnRotation);
+    }
+
+    updatePos(vector, euler)  {
+        this.position.copy(vector);
+        this.setRotationFromEuler(euler);
+    }
 
     render() { requestAF(); }
 
@@ -95,32 +132,9 @@ export class SimObject extends THREE.Mesh {
         this.quaternion.copy(this.body.quaternion);
     }
 
-    getValues() {
-        return this.fieldValues;
-    }
-
-    setValues(fieldValues) {
-        this.fieldValues = fieldValues;
-        this._updateFromFieldValues(fieldValues);
-    }
-
-    _updateFromFieldValues(fieldValues) {
-        let posArray = [];
-        let eulArray = [];
-        for (let i = 0; i < 2; i++) {
-            posArray.push(fieldValues[i]);
-            eulArray.push(this._degToRad(fieldValues[i + 3]).toFixed(2));
-        }
-
-        for (let i = 0; i < 2; i++) {
-            this.spawnPosition.setComponent(i, posArray[i]);
-        }
-
-        this.spawnRotation.fromArray(eulArray);
-    }
-
     add() {
         const scene = getScene();
+        this.updateFromFieldValues(this.fieldValues);
         scene.add(this);
         this.initTransformControl();
         this.render();
@@ -151,6 +165,7 @@ export class SimObject extends THREE.Mesh {
 
                 this.spawnPosition.copy(this.position);
                 this.spawnRotation.copy(this.rotation);
+                this.fieldValues = this._calcFieldValues();
             }
 
         });
@@ -189,14 +204,6 @@ export class SimObject extends THREE.Mesh {
 
     setColour(colour) {
         this.material = new THREE.MeshPhongMaterial({ color: colour });
-    }
-
-    update() {
-
-    }
-
-    changeType(type) {
-        this.update();
     }
 
     reset() {
@@ -247,28 +254,30 @@ function stackSimObject(simObject) {
                     simObject.spawnPosition.z = simObject.spawnPosition.z + zShift;
                 }
             }
+
         }
+    simObject.updateFieldValues();
     return simObject;
 }
 
-function createBoxMesh(simObject, colour) {
+function createBoxMesh(simObject) {
     simObject.geometry = new THREE.BoxBufferGeometry( simObject.size.x,
                                                     simObject.size.y,
                                                     simObject.size.z,
                                                     10,
                                                     10);
 
-    simObject.material = new THREE.MeshPhongMaterial({ color: colour });
+    simObject.material = new THREE.MeshPhongMaterial({ color: simObject.colour });
     return simObject;
 }
 
-function createCylinderMesh(simObject, colour) {
+function createCylinderMesh(simObject) {
     simObject.geometry = new THREE.CylinderGeometry(.3,
                                                         0,
                                                         .5,
                                                         10);
 
-    simObject.material = new THREE.MeshPhongMaterial({ color: colour });
+    simObject.material = new THREE.MeshPhongMaterial({ color: simObject.colour });
     return simObject;
 }
 
@@ -277,44 +286,28 @@ function createMesh(simObject, colour) {
     if (simObject.type === 'cube') {
         let shiftedSimObject = stackSimObject(simObject);
         simObject = shiftedSimObject;
-        simObject = createBoxMesh(simObject, colour);
+        simObject = createBoxMesh(simObject);
     }
 
     if (simObject.type === 'cylinder') {
         let shiftedSimObject = stackSimObject(simObject);
         simObject = shiftedSimObject;
-        simObject = createCylinderMesh(simObject, colour);
+        simObject = createCylinderMesh(simObject);
     }
 }
 
 //Functions for simObjects
-export function addSimObject(blockUUID, inputChild, colourChild) {
+export function addSimObject(blockUUID, fieldValues, pickedColour) {
     let newSimObject = new SimObject;
     newSimObject.name = blockUUID;
-    if (inputChild != undefined) {
-        newSimObject.spawnPosition.x = inputChild.getFieldValue('X');
-        newSimObject.spawnPosition.y = inputChild.getFieldValue('Y');
-        newSimObject.spawnPosition.z = inputChild.getFieldValue('Z') + newSimObject.size.z * 0.5;
-        let rx = inputChild.getFieldValue('ROLL') * .017;
-        let ry = inputChild.getFieldValue('PITCH') * .017;
-        let rz = inputChild.getFieldValue('YAW') * .017;
-        newSimObject.spawnRotation.copy(new THREE.Euler(rx, ry, rz));
-
+    if (fieldValues != undefined) {
+        newSimObject.setFieldValues(fieldValues);
+        newSimObject.updateFromFieldValues();
     }
-    if (colourChild != undefined) {
-        if (colourChild.type == 'colour_random') {
-            var colour = randomColour();
-            console.log('Colour: ',colour);
-        }
-        if (colourChild.type == 'colour_picker') {
-            var colour = colourChild.getFieldValue('COLOUR');
-            console.log('Colour: ',colour);
-        }
+    if (pickedColour != undefined) {
+        newSimObject.colour = pickedColour;
     }
-
-    createMesh(newSimObject, colour);
-    newSimObject.position.copy(newSimObject.spawnPosition);
-    newSimObject.setRotationFromEuler(newSimObject.spawnRotation);
+    createMesh(newSimObject);//This has to be done differentliy
     newSimObject.createBody();
     newSimObject.add();
     simObjects.push(newSimObject);
