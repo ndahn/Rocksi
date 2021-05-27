@@ -6,14 +6,9 @@ import { getSimObject,
 import { Euler } from "three"
 
 const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
-// pi/180 approximation:
-const d2r = .017
-// euler angles...
-var rx, ry, rz;
 
 Blockly.Blocks['add_sim_object'] = {
 	init: function () {
-        var thisBlock = this;
         this.jsonInit({
             type: "add_sim_object",
             message0: "Generiert einen %1",
@@ -59,56 +54,43 @@ Blockly.Blocks['add_sim_object'] = {
     },
 
     getPosition: function () {
-        var thisBlock = this;
-        var fieldValues = [];
-        var simObject = getSimObject(thisBlock.id);
+        const thisBlock = this;
+        let fieldValues = [];
+        const simObject = getSimObject(thisBlock.id);
+
         if (simObject != undefined) {
-            fieldValues = simObject.getValues()
+            fieldValues = simObject.getFieldValues();
         }
         return fieldValues;
     },
 
 	onchange: function (event) {
-        var thisBlock = this;
-        var children = thisBlock.getChildren();
-        var inputChild;
-        var colourChild;
-        for (var i = 0; i < children.length; i++) {
-            if (children[i].type == 'pose') {
-                inputChild = children[i];
+        const pose = this.getInputTargetBlock('POSE');
+        const colour = this.getInputTargetBlock('COLOUR');
+        if (pose != null && event.blockId === pose.id && fieldKeys.includes(event.name)) {
+            let fieldValues = [];
+            const simObject = getSimObject(this.id)
+            for (let i = 0; i < fieldKeys.length; i++) {
+                fieldValues.push(pose.getFieldValue(fieldKeys[i]));
             }
-            if (children[i].type == 'colour_picker') {
-                colourChild = children[i];
-            }
-            if (children[i].type == 'colour_random') {
-                colourChild = children[i];
-            }
-        }
-
-        if (inputChild != undefined && event.blockId === inputChild.id && fieldKeys.includes(event.name)) {
-            var simObject = getSimObject(thisBlock.id);
-            var fieldValues = [];
-            for (let i = 0; i < fieldKeys.lenght; i++) {
-                fieldValues.push(inputChild.getFieldValue(fieldKeys[i]));
-            }
-            simObject.setValues(fieldValues);
+            simObject.setFieldValues(fieldValues);
+            simObject.updateFromFieldValues();
             simObject.render();
         }
 
-        if (colourChild != undefined && event.blockId === colourChild.id) {
-            var simObject = getSimObject(thisBlock.id);
+        if (colour != null && event.blockId === colour.id) {
+            var simObject = getSimObject(this.id);
 
-            if (colourChild.type == 'colour_random') {
-                var colour = randomColour();
-                console.log('Colour: ',colour);
+            if (colour.type == 'colour_random') {
+                var ranColour = randomColour();
+                simObject.setColour(ranColour);
             }
 
-            if (colourChild.type == 'colour_picker') {
-                var colour = colourChild.getFieldValue('COLOUR');
-                console.log('Colour: ',colour);
+            if (colour.type == 'colour_picker') {
+                var pickColour = colour.getFieldValue('COLOUR');
+                simObject.setColour(pickColour);
             }
 
-            simObject.setColour(colour);
             simObject.render();
         }
     }
