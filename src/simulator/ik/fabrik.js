@@ -7,9 +7,8 @@ Object.assign(window, { FIK });
 
 class FABRIK {
 	constructor(scene, robot) {
-		this._solver = new FIK.Structure3D();
-		this._solver.setFixedBaseMode(true);
 		this._ikchain = new FIK.Chain3D(0xbb0077);
+		this._ikchain.setFixedBaseMode(true);
 		this.skeleton = this.createSkeleton(robot);
 
 		// Skeleton visualization
@@ -45,15 +44,26 @@ class FABRIK {
 
 			this._ikchain.addConsecutiveFreelyRotatingHingedBone(direction, distance, 'local', jointAxis);
 		}
-
-		this._solver.add(this._ikchain, robot.tcp.object);
 	}
 
-	solve(target, tip, joints, {
+	solve(target, robot, ikjoints, {
         apply = false,
     } = {}) {
-		this._solver.update();
+		this._ikchain.solveForTarget(target);
 		let solution = {};
+		
+		let locked = [];
+		let limits = null;
+
+		// Lock the robot's joints that are not appearing in ikjoints in place
+		if (ikjoints.length && ikjoints.length < this.skeleton) {
+			for (let bone of this.skeleton) {
+				if (!ikjoints.includes(bone.robotJoint)) {
+					locked.push(bone);
+				}
+			}
+			limits = this.lockJoints(locked);
+		}
 
 		for (let i = 0; i < this._ikchain.bones.length; i++) {
 			let ikBone = this._ikchain.bones[i];
@@ -67,7 +77,38 @@ class FABRIK {
 			}
 		}
 
+		this.unlockJoints(locked, limits);
 		return solution;
+	}
+
+	lockJoints(bones) {
+		let limits = {};
+
+		for (let bone of bones) {
+			let joint = bone.joint;
+
+			limits[bone] = {
+				min: joint.min,
+				max: joint.max,
+				freeHinge: joint.freeHinge
+			};
+
+			joint.min = joint.max = joint.rotor;
+			joint.freeHinge = false;
+		}
+
+		return limits;
+	}
+
+	unlockJoints(bones, limits) {
+		for (let bone in bones) {
+			let joint = bone.joint;
+			let limit = limits[bone];
+
+			joint.min = limit.min;
+			joint.max = limit.max;
+			joint.freeHinge = limit.freeHinge;
+		}
 	}
 };
 

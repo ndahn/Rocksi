@@ -256,7 +256,7 @@ function onTargetChange() {
 	// Do the IK if the target has been moved
 	ik.solve(
 		tcptarget,
-		robot.tcp.object,
+		robot,
 		robot.ikjoints,
 		{
 			iterations: 1,

@@ -204,7 +204,7 @@ class TheSimulation {
 
                 const solution = this.ik.solve(
                     ikTarget,
-                    robot.tcp.object,
+                    robot,
                     robot.ikjoints,
                     {
                         iterations: 1,

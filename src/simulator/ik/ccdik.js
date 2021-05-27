@@ -7,7 +7,7 @@ import { Vector3 } from 'three'
 class CCDIK {
     constructor(scene, robot) {}
 
-    solve(target, tip, joints, {
+    solve(target, robot, joints, {
         iterations = 1,
         jointLimits = {},
         apply = false
@@ -30,7 +30,7 @@ class CCDIK {
         }
 
         target.getWorldPosition(targetPosition);
-        tip.getWorldPosition(tipPosition);
+        robot.tcp.object.getWorldPosition(tipPosition);
 
         for (let iter = 0; iter < iterations; iter++) {
             for (let i = joints.length - 1; i >= 0; i--) {
