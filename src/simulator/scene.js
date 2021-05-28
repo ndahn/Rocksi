@@ -34,7 +34,8 @@ import URDFLoader from "urdf-loader";
 
 // import { loadCached } from "../cachedb";
 // import makeRock from './objects/rock'
-import { default as IKSolver } from "./ik/ccdik"
+//import { default as IKSolver } from "./ik/ccdik"
+import { default as IKSolver } from "./ik/fabrik"
 import Simulation from "./simulation"
 import { popInfo } from '../alert'
 

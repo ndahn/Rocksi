@@ -1,4 +1,4 @@
-import { Vector3, SkeletonHelper } from "three"
+import { Vector3 } from "three"
 
 var FIK = require("@aminere/fullik")
 // FIK uses its own namespace which is kindof dumb...
@@ -9,9 +9,21 @@ class FABRIK {
 	constructor(scene, robot) {
 		this._ikchain = new FIK.Chain3D(0xbb0077);
 		this._ikchain.setFixedBaseMode(true);
-		this.skeleton = this.createSkeleton(robot);
+		this.skeleton = robot.createSkeleton();
 
 		// Skeleton visualization
+		/*
+		let points = [];
+		let tmp = new Vector3();
+		let off = 0.0;
+		for (let b of this.skeleton) {
+			b.getWorldPosition(tmp);
+			off += 0.5;
+			tmp.y += off;
+			points.push(tmp.clone());
+		}
+		showPoints(scene, points);
+		*/
         /* 
 		let root = this.skeleton[0];
 		root.position.y = 2;
@@ -19,24 +31,30 @@ class FABRIK {
         scene.add(helper);
         scene.add(root);
 		*/
-		
-		// Base bone
-		let bonePos = new Vector3();
+
+		let pos = new Vector3();
 		let nextPos = new Vector3();
 		let difference = new Vector3();
+
+		// Base bone the others can attach to
+		this.skeleton.origin.getWorldPosition(pos);
+		this.skeleton.bones[0].getWorldPosition(nextPos);
+		this._ikchain.addBone(new FIK.Bone3D(new FIK.V3(pos.x, pos.y, pos.z), 
+											 new FIK.V3(nextPos.x, nextPos.y, nextPos.z))
+						 	 );
 		
-		for (let i = 1; i < this.skeleton.length - 1; i++) {
-			let bone = this.skeleton[i];
-			let next = this.skeleton[i+1];
+		for (let i = 0; i < this.skeleton.bones.length; i++) {
+			let bone = this.skeleton.bones[i];
+			let next = this.skeleton.bones[i + 1] || this.skeleton.tip;
 			let joint = bone.robotJoint;
 
-			bone.getWorldPosition(bonePos);
-			next.getWorldPosition(nextPos);
-			difference.addVectors(bonePos, nextPos.negate());
+			bone.getWorldPosition(pos);
+			next.getWorldPosition(nextPos)
+			difference.addVectors(pos, nextPos.clone().negate());
 
 			let distance = difference.length();
-			let direction = FIK.V3(...difference);
-			let jointAxis = FIK.V3(...joint.axis);
+			let direction = new FIK.V3(difference.x, difference.y, difference.z);
+			let jointAxis = new FIK.V3(joint.axis.x, joint.axis.y, joint.axis.z);
 			
 			// TODO
 			// let angleReferenceVector = ???;
@@ -56,8 +74,8 @@ class FABRIK {
 		let limits = null;
 
 		// Lock the robot's joints that are not appearing in ikjoints in place
-		if (ikjoints.length && ikjoints.length < this.skeleton) {
-			for (let bone of this.skeleton) {
+		if (ikjoints.length && ikjoints.length < this.skeleton.bones.length) {
+			for (let bone of this.skeleton.bones) {
 				if (!ikjoints.includes(bone.robotJoint)) {
 					locked.push(bone);
 				}
@@ -65,11 +83,11 @@ class FABRIK {
 			limits = this.lockJoints(locked);
 		}
 
-		for (let i = 0; i < this._ikchain.bones.length; i++) {
+		for (let i = 0; i < this._ikchain.bones.length - 1; i++) {
 			let ikBone = this._ikchain.bones[i];
-			let angle = ikBone.rotor;
+			let angle = ikBone.joint.rotor;
 			
-			let joint = this.skeleton[i];
+			let joint = this.skeleton.bones[i].robotJoint;
 			solution[joint.name] = angle;
 			
 			if (apply) {
@@ -85,7 +103,7 @@ class FABRIK {
 		let limits = {};
 
 		for (let bone of bones) {
-			let joint = bone.joint;
+			let joint = bone.robotJoint;
 
 			limits[bone] = {
 				min: joint.min,
@@ -101,8 +119,8 @@ class FABRIK {
 	}
 
 	unlockJoints(bones, limits) {
-		for (let bone in bones) {
-			let joint = bone.joint;
+		for (let bone of bones) {
+			let joint = bone.robotJoint;
 			let limit = limits[bone];
 
 			joint.min = limit.min;
