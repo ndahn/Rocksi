@@ -1,9 +1,9 @@
 import { PointsMaterial, Geometry, Points } from "three";
 
-function showPoints(scene, positions, color) {
+function showPoints(scene, positions, color = null) {
 	let material = new PointsMaterial({
 			size: 10,
-			color: color || 0x00ff00,
+			color: color !== null ? color : 0x00ff00,
 			sizeAttenuation: false,
 			depthTest: false,
             depthWrite: true,
