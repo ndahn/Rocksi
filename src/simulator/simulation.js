@@ -76,6 +76,7 @@ class TheSimulation {
         if (simObjects != undefined) {
             for (const simObject of simObjects) {
                 simObject.reset();
+                simObject.addTransformListeners();
                 if (visible) { simObject.makeVisible(); }
                 else if (!visible) { simObject.hide(); }
             }
@@ -377,8 +378,9 @@ class TheSimulation {
     //Lukas
     startPhysicalBody(simObjectsIdx) {
         const simObjects = getSimObjects();
+        this.physicsDone = false;
         simObjects[simObjectsIdx].makeVisible();
-
+        simObjects[simObjectsIdx].removeTransformListners(); //also removes the listners for the raycaster
         simObjects[simObjectsIdx].addBodyToWorld();
         simObjects[simObjectsIdx].updateBody();
         simObjects[simObjectsIdx].body.wakeUp();

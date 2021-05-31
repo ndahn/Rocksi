@@ -31,7 +31,7 @@ export class SimObject extends Mesh {
         this.spawnPosition = new Vector3(5, 0, this.size.z * .5);
         this.spawnRotation = new Euler(0, 0, 0);
         this.body = undefined;
-        this.control = undefined; //undefined...
+        this.control = undefined;
         this._fieldValues = this._calcFieldValues();
         this.colour = '#eb4034'
     }
@@ -85,7 +85,7 @@ export class SimObject extends Mesh {
     }
 
     updateFromFieldValues() {
-        this._fieldValuesToPos(this.fieldValues)
+        this._fieldValuesToPos(this._fieldValues)
         this.updatePos(this.spawnPosition, this.spawnRotation);
     }
 
