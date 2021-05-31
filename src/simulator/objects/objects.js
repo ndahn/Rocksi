@@ -224,7 +224,6 @@ export function setTCSimObjectsOnClick(raycaster) {
     }
 }
 
-
 //Returns a list with all names of simObjects (the uuids of the blockly blocks)
 //currently in the simObjects array
 //I need to implement some form of error checking here.
