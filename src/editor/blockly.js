@@ -54,7 +54,7 @@ import Simulation from '../simulator/simulation'
 var blocklyArea = document.querySelector('.blocks-container');
 var blocklyDiv = document.getElementById('blocks-canvas');
 
-const waitToFinish = 2000; //Time to wait for the physics simulation to finish. Lukas
+const waitToFinish = 200; //Time to wait for the physics simulation to finish. Lukas
 
 var workspace = Blockly.inject(
     blocklyDiv,
@@ -297,11 +297,6 @@ function pauseExecution() {
     if (interpreter) {
         interpreter.paused_ = true;
     }
-    else {
-        setTimeout(() => {
-            console.log('Reset in 5 seconds...');
-        }, waitToFinish );
-    }
 }
 
 function executeProgram() {
@@ -317,20 +312,23 @@ function executeProgram() {
         // See simulationAPI above.
         let hasMore = interpreter.run();
         if (!hasMore) {
-            if (simulation.getPhysicsDone()) {
-                onProgramFinished();
-            }
-            else {
-                //new function for this -> Lukas
-                console.log('Reset in ' + waitToFinish * 0.001 + ' seconds...');
-                popInfo('Bitte ' + waitToFinish * 0.001 + ' Sekunden warten...');
-                setTimeout(() => {
-                    executeProgram();
-                }, waitToFinish );}
+            popInfo('Bitte warten bis die Simulation abgeschlossen ist...');
+            waitForPhysicsSim();
         }
     }
     catch (e) {
         onProgramError(e);
+    }
+}
+
+function waitForPhysicsSim() {
+    if (!simulation.getPhysicsDone()) {
+        console.log('Waiting ' + waitToFinish * 0.001 + ' seconds...');
+        setTimeout(() => {
+            waitForPhysicsSim();
+        }, waitToFinish );
+    } else {
+        onProgramFinished();
     }
 }
 
