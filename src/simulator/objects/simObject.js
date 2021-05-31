@@ -85,7 +85,7 @@ export class SimObject extends Mesh {
     }
 
     updateFromFieldValues() {
-        this._fieldValuesToPos(this._fieldValues)
+        this._fieldValuesToPos(this.fieldValues)
         this.updatePos(this.spawnPosition, this.spawnRotation);
     }
 
