@@ -391,6 +391,7 @@ function watchSpawnBlocks(event) {
                         pickedColour = undefined;
                     }
                 }
+                console.log(pickedColour);
                 addSimObject(newBlock.id, fieldValues, pickedColour);
             }
         }
