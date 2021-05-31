@@ -54,9 +54,8 @@ Blockly.Blocks['add_sim_object'] = {
     },
 
     getPosition: function () {
-        const thisBlock = this;
         let fieldValues = [];
-        const simObject = getSimObject(thisBlock.id);
+        const simObject = getSimObject(this.id);
 
         if (simObject != undefined) {
             fieldValues = simObject.getFieldValues();
