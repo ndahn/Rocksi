@@ -33,7 +33,8 @@ import './blocks/pose'
 //imports for adding and removing 3D-objects, Lukas
 import { addSimObject,
          remSimObjects,
-         getSimObjects } from '../simulator/objects/objects'
+         getSimObjects,
+         randomColour } from '../simulator/objects/objects'
 
 
 import { popSuccess, popWarning, popError, popInfo } from '../alert'
@@ -378,10 +379,14 @@ function watchSpawnBlocks(event) {
                 if (colour != null) {
                     if (colour.type == 'colour_picker') {
                         pickedColour = color.getFieldValue('COLOUR');
+                    }
+                    if (colour.type == 'colour_random') {
+                        pickedColour = randomColour();
                     } else {
                         pickedColour = undefined;
                     }
                 }
+                console.log(pickedColour);
                 addSimObject(newBlock.id, fieldValues, pickedColour);
             }
         }

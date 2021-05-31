@@ -18,28 +18,12 @@ import { getWorld } from '../physics';
 let simObjects = [];
 
 //Functions for creating meshes
-function stackSimObject(simObject) {
-        for (let k = 0; k < simObjects.length; k++) {
-            if (simObjects[k].name != simObject.name) {
-                if (simObject.spawnPosition.distanceTo(simObjects[k].spawnPosition)
-                    < (simObject.size.z * .5)) {
-
-                    let zShift = simObjects[k].size.z;
-                    simObject.spawnPosition.z = simObject.spawnPosition.z + zShift;
-                }
-            }
-
-        }
-    simObject.updateFieldValues();
-    return simObject;
-}
-
 function createBoxMesh(simObject) {
     const geometry = new BoxBufferGeometry( simObject.size.x,
-                                                  simObject.size.y,
-                                                  simObject.size.z,
-                                                  10,
-                                                  10);
+                                            simObject.size.y,
+                                            simObject.size.z,
+                                            10,
+                                            10);
 
     const material = new MeshPhongMaterial({ color: simObject.colour });
     return [geometry, material];
@@ -72,12 +56,14 @@ function addGeometry(simObject) {
 export function addSimObject(blockUUID, fieldValues, pickedColour) {
     let newSimObject = new SimObject;
     newSimObject.name = blockUUID;
+    console.log(pickedColour);
     if (fieldValues != undefined) {
         newSimObject.setFieldValues(fieldValues);
         newSimObject.updateFromFieldValues();
     }
     if (pickedColour != undefined) {
         newSimObject.colour = pickedColour;
+        console.log(pickedColour);
     }
     addGeometry(newSimObject);
     setSpawnPosition(newSimObject);
@@ -87,6 +73,7 @@ export function addSimObject(blockUUID, fieldValues, pickedColour) {
     simObjects.push(newSimObject);
 }
 
+//Functions for positioning simObjects
 function setSpawnPosition(simObject) {
     switch (simObject.type) {
         case 'cube':
@@ -100,7 +87,6 @@ function setSpawnPosition(simObject) {
 }
 
 function stackCubes(simObject) {
-
     for (let k = 0; k < simObjects.length; k++) {
         if (simObject.spawnPosition.distanceTo(simObjects[k].spawnPosition)
                     < (simObject.size.z * .5)) {
