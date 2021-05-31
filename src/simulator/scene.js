@@ -28,7 +28,7 @@ Object3D.DefaultUp = new Vector3(0, 0, 1);
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 
-var ResizeSensor = require('css-element-queries/src/ResizeSensor');
+var ResizeSensor = require("css-element-queries/src/ResizeSensor");
 
 import { XacroLoader } from "xacro-parser";
 import URDFLoader from "urdf-loader";
@@ -38,7 +38,8 @@ import URDFLoader from "urdf-loader";
 import { default as IKSolver } from "./ik/ccdik"
 //import { default as IKSolver } from "./ik/fabrik"
 import Simulation from "./simulation"
-import { popInfo } from '../alert'
+import { initGui } from "./gui"
+import { popInfo } from "../alert"
 
 const path = require('path');
 
@@ -145,8 +146,12 @@ function initScene() {
 		1,
 		2000
 	);
-	camera.position.set(8, 20, 17);
-	camera.lookAt(0, 0, 10)
+
+	camera.defaultPosition = new Vector3(8, 20, 17);
+	camera.defaultLookAt = new Vector3(0, 0, 10);
+
+	camera.position.set(camera.defaultPosition);
+	camera.lookAt(camera.defaultLookAt);
 
 	// Grid
 	//const grid = new PolarGridHelper(12, 16, 8, 64, 0x888888, 0xaaaaaa);
@@ -229,6 +234,8 @@ function initScene() {
 	let domParent = document.querySelector('.sim-container');
 	new ResizeSensor(domParent, onCanvasResize);
 	onCanvasResize();
+
+	initGui(robot, camera);
 }
 
 function onCanvasResize() {
@@ -263,7 +270,7 @@ function onTargetChange() {
 	ik.solve(
 		tcptarget,
 		robot,
-		robot.ikjoints,
+		robot.ikEnabled,
 		{
 			iterations: 3,
 			jointLimits: robot.interactionJointLimits,

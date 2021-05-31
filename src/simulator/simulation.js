@@ -1,4 +1,3 @@
-import * as Blockly from "blockly"
 import { Object3D, Vector3, Euler } from "three"
 var TWEEN = require('@tweenjs/tween.js');
 
@@ -205,7 +204,7 @@ class TheSimulation {
                 const solution = this.ik.solve(
                     ikTarget,
                     robot,
-                    robot.ikjoints,
+                    robot.ikEnabled,
                     {
                         iterations: 1,
                         jointLimits: robot.interactionJointLimits,
