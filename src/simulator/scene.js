@@ -217,8 +217,10 @@ function initScene() {
 	if (canHover) {
 		transformControl.visible = false;
         raycaster = new Raycaster();
-		container.addEventListener('mousemove', onMouseMove);
-        container.addEventListener('click', onClick); //Only used for TransformControls for simObjects, Lukas
+		/*container.addEventListener('mousemove', onMouseMove);
+        container.addEventListener('click', onClick);
+        replaced by: addListeners()*/
+        addListeners();
 	}
 
 	let domParent = document.querySelector('.sim-container');
@@ -291,6 +293,20 @@ function render() {
 }
 
 //functions for simObject stuff, Lukas
+export function removeListeners() {
+    if (container != undefined) {
+        container.removeEventListener('mousemove', onMouseMove);
+        container.removeEventListener('click', onClick); //Only used for TransformControls for simObjects, Lukas
+    }
+}
+
+export function addListeners() {
+    if (container != undefined) {
+        container.addEventListener('mousemove', onMouseMove);
+        container.addEventListener('click', onClick); //Only used for TransformControls for simObjects, Lukas
+    }
+}
+
 function onClick() {
     setTCSimObjectsOnClick(raycaster);
 }

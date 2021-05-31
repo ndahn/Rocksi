@@ -10,7 +10,9 @@ import { TransformControls } from 'three/examples/jsm/controls/TransformControls
 import { requestAF,
          getScene,
          getRobot,
-         getControl } from '../scene';
+         getControl,
+         addListeners,
+         removeListeners } from '../scene';
 
 import { getWorld } from '../physics';
 
@@ -32,7 +34,7 @@ export class SimObject extends Mesh {
         this.spawnRotation = new Euler(0, 0, 0);
         this.body = undefined;
         this.control = null; //undefined...
-        this.fieldValues = this._calcFieldValues();
+        this._fieldValues = this._calcFieldValues();
         this.colour = '#eb4034'
     }
     size = new Vector3(.5, .5, .5);
@@ -55,18 +57,18 @@ export class SimObject extends Mesh {
     }
 
     updateFieldValues() {
-        this.fieldValues = this._calcFieldValues();
+        this._fieldValues = this._calcFieldValues();
     }
 
     _radToDeg (rad) { return rad * 180 / Math.PI; }
     _degToRad (deg) { return  deg * Math.PI / 180.0; }
 
     getFieldValues() {
-        return this.fieldValues;
+        return this._fieldValues;
     }
 
     setFieldValues(fieldValues) {
-        this.fieldValues = fieldValues;
+        this._fieldValues = fieldValues;
     }
 
     _fieldValuesToPos(fieldValues) {
@@ -85,7 +87,7 @@ export class SimObject extends Mesh {
     }
 
     updateFromFieldValues() {
-        this._fieldValuesToPos(this.fieldValues)
+        this._fieldValuesToPos(this._fieldValues)
         this.updatePos(this.spawnPosition, this.spawnRotation);
     }
 
@@ -148,35 +150,62 @@ export class SimObject extends Mesh {
         this.render();
     }
 
+    //Callback for the cange event
+    _change() {
+        //Sometimes the controls are not visible, but they will change the position/rotation.
+        //this is here to counter this behaviour
+        if (!this.control.visible) {
+            this.position.copy(this.spawnPosition);
+            this.setRotationFromEuler(this.spawnRotation);
+        }
+        this.render()
+    }
+    //callback for dragging-changed
+    _draggingCanged(event) {
+        const controlObj = getControl();
+        controlObj.orbitControls.enabled = ! event.value;
+    }
+    //callback for objectChange
+    _objectChange() {
+        if (this.control.visible) {
+            if (this.position.z < 0) { this.position.z = this.size.z * .5; }
+
+            this.spawnPosition.copy(this.position);
+            this.spawnRotation.copy(this.rotation);
+            this._fieldValues = this._calcFieldValues();
+        }
+    }
+
+    addTransformListeners() {
+        if (this.control) {
+            this.control.addEventListener('change', () => this._change());
+
+            this.control.addEventListener('dragging-changed',(event) => this._draggingCanged(event));
+
+            this.control.addEventListener('objectChange', () => this._objectChange());
+        }
+        addListeners(); //for the listeners in the scene
+
+    }
+
+    removeTransformListners() {
+        if (this.control) {
+            this.control.removeEventListener('change', () => this._change());
+
+            this.control.removeEventListener('dragging-changed',(event) => this._draggingCanged(event));
+
+            this.control.removeEventListener('objectChange', () => this._objectChange());
+        }
+        removeListeners();//for the listeners in the scene
+    }
+
     initTransformControl() {
         const controlObj = getControl();
         const scene = getScene();
 
         this.control = new TransformControls(controlObj.camera, controlObj.renderer.domElement);
-        this.control.addEventListener('change', render => {
-            //Sometimes the controls are not visible, but they will change the position/rotation.
-            //this is here to counter this behaviour
-            if (!this.control.visible) {
-                this.position.copy(this.spawnPosition);
-                this.setRotationFromEuler(this.spawnRotation);
-            }
-            this.render()
-        });
 
-        this.control.addEventListener('dragging-changed', (event) => {
-            controlObj.orbitControls.enabled = ! event.value;
-        });
-
-        this.control.addEventListener('objectChange', () => {
-            if (this.control.visible) {
-                if (this.position.z < 0) { this.position.z = this.size.z * .5; }
-
-                this.spawnPosition.copy(this.position);
-                this.spawnRotation.copy(this.rotation);
-                this.fieldValues = this._calcFieldValues();
-            }
-
-        });
+        this.addTransformListeners()
 
         this.control.attach(this);
         scene.add(this.control);
