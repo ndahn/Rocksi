@@ -46,7 +46,7 @@ class Niryo extends Robot {
 		};
 
 		this.tcp.parent = 'hand_link';
-		this.tcp.position = [0, 0, 0.1];
+		this.tcp.position = [0, 0, 0.08];
 		
 		this.ikEnabled = [
 			"joint_1",

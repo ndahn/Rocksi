@@ -1,4 +1,4 @@
-import { Vector3 } from 'three'
+import { Vector3, ArrowHelper } from 'three'
 
 /*
  * Cyclic Coordinate Descent
@@ -30,16 +30,16 @@ class CCDIK {
         }
 
         target.getWorldPosition(targetPosition);
-        robot.tcp.object.getWorldPosition(tipPosition);
-
+        
         for (let iter = 0; iter < iterations; iter++) {
+            // Rotate each joint so that the endeffector moves towards the target
             for (let i = joints.length - 1; i >= 0; i--) {
                 const joint = joints[i];
 
                 // Vector to the TCP and target from the joint's POV. This algorithm is iterative in the sense 
                 // that we update the tip position after every joint adjustment. The solution won't be perfect
                 // so running the solver again will improve on the previous solution.
-            
+                robot.tcp.object.getWorldPosition(tipPosition);  // changes with each joint!
                 let tcpDirection = joint.worldToLocal(tipPosition.clone()).normalize();
                 let targetDirection = joint.worldToLocal(targetPosition.clone()).normalize();
 
@@ -73,7 +73,7 @@ class CCDIK {
                 }
 
                 joint.setJointValue(angle);
-                solution[joint.name] = angle;
+                solution[joint.name] = joint.angle;
             }
         }
 

@@ -19,6 +19,7 @@ import {
 	LineBasicMaterial,
 	Raycaster,
 	Vector2,
+	ArrowHelper
 } from "three";
 
 // In ROS models Z points upwards
@@ -34,8 +35,8 @@ import URDFLoader from "urdf-loader";
 
 // import { loadCached } from "../cachedb";
 // import makeRock from './objects/rock'
-//import { default as IKSolver } from "./ik/ccdik"
-import { default as IKSolver } from "./ik/fabrik"
+import { default as IKSolver } from "./ik/ccdik"
+//import { default as IKSolver } from "./ik/fabrik"
 import Simulation from "./simulation"
 import { popInfo } from '../alert'
 
@@ -161,6 +162,10 @@ function initScene() {
 
 	// Robot
 	scene.add(robot.model);
+	// for (let joint of robot.arm.movable) {
+	// 	joint.add(new ArrowHelper(new Vector3(0, 0, 1), new Vector3(), 0.3, 0x0000ff));
+	// }
+	
 
 	// Lights
 	const light = new HemisphereLight(0xffeeee, 0x111122);
@@ -260,7 +265,7 @@ function onTargetChange() {
 		robot,
 		robot.ikjoints,
 		{
-			iterations: 1,
+			iterations: 3,
 			jointLimits: robot.interactionJointLimits,
 			apply: true
 		}
