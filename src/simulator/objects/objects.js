@@ -52,7 +52,7 @@ function createCylinderMesh(simObject) {
                                                         10);
 
     simObject.material = new MeshPhongMaterial({ color: simObject.colour });
-    return simObject;
+    return [geometry, material];
 }
 
 function addGeometry(simObject) {
