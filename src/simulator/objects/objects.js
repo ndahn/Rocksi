@@ -36,12 +36,14 @@ export class SimObject extends THREE.Mesh {
         let radValues = [];
 
         this.spawnPosition.toArray(fieldValues);
+        fieldValues[2] = fieldValues[2] - this.size.z * .5;
         this.spawnRotation.toArray(radValues);
         //console.log('_calcFieldValues', this.spawnPosition);
         for (let i = 0; i < 3; i++) {
             let val = this._radToDeg(radValues[i]);
             fieldValues.push(parseInt(val.toFixed()));
         }
+
 
         return fieldValues;
     }
@@ -134,7 +136,7 @@ export class SimObject extends THREE.Mesh {
 
     add() {
         const scene = getScene();
-        this.updateFromFieldValues(this.fieldValues);
+        this.updatePos(this.spawnPosition, this.spawnRotation)
         scene.add(this);
         this.initTransformControl();
         this.render();
@@ -261,19 +263,19 @@ function stackSimObject(simObject) {
 }
 
 function createBoxMesh(simObject) {
-    simObject.geometry = new THREE.BoxBufferGeometry( simObject.size.x,
-                                                    simObject.size.y,
-                                                    simObject.size.z,
-                                                    10,
-                                                    10);
+    const geometry = new THREE.BoxBufferGeometry( simObject.size.x,
+                                                  simObject.size.y,
+                                                  simObject.size.z,
+                                                  10,
+                                                  10);
 
-    simObject.material = new THREE.MeshPhongMaterial({ color: simObject.colour });
-    return simObject;
+    const material = new THREE.MeshPhongMaterial({ color: simObject.colour });
+    return [geometry, material];
 }
 
 function createCylinderMesh(simObject) {
     simObject.geometry = new THREE.CylinderGeometry(.3,
-                                                        0,
+                                                    0,
                                                         .5,
                                                         10);
 
@@ -281,22 +283,20 @@ function createCylinderMesh(simObject) {
     return simObject;
 }
 
-//creates a three mesh from an simObject depending on simObject.type
-function createMesh(simObject, colour) {
-    if (simObject.type === 'cube') {
-        let shiftedSimObject = stackSimObject(simObject);
-        simObject = shiftedSimObject;
-        simObject = createBoxMesh(simObject);
-    }
+function addGeometry(simObject) {
+    switch (simObject.type) {
+        case 'cube':
+            const mesh = createBoxMesh(simObject);
+            simObject.geometry = mesh[0];
+            simObject.material = mesh[1];
+            break;
 
-    if (simObject.type === 'cylinder') {
-        let shiftedSimObject = stackSimObject(simObject);
-        simObject = shiftedSimObject;
-        simObject = createCylinderMesh(simObject);
+        default:
+            console.error('Unknown SimObject Type: ', simObject.type);
+            break;
     }
 }
 
-//Functions for simObjects
 export function addSimObject(blockUUID, fieldValues, pickedColour) {
     let newSimObject = new SimObject;
     newSimObject.name = blockUUID;
@@ -307,12 +307,37 @@ export function addSimObject(blockUUID, fieldValues, pickedColour) {
     if (pickedColour != undefined) {
         newSimObject.colour = pickedColour;
     }
-    createMesh(newSimObject);//This has to be done differentliy
+    addGeometry(newSimObject);
+    setSpawnPosition(newSimObject);
     newSimObject.createBody();
     newSimObject.add();
+    newSimObject.updateFieldValues();
     simObjects.push(newSimObject);
 }
 
+function setSpawnPosition(simObject) {
+    switch (simObject.type) {
+        case 'cube':
+            stackCubes(simObject);
+            break;
+
+        default:
+            console.error('Unknown SimObject Type: ', simObject.type);
+            break;
+    }
+}
+
+function stackCubes(simObject) {
+
+    for (let k = 0; k < simObjects.length; k++) {
+        if (simObject.spawnPosition.distanceTo(simObjects[k].spawnPosition)
+                    < (simObject.size.z * .5)) {
+
+            let zShift = simObjects[k].size.z;
+            simObject.spawnPosition.z = simObject.spawnPosition.z + zShift;
+        }
+    }
+}
 
 //Removes the simObject from the simObjects array and from the threejs scene
 export function remSimObjects(ids) {
@@ -380,7 +405,6 @@ export function setTCSimObjectsOnClick(raycaster) {
         intersect.object.render();
     }
 }
-
 
 //Returns a list with all names of simObjects (the uuids of the blockly blocks)
 //currently in the simObjects array
