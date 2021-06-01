@@ -104,5 +104,7 @@ const lazyObserver = lozad();
 lazyObserver.observe();
 
 
+// Somehow loading blockly early improves page loading
+import 'blockly'
 import './simulator/scene'
 import './editor/blockly'
