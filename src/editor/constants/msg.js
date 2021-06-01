@@ -1,24 +1,23 @@
-import { Msg } from 'blockly'
+export const BlocklyCustomDE = {
+    UNDO: "\u21B6 Rückgängig",
+    REDO: "\u21B7 Wiederholen",
+    CLEAN_UP: "\u2833 Aufräumen",
+    DELETE_BLOCK: "\u2298 Löschen",
+    DELETE_X_BLOCKS: "\u2298 Lösche %1 Blöcke",
+    LOAD: "\u{1F845} Programm laden",
+    SAVE: "\u{1F847} Programm speichern",
+    CODE_EXPORT: "\u2756 Code exportieren",
 
-Msg['UNDO'] = "\u21B6 Rückgängig";
-Msg['REDO'] = "\u21B7 Wiederholen";
-Msg['CLEAN_UP'] = "\u2833 Aufräumen";
-Msg['DELETE_BLOCK'] = "\u2298 Löschen";
-Msg['DELETE_X_BLOCKS'] = "\u2298 Lösche %1 Blöcke";
-Msg['DELETE_ALL_BLOCKS'] = "\u2298 Löschen";
-Msg['LOAD'] = "\u{1F845} Programm laden";
-Msg['SAVE'] = "\u{1F847} Programm speichern";
-Msg['CODE_EXPORT'] = "\u26D7 Code exportieren";
+    DUPLICATE_BLOCK: "\u25D0 Klonen",
+    ADD_COMMENT: "\u270E Kommentar",
+    REMOVE_COMMENT: "\u{1F7A9} Kommentar löschen",
+    COLLAPSE_BLOCK: "\u25F2 Reduzieren",
+    EXPAND_BLOCK: "\u29C9 Erweitern",
+    DISABLE_BLOCK: "\u{1F5F2} Deaktivieren",
+    ENABLE_BLOCK: "\u{1F5F2} Aktivieren",
 
-Msg['DUPLICATE_BLOCK'] = "\u25D0 Klonen";
-Msg['ADD_COMMENT'] = "\u270E Kommentar";
-Msg['REMOVE_COMMENT'] = "\u{1F7A9} Kommentar löschen";
-Msg['COLLAPSE_BLOCK'] = "\u25F2 Reduzieren";
-Msg['EXPAND_BLOCK'] = "\u29C9 Erweitern";
-Msg['DISABLE_BLOCK'] = "\u25EF Deaktivieren";
-Msg['ENABLE_BLOCK'] = "\u{1F7BB} Aktivieren";
-
-Msg['EXEC_ERROR'] = "Programmfehler";
-Msg['EXEC_SUCCESS'] = "Programm abgeschlossen";
-Msg['EMPTY_PROGRAM'] = "Leeres Programm";
-Msg['SEE_CONSOLE'] = "Weitere Details sind in der Konsole.";
+    EXEC_ERROR: "Programmfehler",
+    EXEC_SUCCESS: "Programm abgeschlossen",
+    EMPTY_PROGRAM: "Leeres Programm",
+    SEE_CONSOLE: "Weitere Details in der Browser-Konsole.",
+}

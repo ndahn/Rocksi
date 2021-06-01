@@ -16,7 +16,7 @@ export function initGui(robot, cameraControl, renderCall) {
     let robotIdx = getCurrentRobotIndex();
     const robotList = gui.add('list', { name: 'Roboter', list: theRobots, value: robotIdx }).onChange( val => loadRobot(robotList, val) );
 
-    let gripperButtons = gui.add('button', { name: '', value: ['Öffnen', 'Schließen']}).onChange( val => setGripper(robot, val) );
+    let gripperButtons = gui.add('button', { name: '', value: ['Öffnen', 'Schließen']}).onChange( val => setGripper(val) );
     gripperButtons.label('Greifer', 1)
 
     let jointValuesRelative = getRobotJointValuesRelative(robot);
@@ -88,11 +88,11 @@ function loadRobot(robotList, robotName) {
     }
     else {
         robotList.setList(theRobots, robotIdx);
-        robotList.listHide();
+        robotList.close();
     }
 }
 
-function setGripper(robot, val) {
+function setGripper(val) {
     Simulation.getInstance().then(sim => {
         switch (val) {
             case 'Öffnen':

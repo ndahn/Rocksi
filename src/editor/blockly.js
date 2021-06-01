@@ -1,14 +1,14 @@
 import * as Blockly from 'blockly/core'
 import 'blockly/blocks'
 import 'blockly/javascript'
-import * as BlocklyDE from 'blockly/msg/de'
 
-import * as BlocklyDECustom from './constants/msg'
+import * as BlocklyDE from 'blockly/msg/de'
+import { BlocklyCustomDE } from './constants/msg'
 import './constants/colors'
 import './constants/params'
 
 Blockly.setLocale(BlocklyDE);
-Blockly.setLocale(BlocklyDECustom);
+Blockly.setLocale(BlocklyCustomDE);
 
 import './blocks/movement'
 import './blocks/objects'
