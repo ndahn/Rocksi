@@ -1,4 +1,5 @@
 import * as UIL from "uil"
+import Simulation from "./simulation"
 
 
 const theRobots = ['Franka', 'Niryo'];
@@ -9,14 +10,15 @@ let jointList = null;
 
 
 export function initGui(robot, cameraControl, renderCall) {
-    gui = new UIL.Gui({ css: 'h:20; w: 200; center: true; z-index: 99' });
+    gui = new UIL.Gui({ css: 'h:20; w: 200; z-index: 99' });
     gui.add('title', { name: 'Rocksi', prefix: 'v2.0' });
-
+    
     let robotIdx = getCurrentRobotIndex();
     const robotList = gui.add('list', { name: 'Roboter', list: theRobots, value: robotIdx }).onChange( val => loadRobot(robotList, val) );
-    gui.add('button', { name: '', value: ['Ansicht zurücksetzen'], p: 0 }).onChange( val => cameraControl.reset() );
-    gui.add('button', { name: '', value: ['Roboter zurücksetzen'], p: 0 }).onChange( val => resetRobot(robot, renderCall) );
-    
+
+    let gripperButtons = gui.add('button', { name: '', value: ['Öffnen', 'Schließen']}).onChange( val => setGripper(robot, val) );
+    gripperButtons.label('Greifer', 1)
+
     let jointValuesRelative = getRobotJointValuesRelative(robot);
     jointList = gui.add('graph', { name: 'Gelenkwinkel', value: jointValuesRelative, neg: true, precision: 2, h:80 }).onChange( vals => updateRobotJoints(robot, vals, renderCall) );
 
@@ -25,6 +27,9 @@ export function initGui(robot, cameraControl, renderCall) {
         let active = robot.ikEnabled.includes(joint.name);
         ikgroup.add('bool', { name: joint.name, value: active, h: 20 }).onChange( val => onJointIKChange(robot, joint.name, val) );
     }
+    
+    gui.add('button', { name: '', value: ['Roboter zurücksetzen'], p: 0 }).onChange( val => resetRobot(robot, renderCall) );
+    gui.add('button', { name: '', value: ['Ansicht zurücksetzen'], p: 0 }).onChange( val => cameraControl.reset() );
 
     gui.isOpen = false;
     gui.setHeight();
@@ -42,6 +47,7 @@ export function onRobotMoved(robot) {
     }
     jointList.setValue(jointValuesRelative);
 };
+
 
 function getCurrentRobotIndex() {
     let params = new URLSearchParams(location.search);
@@ -86,12 +92,21 @@ function loadRobot(robotList, robotName) {
     }
 }
 
-function resetRobot(robot, renderCallback) {
-    for (let jointName in robot.defaultPose) {
-        let angle = robot.defaultPose[jointName];
-        robot.joints[jointName].setJointValue(angle);
-    }
-    renderCallback();
+function setGripper(robot, val) {
+    Simulation.getInstance().then(sim => {
+        switch (val) {
+            case 'Öffnen':
+                sim.gripper_open();
+                break;
+
+            case 'Schließen':
+                sim.gripper_close();
+                break;
+
+            default: 
+                console.error('GUI event "' + val + '" not handled');
+        }
+    });
 }
 
 function updateRobotJoints(robot, values, renderCallback) {
@@ -114,4 +129,12 @@ function onJointIKChange(robot, jointName, enabled) {
     else if (!enabled && idx >= 0) {
         robot.ikEnabled.splice(idx, 1);
     }
+}
+
+function resetRobot(robot, renderCallback) {
+    for (let jointName in robot.defaultPose) {
+        let angle = robot.defaultPose[jointName];
+        robot.joints[jointName].setJointValue(angle);
+    }
+    renderCallback();
 }
