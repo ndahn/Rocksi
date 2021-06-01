@@ -5,14 +5,14 @@ var gui = null;
 const theRobots = ['Franka', 'Niryo'];
 
 
-export function initGui(robot, camera) {
+export function initGui(robot, cameraControl, renderCallback) {
     gui = new UIL.Gui({ css: 'h:20; w: 200; center: true; z-index: 99' });
     gui.add('title', { name: 'Rocksi', prefix: 'v2.0' });
 
     let robotIdx = getCurrentRobotIndex();
     const robotList = gui.add('list', { name: 'Roboter', list: theRobots, value: robotIdx }).onChange( val => loadRobot(robotList, val) );
-    gui.add('button', { name: '', value: ['Ansicht zurücksetzen'], p: 0 }).onChange( val => resetViewport(camera) );
-    gui.add('button', { name: '', value: ['Roboter zurücksetzen'], p: 0 }).onChange( val => resetRobot(robot) );
+    gui.add('button', { name: '', value: ['Ansicht zurücksetzen'], p: 0 }).onChange( val => cameraControl.reset() );
+    gui.add('button', { name: '', value: ['Roboter zurücksetzen'], p: 0 }).onChange( val => resetRobot(robot, renderCallback) );
     
     let ikgroup = gui.add('group', { name: 'IK Gelenke' });
     for (let joint of robot.arm.movable) {
@@ -39,16 +39,12 @@ function getCurrentRobotIndex() {
     return 0;
 }
 
-function resetViewport(camera) {
-    camera.position.copy(camera.defaultPosition);
-    camera.lookAt(camera.defaultLookAt);
-}
-
-function resetRobot(robot) {
+function resetRobot(robot, renderCallback) {
     for (let jointName in robot.defaultPose) {
-        let angle = robot.defaulPose[jointName];
-        robot.arm.movable.setJointValue(angle);
+        let angle = robot.defaultPose[jointName];
+        robot.joints[jointName].setJointValue(angle);
     }
+    renderCallback();
 }
 
 function loadRobot(robotList, robotName) {

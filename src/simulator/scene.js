@@ -67,7 +67,7 @@ let raycaster;
 let mouseXY = new Vector2();
 
 let tcptarget, groundLine;
-let transformControl;
+let cameraControl, transformControl;
 let ik;
 
 const canHover = window.matchMedia('(hover: hover)').matches;
@@ -147,11 +147,8 @@ function initScene() {
 		2000
 	);
 
-	camera.defaultPosition = new Vector3(8, 20, 17);
-	camera.defaultLookAt = new Vector3(0, 0, 10);
-
-	camera.position.set(camera.defaultPosition);
-	camera.lookAt(camera.defaultLookAt);
+	camera.position.set(8, 20, 17);
+	camera.lookAt(0, 0, 10);
 
 	// Grid
 	//const grid = new PolarGridHelper(12, 16, 8, 64, 0x888888, 0xaaaaaa);
@@ -190,9 +187,9 @@ function initScene() {
 	container.appendChild(renderer.domElement);
 
 	// Scene controls
-	const controls = new OrbitControls(camera, renderer.domElement);
-	controls.damping = 0.2;
-	controls.addEventListener("change", render);
+	cameraControl = new OrbitControls(camera, renderer.domElement);
+	cameraControl.damping = 0.2;
+	cameraControl.addEventListener("change", render);
 
 	// TCP target & controls
 	tcptarget = new Mesh(
@@ -219,7 +216,7 @@ function initScene() {
 	transformControl.setSize(1.7);
 	transformControl.addEventListener("change", evt => requestAnimationFrame(render));
 	transformControl.addEventListener("objectChange", onTargetChange);
-	transformControl.addEventListener("dragging-changed", evt => controls.enabled = !evt.value);
+	transformControl.addEventListener("dragging-changed", evt => cameraControl.enabled = !evt.value);
 
 	// TODO setMode('rotate') on click event
 	transformControl.attach(tcptarget);
@@ -235,7 +232,7 @@ function initScene() {
 	new ResizeSensor(domParent, onCanvasResize);
 	onCanvasResize();
 
-	initGui(robot, camera);
+	initGui(robot, cameraControl, ikRender);
 }
 
 function onCanvasResize() {
