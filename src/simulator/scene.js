@@ -14,12 +14,11 @@ import {
     Color,
     MeshBasicMaterial,
 	LoadingManager,
-	Geometry,
+	BufferGeometry,
 	Line,
 	LineBasicMaterial,
 	Raycaster,
 	Vector2,
-	ArrowHelper
 } from "three";
 
 // In ROS models Z points upwards
@@ -201,11 +200,10 @@ function initScene() {
 	robot.tcp.object.getWorldPosition(tcptarget.position);
 	scene.add(tcptarget);
 
-	let lineGeometry = new Geometry();
-	lineGeometry.vertices.push(tcptarget.position);
-	let tcpPositionGround = tcptarget.position.clone();
-	tcpPositionGround.z = 0;
-	lineGeometry.vertices.push(tcpPositionGround);
+	let lineVertices = [];
+	lineVertices.push(tcptarget.position.clone());
+	lineVertices.push(tcptarget.position.clone().setZ(0));
+	let lineGeometry = new BufferGeometry().setFromPoints(lineVertices);
 	groundLine = new Line(lineGeometry, new LineBasicMaterial({
 		color: 0xaaaacc,
 	}));
@@ -290,10 +288,10 @@ function ikRender() {
 
 function updateGroundLine() {
 	const geom = groundLine.geometry;
-	const tcpPositionGround = geom.vertices[geom.vertices.length - 1];
-	tcpPositionGround.copy(tcptarget.position);
-	tcpPositionGround.z = 0;
-	geom.verticesNeedUpdate = true;
+	const position = geom.attributes.position;
+	position.setXYZ(0, tcptarget.position.x, tcptarget.position.y, tcptarget.position.z);
+	position.setXYZ(1, tcptarget.position.x, tcptarget.position.y, 0);
+	position.needsUpdate = true;
 }
 
 function render() {
