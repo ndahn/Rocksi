@@ -86,15 +86,23 @@ function setSpawnPosition(simObject) {
     }
 }
 
-function stackCubes(simObject) {
+function stackCubes(simObject){
+    const shift = zShiftCubes(simObject);
+    if (shift > 0) {
+        simObject.spawnPosition.z = simObject.spawnPosition.z + shift;
+        return stackCubes(simObject);
+    } else { return; }
+}
+
+function zShiftCubes(simObject) {
+    let returnVal = 0;
     for (let k = 0; k < simObjects.length; k++) {
         if (simObject.spawnPosition.distanceTo(simObjects[k].spawnPosition)
                     < (simObject.size.z * .5)) {
-
-            let zShift = simObjects[k].size.z;
-            simObject.spawnPosition.z = simObject.spawnPosition.z + zShift;
+            returnVal = simObject.size.z;
         }
     }
+    return returnVal;
 }
 
 //Removes the simObject from the simObjects array and from the threejs scene
