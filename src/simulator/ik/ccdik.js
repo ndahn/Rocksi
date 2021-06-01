@@ -12,8 +12,16 @@ class CCDIK {
         jointLimits = {},
         apply = false
     } = {}) {
-        if (!joints.length) {
-            joints = robot.arm.movable;
+        let movable = [];
+        if (joints.length) {
+            for (let joint of robot.arm.movable) {
+                if (joints.includes(joint.name)) {
+                    movable.push(joint);
+                }
+            }
+        }
+        else {
+            movable = robot.arm.movable;
         }
 
         const orig = {};
@@ -25,7 +33,7 @@ class CCDIK {
 
         // Using a dummy object or pose always resulted in some slight difference to the actual robot, so
         // we're using the robot as our representation and then reset it to its original configuration later
-        for (const joint of joints) {
+        for (const joint of movable) {
             orig[joint.name] = joint.angle;
         }
 
@@ -33,8 +41,8 @@ class CCDIK {
         
         for (let iter = 0; iter < iterations; iter++) {
             // Rotate each joint so that the endeffector moves towards the target
-            for (let i = joints.length - 1; i >= 0; i--) {
-                const joint = joints[i];
+            for (let i = movable.length - 1; i >= 0; i--) {
+                const joint = movable[i];
 
                 // Vector to the TCP and target from the joint's POV. This algorithm is iterative in the sense 
                 // that we update the tip position after every joint adjustment. The solution won't be perfect
@@ -78,7 +86,7 @@ class CCDIK {
         }
 
         if (!apply) {
-            for (const joint of joints) {
+            for (const joint of movable) {
                 joint.setJointValue(orig[joint.name]);
             }
         }

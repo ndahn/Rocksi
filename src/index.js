@@ -23,30 +23,30 @@ if (document.body.clientWidth < 768) {
 }
 
 $('#blocks-btn').on('click', evt => {
-    let view = $('#split-pane-1');
+    let view = $('#split-pane-2');
     view.show();
     if (view.width() > 0) {
         // Shrink blocks view to 0, expand 3D view
         view.animate({ width: 0 }, animDuration);
-        $('#split-pane-2').animate({ width: '100%' }, animDuration);
+        $('#split-pane-1').animate({ width: '100%' }, animDuration);
     } else {
         // Expand blocks view to targetRatio, 3D view will take up the rest
         view.animate({ width: targetRatio + '%' }, animDuration);
-        $('#split-pane-2').animate({ width: (100 - targetRatio) + '%' }, animDuration);
+        $('#split-pane-1').animate({ width: (100 - targetRatio) + '%' }, animDuration);
     }
 });
 
 $('#viewport-btn').on('click', evt => {
-    let view = $('#split-pane-2');
+    let view = $('#split-pane-1');
     view.show();
     if (view.width() > 0) {
         // Shrink 3D view to 0, expand blocks view
         view.animate({ width: 0 }, animDuration);
-        $('#split-pane-1').animate({ width: '100%' }, animDuration);
+        $('#split-pane-2').animate({ width: '100%' }, animDuration);
     } else {
         // Expand 3D view to targetRatio, blocks view will take up the rest
         view.animate({ width: targetRatio + '%' }, animDuration);
-        $('#split-pane-1').animate({ width: (100 - targetRatio) + '%' }, animDuration);
+        $('#split-pane-2').animate({ width: (100 - targetRatio) + '%' }, animDuration);
     }
 });
 
@@ -104,5 +104,7 @@ const lazyObserver = lozad();
 lazyObserver.observe();
 
 
+// Somehow loading blockly early improves page loading
+import 'blockly'
 import './simulator/scene'
 import './editor/blockly'

@@ -38,9 +38,6 @@ export default class Robot {
             links: [],
         };
 
-        // Joints the robot can use for moving, filled by init()
-        this.ikjoints = [];
-
 
         /* =============================================================
          * Everything past here should be filled by the deriving classes 
@@ -77,7 +74,7 @@ export default class Robot {
             object: new Object3D(),  // Filled by init()
         };
     
-        // Joint names that the robot will use for moving -> ikjoints
+        // Joint names that the robot is allowed to use for moving
         this.ikEnabled = [
             // "joint_1", "joint_2", ...
         ];
@@ -119,10 +116,6 @@ export default class Robot {
         this.getTCPParent().add(this.tcp.object);
 
 		model.traverse((child) => {
-			if (this.isIKEnabled(child)) {
-				this.ikjoints.push(child);
-			}
-
 			let container;
 			if (this.isArm(child)) {
 				container = this.arm;

@@ -28,7 +28,7 @@ Object3D.DefaultUp = new Vector3(0, 0, 1);
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { TransformControls } from "three/examples/jsm/controls/TransformControls";
 
-var ResizeSensor = require('css-element-queries/src/ResizeSensor');
+var ResizeSensor = require("css-element-queries/src/ResizeSensor");
 
 import { XacroLoader } from "xacro-parser";
 import URDFLoader from "urdf-loader";
@@ -38,7 +38,8 @@ import URDFLoader from "urdf-loader";
 import { default as IKSolver } from "./ik/ccdik"
 //import { default as IKSolver } from "./ik/fabrik"
 import Simulation from "./simulation"
-import { popInfo } from '../alert'
+import { initGui } from "./gui"
+import { popInfo } from "../alert"
 
 const path = require('path');
 
@@ -66,7 +67,7 @@ let raycaster;
 let mouseXY = new Vector2();
 
 let tcptarget, groundLine;
-let transformControl;
+let cameraControl, transformControl;
 let ik;
 
 const canHover = window.matchMedia('(hover: hover)').matches;
@@ -145,8 +146,9 @@ function initScene() {
 		1,
 		2000
 	);
+
 	camera.position.set(8, 20, 17);
-	camera.lookAt(0, 0, 10)
+	camera.lookAt(0, 0, 10);
 
 	// Grid
 	//const grid = new PolarGridHelper(12, 16, 8, 64, 0x888888, 0xaaaaaa);
@@ -185,9 +187,9 @@ function initScene() {
 	container.appendChild(renderer.domElement);
 
 	// Scene controls
-	const controls = new OrbitControls(camera, renderer.domElement);
-	controls.damping = 0.2;
-	controls.addEventListener("change", render);
+	cameraControl = new OrbitControls(camera, renderer.domElement);
+	cameraControl.damping = 0.2;
+	cameraControl.addEventListener("change", render);
 
 	// TCP target & controls
 	tcptarget = new Mesh(
@@ -214,7 +216,7 @@ function initScene() {
 	transformControl.setSize(1.7);
 	transformControl.addEventListener("change", evt => requestAnimationFrame(render));
 	transformControl.addEventListener("objectChange", onTargetChange);
-	transformControl.addEventListener("dragging-changed", evt => controls.enabled = !evt.value);
+	transformControl.addEventListener("dragging-changed", evt => cameraControl.enabled = !evt.value);
 
 	// TODO setMode('rotate') on click event
 	transformControl.attach(tcptarget);
@@ -229,6 +231,8 @@ function initScene() {
 	let domParent = document.querySelector('.sim-container');
 	new ResizeSensor(domParent, onCanvasResize);
 	onCanvasResize();
+
+	initGui(robot, cameraControl, ikRender);
 }
 
 function onCanvasResize() {
@@ -263,7 +267,7 @@ function onTargetChange() {
 	ik.solve(
 		tcptarget,
 		robot,
-		robot.ikjoints,
+		robot.ikEnabled,
 		{
 			iterations: 3,
 			jointLimits: robot.interactionJointLimits,
