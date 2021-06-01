@@ -115,7 +115,7 @@ class TheSimulation {
         this.runningPhysics = false;
         this.physicsDone = true;
         this.lastSimObjectProcessed = true;
-
+        
     }
 
 
@@ -313,6 +313,7 @@ class TheSimulation {
         const simObject = getSimObjectByPos(position, 0.5);
         if (isAttached() == false && simObject != undefined && this.gripperWasOpen) {
             simObject.attachToGripper();
+            simObject.wasGripped = true;
             for (const finger of robot.hand.movable) {
                     start[finger.name] = finger.angle;
                     target[finger.name] = finger.limit.upper - (simObject.size.x * 0.2);//This is just for testing, Lukas
@@ -394,6 +395,11 @@ class TheSimulation {
     startPhysicalBody(simObjectsIdx) {
         const simObjects = getSimObjects();
         this.physicsDone = false;
+        if (simObjects[simObjectsIdx].wasGripped) {
+            simObjects[simObjectsIdx].wasGripped = false;
+        } else {
+            simObjects[simObjectsIdx].reset();
+        }
         simObjects[simObjectsIdx].makeVisible();
         simObjects[simObjectsIdx].removeTransformListners(); //also removes the listners for the raycaster
         simObjects[simObjectsIdx].addBodyToWorld();
