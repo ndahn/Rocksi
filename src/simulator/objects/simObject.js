@@ -27,13 +27,11 @@ export class SimObject extends Mesh {
         this.name = undefined;
         this.type = 'cube';
         this.attached = false;
-        this.asleep = false;
         this.hasBody = false;
-        this.movable = true;
         this.spawnPosition = new Vector3(5, 0, this.size.z * .5);
         this.spawnRotation = new Euler(0, 0, 0);
         this.body = undefined;
-        this.control = null; //undefined...
+        this.control = undefined; //undefined...
         this._fieldValues = this._calcFieldValues();
         this.colour = '#eb4034'
     }
@@ -150,7 +148,7 @@ export class SimObject extends Mesh {
         this.render();
     }
 
-    //Callback for the cange event
+    //Callback for the change event
     _change() {
         //Sometimes the controls are not visible, but they will change the position/rotation.
         //this is here to counter this behaviour
