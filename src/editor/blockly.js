@@ -25,6 +25,8 @@ import './blocks/joint_unlock'
 import './blocks/comment'
 import './blocks/wait'
 import './blocks/is_attached'
+import './blocks/physics_done'
+
 
 //points to block definition for add_sim_object, Lukas
 import './blocks/add_sim_object'
