@@ -27,11 +27,6 @@ import './blocks/wait'
 import './blocks/is_attached'
 import './blocks/physics_done'
 
-//imports for adding and removing 3D-objects, Lukas
-import { addSimObjects,
-         remSimObjects,
-         getSimObjectsNames,
-         getSimObjects } from '../simulator/objects/objects'
 
 //points to block definition for add_sim_object, Lukas
 import './blocks/add_sim_object'
