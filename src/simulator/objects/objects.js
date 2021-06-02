@@ -228,6 +228,7 @@ export function isAttached() {
     for (let i = 0; i < simObjects.length; i++) {
         if (simObjects[i].attached == true) { attached = true; }
     }
+    return attached;
 }
 
 //Return the first attached simObject
