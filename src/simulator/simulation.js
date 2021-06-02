@@ -1,5 +1,20 @@
 import { Object3D, Vector3, Euler } from "three"
+
+//function for updating the physics, Lukas
+import { updatePhysics,
+         addBody,
+         isAsleep,
+         updateMeshes,
+         updateBodies,
+         getBody } from './physics'
+
 var TWEEN = require('@tweenjs/tween.js');
+
+import { isAttached,
+         getAttachedObject,
+         getSimObjects,
+         getSimObjectByPos,
+         resetAllSimObjects } from "./objects/objects"
 
 
 function deg2rad(deg) {
@@ -38,11 +53,34 @@ class TheSimulation {
             move: 0.5,
             gripper: 0.5
         }
+        //Physics and triggers, Lukas
+        this.runningPhysics = false;
+        this.gripperWasOpen = false;
+        this.physicsDone = true;
+        this.lastSimObjectProcessed = false;
     }
+
 
     reset() {
         this.unlockJoints();
         this.setDefaultVelocities();
+
+        this.physicsDone = true;
+        this.lastSimObjectProcessed = false;
+        this.runningPhysics = false;
+    }
+
+    //Lukas
+    resetSimObjects(visible = true) {
+        const simObjects = getSimObjects();
+        if (simObjects != undefined) {
+            for (const simObject of simObjects) {
+                simObject.reset();
+                simObject.addTransformListeners();
+                if (visible) { simObject.makeVisible(); }
+                else if (!visible) { simObject.hide(); }
+            }
+        }
     }
 
     async run(command, ...args) {
@@ -66,6 +104,10 @@ class TheSimulation {
         // As this is called by _onTweenFinished, this prevents having multiple tweens
         // with different end times, but that's not a use case at the moment
         TWEEN.removeAll();
+        this.runningPhysics = false;
+        this.physicsDone = true;
+        this.lastSimObjectProcessed = true;
+
     }
 
 
@@ -103,10 +145,10 @@ class TheSimulation {
         }
     }
 
-    
+
     lockJoint(jointIdx) {
         console.log('> Locking joint ' + jointIdx);
-        
+
         if (this.lockedJointIndices.includes(jointIdx)) {
             console.warn('! ... but joint ' + jointIdx + ' is already locked');
             return;
@@ -118,7 +160,7 @@ class TheSimulation {
     unlockJoint(jointIdx) {
         console.log('> Unlocking joint ' + jointIdx);
         let idx = this.lockedJointIndices.indexOf(jointIdx);
-        
+
         if (idx < 0) {
             console.warn('! ... but joint ' + jointIdx + ' is not locked');
             return;
@@ -159,7 +201,7 @@ class TheSimulation {
         return pose;
     }
 
-    
+
     wait(ms) {
         console.log('> Waiting ' + ms + ' ms');
         return new Promise(resolve => {
@@ -219,7 +261,7 @@ class TheSimulation {
                         target[joint.name] = solution[joint.name];
                     }
                 }
-                
+
                 break;
 
             case 'JointspacePose':
@@ -231,7 +273,7 @@ class TheSimulation {
                     start[joint.name] = joint.angle;
                     target[joint.name] = clampJointAngle(joint, deg2rad(pose[i]));
                 }
-                
+
                 break;
 
             default:
@@ -246,19 +288,38 @@ class TheSimulation {
 
     gripper_close() {
         console.log('> Closing hand');
-        
+
         const robot = this.robot;
         const start = {};
         const target = {};
-
-        for (const finger of robot.hand.movable) {
-            start[finger.name] = finger.angle;
-            target[finger.name] = finger.limit.lower;  // fully closed
+        //let mesh;
+        //WIP: Determin if something is under the gripper
+        //if yes, then close it until the gripper touches the object, Lukas
+        //mesh = getMeshByPosition(getTCP());
+        const tcp = robot.tcp.object;
+        let position = new Vector3;
+        tcp.getWorldPosition(position);
+        const simObject = getSimObjectByPos(position, 0.5);
+        if (isAttached() == false && simObject != undefined && this.gripperWasOpen) {
+            simObject.attachToGripper();
+            simObject.wasGripped = true;
+            for (const finger of robot.hand.movable) {
+                    start[finger.name] = finger.angle;
+                    target[finger.name] = finger.limit.upper - (simObject.size.x * 0.2);//This is just for testing, Lukas
+            }
+        }
+        //if not, close full
+        else {
+            for (const finger of robot.hand.movable) {
+                start[finger.name] = finger.angle;
+                target[finger.name] = finger.limit.lower;  // fully closed
+            }
         }
 
-        const duration = getDuration(robot, target, this.velocities.gripper * robot.maxSpeed.gripper);
-        let tween = this._makeTween(start, target, duration);
-        return tween;
+        const duration = getDuration(robot, target, this.velocities.gripper);
+        let tween = this._makeTween(start, target, duration, resolve, reject);
+        this._start(tween);
+        this.gripperWasOpen = false;
     }
 
     gripper_open() {
@@ -267,15 +328,23 @@ class TheSimulation {
         const robot = this.robot;
         const start = {};
         const target = {};
-        
+        //let mesh;
+
+        //If an object is currently gripped, detach it from the gripper, Lukas
+        if (isAttached() == true) {
+            const simObject = getAttachedObject();
+            detachFromGripper(simObject);
+        }
+
         for (const finger of robot.hand.movable) {
             start[finger.name] = finger.angle;
             target[finger.name] = finger.limit.upper;  // fully opened
         }
-        
-        const duration = getDuration(robot, target, this.velocities.gripper * robot.maxSpeed.gripper);
-        let tween = this._makeTween(start, target, duration);
-        return tween;
+
+        const duration = getDuration(robot, target, this.velocities.gripper);
+        let tween = this._makeTween(start, target, duration, resolve, reject);
+        this._start(tween);
+        this.gripperWasOpen = true;
     }
 
     joint_absolute(jointIdx, angle) {
@@ -289,7 +358,7 @@ class TheSimulation {
         const robot = this.robot;
         const start = {};
         const target = {};
-        
+
         const joint = robot.arm.movable[jointIdx - 1];
         start[joint.name] = joint.angle;
         target[joint.name] = clampJointAngle(joint, deg2rad(angle));
@@ -301,12 +370,65 @@ class TheSimulation {
 
     joint_relative(jointIdx, angle) {
         console.log('> Rotating joint ' + jointIdx + ' by ' + angle + ' degrees');
-        
+
         const joint = this.robot.arm.movable[jointIdx - 1];
         let angleAbs = joint.angle * 180.0 / Math.PI + angle;  // degrees
         return this.joint_absolute(jointIdx, angleAbs);
     }
 
+    //Lukas
+    startPhysicalBody(simObjectsIdx) {
+        const simObjects = getSimObjects();
+        this.physicsDone = false;
+        if (simObjects[simObjectsIdx].wasGripped) {
+            simObjects[simObjectsIdx].wasGripped = false;
+        } else {
+            simObjects[simObjectsIdx].reset();
+        }
+        simObjects[simObjectsIdx].makeVisible();
+        simObjects[simObjectsIdx].removeTransformListners(); //also removes the listners for the raycaster
+        simObjects[simObjectsIdx].addBodyToWorld();
+        simObjects[simObjectsIdx].updateBody();
+        simObjects[simObjectsIdx].body.wakeUp();
+        if (simObjectsIdx + 1 == simObjects.length) {
+            this.lastSimObjectProcessed = true;
+        }
+        if (!this.runningPhysics) {
+            this._animatePhysics();
+            this.runningPhysics = true;
+        }
+    }
+
+    getPhysicsDone() {
+        const simObjects = getSimObjects();
+        if (simObjects != undefined) {
+
+            if ( !this.runningPhysics
+                 && this.lastSimObjectProcessed
+                 && !isWorldActive()) {
+
+                     this.physicsDone = true;
+
+            } else { this.physicsDone = false; }
+        }
+
+        else {
+            this.physicsDone = true;
+        }
+
+        return this.physicsDone;
+    }
+
+    _animatePhysics() {
+        updatePhysics();
+        this._renderCallback();
+        if (!isWorldActive()) {
+            console.log('Physics rendering halted.');
+            this.runningPhysics = false;
+            return;
+        }
+        window.requestAnimationFrame(() => this._animatePhysics());
+    }
 
     _makeTween(start, target, duration) {
         return new Promise((resolve, reject) => {
@@ -349,7 +471,11 @@ class TheSimulation {
     }
 
     _animate(time) {
+
         TWEEN.update(time);
+        this._renderCallback();
+        //Is this the place for the physics update, I dunno. Let's try it! Lukas
+        updatePhysics();
         this._renderCallback();
 
         if (this.running) {

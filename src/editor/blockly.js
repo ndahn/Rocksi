@@ -15,7 +15,19 @@ import './blocks/objects'
 import './blocks/extras'
 import './generators/javascript'
 
-import { popSuccess, popWarning, popError } from '../alert'
+
+//points to block definition for add_sim_object, Lukas
+import './blocks/add_sim_object'
+import './blocks/pose'
+
+//imports for adding and removing 3D-objects, Lukas
+import { addSimObject,
+         remSimObjects,
+         getSimObjects,
+         randomColour } from '../simulator/objects/objects'
+
+
+import { popSuccess, popWarning, popError, popInfo } from '../alert'
 
 const generator = Blockly.JavaScript;
 generator.STATEMENT_PREFIX = 'highlightBlock(%1);\n'
@@ -31,6 +43,8 @@ import Simulation from '../simulator/simulation'
 
 var blocklyArea = document.querySelector('.blocks-container');
 var blocklyDiv = document.getElementById('blocks-canvas');
+
+const waitToFinish = 200; //Time to wait for the physics simulation to finish. Lukas
 
 var workspace = Blockly.inject(
     blocklyDiv,
@@ -67,7 +81,7 @@ var workspace = Blockly.inject(
 //workspace.getToolbox().getFlyout().autoClose = false;
 //$('blockly-0').click();
 
-// Blockly is not using parenting for its HTML code, so we have to do some manual adjustments. 
+// Blockly is not using parenting for its HTML code, so we have to do some manual adjustments.
 // TODO For some reason there is a second toolboxFlyout that is never used -> blockly bug?
 var toolboxFlyout = $('.blocklyFlyout');
 var toolboxScrollbar = $('.blocklyFlyoutScrollbar');
@@ -142,7 +156,7 @@ var contextSaveWorkspace = {
     callback: function (scope) {
         let xml = Blockly.Xml.workspaceToDom(scope.workspace);
         let text = Blockly.Xml.domToText(xml);
-        
+
         let download = document.createElement('a');
         download.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
         download.setAttribute('download', 'workspace.xml');
@@ -175,11 +189,11 @@ var contextLoadWorkspace = {
         upload.setAttribute('type', 'file');
         upload.setAttribute('accept', '.xml');
         upload.style.display = 'none';
-        
+
         upload.onchange = (fileSelectedEvent) => {
             try {
                 let file = fileSelectedEvent.target.files[0];
-                
+
                 let reader = new FileReader();
                 reader.readAsText(file, 'UTF-8');
                 reader.onload = (readerEvent) => {
@@ -217,28 +231,28 @@ Simulation.getInstance().then(sim => {
         displayText: function () {
             return Blockly.Msg['CODE_EXPORT'] || 'Code Export';
         },
-    
+
         preconditionFn: function (scope) {
             if (scope.workspace.getTopBlocks(false).length > 0) {
                 return 'enabled';
             }
             return 'disabled';
         },
-    
+
         callback: function (scope) {
             let code = generator.workspaceToCode(scope.workspace);
             console.log(code);
-            
+
             let download = document.createElement('a');
             download.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(code));
             download.setAttribute('download', robot.name + (generator.FILE_EXTENSION || '.txt'));
             download.style.display = 'none';
-    
+
             document.body.appendChild(download);
             download.click();
             document.body.removeChild(download);
         },
-    
+
         scopeType: Blockly.ContextMenuRegistry.ScopeType.WORKSPACE,
         id: 'codeExport',
         weight: 99,
@@ -257,7 +271,7 @@ runButton.onclick = function () {
         if (workspace.getTopBlocks(false).length == 0) {
             popWarning(Blockly.Msg['EMPTY_PROGRAM'] || "Empty program");
         }
-
+        //event listener off, lukas
         compileProgram();
         executeProgram();
     }
@@ -305,7 +319,8 @@ var interpreter = null;
 
 function compileProgram() {
     simulation.reset();
-
+    const visible = false;
+    simulation.resetSimObjects(visible);
     let code = Blockly.JavaScript.workspaceToCode(workspace);
     console.log(code);
     interpreter = new Interpreter(code, simulationAPI);
@@ -323,14 +338,15 @@ function executeProgram() {
     }
 
     interpreter.paused_ = false;
-    
+
     try {
-        // Blocks are being executed until a block interacts with the robot, which will 
-        // pause execution until the robot is done and then calls run() again. 
+        // Blocks are being executed until a block interacts with the robot, which will
+        // pause execution until the robot is done and then calls run() again.
         // See simulationAPI above.
         let hasMore = interpreter.run();
         if (!hasMore) {
-            onProgramFinished();
+            popInfo('Bitte warten bis die Simulation abgeschlossen ist...');
+            waitForPhysicsSim();
         }
     }
     catch (e) {
@@ -338,19 +354,79 @@ function executeProgram() {
     }
 }
 
+function waitForPhysicsSim() {
+    if (!simulation.getPhysicsDone()) {
+        console.log('Waiting ' + waitToFinish * 0.001 + ' seconds...');
+        setTimeout(() => {
+            waitForPhysicsSim();
+        }, waitToFinish );
+    } else {
+        onProgramFinished();
+    }
+}
+
 function onProgramError(e) {
     interpreter = null;
     workspace.highlightBlock(null);
     runButton.classList.remove('running');
+    simulation.resetSimObjects(true);
     console.error('Program execution failed: ', e);
     popError(e + '\n'
         + (Blockly.Msg['SEE_CONSOLE'] || 'See console for additional details.'));
 }
 
 function onProgramFinished() {
-    interpreter = null;
+    // The generator may add some finalizing code in generator.finish(code), but if we
+    // got this far it is most likely not required. Previous commit has a version executing
+    // These final statements.
     workspace.highlightBlock(null);
+    simulation.resetSimObjects(true);
+
     runButton.classList.remove('running');
     console.log('Execution finished');
     popSuccess(Blockly.Msg['EXEC_SUCCESS'] || "Program finished");
 }
+
+//Determin if a add_sim_object-block was added or removed form the Blockly Workspace.
+//If added, add a new 3D-object. If removed remove the 3D-object assosiated with the block.
+//Lukas
+function watchSpawnBlocks(event) {
+    if(Blockly.Events.BLOCK_CREATE === event.type) {
+        for (let i = 0; i < event.ids.length; i++) {
+            const newBlock = workspace.getBlockById(event.ids[i]);
+            if (newBlock.type === 'add_sim_object') {
+                const pose = newBlock.getInputTargetBlock('POSE');
+                const colour = newBlock.getInputTargetBlock('COLOUR');
+                const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
+                let fieldValues = [];
+                let pickedColour;
+                if (pose != null) {
+                    for (let i = 0; i < fieldKeys.length; i++) {
+                        fieldValues.push(pose.getFieldValue(fieldKeys[i]));
+                    }
+                } else {
+                    fieldValues = undefined;
+                }
+                if (colour != null) {
+                    if (colour.type == 'colour_picker') {
+                        pickedColour = color.getFieldValue('COLOUR');
+                    }
+                    if (colour.type == 'colour_random') {
+                        pickedColour = randomColour();
+                    } else {
+                        pickedColour = undefined;
+                    }
+                }
+                console.log(pickedColour);
+                addSimObject(newBlock.id, fieldValues, pickedColour);
+            }
+        }
+    }
+
+    if(Blockly.Events.BLOCK_DELETE === event.type) {
+        console.log('Deleted: ', event.ids);
+        remSimObjects(event.ids);
+    }
+}
+
+workspace.addChangeListener(watchSpawnBlocks);

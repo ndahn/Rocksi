@@ -32,10 +32,22 @@
 					</category>
 					<category name="Objekte" categorystyle="objects_category">
 						<!-- Spawn Blöcke von Lukas -->
+                        <block type="add_sim_object">
+                            <value name="COLOUR">
+                                <shadow type="colour_random"/>
+                            </value>
+                            <value name="POSE">
+                                <shadow type="pose">
+                                    <field name="X">5</field>
+                                </shadow>
+                            </value>
+                        </block>
+                        <block type="is_attached"></block>
 						<block type="gripper_open"></block>
 						<block type="gripper_close"></block>
 						<block type="colour_picker" ></block>
 						<block type="colour_random"></block>
+                        <block type="physics_done"></block>
 					</category>
 					<category name="Logik" categorystyle="logic_category">
 						<block type="controls_if"></block>
@@ -57,7 +69,7 @@
 						<block type="set_speed"></block>
 						<block type="joint_lock"></block>
 						<block type="joint_unlock"></block>
-					</category>
+                    </category>
 				</xml>
 				<div id="blocks-canvas"></div>
 				<div id="blockly-mobile-menu" class="mobile-only">
@@ -130,7 +142,7 @@
 						</video>
 						<p>Mithilfe der Puzzleteile kannst du dir schnell ein Programm für den Roboter zusammenzubauen.</p>
 					</div>
-					
+
 					<!-- Context menu -->
 					<input class="tutorial-radio" id="tutorial-radio-4" name="tutorial" autocomplete="off" type="radio">
 					<div class="tutorial-slide">
@@ -159,11 +171,11 @@
 							<img class="tutorial-media" src="assets/images/rofu_collage.jpg">
 						</a>
 						<p>
-							Du möchtest noch mehr wissen oder dir war etwas unklar? Dann mach doch unseren kostenlosen 
+							Du möchtest noch mehr wissen oder dir war etwas unklar? Dann mach doch unseren kostenlosen
 							<a href="https://www.robotikschulungen.de" target="_blank">Roboterführerschein</a>!
 						</p>
 					</div>
-					
+
 					<div id="tutorial-close-btn">&#128937;</div>
 				</div>
 
@@ -187,7 +199,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 
 			<div id="msgbox-area" class="msgbox-area"></div>
 

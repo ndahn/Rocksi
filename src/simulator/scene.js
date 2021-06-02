@@ -19,6 +19,7 @@ import {
 	LineBasicMaterial,
 	Raycaster,
 	Vector2,
+	ArrowHelper
 } from "three";
 
 //Imports for managing objects and physics, Lukas
@@ -44,7 +45,7 @@ import URDFLoader from "urdf-loader";
 import { default as IKSolver } from "./ik/ccdik"
 //import { default as IKSolver } from "./ik/fabrik"
 import Simulation from "./simulation"
-import * as GUI from "./gui"
+import { initGui } from "./gui"
 import { popInfo } from "../alert"
 
 const path = require('path');
@@ -95,6 +96,9 @@ loadRobotModel(robot.xacro)
 		}
 
 		initScene();
+        //Lukas
+        initCannon();
+        //initRobotHitboxes(robot); Not working... Lukas
 		$('.loading-message').hide();
 
 		ik = new IKSolver(scene, robot);
@@ -229,8 +233,11 @@ function initScene() {
 
 	if (canHover) {
 		transformControl.visible = false;
-		raycaster = new Raycaster();
-		container.addEventListener('mousemove', onMouseMove);
+        raycaster = new Raycaster();
+		/*container.addEventListener('mousemove', onMouseMove);
+        container.addEventListener('click', onClick);
+        replaced by: addListeners()*/
+        addListeners();
 	}
 
 	let domParent = document.querySelector('.sim-container');
@@ -253,14 +260,15 @@ function onMouseMove(evt) {
 	mouseXY.x = (evt.offsetX / container.clientWidth) * 2 - 1;
 	mouseXY.y = -(evt.offsetY / container.clientHeight) * 2 + 1;
 
-	raycaster.setFromCamera(mouseXY, camera);
-	const intersections = raycaster.intersectObjects([tcptarget]);
-	let showTC = intersections.length > 0;
+    raycaster.setFromCamera(mouseXY, camera);
+    const intersections = raycaster.intersectObjects([tcptarget]);
+    setTCSimObjects(raycaster); //does this for all TransformControls of simObjects
+    let showTC = intersections.length > 0;
 
-	if (showTC !== transformControl.visible) {
-		transformControl.visible = showTC;
-		requestAnimationFrame(render);
-	}
+    if (showTC !== transformControl.visible) {
+        transformControl.visible = showTC;
+        requestAnimationFrame(render);
+    }
 }
 
 function onTargetChange() {
@@ -302,5 +310,39 @@ function updateGroundLine() {
 }
 
 function render() {
-	renderer.render(scene, camera);
+    renderer.render(scene, camera);
+}
+
+//functions for simObject stuff, Lukas
+export function removeListeners() {
+    if (container != undefined) {
+        container.removeEventListener('mousemove', onMouseMove);
+        container.removeEventListener('click', onClick); //Only used for TransformControls for simObjects, Lukas
+    }
+}
+
+export function addListeners() {
+    if (container != undefined) {
+        container.addEventListener('mousemove', onMouseMove);
+        container.addEventListener('click', onClick); //Only used for TransformControls for simObjects, Lukas
+    }
+}
+
+function onClick() {
+    setTCSimObjectsOnClick(raycaster);
+}
+
+export function requestAF () { requestAnimationFrame(render); }
+
+export function getScene () { return scene; }
+
+export function getRobot () { return robot; }
+
+export function getControl () {
+    const contObj = {
+        camera: camera,
+        orbitControls: controls,
+        renderer: renderer,
+    }
+    return contObj;
 }
