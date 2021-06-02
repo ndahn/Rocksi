@@ -3,7 +3,7 @@ import { Object3D, Vector3, Euler } from "three"
 //function for updating the physics, Lukas
 import { updatePhysics,
          addBody,
-         isAsleep,
+         isWorldActive,
          updateMeshes,
          updateBodies,
          getBody } from './physics'
