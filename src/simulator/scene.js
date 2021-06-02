@@ -29,10 +29,6 @@ import { initCannon,
 import { setTCSimObjects,
          setTCSimObjectsOnClick } from './objects/objects';
 
-//Imports for managing objects and physics, Lukas
-import { initCannon,
-         initRobotHitboxes } from './physics'
-
 // In ROS models Z points upwards
 Object3D.DefaultUp = new Vector3(0, 0, 1);
 
