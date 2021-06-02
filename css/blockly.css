@@ -80,11 +80,28 @@
 	animation: wiggle 6s infinite;
 }
 
+#blockly-1 {
+	animation: wiggle 6s infinite;
+	animation-delay: 70ms;
+}
+
+#blockly-2 {
+	animation: wiggle 6s infinite;
+	animation-delay: 110ms;
+}
+
+#blockly-3 {
+	animation: wiggle 6s infinite;
+	animation-delay: 210ms;
+}
+
 @keyframes wiggle {
     0% { transform: rotate(0deg); }
-   97% { transform: rotate(0deg); }
-   98% { transform: rotate(5deg); }
-   99% { transform: rotate(-5deg); }
+   95% { transform: rotate(0deg); }
+   96% { transform: rotate(3deg); }
+   97% { transform: rotate(-3deg); }
+   98% { transform: rotate(3deg); }
+   99% { transform: rotate(-3deg); }
   100% { transform: rotate(0deg); }
 }
 

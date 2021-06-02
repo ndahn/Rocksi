@@ -73,9 +73,11 @@ slides.each((idx, elem) => {
 
 $('#tutorial-btn').on('click', evt => {
     $('#tutorial-container').show();
+    $('#robot-gui').hide();
 });
 $('#tutorial-close-btn').on('click', evt => {
     $('#tutorial-container').hide();
+    $('#robot-gui').show();
     $('.tutorial-slide video').each((idx, video) => {
         // Unload the video to save some resources
         video.pause();

@@ -10,7 +10,9 @@ let jointList = null;
 
 
 export function initGui(robot, cameraControl, renderCall) {
-    gui = new UIL.Gui({ css: 'h:20; w: 200; z-index: 99' });
+    gui = new UIL.Gui({ css: 'h:20; w: 200; z-index: 98' });
+    gui.content.id = 'robot-gui';
+
     gui.add('title', { name: 'Rocksi', prefix: 'v2.0' });
     
     let robotIdx = getCurrentRobotIndex();
