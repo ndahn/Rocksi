@@ -14,6 +14,7 @@ import { isAttached,
          getAttachedObject,
          getSimObjects,
          getSimObjectByPos,
+         getSimObjectIdx,
          resetAllSimObjects } from "./objects/objects"
 
 
@@ -292,15 +293,13 @@ class TheSimulation {
         const robot = this.robot;
         const start = {};
         const target = {};
-        //let mesh;
-        //WIP: Determin if something is under the gripper
-        //if yes, then close it until the gripper touches the object, Lukas
-        //mesh = getMeshByPosition(getTCP());
         const tcp = robot.tcp.object;
         let position = new Vector3;
         tcp.getWorldPosition(position);
+        console.log('close gripper', isAttached());
         const simObject = getSimObjectByPos(position, 0.5);
         if (isAttached() == false && simObject != undefined && this.gripperWasOpen) {
+            console.log('halloooo');
             simObject.attachToGripper();
             simObject.wasGripped = true;
             for (const finger of robot.hand.movable) {
@@ -317,9 +316,9 @@ class TheSimulation {
         }
 
         const duration = getDuration(robot, target, this.velocities.gripper);
-        let tween = this._makeTween(start, target, duration, resolve, reject);
-        this._start(tween);
+        let tween = this._makeTween(start, target, duration);
         this.gripperWasOpen = false;
+        return tween;
     }
 
     gripper_open() {
@@ -333,18 +332,21 @@ class TheSimulation {
         //If an object is currently gripped, detach it from the gripper, Lukas
         if (isAttached() == true) {
             const simObject = getAttachedObject();
-            detachFromGripper(simObject);
+            simObject.detachFromGripper();
+            const idx = getSimObjectIdx(simObject.name);
+            if (!this.runningPhysics) {
+                this.startPhysicalBody(idx);
+            }
         }
-
         for (const finger of robot.hand.movable) {
             start[finger.name] = finger.angle;
             target[finger.name] = finger.limit.upper;  // fully opened
         }
 
         const duration = getDuration(robot, target, this.velocities.gripper);
-        let tween = this._makeTween(start, target, duration, resolve, reject);
-        this._start(tween);
+        let tween = this._makeTween(start, target, duration);
         this.gripperWasOpen = true;
+        return tween;
     }
 
     joint_absolute(jointIdx, angle) {
