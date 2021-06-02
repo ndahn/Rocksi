@@ -1,5 +1,14 @@
 import * as Blockly from "blockly";
 
+import { getSimObject,
+         getSimObjectIdx,
+         randomColour,
+         isAttached } from "../../simulator/objects/objects";
+
+import ClickableTargetMutator from '../mutators/clickable_target_mutator'
+
+const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
+
 Blockly.Blocks["gripper_open"] = {
 	init: function () {
 		this.jsonInit({
