@@ -1,5 +1,20 @@
 import { Object3D, Vector3, Euler } from "three"
+
+//function for updating the physics, Lukas
+import { updatePhysics,
+         addBody,
+         isAsleep,
+         updateMeshes,
+         updateBodies,
+         getBody } from './physics'
+
 var TWEEN = require('@tweenjs/tween.js');
+
+import { isAttached,
+         getAttachedObject,
+         getSimObjects,
+         getSimObjectByPos,
+         resetAllSimObjects } from "./objects/objects"
 
 
 function deg2rad(deg) {
@@ -38,11 +53,34 @@ class TheSimulation {
             move: 0.5,
             gripper: 0.5
         }
+        //Physics and triggers, Lukas
+        this.runningPhysics = false;
+        this.gripperWasOpen = false;
+        this.physicsDone = true;
+        this.lastSimObjectProcessed = false;
     }
+
 
     reset() {
         this.unlockJoints();
         this.setDefaultVelocities();
+
+        this.physicsDone = true;
+        this.lastSimObjectProcessed = false;
+        this.runningPhysics = false;
+    }
+
+    //Lukas
+    resetSimObjects(visible = true) {
+        const simObjects = getSimObjects();
+        if (simObjects != undefined) {
+            for (const simObject of simObjects) {
+                simObject.reset();
+                simObject.addTransformListeners();
+                if (visible) { simObject.makeVisible(); }
+                else if (!visible) { simObject.hide(); }
+            }
+        }
     }
 
     async run(command, ...args) {
@@ -278,9 +316,10 @@ class TheSimulation {
             }
         }
 
-        const duration = getDuration(robot, target, this.velocities.gripper * robot.maxSpeed.gripper);
-        let tween = this._makeTween(start, target, duration);
-        return tween;
+        const duration = getDuration(robot, target, this.velocities.gripper);
+        let tween = this._makeTween(start, target, duration, resolve, reject);
+        this._start(tween);
+        this.gripperWasOpen = false;
     }
 
     gripper_open() {
@@ -289,15 +328,23 @@ class TheSimulation {
         const robot = this.robot;
         const start = {};
         const target = {};
+        //let mesh;
+
+        //If an object is currently gripped, detach it from the gripper, Lukas
+        if (isAttached() == true) {
+            const simObject = getAttachedObject();
+            detachFromGripper(simObject);
+        }
 
         for (const finger of robot.hand.movable) {
             start[finger.name] = finger.angle;
             target[finger.name] = finger.limit.upper;  // fully opened
         }
 
-        const duration = getDuration(robot, target, this.velocities.gripper * robot.maxSpeed.gripper);
-        let tween = this._makeTween(start, target, duration);
-        return tween;
+        const duration = getDuration(robot, target, this.velocities.gripper);
+        let tween = this._makeTween(start, target, duration, resolve, reject);
+        this._start(tween);
+        this.gripperWasOpen = true;
     }
 
     joint_absolute(jointIdx, angle) {
@@ -424,7 +471,11 @@ class TheSimulation {
     }
 
     _animate(time) {
+
         TWEEN.update(time);
+        this._renderCallback();
+        //Is this the place for the physics update, I dunno. Let's try it! Lukas
+        updatePhysics();
         this._renderCallback();
 
         if (this.running) {

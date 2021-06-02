@@ -19,7 +19,19 @@ import {
 	LineBasicMaterial,
 	Raycaster,
 	Vector2,
+	ArrowHelper
 } from "three";
+
+//Imports for managing objects and physics, Lukas
+import { initCannon,
+         initRobotHitboxes } from './physics';
+
+import { setTCSimObjects,
+         setTCSimObjectsOnClick } from './objects/objects';
+
+//Imports for managing objects and physics, Lukas
+import { initCannon,
+         initRobotHitboxes } from './physics'
 
 // In ROS models Z points upwards
 Object3D.DefaultUp = new Vector3(0, 0, 1);
@@ -37,7 +49,7 @@ import URDFLoader from "urdf-loader";
 import { default as IKSolver } from "./ik/ccdik"
 //import { default as IKSolver } from "./ik/fabrik"
 import Simulation from "./simulation"
-import * as GUI from "./gui"
+import { initGui } from "./gui"
 import { popInfo } from "../alert"
 
 const path = require('path');
@@ -50,11 +62,11 @@ switch (selectedRobot.toLowerCase()) {
 	case 'franka':
 		robot = require('./robots/franka');
 		break;
-	
+
 	case 'niryo':
 		robot = require('./robots/niryo');
 		break;
-	
+
 	default:
 		throw ('Unknown robot \'' + selectedRobot + '\'');
 }
@@ -88,8 +100,11 @@ loadRobotModel(robot.xacro)
 		}
 
 		initScene();
+        //Lukas
+        initCannon();
+        //initRobotHitboxes(robot); Not working... Lukas
 		$('.loading-message').hide();
-		
+
 		ik = new IKSolver(scene, robot);
 		Simulation.init(robot, ik, ikRender);
 	}, reason => {
@@ -103,7 +118,7 @@ function loadRobotModel(url) {
 		xacroLoader.inOrder = true;
 		xacroLoader.requirePrefix = true;
 		xacroLoader.localProperties = true;
-		
+
 		xacroLoader.rospackCommands.find = (...args) => {
 			return path.join(robot.root, ...args);
 		}
@@ -166,7 +181,7 @@ function initScene() {
 	// for (let joint of robot.arm.movable) {
 	// 	joint.add(new ArrowHelper(new Vector3(0, 0, 1), new Vector3(), 0.3, 0x0000ff));
 	// }
-	
+
 
 	// Lights
 	const light = new HemisphereLight(0xffeeee, 0x111122);
@@ -222,8 +237,11 @@ function initScene() {
 
 	if (canHover) {
 		transformControl.visible = false;
-		raycaster = new Raycaster();
-		container.addEventListener('mousemove', onMouseMove);
+        raycaster = new Raycaster();
+		/*container.addEventListener('mousemove', onMouseMove);
+        container.addEventListener('click', onClick);
+        replaced by: addListeners()*/
+        addListeners();
 	}
 
 	let domParent = document.querySelector('.sim-container');
@@ -246,14 +264,15 @@ function onMouseMove(evt) {
 	mouseXY.x = (evt.offsetX / container.clientWidth) * 2 - 1;
 	mouseXY.y = -(evt.offsetY / container.clientHeight) * 2 + 1;
 
-	raycaster.setFromCamera(mouseXY, camera);
-	const intersections = raycaster.intersectObjects([tcptarget]);
-	let showTC = intersections.length > 0;
+    raycaster.setFromCamera(mouseXY, camera);
+    const intersections = raycaster.intersectObjects([tcptarget]);
+    setTCSimObjects(raycaster); //does this for all TransformControls of simObjects
+    let showTC = intersections.length > 0;
 
-	if (showTC !== transformControl.visible) {
-		transformControl.visible = showTC;
-		requestAnimationFrame(render);
-	}
+    if (showTC !== transformControl.visible) {
+        transformControl.visible = showTC;
+        requestAnimationFrame(render);
+    }
 }
 
 function onTargetChange() {
@@ -272,10 +291,10 @@ function onTargetChange() {
 			apply: true
 		}
 	);
-	
+
 	GUI.onRobotMoved(robot);
 
-	// requestAnimationFrame is called in the transformControl's change-listener, 
+	// requestAnimationFrame is called in the transformControl's change-listener,
 	// so we can skip it here
 }
 
@@ -295,5 +314,39 @@ function updateGroundLine() {
 }
 
 function render() {
-	renderer.render(scene, camera);
+    renderer.render(scene, camera);
+}
+
+//functions for simObject stuff, Lukas
+export function removeListeners() {
+    if (container != undefined) {
+        container.removeEventListener('mousemove', onMouseMove);
+        container.removeEventListener('click', onClick); //Only used for TransformControls for simObjects, Lukas
+    }
+}
+
+export function addListeners() {
+    if (container != undefined) {
+        container.addEventListener('mousemove', onMouseMove);
+        container.addEventListener('click', onClick); //Only used for TransformControls for simObjects, Lukas
+    }
+}
+
+function onClick() {
+    setTCSimObjectsOnClick(raycaster);
+}
+
+export function requestAF () { requestAnimationFrame(render); }
+
+export function getScene () { return scene; }
+
+export function getRobot () { return robot; }
+
+export function getControl () {
+    const contObj = {
+        camera: camera,
+        orbitControls: controls,
+        renderer: renderer,
+    }
+    return contObj;
 }
