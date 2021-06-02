@@ -37,7 +37,7 @@ Blockly.Blocks["move"] = {
 				{
 					type: "input_value",
 					name: "POSE",
-                    check: ["Pose", "Array"],
+                    check: ["TaskspacePose", "JointspacePose"],
 				},
 			],
 			inputsInline: false,
@@ -255,8 +255,8 @@ Blockly.Blocks["pose"] = {
 				},
 			],
 			inputsInline: true,
-			output: "Pose",
-			colour: "%{BKY_MOVEMENT_HEX}",
+			output: "TaskspacePose",
+			style: 'movement_blocks',
 			tooltip:
 				"Eine Pose im Arbeitsraum (definiert über die Endeffektorpose, d.h. Position und Orientierung)",
 			helpUrl: "",
