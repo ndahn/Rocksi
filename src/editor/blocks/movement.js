@@ -2,7 +2,9 @@ import * as Blockly from "blockly";
 import Simulation from '../../simulator/simulation'
 import ClickableTargetMutator from '../mutators/clickable_target_mutator'
 
+const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
 
+/*
 Blockly.Blocks["move"] = {
 	init: function () {
 		this.jsonInit({
@@ -24,6 +26,43 @@ Blockly.Blocks["move"] = {
 			helpUrl: "",
 		});
 	},
+};*/
+
+Blockly.Blocks["move"] = {
+	init: function () {
+		this.jsonInit({
+			type: "move",
+			message0: "Bewegung %1",
+			args0: [
+				{
+					type: "input_value",
+					name: "POSE",
+                    check: ["Pose", "Array"],
+				},
+			],
+			inputsInline: false,
+			previousStatement: null,
+			nextStatement: "Array",
+			style: 'movement_blocks',
+			tooltip:
+				"Füge rechts eine Joint oder Task Space Pose hinzu, zu der sich der Roboter bewegen soll",
+			helpUrl: "",
+
+		});},
+        getPosition: function () {
+            let pose = [];
+            Simulation.getInstance(sim => {
+                pose = sim.getTaskSpacePose();
+                for (let j = 0; j < 3; j++) {
+                    pose[j] = pose[j].toFixed(1);
+                }
+                for (let j = 3; j < 6; j++) {
+                    pose[j] = pose[j] * 180.0 / Math.PI;
+                    pose[j] = pose[j].toFixed(0);
+                }
+            });
+            return pose;
+        }
 };
 
 Blockly.Blocks["default_pose"] = {
@@ -48,7 +87,7 @@ Blockly.Blocks["default_pose"] = {
 			angle *= 180 / Math.PI;
 			pose.push(angle);
 		}
-		
+
 		let tooltip = '';
 		for (let i = 0; i < pose.length; i++) {
 			tooltip += 'j' + (i + 1) + ': ' + pose[i].toFixed(0) + '°\n';
@@ -63,7 +102,7 @@ Blockly.Blocks["joint_space_pose"] = {
 	init: function () {
 		const sim = Simulation.instance;
 		this.numJoints = sim.robot.arm.movable.length;
-		
+
 		let the_message = '';
 		let the_args = [];
 		// 1-based
@@ -75,7 +114,7 @@ Blockly.Blocks["joint_space_pose"] = {
 				angle: 0
 			});
 		}
-		
+
 		this.jsonInit({
 			type: "joint_space_pose",
 			message0: the_message,
@@ -89,7 +128,7 @@ Blockly.Blocks["joint_space_pose"] = {
 		});
 		this.setMutator(new ClickableTargetMutator());
 	},
-	
+
 	onClick: function (e) {
 		Simulation.getInstance().then(sim => {
 			const pose = sim.getJointSpacePose();
@@ -101,6 +140,7 @@ Blockly.Blocks["joint_space_pose"] = {
 	},
 };
 
+/* Deprecated and replaced by the pose block, Lukas
 Blockly.Blocks["task_space_pose"] = {
 	init: function () {
 		let i = 0;
@@ -164,6 +204,74 @@ Blockly.Blocks["task_space_pose"] = {
 				this.setFieldValue(deg.toFixed(0), keys[j]);
 			}
 		});
+	},
+};
+*/
+
+//replaces task_space_pose, Lukas
+
+Blockly.Blocks["pose"] = {
+	init: function () {
+		let i = 0;
+		this.jsonInit({
+			type: "pose",
+			message0: "x %1 y %2 z %3 r %4 p %5 y %6",
+			args0: [
+				{
+					"type": "field_number",
+					"name": "X",
+					"value": 0,
+					"precision": 0.1,
+				},
+				{
+					"type": "field_number",
+					"name": "Y",
+					"value": 0,
+					"precision": 0.1,
+				},
+				{
+					"type": "field_number",
+					"name": "Z",
+					"value": 0,
+					"precision": 0.1,
+				},
+				{
+					"type": "field_angle",
+					"name": "ROLL",
+					"angle": 0,
+                    "precision": 0.1,
+				},
+				{
+					"type": "field_angle",
+					"name": "PITCH",
+					"angle": 0,
+                    "precision": 0.1,
+				},
+				{
+					"type": "field_angle",
+					"name": "YAW",
+					"angle": 0,
+                    "precision": 0.1
+				},
+			],
+			inputsInline: true,
+			output: "Pose",
+			colour: "%{BKY_MOVEMENT_HEX}",
+			tooltip:
+				"Eine Pose im Arbeitsraum (definiert über die Endeffektorpose, d.h. Position und Orientierung)",
+			helpUrl: "",
+
+		});
+		this.setMutator(new ClickableTargetMutator());
+	},
+    onchange:function (e) {
+        var parent = this.getParent();
+        if (parent != null) {
+            var fieldValues = parent.getPosition();
+            for (var i = 0; i < fieldValues.length; i++) {
+                this.setFieldValue(fieldValues[i], fieldKeys[i]);
+            }
+        }
 	},
 };
 
