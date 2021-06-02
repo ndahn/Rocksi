@@ -103,7 +103,6 @@ export function removeAllBodies(simObjects) {
     }
 }
 
-
 export function addBody(simObject) {
     simObject.createBody();
     world.addBody(simObject.body)
@@ -121,20 +120,11 @@ export function updateMeshes(simObjects) {
     }
 }
 
-
-//Removes every body, not used right now.
-export function removeAllBodies(simObjects) {
-    for (var i = 0; i < simObjects.length; i++) {
-        removeBody(simObjects[i]);
-    }
-}
-
 export function updateBodies(simObjects) {
     for (let i = 0; i < simObjects.length; i++) {
         simObjects[i].updateBody();
     }
 }
-**/
 
 export function isWorldActive() {
     return world.hasActiveBodies;
