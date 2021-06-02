@@ -15,11 +15,6 @@ import './blocks/objects'
 import './blocks/extras'
 import './generators/javascript'
 
-
-//points to block definition for add_sim_object, Lukas
-import './blocks/add_sim_object'
-import './blocks/pose'
-
 //imports for adding and removing 3D-objects, Lukas
 import { addSimObject,
          remSimObjects,
