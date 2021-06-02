@@ -1,4 +1,12 @@
 import * as Blockly from "blockly";
+//Imports for SimObject and related stuff, Lukas
+import  Simulation from "../../simulator/simulation";
+
+import { getSimObject,
+         getSimObjectIdx,
+         randomColour,
+         isAttached } from "../../simulator/objects/objects";
+
 
 
 /* ========
@@ -67,6 +75,27 @@ Blockly.JavaScript["gripper_close"] = function (block) {
 	return code;
 };
 
+Blockly.JavaScript["add_sim_object"] = function (block) {
+    var idx = getSimObjectIdx(this.id);
+    var code = 'robot("startPhysicalBody", ' + idx + ');'
+	return code;
+};
+
+Blockly.JavaScript["physics_done"] = function (block) {
+    let physicsDone;
+    Simulation.getInstance(sim => {
+        physicsDone = sim.getPhysicsDone();
+    }); //simulation.instance benutzen
+    let ret = '["physics_done", ' + physicsDone + ']';
+    console.log(ret);
+    return [ret, Blockly.JavaScript.ORDER_ATOMIC];
+};
+
+Blockly.JavaScript["is_attached"] = function (block) {
+    let ret = '["is_attached", ' + isAttached() + ']';
+    console.log(ret);
+    return [ret, Blockly.JavaScript.ORDER_ATOMIC];
+};
 
 /* ======
  * EXTRAS
@@ -84,7 +113,7 @@ Blockly.JavaScript["wait"] = function (block) {
 Blockly.JavaScript["set_speed"] = function (block) {
 	var motion = block.getFieldValue('MOTION_TYPE');
 	var speed = block.getFieldValue('SPEED');
-	
+
 	var code = 'robot("setParam", "velocity/' + motion + '", ' + speed/100 + ');\n';
 	return code;
 };
