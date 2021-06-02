@@ -74,7 +74,7 @@ Blockly.Blocks['add_sim_object'] = {
                 {
                     type: "input_value",
                     name: "POSE",
-                    check: "Pose",
+                    check: "TaskspacePose",
                 },
             ],
             inputsInline: false,
