@@ -21,6 +21,13 @@ import {
 	Vector2,
 } from "three";
 
+//Imports for managing objects and physics, Lukas
+import { initCannon,
+         initRobotHitboxes } from './physics';
+
+import { setTCSimObjects,
+         setTCSimObjectsOnClick } from './objects/objects';
+
 // In ROS models Z points upwards
 Object3D.DefaultUp = new Vector3(0, 0, 1);
 
@@ -50,11 +57,11 @@ switch (selectedRobot.toLowerCase()) {
 	case 'franka':
 		robot = require('./robots/franka');
 		break;
-	
+
 	case 'niryo':
 		robot = require('./robots/niryo');
 		break;
-	
+
 	default:
 		throw ('Unknown robot \'' + selectedRobot + '\'');
 }
@@ -89,7 +96,7 @@ loadRobotModel(robot.xacro)
 
 		initScene();
 		$('.loading-message').hide();
-		
+
 		ik = new IKSolver(scene, robot);
 		Simulation.init(robot, ik, ikRender);
 	}, reason => {
@@ -103,7 +110,7 @@ function loadRobotModel(url) {
 		xacroLoader.inOrder = true;
 		xacroLoader.requirePrefix = true;
 		xacroLoader.localProperties = true;
-		
+
 		xacroLoader.rospackCommands.find = (...args) => {
 			return path.join(robot.root, ...args);
 		}
@@ -166,7 +173,7 @@ function initScene() {
 	// for (let joint of robot.arm.movable) {
 	// 	joint.add(new ArrowHelper(new Vector3(0, 0, 1), new Vector3(), 0.3, 0x0000ff));
 	// }
-	
+
 
 	// Lights
 	const light = new HemisphereLight(0xffeeee, 0x111122);
@@ -272,10 +279,10 @@ function onTargetChange() {
 			apply: true
 		}
 	);
-	
+
 	GUI.onRobotMoved(robot);
 
-	// requestAnimationFrame is called in the transformControl's change-listener, 
+	// requestAnimationFrame is called in the transformControl's change-listener,
 	// so we can skip it here
 }
 
