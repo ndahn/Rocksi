@@ -123,7 +123,7 @@ export class SimObject extends Mesh {
         body.material = new Material({ friction: 4, restitution: -1});
         body.position.set(this.position)
         body.allowSleep = true;
-        body.sleepSpeedLimit = 0.2;
+        body.sleepSpeedLimit = 1.2;
         body.sleepTimeLimit = 0.2;
         body.name = this.name;
         this.hasBody = true;
@@ -257,8 +257,13 @@ export class SimObject extends Mesh {
 
     detachFromGripper() {
         const scene = getScene();
+        const robot = getRobot();
+        let wp = new Vector3();
+        robot.tcp.object.getWorldPosition(wp);
         this.attached = false;
         scene.attach(this);
+        this.position.copy(wp);
+        //this.updateMatrixWorld();
         scene.add(this.control);
         this.addBodyToWorld();
         this.updateBody();

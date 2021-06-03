@@ -11,7 +11,7 @@ const dt = 0.02
 let world;
 let robotBodies = [];
 let initDone = false;
-const debugOn = false;
+const debugOn = true;
 
 function debug() {
     if (debugOn) {
@@ -62,7 +62,7 @@ export function initCannon() {
     floorBody.material = new CANNON.Material({ friction: 4, restitution: -2});
     floorBody.quaternion.setFromEuler(0, 0, -Math.PI / 2);
     floorBody.allowSleep = true;
-    floorBody.sleepSpeedLimit = 0.2;
+    floorBody.sleepSpeedLimit = 1.2;
     floorBody.sleepTimeLimit = 0.1;
     world.addBody(floorBody);
     initDone = true;
