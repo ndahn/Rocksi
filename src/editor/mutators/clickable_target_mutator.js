@@ -37,49 +37,12 @@ ClickableTargetMutator.prototype.drawIcon_ = function (group) {
             'fill': 'none',
         },
         group);
-    // Target lines
+    // Downwards arrow
     Blockly.utils.dom.createSvgElement(
-        Blockly.utils.Svg.LINE,
+        Blockly.utils.Svg.PATH,
         {
             'class': 'blocklyIconShape',
-            'x1': '1',
-            'x2': '7',
-            'y1': '9',
-            'y2': '9',
-            'style': 'stroke: black;',
-        },
-        group);
-    Blockly.utils.dom.createSvgElement(
-        Blockly.utils.Svg.LINE,
-        {
-            'class': 'blocklyIconShape',
-            'x1': '10',
-            'x2': '17',
-            'y1': '9',
-            'y2': '9',
-            'style': 'stroke: black;',
-        },
-        group);
-    Blockly.utils.dom.createSvgElement(
-        Blockly.utils.Svg.LINE,
-        {
-            'class': 'blocklyIconShape',
-            'x1': '9',
-            'x2': '9',
-            'y1': '1',
-            'y2': '7',
-            'style': 'stroke: black;',
-        },
-        group);
-    Blockly.utils.dom.createSvgElement(
-        Blockly.utils.Svg.LINE,
-        {
-            'class': 'blocklyIconShape',
-            'x1': '9',
-            'x2': '9',
-            'y1': '10',
-            'y2': '17',
-            'style': 'stroke: black;',
+            'd': 'M 7 4 v 5 h -3 l 5 6 l 5 -6 h -3 v -6 Z',
         },
         group);
 }
