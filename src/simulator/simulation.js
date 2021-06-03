@@ -476,9 +476,6 @@ class TheSimulation {
 
         TWEEN.update(time);
         this._renderCallback();
-        //Is this the place for the physics update, I dunno. Let's try it! Lukas
-        updatePhysics();
-        this._renderCallback();
 
         if (this.running) {
             // => captures the 'this' reference
