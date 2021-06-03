@@ -82,13 +82,8 @@ Blockly.JavaScript["add_sim_object"] = function (block) {
 };
 
 Blockly.JavaScript["physics_done"] = function (block) {
-    let physicsDone;
-    Simulation.getInstance(sim => {
-        physicsDone = sim.getPhysicsDone();
-    }); //simulation.instance benutzen
-    let ret = '["physics_done", ' + physicsDone + ']';
-    console.log(ret);
-    return [ret, Blockly.JavaScript.ORDER_ATOMIC];
+    let code = 'robot("getPhysicsDone")';
+    return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 Blockly.JavaScript["is_attached"] = function (block) {

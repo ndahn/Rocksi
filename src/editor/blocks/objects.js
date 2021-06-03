@@ -133,11 +133,11 @@ Blockly.Blocks["physics_done"] = {
 	init: function () {
 		this.jsonInit({
 			type: "physics_done",
-			message0: "Ist die Physiksimulation abgeschlossen?",
+			message0: "Physiksimulation abgeschlossen?",
 			output: "Boolean",
 			style: 'objects_blocks',
 			tooltip:
-				"Ist die Physiksimulation abgeschlossen?",
+				"Gibt Wahr zurück solange sich noch Objekte bewegen (nicht der Roboter).",
 			helpUrl: "",
 		});
     }
