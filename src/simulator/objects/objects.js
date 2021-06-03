@@ -1,12 +1,15 @@
 import { BoxBufferGeometry,
          MeshPhongMaterial,
-         CylinderGeometry } from 'three';
+         CylinderGeometry,
+         Vector3 } from 'three';
 
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 
 import * as Blockly from 'blockly/core'
 
 import { SimObject } from './simObject'
+
+import { makeRock } from './rock'
 
 import { requestAF,
          getScene,
@@ -42,9 +45,20 @@ function createCylinderMesh(simObject) {
 function addGeometry(simObject) {
     switch (simObject.type) {
         case 'cube':
-            const mesh = createBoxMesh(simObject);
-            simObject.geometry = mesh[0];
-            simObject.material = mesh[1];
+            const cubeMesh = createBoxMesh(simObject);
+            simObject.geometry = cubeMesh[0];
+            simObject.material = cubeMesh[1];
+            simObject.createBody('box');
+            break;
+        case 'rock':
+            console.log('simObject.size',simObject.size);
+            const rockMesh = makeRock(50, simObject.size.z * 2, simObject.colour);
+            rockMesh.geometry.computeBoundingBox();
+            simObject.geometry.copy(rockMesh.geometry);
+            simObject.material = rockMesh.material;
+            simObject.updateMatrixWorld();
+            simObject.createBody('box');
+            console.log('simObject.size',simObject.size);
             break;
 
         default:
@@ -67,7 +81,6 @@ export function addSimObject(blockUUID, fieldValues, pickedColour) {
     }
     addGeometry(newSimObject);
     setSpawnPosition(newSimObject);
-    newSimObject.createBody();
     newSimObject.add();
     newSimObject.updateFieldValues();
     simObjects.push(newSimObject);
@@ -77,6 +90,9 @@ export function addSimObject(blockUUID, fieldValues, pickedColour) {
 function setSpawnPosition(simObject) {
     switch (simObject.type) {
         case 'cube':
+            stackCubes(simObject);
+            break;
+        case 'rock':
             stackCubes(simObject);
             break;
 
