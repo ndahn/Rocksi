@@ -25,7 +25,7 @@ export class SimObject extends Mesh {
     constructor() {
         super();
         this.name = undefined;
-        this.type = 'cube';
+        this.type = 'rock';
         this.attached = false;
         this.hasBody = false;
         this.spawnPosition = new Vector3(5, 0, this.size.z * .5);
@@ -111,10 +111,12 @@ export class SimObject extends Mesh {
         this.render();
     }
 
-    createBody() {
+    createBody(shape) {
         let body;
-        if ('cube' == this.type) {
-            const shape = new Box(new Vec3(0.251, 0.251, 0.251))
+        if ('box' == shape) {
+            const shape = new Box(new Vec3(this.size.x * 0.5,
+                                           this.size.y * 0.5,
+                                           this.size.z * 0.5))
             body = new Body({ mass: 0.01 })
             body.addShape(shape)
         }
