@@ -34,6 +34,7 @@ export class SimObject extends Mesh {
         this.control = undefined;
         this._fieldValues = this._calcFieldValues();
         this.colour = '#eb4034'
+        this.highlighted = false;
     }
     size = new Vector3(.5, .5, .5);
 

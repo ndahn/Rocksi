@@ -131,25 +131,31 @@ export function resetAllSimObjects () {
 
 //transformControl event functions
 
-//Called by mousemove in scene.js
 export function setTCSimObjects(raycaster) {
     const intersections = raycaster.intersectObjects(simObjects);
-    const intersected = intersections.length == 1;
+    const intersected = intersections.length > 0;
     const workspace = Blockly.getMainWorkspace();
     if (intersected) {
-        console.log('intersections.length', intersections.length);
-
-        if (intersections[0].object.control.visible != intersected) {
-            intersections[0].object.control.visible = intersected;
+        if (intersections[0].object.highlighted != intersected) {
+            intersections[0].object.highlighted = intersected;
             const colour = intersections[0].object.material.color.getHex();
             intersections[0].object.material.emissive.setHex(colour);
             intersections[0].object.render();
             //Highlights the corresponding Blockly block.
             workspace.highlightBlock(intersections[0].object.name);
+            for (const simObject of simObjects) {
+                if (intersections[0].object.name != simObject.name) {
+                    simObject.highlighted = false;
+                    simObject.material.emissive.setHex(0x000000);
+                    simObject.render();
+                    //Switches the highlighting of the corresponding Blockly block off.
+                    //workspace.highlightBlock(null);
+                }
+            }
         }
     } else {
         for (const simObject of simObjects) {
-            simObject.control.visible = false;
+            simObject.highlighted = false;
             simObject.material.emissive.setHex(0x000000);
             simObject.render();
             //Switches the highlighting of the corresponding Blockly block off.
@@ -158,8 +164,34 @@ export function setTCSimObjects(raycaster) {
     }
 }
 
-//Called by onClick in scene.js
 export function setTCSimObjectsOnClick(raycaster) {
+    const intersections = raycaster.intersectObjects(simObjects);
+    const intersected = intersections.length > 0 && intersections[0].object.highlighted
+    const scene = getScene();
+    if (intersected) {
+        if (intersections[0].object.control.visible != intersected) {
+            intersections[0].object.control.visible = true;
+        }
+        const mode = intersections[0].object.control.getMode();
+        scene.remove(intersections[0].object.control);
+        if (mode == 'translate'){
+            intersections[0].object.control.setMode('rotate');
+        }
+        if (mode == 'rotate'){
+            intersections[0].object.control.setMode('translate');
+        }
+        scene.add(intersections[0].object.control);
+
+    } else {
+        for (const simObject of simObjects) {
+            simObject.control.visible = false;
+        }
+    }
+    requestAF();
+}
+
+//Called by onClick in scene.js
+export function setTCSimObjectsOnCli(raycaster) {
     const intersections = raycaster.intersectObjects(simObjects);
     const scene = getScene();
     for (let intersect of intersections) {
