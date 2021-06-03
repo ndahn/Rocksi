@@ -299,7 +299,6 @@ class TheSimulation {
         console.log('close gripper', isAttached());
         const simObject = getSimObjectByPos(position, 0.5);
         if (isAttached() == false && simObject != undefined && this.gripperWasOpen) {
-            console.log('halloooo');
             simObject.attachToGripper();
             simObject.wasGripped = true;
             for (const finger of robot.hand.movable) {
@@ -386,9 +385,10 @@ class TheSimulation {
             simObjects[simObjectsIdx].wasGripped = false;
         } else {
             simObjects[simObjectsIdx].reset();
+            simObjects[simObjectsIdx].makeVisible();
+            simObjects[simObjectsIdx].removeTransformListners(); //also removes the listners for the raycaster
+            
         }
-        simObjects[simObjectsIdx].makeVisible();
-        simObjects[simObjectsIdx].removeTransformListners(); //also removes the listners for the raycaster
         simObjects[simObjectsIdx].addBodyToWorld();
         simObjects[simObjectsIdx].updateBody();
         simObjects[simObjectsIdx].body.wakeUp();
