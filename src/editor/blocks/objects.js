@@ -1,11 +1,9 @@
 import * as Blockly from "blockly";
-
 import { getSimObject,
          getSimObjectIdx,
          randomColour,
          isAttached } from "../../simulator/objects/objects";
 
-import ClickableTargetMutator from '../mutators/clickable_target_mutator'
 
 const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
 
@@ -86,7 +84,7 @@ Blockly.Blocks['add_sim_object'] = {
         });
     },
 
-    getPosition: function () {
+    getTaskspacePose: function () {
         let fieldValues = [];
         const simObject = getSimObject(this.id);
 

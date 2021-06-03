@@ -2,32 +2,6 @@ import * as Blockly from "blockly";
 import Simulation from '../../simulator/simulation'
 import ClickableTargetMutator from '../mutators/clickable_target_mutator'
 
-const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
-
-/*
-Blockly.Blocks["move"] = {
-	init: function () {
-		this.jsonInit({
-			type: "move",
-			message0: "Bewegung %1",
-			args0: [
-				{
-					type: "input_value",
-					name: "POSE",
-					check: ["JointspacePose", "TaskspacePose"],
-				},
-			],
-			inputsInline: false,
-			previousStatement: null,
-			nextStatement: null,
-			style: 'movement_blocks',
-			tooltip:
-				"Füge rechts eine Joint oder Task Space Pose hinzu, zu der sich der Roboter bewegen soll",
-			helpUrl: "",
-		});
-	},
-};*/
-
 Blockly.Blocks["move"] = {
 	init: function () {
 		this.jsonInit({
@@ -48,21 +22,24 @@ Blockly.Blocks["move"] = {
 				"Füge rechts eine Joint oder Task Space Pose hinzu, zu der sich der Roboter bewegen soll",
 			helpUrl: "",
 
-		});},
-        getPosition: function () {
-            let pose = [];
-            Simulation.getInstance(sim => {
-                pose = sim.getTaskSpacePose();
-                for (let j = 0; j < 3; j++) {
-                    pose[j] = pose[j].toFixed(1);
-                }
-                for (let j = 3; j < 6; j++) {
-                    pose[j] = pose[j] * 180.0 / Math.PI;
-                    pose[j] = pose[j].toFixed(0);
-                }
-            });
-            return pose;
-        }
+		});
+	},
+
+	getJointspacePose: function () {
+		const jpose = Simulation.instance.getJointSpacePose();
+		for (let j = 0; j < jpose.length; j++) {
+			jpose[j] = jpose[j] * 180.0 / Math.PI;
+		}
+		return jpose;
+	},
+
+	getTaskspacePose: function () {
+		let tpose = Simulation.instance.getTaskSpacePose();
+		for (let j = 3; j < 6; j++) {
+			tpose[j] = tpose[j] * 180.0 / Math.PI;
+		}
+		return tpose;
+	}
 };
 
 Blockly.Blocks["default_pose"] = {
@@ -128,89 +105,19 @@ Blockly.Blocks["joint_space_pose"] = {
 		});
 		this.setMutator(new ClickableTargetMutator());
 	},
-
-	onClick: function (e) {
-		Simulation.getInstance().then(sim => {
-			const pose = sim.getJointSpacePose();
-			for (let j = 0; j < pose.length; j++) {
-				let deg = pose[j] * 180.0 / Math.PI;
-				this.setFieldValue(deg.toFixed(0), 'JOINT_' + (j + 1));
-			}
-		});
+	
+	onClick: function(e) {
+        var parent = this.getParent();
+        if (parent != null) {
+            var fieldValues = parent.getJointspacePose();
+            for (var i = 0; i < fieldValues.length; i++) {
+                this.setFieldValue(fieldValues[i].toFixed(0), 'JOINT_' + (i + 1));
+            }
+        }
 	},
 };
 
-/* Deprecated and replaced by the pose block, Lukas
 Blockly.Blocks["task_space_pose"] = {
-	init: function () {
-		let i = 0;
-		this.jsonInit({
-			type: "task_space_pose",
-			message0: "x %1 y %2 z %3 r %4 p %5 y %6",
-			args0: [
-				{
-					"type": "field_number",
-					"name": "X",
-					"value": 0,
-					"precision": 0.1
-				},
-				{
-					"type": "field_number",
-					"name": "Y",
-					"value": 0,
-					"precision": 0.1
-				},
-				{
-					"type": "field_number",
-					"name": "Z",
-					"value": 0,
-					"precision": 0.1
-				},
-				{
-					type: "field_angle",
-					name: "ROLL",
-					angle: 0,
-				},
-				{
-					type: "field_angle",
-					name: "PITCH",
-					angle: 0,
-				},
-				{
-					type: "field_angle",
-					name: "YAW",
-					angle: 0,
-				},
-			],
-			inputsInline: true,
-			output: "TaskspacePose",
-			style: 'movement_blocks',
-			tooltip:
-				"Eine Pose im Arbeitsraum (definiert über die Endeffektorpose, d.h. Position und Orientierung)",
-			helpUrl: "",
-		});
-		this.setMutator(new ClickableTargetMutator());
-	},
-
-	onClick: function (e) {
-		Simulation.getInstance(sim => {
-			const pose = sim.getTaskSpacePose();
-			const keys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
-			for (let j = 0; j < 3; j++) {
-				this.setFieldValue(pose[j].toFixed(1), keys[j]);
-			}
-			for (let j = 3; j < 6; j++) {
-				let deg = pose[j] * 180.0 / Math.PI;
-				this.setFieldValue(deg.toFixed(0), keys[j]);
-			}
-		});
-	},
-};
-*/
-
-//replaces task_space_pose, Lukas
-
-Blockly.Blocks["pose"] = {
 	init: function () {
 		let i = 0;
 		this.jsonInit({
@@ -264,12 +171,15 @@ Blockly.Blocks["pose"] = {
 		});
 		this.setMutator(new ClickableTargetMutator());
 	},
-    onchange:function (e) {
+
+	onClick: function(e) {
+		const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
         var parent = this.getParent();
         if (parent != null) {
-            var fieldValues = parent.getPosition();
+            var fieldValues = parent.getTaskspacePose();
             for (var i = 0; i < fieldValues.length; i++) {
-                this.setFieldValue(fieldValues[i], fieldKeys[i]);
+				let val = (i < 3) ? fieldValues[i].toFixed(1) : fieldValues[i].toFixed(0);
+                this.setFieldValue(val, fieldKeys[i]);
             }
         }
 	},

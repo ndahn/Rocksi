@@ -26,8 +26,7 @@
 						<block type="move"></block>
 						<block type="default_pose"></block>
 						<block type="joint_space_pose"></block>
-						<!--<block type="task_space_pose"></block>  Not working yet! -->
-                        <block type="pose"></block><!--replaces task_space_pose, not working with the robot-->
+                        <block type="task_space_pose"></block>
 						<block type="joint_absolute"></block>
 						<block type="joint_relative"></block>
 					</category>
@@ -35,12 +34,12 @@
 						<!-- Spawn Blöcke von Lukas -->
                         <block type="add_sim_object">
                             <value name="COLOUR">
-                                <shadow type="colour_random"/>
+                                <block type="colour_random"></block>
                             </value>
                             <value name="POSE">
-                                <shadow type="pose">
+                                <block type="pose">
                                     <field name="X">5</field>
-                                </shadow>
+                                </block>
                             </value>
                         </block>
                         <block type="is_attached"></block>
