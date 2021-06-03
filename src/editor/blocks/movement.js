@@ -105,7 +105,7 @@ Blockly.Blocks["joint_space_pose"] = {
 		});
 		this.setMutator(new ClickableTargetMutator());
 	},
-	
+
 	onClick: function(e) {
         var parent = this.getParent();
         if (parent != null) {
@@ -178,11 +178,23 @@ Blockly.Blocks["task_space_pose"] = {
         if (parent != null) {
             var fieldValues = parent.getTaskspacePose();
             for (var i = 0; i < fieldValues.length; i++) {
-				let val = (i < 3) ? fieldValues[i].toFixed(1) : fieldValues[i].toFixed(0);
+                let val = (i < 3) ? fieldValues[i].toFixed(1) : fieldValues[i].toFixed(0);
                 this.setFieldValue(val, fieldKeys[i]);
             }
         }
 	},
+
+    onchange: function(event) {
+        const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
+        var parent = this.getParent();
+        if (parent != null && parent.type == 'add_sim_object') {
+            var fieldValues = parent.getTaskspacePose();
+            for (var i = 0; i < fieldValues.length; i++) {
+                let val = (i < 3) ? fieldValues[i].toFixed(1) : fieldValues[i].toFixed(0);
+                this.setFieldValue(val, fieldKeys[i]);
+            }
+        }
+    }
 };
 
 Blockly.Blocks["joint_absolute"] = {
