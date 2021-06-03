@@ -25,7 +25,7 @@ export class SimObject extends Mesh {
     constructor() {
         super();
         this.name = undefined;
-        this.type = 'rock';
+        this.type = 'cube';
         this.attached = false;
         this.hasBody = false;
         this.spawnPosition = new Vector3(5, 0, this.size.z * .5);
