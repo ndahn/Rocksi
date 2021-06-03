@@ -340,7 +340,6 @@ function executeProgram() {
         // See simulationAPI above.
         let hasMore = interpreter.run();
         if (!hasMore) {
-            popInfo('Bitte warten bis die Simulation abgeschlossen ist...');
             waitForPhysicsSim();
         }
     }

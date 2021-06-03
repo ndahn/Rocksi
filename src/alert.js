@@ -116,7 +116,7 @@ class MessageBox {
 
 
 let msgboxInfo = new MessageBox('#msgbox-area', {
-	closeTime: 0,
+	closeTime: 4000,
 	hideCloseButton: true,
 	closeOnClick: true,
 	csscls: ["info"]

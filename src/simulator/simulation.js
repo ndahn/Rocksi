@@ -249,7 +249,7 @@ class TheSimulation {
                     robot,
                     robot.ikEnabled,
                     {
-                        iterations: 1,
+                        iterations: 5,
                         jointLimits: robot.interactionJointLimits,
                         apply: false
                     }
