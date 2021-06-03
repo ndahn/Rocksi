@@ -45,10 +45,7 @@ import URDFLoader from "urdf-loader";
 import { default as IKSolver } from "./ik/ccdik"
 //import { default as IKSolver } from "./ik/fabrik"
 import Simulation from "./simulation"
-
-import { initGui,
-         onRobotMoved } from "./gui"
-
+import * as GUI from "./gui"
 import { popInfo } from "../alert"
 
 const path = require('path');
@@ -247,7 +244,7 @@ function initScene() {
 	new ResizeSensor(domParent, onCanvasResize);
 	onCanvasResize();
 
-	//initGui(robot, cameraControl, ikRender);
+	GUI.initGui(robot, cameraControl, ikRender);
 }
 
 function onCanvasResize() {
@@ -291,7 +288,7 @@ function onTargetChange() {
 		}
 	);
 
-	//onRobotMoved(robot);
+    GUI.onRobotMoved(robot);
 
 	// requestAnimationFrame is called in the transformControl's change-listener,
 	// so we can skip it here
