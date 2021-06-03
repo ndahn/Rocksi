@@ -276,10 +276,18 @@ export class SimObject extends Mesh {
         const robot = getRobot();
         const scene = getScene();
         const tcp = robot.tcp.object;
+        tcp.updateMatrixWorld();
+        let wp = new Vector3();
+        let wp2 = new Vector3();
+        tcp.getWorldPosition(wp);
+        console.log('TCP World position: ', wp);
+        console.log('SO World position: ', wp2);
+        this.position.copy(wp);
         this.attached = true;
         scene.remove(this.control);
         this.removeBodyFromWorld();
         tcp.attach(this);
+        this.updateMatrixWorld();
         //This is important, otherwise the 3D-object will not attach correctly.
         this.updateBody();
         console.log('> Object gripped!');
