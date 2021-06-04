@@ -56,7 +56,6 @@ class TheSimulation {
         }
         //Physics and triggers, Lukas
         this.runningPhysics = false;
-        this.gripperWasOpen = false;
         this.physicsDone = true;
         this.lastSimObjectProcessed = false;
     }
@@ -298,7 +297,7 @@ class TheSimulation {
         tcp.getWorldPosition(position);
         console.log('close gripper', isAttached());
         const simObject = getSimObjectByPos(position, 0.5);
-        if (isAttached() == false && simObject != undefined && this.gripperWasOpen) {
+        if (isAttached() == false && simObject != undefined && robot.isGripperOpen()) {
             simObject.attachToGripper();
             simObject.wasGripped = true;
             for (const finger of robot.hand.movable) {
@@ -316,7 +315,6 @@ class TheSimulation {
 
         const duration = getDuration(robot, target, this.velocities.gripper);
         let tween = this._makeTween(start, target, duration);
-        this.gripperWasOpen = false;
         return tween;
     }
 
@@ -344,7 +342,6 @@ class TheSimulation {
 
         const duration = getDuration(robot, target, this.velocities.gripper);
         let tween = this._makeTween(start, target, duration);
-        this.gripperWasOpen = true;
         return tween;
     }
 

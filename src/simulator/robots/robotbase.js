@@ -176,6 +176,29 @@ export default class Robot {
             ? this.ikEnabled.includes(part.name)
             : this.isMovable(part) && this.isArm(part);
     }
+
+
+    isGripperOpen() {
+        return this.getGripperAbduction() >= 0.5;
+    }
+
+    getGripperAbduction() {
+        if (this.hand.movable.length === 0) {
+            return 0;
+        }
+        
+        // Average abduction of all hand joints
+        let abduction = 0.0;
+        for (let joint of this.hand.movable) {
+            let val = joint.angle;
+            let upper = joint.limit.upper;
+            let lower = joint.limit.lower;
+            let rel = (val - lower) / (upper - lower);
+            abduction += rel;
+        }
+        abduction /= this.hand.movable.length;
+        return abduction;
+    }
     
 
 	getJointForLink(link) {
