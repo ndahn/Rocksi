@@ -100,7 +100,7 @@ Blockly.Blocks["joint_space_pose"] = {
 			output: "JointspacePose",
 			style: 'movement_blocks',
 			tooltip:
-				"Eine Pose im Gelenkwinkelraum (ein Winkel pro Gelenk, d.h. von der Basis zum Endeffektor)",
+				"Eine Pose im Gelenkwinkelraum (ein Winkel pro Gelenk beginnend an der Basis)",
 			helpUrl: "",
 		});
 		this.setMutator(new ClickableTargetMutator());
@@ -122,7 +122,7 @@ Blockly.Blocks["task_space_pose"] = {
 		let i = 0;
 		this.jsonInit({
 			type: "pose",
-			message0: "x %1 y %2 z %3 r %4 p %5 y %6",
+			message0: "x %1 y %2 z %3 ϕ %4 θ %5 ψ %6",
 			args0: [
 				{
 					"type": "field_number",
@@ -165,7 +165,7 @@ Blockly.Blocks["task_space_pose"] = {
 			output: "TaskspacePose",
 			style: 'movement_blocks',
 			tooltip:
-				"Eine Pose im Arbeitsraum (definiert über die Endeffektorpose, d.h. Position und Orientierung)",
+				"Eine Pose im Arbeitsraum (Position und Orientierung des Endeffektors)",
 			helpUrl: "",
 
 		});
