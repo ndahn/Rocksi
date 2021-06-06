@@ -255,9 +255,9 @@ export class SimObject extends Mesh {
         this.render();
     }
 
-    detachFromGripper() {
+    detachFromGripper(robot) {
         const scene = getScene();
-        const robot = getRobot();
+        //const robot = getRobot();
         let wp = new Vector3();
         robot.tcp.object.getWorldPosition(wp);
         this.attached = false;
@@ -272,24 +272,35 @@ export class SimObject extends Mesh {
         console.log('> Object dropped!');
     }
 
-    attachToGripper() {
-        const robot = getRobot();
+    attachToGripper(robot) {
+        //const robot = getRobot();
         const scene = getScene();
         const tcp = robot.tcp.object;
-        tcp.updateMatrixWorld();
         let wp = new Vector3();
         let wp2 = new Vector3();
+        this.getWorldPosition(wp2);
         tcp.getWorldPosition(wp);
         console.log('TCP World position: ', wp);
         console.log('SO World position: ', wp2);
-        this.position.copy(wp);
+        //this.position.copy(wp);
         this.attached = true;
         scene.remove(this.control);
         this.removeBodyFromWorld();
         tcp.attach(this);
-        this.updateMatrixWorld();
+
+        //this.position.copy(wp);
+        robot.model.updateWorldMatrix();
+        scene.updateWorldMatrix();
+        tcp.updateWorldMatrix();
+        this.updateWorldMatrix();
         //This is important, otherwise the 3D-object will not attach correctly.
-        this.updateBody();
+        //this.updateBody();
+        this.getWorldPosition(wp2);
+        tcp.getWorldPosition(wp);
+        let dis = wp.distanceTo(wp2);
+        console.log('TCP World position 2: ', wp);
+        console.log('SO World position 2: ', wp2);
+        console.log('distance: ', dis);
         console.log('> Object gripped!');
     }
 }
