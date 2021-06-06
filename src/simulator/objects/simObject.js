@@ -216,12 +216,16 @@ export class SimObject extends Mesh {
 
     addBodyToWorld() {
         const world = getWorld();
+        this.body = this.store;
         world.addBody(this.body);
+
     }
 
     removeBodyFromWorld() {
         const world = getWorld();
         world.removeBody(this.body);
+        this.store = this.body;
+        this.body = null;
     }
 
     remove() {
@@ -246,13 +250,13 @@ export class SimObject extends Mesh {
 
     reset() {
         if (this.hasBody) {
-            const world = getWorld();
-            world.removeBody(this.body);
+            //const world = getWorld();
+            //world.removeBody(this.body);
         }
-        this.position.copy(this.spawnPosition);
-        this.setRotationFromEuler(this.spawnRotation);
-        this.updateBody();
-        this.render();
+        //this.position.copy(this.spawnPosition);
+        //this.setRotationFromEuler(this.spawnRotation);
+        //this.updateBody();
+        //this.render();
     }
 
     detachFromGripper(robot) {
@@ -289,8 +293,7 @@ export class SimObject extends Mesh {
         this.attached = true;
         scene.remove(this.control);
         this.removeBodyFromWorld();
-        const parent = this.parent;
-        parent.remove( this );
+        scene.remove( this );
         this.matrixWorld.decompose( this.position, this.quaternion, this.scale );
         tcp.attach(this);
         this.updateMatrixWorld();

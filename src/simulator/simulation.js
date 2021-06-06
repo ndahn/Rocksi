@@ -383,19 +383,19 @@ class TheSimulation {
         } else {
             simObjects[simObjectsIdx].reset();
             simObjects[simObjectsIdx].makeVisible();
-            simObjects[simObjectsIdx].removeTransformListners(); //also removes the listners for the raycaster
+            //simObjects[simObjectsIdx].removeTransformListners(); //also removes the listners for the raycaster
 
         }
-        simObjects[simObjectsIdx].addBodyToWorld();
-        simObjects[simObjectsIdx].updateBody();
-        simObjects[simObjectsIdx].body.wakeUp();
+        //simObjects[simObjectsIdx].addBodyToWorld();
+        //simObjects[simObjectsIdx].updateBody();
+        //simObjects[simObjectsIdx].body.wakeUp();
         if (simObjectsIdx + 1 == simObjects.length) {
             this.lastSimObjectProcessed = true;
         }
-        if (!this.runningPhysics) {
-            this._animatePhysics();
-            this.runningPhysics = true;
-        }
+        //if (!this.runningPhysics) {
+            //this._animatePhysics();
+        //    this.runningPhysics = true;
+        //}
     }
 
     getPhysicsDone() {
