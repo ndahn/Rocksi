@@ -298,7 +298,7 @@ class TheSimulation {
         console.log('close gripper', isAttached());
         const simObject = getSimObjectByPos(position, 0.5);
         if (isAttached() == false && simObject != undefined && robot.isGripperOpen()) {
-            simObject.attachToGripper();
+            simObject.attachToGripper(robot);
             simObject.wasGripped = true;
             for (const finger of robot.hand.movable) {
                     start[finger.name] = finger.angle;

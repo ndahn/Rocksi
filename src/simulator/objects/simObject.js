@@ -280,26 +280,30 @@ export class SimObject extends Mesh {
         let wp2 = new Vector3();
         this.getWorldPosition(wp2);
         tcp.getWorldPosition(wp);
-        console.log('TCP World position: ', wp);
-        console.log('SO World position: ', wp2);
+        console.log('TCP World position before attach: ', wp);
+        console.log('SO World position before attach: ', wp2);
+        console.log('Robot Model before attach: ', robot.model);
+        console.log('Tcp before attach: ', tcp);
+        console.log('simObject before attach', this);
         //this.position.copy(wp);
         this.attached = true;
         scene.remove(this.control);
         this.removeBodyFromWorld();
+        const parent = this.parent;
+        parent.remove( this );
+        this.matrixWorld.decompose( this.position, this.quaternion, this.scale );
         tcp.attach(this);
-
-        //this.position.copy(wp);
-        robot.model.updateWorldMatrix();
-        scene.updateWorldMatrix();
-        tcp.updateWorldMatrix();
-        this.updateWorldMatrix();
+        this.updateMatrixWorld();
         //This is important, otherwise the 3D-object will not attach correctly.
         //this.updateBody();
         this.getWorldPosition(wp2);
         tcp.getWorldPosition(wp);
         let dis = wp.distanceTo(wp2);
-        console.log('TCP World position 2: ', wp);
-        console.log('SO World position 2: ', wp2);
+        console.log('Robot Model after attach: ', robot.model);
+        console.log('Tcp after attach: ', tcp);
+        console.log('simObject after attach', this);
+        console.log('TCP World position after attach: ', wp);
+        console.log('SO World position after attach: ', wp2);
         console.log('distance: ', dis);
         console.log('> Object gripped!');
     }
