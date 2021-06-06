@@ -137,18 +137,15 @@ export function resetAllSimObjects () {
     if (simObjects.length > 0) {
         for (const simObject of simObjects) {
             simObject.reset();
-            createMesh(newSimObject);
-            updateBodies(simObjects);
+            //updateBodies(simObjects);
         }
     }
-    simObjects.push(newSimObject);
-    createMesh(newSimObject);
 }
 
 //transformControl event functions
 
 export function setTCSimObjects(raycaster) {
-    const intersections = raycaster.intersectObjects(simObjects);
+    /*const intersections = raycaster.intersectObjects(simObjects);
     const intersected = intersections.length > 0;
     const workspace = Blockly.getMainWorkspace();
     if (intersected) {
@@ -177,11 +174,11 @@ export function setTCSimObjects(raycaster) {
             //Switches the highlighting of the corresponding Blockly block off.
             workspace.highlightBlock(null);
         }
-    }
+    }*/
 }
 
 export function setTCSimObjectsOnClick(raycaster) {
-    const intersections = raycaster.intersectObjects(simObjects);
+    /*const intersections = raycaster.intersectObjects(simObjects);
     const intersected = intersections.length > 0 && intersections[0].object.highlighted
     const scene = getScene();
     if (intersected) {
@@ -202,26 +199,8 @@ export function setTCSimObjectsOnClick(raycaster) {
         for (const simObject of simObjects) {
             simObject.control.visible = false;
         }
-    }
+    }*/
     requestAF();
-}
-
-//Called by onClick in scene.js
-export function setTCSimObjectsOnCli(raycaster) {
-    const intersections = raycaster.intersectObjects(simObjects);
-    const scene = getScene();
-    for (let intersect of intersections) {
-        const mode = intersect.object.control.getMode();
-        scene.remove(intersect.object.control);
-        if (mode == 'translate'){
-            intersect.object.control.setMode('rotate');
-        }
-        if (mode == 'rotate'){
-            intersect.object.control.setMode('translate');
-        }
-        scene.add(intersect.object.control);
-        intersect.object.render();
-    }
 }
 
 //Returns a list with all names of simObjects (the uuids of the blockly blocks)

@@ -98,17 +98,17 @@ export class SimObject extends Mesh {
     render() { requestAF(); }
 
     makeVisible() {
-        const scene = getScene();
+        /*const scene = getScene();
         scene.add(this.control);
         scene.add(this);
-        this.render();
+        this.render();*/
     }
 
     hide() {
-        const scene = getScene();
+        /*const scene = getScene();
         scene.remove(this.control);
         scene.remove(this);
-        this.render();
+        this.render();*/
     }
 
     createBody(shape) {
@@ -134,20 +134,20 @@ export class SimObject extends Mesh {
     }
 
     updateBody() {
-        this.body.position.copy(this.position);
-        this.body.quaternion.copy(this.quaternion);
+        /*this.body.position.copy(this.position);
+        this.body.quaternion.copy(this.quaternion);*/
     }
 
     updateMesh() {
-        this.position.copy(this.body.position);
-        this.quaternion.copy(this.body.quaternion);
+        /*this.position.copy(this.body.position);
+        this.quaternion.copy(this.body.quaternion);*/
     }
 
     add() {
         const scene = getScene();
         this.updatePos(this.spawnPosition, this.spawnRotation)
         scene.add(this);
-        this.initTransformControl();
+        //this.initTransformControl();
         this.render();
     }
 
@@ -155,26 +155,26 @@ export class SimObject extends Mesh {
     _change() {
         //Sometimes the controls are not visible, but they will change the position/rotation.
         //this is here to counter this behaviour
-        if (!this.control.visible) {
+        /*if (!this.control.visible) {
             this.position.copy(this.spawnPosition);
             this.setRotationFromEuler(this.spawnRotation);
-        }
-        this.render()
+        }*/
+        //this.render()
     }
     //callback for dragging-changed
     _draggingCanged(event) {
-        const controlObj = getControl();
-        controlObj.orbitControls.enabled = ! event.value;
+        //const controlObj = getControl();
+        //controlObj.orbitControls.enabled = ! event.value;
     }
     //callback for objectChange
     _objectChange() {
-        if (this.control.visible) {
+        /*if (this.control.visible) {
             if (this.position.z < 0) { this.position.z = this.size.z * .5; }
 
             this.spawnPosition.copy(this.position);
             this.spawnRotation.copy(this.rotation);
             this._fieldValues = this._calcFieldValues();
-        }
+        }*/
     }
 
     addTransformListeners() {
@@ -201,7 +201,7 @@ export class SimObject extends Mesh {
     }
 
     initTransformControl() {
-        const controlObj = getControl();
+        /*const controlObj = getControl();
         const scene = getScene();
 
         this.control = new TransformControls(controlObj.camera, controlObj.renderer.domElement);
@@ -211,21 +211,17 @@ export class SimObject extends Mesh {
         this.control.attach(this);
         scene.add(this.control);
 
-        this.control.visible = false;
+        this.control.visible = false;*/
     }
 
     addBodyToWorld() {
-        const world = getWorld();
-        this.body = this.store;
-        world.addBody(this.body);
-
+        /*const world = getWorld();
+        world.addBody(this.body);*/
     }
 
     removeBodyFromWorld() {
-        const world = getWorld();
-        world.removeBody(this.body);
-        this.store = this.body;
-        this.body = null;
+        /*const world = getWorld();
+        world.removeBody(this.body);*/
     }
 
     remove() {
@@ -262,17 +258,17 @@ export class SimObject extends Mesh {
     detachFromGripper(robot) {
         const scene = getScene();
         //const robot = getRobot();
-        let wp = new Vector3();
-        robot.tcp.object.getWorldPosition(wp);
+        //let wp = new Vector3();
+        //robot.tcp.object.getWorldPosition(wp);
         this.attached = false;
         scene.attach(this);
-        this.position.copy(wp);
+        //this.position.copy(wp);
         //this.updateMatrixWorld();
-        scene.add(this.control);
-        this.addBodyToWorld();
-        this.updateBody();
-        this.body.wakeUp();
-        this.body.updateInertiaWorld();
+        //scene.add(this.control);
+        //this.addBodyToWorld();
+        //this.updateBody();
+        //this.body.wakeUp();
+        //this.body.updateInertiaWorld();
         console.log('> Object dropped!');
     }
 
