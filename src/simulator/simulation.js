@@ -2,11 +2,8 @@ import { Object3D, Vector3, Euler } from "three"
 
 //function for updating the physics, Lukas
 import { updatePhysics,
-         addBody,
          isWorldActive,
-         updateMeshes,
-         updateBodies,
-         getBody } from './physics'
+         updateBodies, } from './physics'
 
 var TWEEN = require('@tweenjs/tween.js');
 
@@ -299,7 +296,6 @@ class TheSimulation {
         const simObject = getSimObjectByPos(position, 0.5);
         if (isAttached() == false && simObject != undefined && robot.isGripperOpen()) {
             simObject.attachToGripper(robot);
-            simObject.wasGripped = true;
             for (const finger of robot.hand.movable) {
                     start[finger.name] = finger.angle;
                     target[finger.name] = finger.limit.upper - (simObject.size.x * 0.2);//This is just for testing, Lukas
@@ -332,7 +328,7 @@ class TheSimulation {
             simObject.detachFromGripper(robot);
             const idx = getSimObjectIdx(simObject.name);
             if (!this.runningPhysics) {
-                //this.startPhysicalBody(idx);
+                this.startPhysicalBody(idx);
             }
         }
         for (const finger of robot.hand.movable) {
@@ -380,22 +376,22 @@ class TheSimulation {
         this.physicsDone = false;
         if (simObjects[simObjectsIdx].wasGripped) {
             simObjects[simObjectsIdx].wasGripped = false;
+            console.log('gripping');
         } else {
             simObjects[simObjectsIdx].reset();
             simObjects[simObjectsIdx].makeVisible();
-            //simObjects[simObjectsIdx].removeTransformListners(); //also removes the listners for the raycaster
-
         }
-        //simObjects[simObjectsIdx].addBodyToWorld();
-        //simObjects[simObjectsIdx].updateBody();
-        //simObjects[simObjectsIdx].body.wakeUp();
+        simObjects[simObjectsIdx].removeTransformListners();
+        simObjects[simObjectsIdx].addBodyToWorld();
+        simObjects[simObjectsIdx].updateBody();
+        simObjects[simObjectsIdx].body.wakeUp();
         if (simObjectsIdx + 1 == simObjects.length) {
             this.lastSimObjectProcessed = true;
         }
-        //if (!this.runningPhysics) {
-            //this._animatePhysics();
-        //    this.runningPhysics = true;
-        //}
+        if (!this.runningPhysics) {
+            this._animatePhysics();
+            this.runningPhysics = true;
+        }
     }
 
     getPhysicsDone() {

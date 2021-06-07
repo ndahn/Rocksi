@@ -11,7 +11,7 @@ const dt = 0.02
 let world;
 let robotBodies = [];
 let initDone = false;
-const debugOn = false;
+const debugOn =  true;
 
 function debug() {
     if (debugOn) {
@@ -93,7 +93,7 @@ export function addBodyToWorld(simObject) {
 
 export function removeBodyFromWorld(simObject) {
         world.removeBody(simObject.body)
-        simObject.body = null;
+        //simObject.body = null;
 }
 
 //Removes every body, not used right now.
@@ -116,7 +116,9 @@ export function removeBody(simObject) {
 export function updateMeshes(simObjects) {
     let limit = simObjects.length;
     for (let i = 0; i < limit; i++) {
-        simObjects[i].updateMesh();
+        if (!simObjects[i].attached) {//fixes gripping issue
+            simObjects[i].updateMesh();
+        }
     }
 }
 

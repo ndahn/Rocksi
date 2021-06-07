@@ -145,7 +145,7 @@ export function resetAllSimObjects () {
 //transformControl event functions
 
 export function setTCSimObjects(raycaster) {
-    /*const intersections = raycaster.intersectObjects(simObjects);
+    const intersections = raycaster.intersectObjects(simObjects);
     const intersected = intersections.length > 0;
     const workspace = Blockly.getMainWorkspace();
     if (intersected) {
@@ -174,11 +174,11 @@ export function setTCSimObjects(raycaster) {
             //Switches the highlighting of the corresponding Blockly block off.
             workspace.highlightBlock(null);
         }
-    }*/
+    }
 }
 
 export function setTCSimObjectsOnClick(raycaster) {
-    /*const intersections = raycaster.intersectObjects(simObjects);
+    const intersections = raycaster.intersectObjects(simObjects);
     const intersected = intersections.length > 0 && intersections[0].object.highlighted
     const scene = getScene();
     if (intersected) {
@@ -199,7 +199,7 @@ export function setTCSimObjectsOnClick(raycaster) {
         for (const simObject of simObjects) {
             simObject.control.visible = false;
         }
-    }*/
+    }
     requestAF();
 }
 

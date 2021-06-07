@@ -35,6 +35,7 @@ export class SimObject extends Mesh {
         this._fieldValues = this._calcFieldValues();
         this.colour = '#eb4034'
         this.highlighted = false;
+        //this.scale.set(new Vector3(1,1,1));
     }
     size = new Vector3(.5, .5, .5);
 
@@ -98,17 +99,19 @@ export class SimObject extends Mesh {
     render() { requestAF(); }
 
     makeVisible() {
-        /*const scene = getScene();
+        const scene = getScene();
         scene.add(this.control);
+        this.addTransformListeners();
         scene.add(this);
-        this.render();*/
+        this.render();
     }
 
     hide() {
-        /*const scene = getScene();
+        const scene = getScene();
         scene.remove(this.control);
+        this.removeTransformListners();
         scene.remove(this);
-        this.render();*/
+        this.render();
     }
 
     createBody(shape) {
@@ -134,20 +137,20 @@ export class SimObject extends Mesh {
     }
 
     updateBody() {
-        /*this.body.position.copy(this.position);
-        this.body.quaternion.copy(this.quaternion);*/
+        this.body.position.copy(this.position);
+        this.body.quaternion.copy(this.quaternion);
     }
 
     updateMesh() {
-        /*this.position.copy(this.body.position);
-        this.quaternion.copy(this.body.quaternion);*/
+        this.position.copy(this.body.position);
+        this.quaternion.copy(this.body.quaternion);
     }
 
     add() {
         const scene = getScene();
         this.updatePos(this.spawnPosition, this.spawnRotation)
         scene.add(this);
-        //this.initTransformControl();
+        this.initTransformControl();
         this.render();
     }
 
@@ -155,53 +158,55 @@ export class SimObject extends Mesh {
     _change() {
         //Sometimes the controls are not visible, but they will change the position/rotation.
         //this is here to counter this behaviour
-        /*if (!this.control.visible) {
-            this.position.copy(this.spawnPosition);
-            this.setRotationFromEuler(this.spawnRotation);
-        }*/
+        //if (!this.control.visible) {
+        //    this.position.copy(this.spawnPosition);
+        //    this.setRotationFromEuler(this.spawnRotation);
+        //}
         //this.render()
     }
     //callback for dragging-changed
     _draggingCanged(event) {
-        //const controlObj = getControl();
-        //controlObj.orbitControls.enabled = ! event.value;
+        const controlObj = getControl();
+        controlObj.orbitControls.enabled = ! event.value;
     }
     //callback for objectChange
     _objectChange() {
-        /*if (this.control.visible) {
+        if (this.control.visible) {
             if (this.position.z < 0) { this.position.z = this.size.z * .5; }
 
             this.spawnPosition.copy(this.position);
             this.spawnRotation.copy(this.rotation);
             this._fieldValues = this._calcFieldValues();
-        }*/
+            //somthing to update the pose...
+            this.render();
+        }
     }
 
     addTransformListeners() {
-        if (this.control) {
-            this.control.addEventListener('change', () => this._change());
 
-            this.control.addEventListener('dragging-changed',(event) => this._draggingCanged(event));
+        this.control.addEventListener('change', () => this._change());
 
-            this.control.addEventListener('objectChange', () => this._objectChange());
-        }
-        addListeners(); //for the listeners in the scene
+        this.control.addEventListener('dragging-changed',(event) => this._draggingCanged(event));
+
+        this.control.addEventListener('objectChange', () => this._objectChange());
+
+        //addListeners(); //for the listeners in the scene
 
     }
 
     removeTransformListners() {
-        if (this.control) {
-            this.control.removeEventListener('change', () => this._change());
 
-            this.control.removeEventListener('dragging-changed',(event) => this._draggingCanged(event));
+        this.control.removeEventListener('change', () => this._change());
 
-            this.control.removeEventListener('objectChange', () => this._objectChange());
-        }
-        removeListeners();//for the listeners in the scene
+        this.control.removeEventListener('dragging-changed',(event) => this._draggingCanged(event));
+
+        this.control.removeEventListener('objectChange', () => this._objectChange());
+
+        //removeListeners();//for the listeners in the scene
     }
 
     initTransformControl() {
-        /*const controlObj = getControl();
+        const controlObj = getControl();
         const scene = getScene();
 
         this.control = new TransformControls(controlObj.camera, controlObj.renderer.domElement);
@@ -211,17 +216,17 @@ export class SimObject extends Mesh {
         this.control.attach(this);
         scene.add(this.control);
 
-        this.control.visible = false;*/
+        this.control.visible = false;
     }
 
     addBodyToWorld() {
-        /*const world = getWorld();
-        world.addBody(this.body);*/
+        const world = getWorld();
+        world.addBody(this.body);
     }
 
     removeBodyFromWorld() {
-        /*const world = getWorld();
-        world.removeBody(this.body);*/
+        const world = getWorld();
+        world.removeBody(this.body);
     }
 
     remove() {
@@ -246,29 +251,23 @@ export class SimObject extends Mesh {
 
     reset() {
         if (this.hasBody) {
-            //const world = getWorld();
-            //world.removeBody(this.body);
+            const world = getWorld();
+            world.removeBody(this.body);
         }
-        //this.position.copy(this.spawnPosition);
-        //this.setRotationFromEuler(this.spawnRotation);
+        this.position.copy(this.spawnPosition);
+        this.setRotationFromEuler(this.spawnRotation);
         //this.updateBody();
-        //this.render();
+        this.render();
     }
 
     detachFromGripper(robot) {
         const scene = getScene();
-        //const robot = getRobot();
-        //let wp = new Vector3();
-        //robot.tcp.object.getWorldPosition(wp);
         this.attached = false;
         scene.attach(this);
-        //this.position.copy(wp);
-        //this.updateMatrixWorld();
-        //scene.add(this.control);
-        //this.addBodyToWorld();
-        //this.updateBody();
-        //this.body.wakeUp();
-        //this.body.updateInertiaWorld();
+        this.addBodyToWorld();
+        this.updateBody();
+        this.body.wakeUp();
+        this.body.updateInertiaWorld();
         console.log('> Object dropped!');
     }
 
@@ -276,34 +275,17 @@ export class SimObject extends Mesh {
         //const robot = getRobot();
         const scene = getScene();
         const tcp = robot.tcp.object;
-        let wp = new Vector3();
-        let wp2 = new Vector3();
-        this.getWorldPosition(wp2);
-        tcp.getWorldPosition(wp);
-        console.log('TCP World position before attach: ', wp);
-        console.log('SO World position before attach: ', wp2);
-        console.log('Robot Model before attach: ', robot.model);
-        console.log('Tcp before attach: ', tcp);
-        console.log('simObject before attach', this);
-        //this.position.copy(wp);
         this.attached = true;
+        this.wasGripped = true;
+        this.removeTransformListners();
         scene.remove(this.control);
         this.removeBodyFromWorld();
-        scene.remove( this );
-        this.matrixWorld.decompose( this.position, this.quaternion, this.scale );
+        //scene.remove( this );
+        //this.matrixWorld.decompose( this.position, this.quaternion, this.scale );
         tcp.attach(this);
-        this.updateMatrixWorld();
+        //this.updateMatrixWorld();
         //This is important, otherwise the 3D-object will not attach correctly.
         //this.updateBody();
-        this.getWorldPosition(wp2);
-        tcp.getWorldPosition(wp);
-        let dis = wp.distanceTo(wp2);
-        console.log('Robot Model after attach: ', robot.model);
-        console.log('Tcp after attach: ', tcp);
-        console.log('simObject after attach', this);
-        console.log('TCP World position after attach: ', wp);
-        console.log('SO World position after attach: ', wp2);
-        console.log('distance: ', dis);
         console.log('> Object gripped!');
     }
 }
