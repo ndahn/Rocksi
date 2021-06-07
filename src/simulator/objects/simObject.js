@@ -53,12 +53,11 @@ export class SimObject extends Mesh {
         this.spawnPosition.toArray(fieldValues);
         fieldValues[2] = fieldValues[2] - this.size.z * .5;
         this.spawnRotation.toArray(radValues);
-        //console.log('_calcFieldValues', this.spawnPosition);
+
         for (let i = 0; i < 3; i++) {
             let val = this._radToDeg(radValues[i]);
             fieldValues.push(parseInt(val.toFixed()));
         }
-
 
         return fieldValues;
     }
