@@ -262,7 +262,7 @@ function onMouseMove(evt) {
 
     raycaster.setFromCamera(mouseXY, camera);
     const intersections = raycaster.intersectObjects([tcptarget]);
-    setTCSimObjects(raycaster); //does this for all TransformControls of simObjects
+    setSimObjectHighlight(raycaster); //does this for all TransformControls of simObjects
     let showTC = intersections.length > 0;
 
     if (showTC !== transformControl.visible) {
