@@ -21,6 +21,8 @@ import { Box,
          Body,
          Material } from 'cannon-es'
 
+import * as Blockly from 'blockly/core'
+
 export class SimObject extends Mesh {
     constructor() {
         super();
@@ -133,7 +135,6 @@ export class SimObject extends Mesh {
         this.body = body;
         this.body.sleep();
         this.updateBody();
-
     }
 
     updateBody() {
@@ -160,6 +161,7 @@ export class SimObject extends Mesh {
         const controlObj = getControl();
         controlObj.orbitControls.enabled = ! event.value;
     }
+
     //callback for objectChange
     _objectChange() {
         if (this.control.visible && !this.attached) {
@@ -168,8 +170,26 @@ export class SimObject extends Mesh {
             this.spawnPosition.copy(this.position);
             this.spawnRotation.copy(this.rotation);
             this._fieldValues = this._calcFieldValues();
-            //somthing to update the pose...
+            this._updatePoseBlock();
             this.render();
+        }
+    }
+
+    _updatePoseBlock() {
+        const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
+        const workspace = Blockly.getMainWorkspace();
+        if (workspace) {
+            const block = workspace.getBlockById(this.name);
+            if (block) {
+                const pose = block.getInputTargetBlock('POSE');
+                if (pose) {
+                    for (var i = 0; i < this._fieldValues.length; i++) {
+                        let val = this._fieldValues[i];
+                        pose.setFieldValue(val, fieldKeys[i]);
+                    }
+                }
+
+            }
         }
     }
 
