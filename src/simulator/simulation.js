@@ -292,7 +292,6 @@ class TheSimulation {
         const tcp = robot.tcp.object;
         let position = new Vector3;
         tcp.getWorldPosition(position);
-        console.log('close gripper', isAttached());
         const simObject = getSimObjectByPos(position, 0.5);
         if (isAttached() == false && simObject != undefined && robot.isGripperOpen()) {
             simObject.attachToGripper(robot);
