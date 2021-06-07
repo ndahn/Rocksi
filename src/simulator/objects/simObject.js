@@ -73,6 +73,12 @@ export class SimObject extends Mesh {
         this._fieldValues = fieldValues;
     }
 
+    setSpawnPosition() {
+        this.spawnPosition.copy(this.position);
+        this.spawnRotation.copy(this.rotation);
+        this._fieldValues = this._calcFieldValues();
+    }
+
     _fieldValuesToPos(fieldValues) {
         let posArray = [];
         let eulArray = [];
@@ -167,10 +173,10 @@ export class SimObject extends Mesh {
         if (this.control.visible && !this.attached) {
             if (this.position.z < 0) { this.position.z = this.size.z * .5; }
 
-            this.spawnPosition.copy(this.position);
-            this.spawnRotation.copy(this.rotation);
-            this._fieldValues = this._calcFieldValues();
-            this._updatePoseBlock();
+            //this.spawnPosition.copy(this.position);
+            //this.spawnRotation.copy(this.rotation);
+            //this._fieldValues = this._calcFieldValues();
+            //this._updatePoseBlock();
             this.render();
         }
     }
