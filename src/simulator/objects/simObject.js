@@ -23,6 +23,8 @@ import { Box,
 
 import * as Blockly from 'blockly/core'
 
+const debug = true;
+
 export class SimObject extends Mesh {
     constructor() {
         super();
@@ -37,7 +39,10 @@ export class SimObject extends Mesh {
         this._fieldValues = this._calcFieldValues();
         this.colour = '#eb4034'
         this.highlighted = false;
-        //this.scale.set(new Vector3(1,1,1));
+        if (debug) {
+            console.log('simObject debug mode on!',);
+        }
+
     }
     size = new Vector3(.5, .5, .5);
 
@@ -173,10 +178,10 @@ export class SimObject extends Mesh {
         if (this.control.visible && !this.attached) {
             if (this.position.z < 0) { this.position.z = this.size.z * .5; }
 
-            //this.spawnPosition.copy(this.position);
-            //this.spawnRotation.copy(this.rotation);
-            //this._fieldValues = this._calcFieldValues();
-            //this._updatePoseBlock();
+            if (debug) {
+                this.setSpawnPosition();
+                this._updatePoseBlock();
+            }
             this.render();
         }
     }
