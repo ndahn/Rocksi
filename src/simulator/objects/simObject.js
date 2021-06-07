@@ -151,6 +151,7 @@ export class SimObject extends Mesh {
         this.updatePos(this.spawnPosition, this.spawnRotation)
         scene.add(this);
         this.initTransformControl();
+        this.updateMatrixWorld();
         this.render();
     }
 
@@ -175,11 +176,13 @@ export class SimObject extends Mesh {
     addTransformListeners() {
         this.control.addEventListener('dragging-changed',(event) => this._draggingCanged(event));
         this.control.addEventListener('objectChange', () => this._objectChange());
+        addListeners();
     }
 
     removeTransformListners() {
         this.control.removeEventListener('dragging-changed',(event) => this._draggingCanged(event));
         this.control.removeEventListener('objectChange', () => this._objectChange());
+        removeListeners();
     }
 
     initTransformControl() {
@@ -234,7 +237,11 @@ export class SimObject extends Mesh {
         }
         this.position.copy(this.spawnPosition);
         this.setRotationFromEuler(this.spawnRotation);
-        //this.updateBody();
+        this.attached = false;
+        this.scale.x = 1;
+        this.scale.y = 1;
+        this.scale.z = 1;
+
         this.render();
     }
 
@@ -242,7 +249,9 @@ export class SimObject extends Mesh {
         const scene = getScene();
         this.attached = false;
         this.control.enabled = true;
+
         scene.attach(this);
+        this.updateMatrixWorld();
         this.addBodyToWorld();
         this.updateBody();
         this.body.wakeUp();
