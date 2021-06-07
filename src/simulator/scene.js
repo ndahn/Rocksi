@@ -26,7 +26,7 @@ import {
 import { initCannon,
          initRobotHitboxes } from './physics';
 
-import { setTCSimObjects,
+import { setSimObjectHighlight,
          setTCSimObjectsOnClick } from './objects/objects';
 
 // In ROS models Z points upwards
