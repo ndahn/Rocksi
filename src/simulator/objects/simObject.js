@@ -156,6 +156,9 @@ export class SimObject extends Mesh {
 
     //Callback for the change event
     _change() {
+        if (this.attached) {
+            //this.control.remove(this)
+        }
         //Sometimes the controls are not visible, but they will change the position/rotation.
         //this is here to counter this behaviour
         //if (!this.control.visible) {
@@ -171,7 +174,7 @@ export class SimObject extends Mesh {
     }
     //callback for objectChange
     _objectChange() {
-        if (this.control.visible) {
+        if (this.control.visible && !this.attached) {
             if (this.position.z < 0) { this.position.z = this.size.z * .5; }
 
             this.spawnPosition.copy(this.position);
@@ -191,7 +194,7 @@ export class SimObject extends Mesh {
         this.control.addEventListener('objectChange', () => this._objectChange());
 
         //addListeners(); //for the listeners in the scene
-
+        this.addControl();
     }
 
     removeTransformListners() {
@@ -203,6 +206,20 @@ export class SimObject extends Mesh {
         this.control.removeEventListener('objectChange', () => this._objectChange());
 
         //removeListeners();//for the listeners in the scene
+        this.removeControl();
+    }
+
+    removeControl() {
+        const scene = getScene();
+        this.control.remove(this);
+        scene.remove(this.control);
+    }
+
+    addControl() {
+        const scene = getScene();
+        this.control.attach(this);
+        scene.add(this.control);
+        this.control.visible = false;
     }
 
     initTransformControl() {
@@ -272,7 +289,6 @@ export class SimObject extends Mesh {
     }
 
     attachToGripper(robot) {
-        //const robot = getRobot();
         const scene = getScene();
         const tcp = robot.tcp.object;
         this.attached = true;
@@ -280,12 +296,7 @@ export class SimObject extends Mesh {
         this.removeTransformListners();
         scene.remove(this.control);
         this.removeBodyFromWorld();
-        //scene.remove( this );
-        //this.matrixWorld.decompose( this.position, this.quaternion, this.scale );
         tcp.attach(this);
-        //this.updateMatrixWorld();
-        //This is important, otherwise the 3D-object will not attach correctly.
-        //this.updateBody();
         console.log('> Object gripped!');
     }
 }
