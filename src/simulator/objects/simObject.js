@@ -154,19 +154,6 @@ export class SimObject extends Mesh {
         this.render();
     }
 
-    //Callback for the change event
-    _change() {
-        if (this.attached) {
-            //this.control.remove(this)
-        }
-        //Sometimes the controls are not visible, but they will change the position/rotation.
-        //this is here to counter this behaviour
-        //if (!this.control.visible) {
-        //    this.position.copy(this.spawnPosition);
-        //    this.setRotationFromEuler(this.spawnRotation);
-        //}
-        //this.render()
-    }
     //callback for dragging-changed
     _draggingCanged(event) {
         const controlObj = getControl();
@@ -186,40 +173,13 @@ export class SimObject extends Mesh {
     }
 
     addTransformListeners() {
-
-        this.control.addEventListener('change', () => this._change());
-
         this.control.addEventListener('dragging-changed',(event) => this._draggingCanged(event));
-
         this.control.addEventListener('objectChange', () => this._objectChange());
-
-        //addListeners(); //for the listeners in the scene
-        this.addControl();
     }
 
     removeTransformListners() {
-
-        this.control.removeEventListener('change', () => this._change());
-
         this.control.removeEventListener('dragging-changed',(event) => this._draggingCanged(event));
-
         this.control.removeEventListener('objectChange', () => this._objectChange());
-
-        //removeListeners();//for the listeners in the scene
-        this.removeControl();
-    }
-
-    removeControl() {
-        const scene = getScene();
-        this.control.remove(this);
-        scene.remove(this.control);
-    }
-
-    addControl() {
-        const scene = getScene();
-        this.control.attach(this);
-        scene.add(this.control);
-        this.control.visible = false;
     }
 
     initTransformControl() {
@@ -234,6 +194,7 @@ export class SimObject extends Mesh {
         scene.add(this.control);
 
         this.control.visible = false;
+        this.control.enabled = this.control.visible;
     }
 
     addBodyToWorld() {
@@ -280,6 +241,7 @@ export class SimObject extends Mesh {
     detachFromGripper(robot) {
         const scene = getScene();
         this.attached = false;
+        this.control.enabled = true;
         scene.attach(this);
         this.addBodyToWorld();
         this.updateBody();
@@ -293,7 +255,7 @@ export class SimObject extends Mesh {
         const tcp = robot.tcp.object;
         this.attached = true;
         this.wasGripped = true;
-        this.removeTransformListners();
+        this.control.enabled = false;
         scene.remove(this.control);
         this.removeBodyFromWorld();
         tcp.attach(this);
