@@ -183,7 +183,13 @@ export function setTCSimObjectsOnClick(raycaster) {
     const scene = getScene();
     if (intersected) {
         if (intersections[0].object.control.visible != intersected) {
-            intersections[0].object.control.visible = true;
+            if (intersections[0].object.attached) {
+                return;
+            } else {
+                intersections[0].object.control.setMode('rotate');
+                intersections[0].object.control.visible = true;
+                intersections[0].object.control.enabled = true;
+            }
         }
         const mode = intersections[0].object.control.getMode();
         scene.remove(intersections[0].object.control);
@@ -198,6 +204,7 @@ export function setTCSimObjectsOnClick(raycaster) {
     } else {
         for (const simObject of simObjects) {
             simObject.control.visible = false;
+            simObject.control.enabled = false;
         }
     }
     requestAF();
