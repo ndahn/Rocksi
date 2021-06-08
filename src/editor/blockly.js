@@ -19,7 +19,7 @@ import './generators/javascript'
 import { addSimObject,
          remSimObjects,
          getSimObjects,
-         randomColour } from '../simulator/objects/objects'
+         randomColour } from '../simulator/objects/createObjects'
 
 
 import { popSuccess, popWarning, popError, popInfo } from '../alert'

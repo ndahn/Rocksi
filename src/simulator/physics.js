@@ -2,7 +2,7 @@
 import * as CANNON from 'cannon-es';
 import * as THREE from 'three';
 import { getSimObjects,
-         getSimObject } from './objects/objects';
+         getSimObject } from './objects/createObjects';
 import { getScene } from './scene';
 import cannonDebugger from 'cannon-es-debugger'
 //Physics setup

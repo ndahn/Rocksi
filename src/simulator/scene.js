@@ -27,7 +27,7 @@ import { initCannon,
          initRobotHitboxes } from './physics';
 
 import { setSimObjectHighlight,
-         setTCSimObjectsOnClick } from './objects/objects';
+         setTCSimObjectsOnClick } from './objects/createObjects';
 
 // In ROS models Z points upwards
 Object3D.DefaultUp = new Vector3(0, 0, 1);

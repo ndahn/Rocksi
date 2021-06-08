@@ -2,7 +2,7 @@ import * as Blockly from "blockly";
 import { getSimObject,
          getSimObjectIdx,
          randomColour,
-         isAttached } from "../../simulator/objects/objects";
+         isAttached } from "../../simulator/objects/createObjects";
 
 
 const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];

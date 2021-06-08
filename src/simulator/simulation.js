@@ -12,7 +12,7 @@ import { isAttached,
          getSimObjects,
          getSimObjectByPos,
          getSimObjectIdx,
-         resetAllSimObjects } from "./objects/objects"
+         resetAllSimObjects } from "./objects/createObjects"
 
 
 function deg2rad(deg) {
