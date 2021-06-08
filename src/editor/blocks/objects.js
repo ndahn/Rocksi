@@ -46,15 +46,15 @@ Blockly.Blocks['add_sim_object'] = {
             args0: [
                 {
                     "type": "field_dropdown",
-                    "name": "OBJECT_TYPE",
+                    "name": "OBJECT_SHAPE",
                     "options": [
                         [
                             "Würfel",
                             "cube"
                         ],
                         [
-                            "Zylinder",
-                            "cylinder"
+                            "Stein",
+                            "rock"
                         ],
                     ]
                 },
@@ -123,6 +123,11 @@ Blockly.Blocks['add_sim_object'] = {
             }
 
             simObject.render();
+        }
+
+        if (event.blockId === this.id && event.name == 'OBJECT_SHAPE') {
+            var simObject = getSimObject(this.id);
+            simObject.changeShape(event.newValue);
         }
     }
 };
