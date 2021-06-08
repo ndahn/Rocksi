@@ -46,7 +46,7 @@ function createCylinderMesh(simObject) {
 
 //
 function addGeometry(simObject) {
-    switch (simObject.type) {
+    switch (simObject.shape) {
         case 'cube':
             const cubeMesh = createBoxMesh(simObject);
             simObject.geometry = cubeMesh[0];
@@ -63,7 +63,7 @@ function addGeometry(simObject) {
             break;
 
         default:
-            console.error('Unknown SimObject Type: ', simObject.type);
+            console.error('Unknown SimObject shape: ', simObject.shape);
             break;
     }
 }
@@ -89,9 +89,9 @@ export function addSimObject(blockUUID, fieldValues, pickedColour) {
 }
 
 //Functions for positioning simObjects
-//sets the spawnPosition depending on the type
+//sets the spawnPosition depending on the shape
 function setSpawnPosition(simObject) {
-    switch (simObject.type) {
+    switch (simObject.shape) {
         case 'cube':
             stackCubes(simObject);
             break;
@@ -100,7 +100,7 @@ function setSpawnPosition(simObject) {
             break;
 
         default:
-            console.error('Unknown SimObject Type: ', simObject.type);
+            console.error('Unknown SimObject shape: ', simObject.shape);
             break;
     }
 }

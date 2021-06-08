@@ -29,7 +29,8 @@ export class SimObject extends Mesh {
     constructor() {
         super();
         this.name = undefined;
-        this.type = 'cube';
+        this.type = 'simObject';
+        this.shape = 'cube'; //default
         this.attached = false;
         this.hasBody = false;
         this.spawnPosition = new Vector3(5, 0, this.size.z * .5);
@@ -145,6 +146,13 @@ export class SimObject extends Mesh {
         this.body = body;
         this.body.sleep();
         this.updateBody();
+    }
+
+    changeShape(shape) {
+        remSimObjects([this.name])
+        this.shape = shape;
+
+        addSimObject(blockUUID, fieldValues, pickedColour);
     }
 
     updateBody() {
