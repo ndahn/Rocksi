@@ -42,7 +42,7 @@ class TheSimulation {
     constructor(robot, ik, renderCallback) {
         this.robot = robot;
         this.ik = ik;
-        this._renderCallback = renderCallback;
+        this.renderCallback = renderCallback;
 
         this.lockedJointIndices = [];
 
@@ -416,7 +416,7 @@ class TheSimulation {
 
     _animatePhysics() {
         updatePhysics();
-        this._renderCallback();
+        this.renderCallback();
         if (!isWorldActive()) {
             console.log('Physics rendering halted.');
             this.runningPhysics = false;
@@ -468,7 +468,7 @@ class TheSimulation {
     _animate(time) {
 
         TWEEN.update(time);
-        this._renderCallback();
+        this.renderCallback();
 
         if (this.running) {
             // => captures the 'this' reference

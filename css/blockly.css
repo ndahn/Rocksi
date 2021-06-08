@@ -122,3 +122,10 @@
 	fill-opacity: 1.0;
 }
 
+.leftRightMutatorButton {
+	opacity: 0.5;
+}
+
+.leftRightMutatorButton:hover {
+	opacity: 1.0;
+}

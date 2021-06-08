@@ -1,6 +1,8 @@
 import * as Blockly from "blockly";
+import { Object3D, Euler } from "three"
 import Simulation from '../../simulator/simulation'
-import ClickableTargetMutator from '../mutators/clickable_target_mutator'
+import '../mutators/left_right_mutator'
+
 
 Blockly.Blocks["move"] = {
 	init: function () {
@@ -33,12 +35,45 @@ Blockly.Blocks["move"] = {
 		return jpose;
 	},
 
+	setJointspacePose: function (degrees) {
+		for (let i = 0; i < degrees.length; i++) {
+			degrees[i] *= Math.PI / 180.0;
+		}
+		Simulation.instance.robot.setPose(degrees);
+		Simulation.instance.renderCallback();
+	},
+
 	getTaskspacePose: function () {
 		let tpose = Simulation.instance.getTaskSpacePose();
 		for (let j = 3; j < 6; j++) {
 			tpose[j] = tpose[j] * 180.0 / Math.PI;
 		}
 		return tpose;
+	},
+
+	setTaskspacePose: function (pose) {
+		const robot = Simulation.instance.robot;
+
+		const ikTarget = new Object3D();
+		ikTarget.position.set(pose[0], pose[1], pose[2]);
+		if (pose.length > 3) {
+			ikTarget.setRotationFromEuler(new Euler(pose[3], pose[4], pose[5]));
+		} else {
+			ikTarget.setRotationFromQuaternion(robot.tcp.object.quaternion);
+		}
+
+		const solution = Simulation.instance.ik.solve(
+			ikTarget,
+			robot,
+			robot.ikEnabled,
+			{
+				iterations: 5,
+				jointLimits: robot.interactionJointLimits,
+				apply: false
+			}
+		);
+
+		this.setJointspacePose(solution);
 	}
 };
 
@@ -102,19 +137,31 @@ Blockly.Blocks["joint_space_pose"] = {
 			tooltip:
 				"Eine Pose im Gelenkwinkelraum (ein Winkel pro Gelenk beginnend an der Basis)",
 			helpUrl: "",
+			mutator: 'left_right_mutator',
 		});
-		this.setMutator(new ClickableTargetMutator());
+		//this.setMutator(new ViewportToBlocklyMutator());
 	},
 
-	onClick: function(e) {
+	onLeft: function(e) {
         var parent = this.getParent();
-        if (parent != null) {
+        if (parent != null && typeof parent.getJointspacePose === 'function') {
             var fieldValues = parent.getJointspacePose();
             for (var i = 0; i < fieldValues.length; i++) {
                 this.setFieldValue(fieldValues[i].toFixed(0), 'JOINT_' + (i + 1));
             }
         }
 	},
+
+	onRight: function(e) {
+		var parent = this.getParent();
+        if (parent != null && typeof parent.setJointspacePose === 'function') {
+			let pose = [];
+			for (let i = 1; i < 8; i++) {
+				pose.push(this.getFieldValue('JOINT_' + i));
+			}
+            parent.setJointspacePose(pose);
+        }
+	}
 };
 
 Blockly.Blocks["task_space_pose"] = {
@@ -167,21 +214,31 @@ Blockly.Blocks["task_space_pose"] = {
 			tooltip:
 				"Eine Pose im Arbeitsraum (Position und Orientierung des Endeffektors)",
 			helpUrl: "",
-
+			mutator: 'left_right_mutator',
 		});
-		this.setMutator(new ClickableTargetMutator());
 	},
 
-	onClick: function(e) {
+	onLeft: function(e) {
 		const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
         var parent = this.getParent();
-        if (parent != null) {
+        if (parent != null && typeof parent.getTaskspacePose === 'function') {
             var fieldValues = parent.getTaskspacePose();
             for (var i = 0; i < fieldValues.length; i++) {
                 let val = (i < 3) ? fieldValues[i].toFixed(1) : fieldValues[i].toFixed(0);
                 this.setFieldValue(val, fieldKeys[i]);
             }
-        }
+		}
+	},
+
+	onRight: function(e) {
+		var parent = this.getParent();
+		if (parent != null && typeof parent.setTaskspacePose === 'function') {
+			let pose = [];
+			for (const key of ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW']) {
+				pose.push(this.getFieldValue(key));
+			}
+			parent.setTaskspacePose(pose);
+		}
 	},
 
     onchange: function(event) {
