@@ -16,6 +16,10 @@ import { requestAF,
 
 import { getWorld } from '../physics';
 
+import { addSimObject,
+         remSimObjects,
+         addGeometry } from './createObjects'
+
 import { Box,
          Vec3,
          Body,
@@ -149,10 +153,9 @@ export class SimObject extends Mesh {
     }
 
     changeShape(shape) {
-        remSimObjects([this.name])
         this.shape = shape;
-
-        addSimObject(blockUUID, fieldValues, pickedColour);
+        addGeometry(this);
+        this.render();
     }
 
     updateBody() {
