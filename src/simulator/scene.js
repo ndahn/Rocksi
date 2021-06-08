@@ -26,8 +26,8 @@ import {
 import { initCannon,
          initRobotHitboxes } from './physics';
 
-import { setTCSimObjects,
-         setTCSimObjectsOnClick } from './objects/objects';
+import { setSimObjectHighlight,
+         setTCSimObjectsOnClick } from './objects/createObjects';
 
 // In ROS models Z points upwards
 Object3D.DefaultUp = new Vector3(0, 0, 1);
@@ -255,7 +255,7 @@ function onMouseMove(evt) {
 
     raycaster.setFromCamera(mouseXY, camera);
     const intersections = raycaster.intersectObjects([tcptarget]);
-    setTCSimObjects(raycaster); //does this for all TransformControls of simObjects
+    setSimObjectHighlight(raycaster); //does this for all TransformControls of simObjects
     let showTC = intersections.length > 0;
 
     if (showTC !== transformControl.visible) {

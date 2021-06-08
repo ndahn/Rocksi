@@ -5,7 +5,7 @@ import  Simulation from "../../simulator/simulation";
 import { getSimObject,
          getSimObjectIdx,
          randomColour,
-         isAttached } from "../../simulator/objects/objects";
+         isAttached } from "../../simulator/objects/createObjects";
 
 
 

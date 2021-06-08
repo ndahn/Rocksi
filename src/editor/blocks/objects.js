@@ -2,7 +2,7 @@ import * as Blockly from "blockly";
 import { getSimObject,
          getSimObjectIdx,
          randomColour,
-         isAttached } from "../../simulator/objects/objects";
+         isAttached } from "../../simulator/objects/createObjects";
 import Simulation from "../../simulator/simulation";
 
 
@@ -47,15 +47,19 @@ Blockly.Blocks['add_sim_object'] = {
             args0: [
                 {
                     "type": "field_dropdown",
-                    "name": "OBJECT_TYPE",
+                    "name": "OBJECT_SHAPE",
                     "options": [
                         [
                             "Würfel",
                             "cube"
                         ],
                         [
-                            "Zylinder",
-                            "cylinder"
+                            "Stein",
+                            "rock"
+                        ],
+                        [
+                            "Kugel",
+                            "sphere"
                         ],
                     ]
                 },
@@ -90,6 +94,7 @@ Blockly.Blocks['add_sim_object'] = {
         const simObject = getSimObject(this.id);
 
         if (simObject != undefined) {
+            simObject.setSpawnPosition();
             fieldValues = simObject.getFieldValues();
         }
         return fieldValues;
@@ -132,6 +137,11 @@ Blockly.Blocks['add_sim_object'] = {
             }
 
             simObject.render();
+        }
+
+        if (event.blockId === this.id && event.name == 'OBJECT_SHAPE') {
+            var simObject = getSimObject(this.id);
+            simObject.changeShape(event.newValue);
         }
     }
 };

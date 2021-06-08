@@ -19,7 +19,7 @@ import './generators/javascript'
 import { addSimObject,
          remSimObjects,
          getSimObjects,
-         randomColour } from '../simulator/objects/objects'
+         randomColour } from '../simulator/objects/createObjects'
 
 
 import { popSuccess, popWarning, popError, popInfo } from '../alert'
@@ -389,6 +389,7 @@ function watchSpawnBlocks(event) {
         for (let i = 0; i < event.ids.length; i++) {
             const newBlock = workspace.getBlockById(event.ids[i]);
             if (newBlock.type === 'add_sim_object') {
+                const shape = newBlock.getFieldValue('OBJECT_SHAPE');
                 const pose = newBlock.getInputTargetBlock('POSE');
                 const colour = newBlock.getInputTargetBlock('COLOUR');
                 const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
@@ -411,8 +412,7 @@ function watchSpawnBlocks(event) {
                         pickedColour = undefined;
                     }
                 }
-                console.log(pickedColour);
-                addSimObject(newBlock.id, fieldValues, pickedColour);
+                addSimObject(newBlock.id, fieldValues, pickedColour, shape);
             }
         }
     }
