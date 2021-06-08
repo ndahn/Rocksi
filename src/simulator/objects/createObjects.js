@@ -45,7 +45,7 @@ function createCylinderMesh(simObject) {
 }
 
 //
-function addGeometry(simObject) {
+export function addGeometry(simObject) {
     switch (simObject.shape) {
         case 'cube':
             const cubeMesh = createBoxMesh(simObject);
