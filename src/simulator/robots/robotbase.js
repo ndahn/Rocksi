@@ -151,6 +151,30 @@ export default class Robot {
     }
 
 
+    setPose(pose) {
+        if (Array.isArray(pose)) {
+            if (pose.length !== this.arm.movable.length) {
+                throw new Error('Array length must be equal to the number of movable joints');
+            }
+
+            for (let i = 0; i < pose.length; i++) {
+                this.arm.movable[i].setJointValue(pose[i]);
+            }
+        }
+        else if (typeof pose === 'object') {
+            for (let joint of this.arm.movable) {
+                let value = pose[joint.name];
+                if (typeof value === 'number') {
+                    joint.setJointValue(value);
+                }
+            }
+        }
+        else {
+            throw new Error('Invalid pose type "' + typeof pose + '"');
+        }
+    }
+
+
 	isJoint(part) {
 		return part.type === "URDFJoint";
 	}
