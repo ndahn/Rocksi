@@ -1,20 +1,20 @@
 import * as Blockly from 'blockly'
 
 
-const ClickableTargetMutator = function(quarkNames) {
-    ClickableTargetMutator.superClass_.constructor.call(this, null);
+const ClickButtonMutator = function(quarkNames) {
+    ClickButtonMutator.superClass_.constructor.call(this, null);
 };
-Blockly.utils.object.inherits(ClickableTargetMutator, Blockly.Mutator);
+Blockly.utils.object.inherits(ClickButtonMutator, Blockly.Mutator);
 
 
-ClickableTargetMutator.prototype.iconClick_ = function (e) {
+ClickButtonMutator.prototype.iconClick_ = function (e) {
     const block = this.block_;
     if (typeof block.onClick === 'function') {
         block.onClick(e);
     }
 }
 
-ClickableTargetMutator.prototype.drawIcon_ = function (group) {
+ClickButtonMutator.prototype.drawIcon_ = function (group) {
     // Square with rounded corners
     Blockly.utils.dom.createSvgElement(
         Blockly.utils.Svg.RECT,
@@ -48,11 +48,12 @@ ClickableTargetMutator.prototype.drawIcon_ = function (group) {
 }
 
 // Just an empty element for parameter storage so blockly is happy and we can use the mutator
-ClickableTargetMutator.prototype.mutationToDom = function () {
+ClickButtonMutator.prototype.mutationToDom = function () {
     return document.createElement('mutation');
 }
 
-ClickableTargetMutator.prototype.domToMutation = function () { }
+ClickButtonMutator.prototype.domToMutation = function () { }
 
 
-export default ClickableTargetMutator;
+// Use in Block.init() as 'this.setMutator(new ClickButtonMutator());'
+export default ClickButtonMutator;

@@ -23,7 +23,6 @@ Blockly.Blocks["move"] = {
 			tooltip:
 				"Füge rechts eine Joint oder Task Space Pose hinzu, zu der sich der Roboter bewegen soll",
 			helpUrl: "",
-
 		});
 	},
 
@@ -139,7 +138,6 @@ Blockly.Blocks["joint_space_pose"] = {
 			helpUrl: "",
 			mutator: 'left_right_mutator',
 		});
-		//this.setMutator(new ViewportToBlocklyMutator());
 	},
 
 	onLeft: function(e) {
