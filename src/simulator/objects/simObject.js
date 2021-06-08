@@ -23,7 +23,9 @@ import { addSimObject,
 import { Box,
          Vec3,
          Body,
-         Material } from 'cannon-es'
+         Material,
+         ConvexPolyhedron,
+         Sphere } from 'cannon-es'
 
 import * as Blockly from 'blockly/core'
 
@@ -133,18 +135,25 @@ export class SimObject extends Mesh {
 
     createBody(shape) {
         let body;
-        if ('box' == shape) {
+        if ('cube' == shape) {
             const shape = new Box(new Vec3(this.size.x * 0.5,
                                            this.size.y * 0.5,
                                            this.size.z * 0.5))
-            body = new Body({ mass: 0.01 })
+            body = new Body({ mass: 0.1 })
             body.addShape(shape)
         }
-        body.material = new Material({ friction: 4, restitution: -1});
+        if ('sphere' == shape) {
+            this.geometry.computeBoundingSphere();
+            const radius = this.geometry.boundingSphere.radius;
+            const shape = new Sphere(radius);
+            body = new Body({ mass: 2.1 })
+            body.addShape(shape)
+        }
+        body.material = new Material({ friction: 1, restitution: -1});
         body.position.set(this.position)
         body.allowSleep = true;
         body.sleepSpeedLimit = 1.2;
-        body.sleepTimeLimit = 0.2;
+        body.sleepTimeLimit = 0.5;
         body.name = this.name;
         this.hasBody = true;
         this.body = body;
@@ -154,7 +163,10 @@ export class SimObject extends Mesh {
 
     changeShape(shape) {
         this.shape = shape;
+        console.log('changed to shape: ', shape);
         addGeometry(this);
+        //this.body = null;
+        //this.createBody(shape);
         this.render();
     }
 

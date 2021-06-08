@@ -1,7 +1,9 @@
 import { BoxBufferGeometry,
          MeshPhongMaterial,
          CylinderGeometry,
-         Vector3 } from 'three';
+         SphereGeometry,
+         Vector3,
+         Mesh } from 'three';
 
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 
@@ -23,6 +25,7 @@ let simObjects = [];
 //Functions for creating meshes
 //Simple box shape
 function createBoxMesh(simObject) {
+    const mesh = new Mesh();
     const geometry = new BoxBufferGeometry( simObject.size.x,
                                             simObject.size.y,
                                             simObject.size.z,
@@ -30,7 +33,9 @@ function createBoxMesh(simObject) {
                                             10);
 
     const material = new MeshPhongMaterial({ color: simObject.colour });
-    return [geometry, material];
+    mesh.geometry = geometry;
+    mesh.material = material;
+    return mesh;
 }
 
 //Simple cylinder
@@ -44,28 +49,37 @@ function createCylinderMesh(simObject) {
     return [geometry, material];
 }
 
+function createSphereMesh(simObject) {
+    const mesh = new Mesh();
+    mesh.geometry = new SphereGeometry( 0.5, 32, 32 );
+    mesh.material = new MeshPhongMaterial({ color: simObject.colour });
+    return mesh;
+}
+
 //
 export function addGeometry(simObject) {
     switch (simObject.shape) {
         case 'cube':
             const cubeMesh = createBoxMesh(simObject);
-            simObject.geometry = cubeMesh[0];
-            simObject.material = cubeMesh[1];
-            simObject.createBody('box');
+            simObject.geometry = cubeMesh.geometry;
+            simObject.material = cubeMesh.material;
+            simObject.createBody('cube');
             break;
         case 'rock':
-            const rockMesh = makeRock(50, simObject.size.z * 2, simObject.colour);
+            const rockMesh = makeRock(50, simObject.size.z, simObject.colour);
             let center = new Vector3();
-            simObject.geometry.copy(rockMesh.geometry);
+            simObject.geometry = rockMesh.geometry;
             simObject.material = rockMesh.material;
             simObject.geometry.computeBoundingBox();
-            simObject.geometry.boundingBox.getCenter(center);
             simObject.geometry.center();
-            //simObject.position.copy(center);
-            simObject.updateMatrixWorld();
-            simObject.createBody('box');
+            simObject.createBody('cube');
             break;
-
+        case 'sphere':
+            const sphereMesh = createSphereMesh(simObject);
+            simObject.geometry = sphereMesh.geometry;
+            simObject.material = sphereMesh.material;
+            simObject.createBody('sphere');
+            break;
         default:
             console.error('Unknown SimObject shape: ', simObject.shape);
             break;
@@ -73,17 +87,16 @@ export function addGeometry(simObject) {
 }
 
 //Adds the simObject
-export function addSimObject(blockUUID, fieldValues, pickedColour) {
+export function addSimObject(blockUUID, fieldValues, pickedColour, shape) {
     let newSimObject = new SimObject;
     newSimObject.name = blockUUID;
-    console.log(pickedColour);
+    newSimObject.shape = shape;
     if (fieldValues != undefined) {
         newSimObject.setFieldValues(fieldValues);
         newSimObject.updateFromFieldValues();
     }
     if (pickedColour != undefined) {
-        newSimObject.colour = pickedColour;
-        console.log(pickedColour);
+        newSimObject.colour = pickedColour;;
     }
     addGeometry(newSimObject);
     setSpawnPosition(newSimObject);
@@ -102,11 +115,34 @@ function setSpawnPosition(simObject) {
         case 'rock':
             stackCubes(simObject);
             break;
-
+        case 'sphere':
+            placeSpheres(simObject);
+            break;
         default:
             console.error('Unknown SimObject shape: ', simObject.shape);
             break;
     }
+}
+
+//stacks cubes, until there are no more cubes to stack
+function placeSpheres(simObject){
+    const shift = zShiftSphere(simObject);
+    if (shift > 0) {
+        simObject.spawnPosition.z = simObject.spawnPosition.z + shift;
+        return placeSpheres(simObject);
+    } else { return; }
+}
+
+//calculates the amount of the shift for stackCubes
+function zShiftSphere(simObject) {
+    let returnVal = 0;
+    for (let k = 0; k < simObjects.length; k++) {
+        if (simObject.spawnPosition.distanceTo(simObjects[k].spawnPosition)
+                    < (simObject.geometry.radius)) {
+            returnVal = simObject.geometry.radius;
+        }
+    }
+    return returnVal;
 }
 
 //stacks cubes, until there are no more cubes to stack

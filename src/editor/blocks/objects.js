@@ -56,6 +56,10 @@ Blockly.Blocks['add_sim_object'] = {
                             "Stein",
                             "rock"
                         ],
+                        [
+                            "Kugel",
+                            "sphere"
+                        ],
                     ]
                 },
             ],
