@@ -55,9 +55,13 @@ export function addGeometry(simObject) {
             break;
         case 'rock':
             const rockMesh = makeRock(50, simObject.size.z * 2, simObject.colour);
-            rockMesh.geometry.computeBoundingBox();
+            let center = new Vector3();
             simObject.geometry.copy(rockMesh.geometry);
             simObject.material = rockMesh.material;
+            simObject.geometry.computeBoundingBox();
+            simObject.geometry.boundingBox.getCenter(center);
+            simObject.geometry.center();
+            //simObject.position.copy(center);
             simObject.updateMatrixWorld();
             simObject.createBody('box');
             break;
