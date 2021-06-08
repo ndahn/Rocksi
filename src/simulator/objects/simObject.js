@@ -139,8 +139,12 @@ export class SimObject extends Mesh {
             const shape = new Box(new Vec3(this.size.x * 0.5,
                                            this.size.y * 0.5,
                                            this.size.z * 0.5))
-            body = new Body({ mass: 0.1 })
+            body = new Body({ mass: 0.07 })
+            body.material = new Material({ friction: 2, restitution: 1});
             body.addShape(shape)
+            body.allowSleep = true;
+            body.sleepSpeedLimit = 0.5;
+            body.sleepTimeLimit = 0.2;
         }
         if ('sphere' == shape) {
             this.geometry.computeBoundingSphere();
@@ -148,12 +152,13 @@ export class SimObject extends Mesh {
             const shape = new Sphere(radius);
             body = new Body({ mass: 2.1 })
             body.addShape(shape)
+            body.material = new Material({ friction: 1, restitution: -1});
+            body.allowSleep = true;
+            body.sleepSpeedLimit = 1.2;
+            body.sleepTimeLimit = 0.2;
         }
-        body.material = new Material({ friction: 1, restitution: -1});
+
         body.position.set(this.position)
-        body.allowSleep = true;
-        body.sleepSpeedLimit = 1.2;
-        body.sleepTimeLimit = 0.5;
         body.name = this.name;
         this.hasBody = true;
         this.body = body;
