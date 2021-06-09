@@ -261,9 +261,25 @@ export class SimObject extends Group {
     }
 
     highlight(status) {
-        console.log('Highlight: ', status);
-        return;
+        if (status) {
+            this.traverse((child) => {
+                if (child.material != undefined) {
+                    const colour = child.material.color.getHex();
+                    child.material.emissive.setHex(colour);
+                }
+            });
+            this.highlighted = status;
+        } else if (!status) {
+            this.traverse((child) => {
+                if (child.material != undefined) {
+                    child.material.emissive.setHex(0x000000);
+                }
+            });
+            this.highlighted = status;
+        }
+        this.render();
     }
+
     addBodyToWorld() {
         const world = getWorld();
         world.addBody(this.body);
