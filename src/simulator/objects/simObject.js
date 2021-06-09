@@ -261,20 +261,32 @@ export class SimObject extends Group {
     }
 
     highlight(status) {
+        const limit = this.children.length;
         if (status) {
-            this.traverse((child) => {
+            /*this.traverse((child) => {
                 if (child.material != undefined) {
                     const colour = child.material.color.getHex();
                     child.material.emissive.setHex(colour);
                 }
-            });
+            });*/
+            for (let i = 0; i < limit; i++) {
+                if (this.children[i].material != undefined) {
+                    const colour = this.children[i].material.color.getHex();
+                    this.children[i].material.emissive.setHex(colour);
+                }
+            }
             this.highlighted = status;
         } else if (!status) {
-            this.traverse((child) => {
+            /*this.traverse((child) => {
                 if (child.material != undefined) {
                     child.material.emissive.setHex(0x000000);
                 }
-            });
+            });*/
+            for (let i = 0; i < limit; i++) {
+                if (this.children[i].material != undefined) {
+                    this.children[i].material.emissive.setHex(0x000000);
+                }
+            }
             this.highlighted = status;
         }
         this.render();

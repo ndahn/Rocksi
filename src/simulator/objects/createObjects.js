@@ -267,9 +267,10 @@ export function setTCSimObjectsOnClick(raycaster) {
         scene.add(intersectedSimObj.control);
 
     } else {
-        for (const simObject of simObjects) {
-            simObject.control.visible = false;
-            simObject.control.enabled = false;
+        const limit = simObjects.length;
+        for (let i = 0; i < limit; i++) {
+            simObjects[i].control.visible = false;
+            simObjects[i].control.enabled = false;
         }
     }
     requestAF();
