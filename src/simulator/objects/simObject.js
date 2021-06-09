@@ -3,7 +3,9 @@ import { BoxBufferGeometry,
          CylinderGeometry,
          Mesh,
          Vector3,
-         Euler } from 'three';
+         Euler,
+         Object3D,
+         Group } from 'three';
 
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 
@@ -31,7 +33,7 @@ import * as Blockly from 'blockly/core'
 
 const debug = true;
 
-export class SimObject extends Mesh {
+export class SimObject extends Object3D {
     constructor() {
         super();
         this.name = undefined;

@@ -3,9 +3,11 @@ import { BoxBufferGeometry,
          CylinderGeometry,
          SphereGeometry,
          Vector3,
-         Mesh } from 'three';
+         Mesh,
+         LoadingManager } from 'three';
 
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
+import { OBJLoader} from 'three/examples/jsm/loaders/OBJLoader.js';
 
 import * as Blockly from 'blockly/core'
 
@@ -23,9 +25,27 @@ import { getWorld } from '../physics';
 let simObjects = [];
 
 //Functions for creating meshes
+//Loader for gltf
+function loadShaft() {
+
+    const scene = getScene();
+    let manager = new LoadingManager();
+    const objLoader = new OBJLoader();
+    objLoader.load('../../assets/models/simObject_shapes/shaft/tinker.obj', function(obj) {
+        const material = new MeshPhongMaterial({ color: 0x00ff00 });
+        obj.material = material;
+        obj.position.copy(new Vector3(2, 2, 2));
+        scene.add(obj);
+    });
+    //let mesh = new Mesh(tmp.children[0].geometry, material);
+    return;
+}
+
+
+
 //Simple box shape
 function createBoxMesh(simObject) {
-    const mesh = new Mesh();
+
     const geometry = new BoxBufferGeometry( simObject.size.x,
                                             simObject.size.y,
                                             simObject.size.z,
@@ -33,8 +53,9 @@ function createBoxMesh(simObject) {
                                             10);
 
     const material = new MeshPhongMaterial({ color: simObject.colour });
-    mesh.geometry = geometry;
-    mesh.material = material;
+    const mesh = new Mesh(geometry, material);
+    mesh.position.copy(simObject.spawnPosition);
+    mesh.setRotationFromEuler(simObject.spawnRotation);
     return mesh;
 }
 
@@ -61,8 +82,8 @@ export function addGeometry(simObject) {
     switch (simObject.shape) {
         case 'cube':
             const cubeMesh = createBoxMesh(simObject);
-            simObject.geometry = cubeMesh.geometry;
-            simObject.material = cubeMesh.material;
+            cubeMesh.name = 'cubeMesh';
+            simObject.add(cubeMesh);
             simObject.createBody('cube');
             break;
         case 'rock':
@@ -80,6 +101,11 @@ export function addGeometry(simObject) {
             simObject.material = sphereMesh.material;
             simObject.createBody('sphere');
             break;
+        case 'shaft':
+            //const shaftMesh =
+             loadShaft();
+            //simObject.geometry = shaftMesh.geometry;
+            //simObject.material = new MeshPhongMaterial({ color: simObject.colour });
         default:
             console.error('Unknown SimObject shape: ', simObject.shape);
             break;
@@ -101,6 +127,7 @@ export function addSimObject(blockUUID, fieldValues, pickedColour, shape) {
     addGeometry(newSimObject);
     setSpawnPosition(newSimObject);
     newSimObject.add();
+    console.log(newSimObject);
     newSimObject.updateFieldValues();
     simObjects.push(newSimObject);
 }
@@ -126,15 +153,15 @@ function setSpawnPosition(simObject) {
 
 //stacks cubes, until there are no more cubes to stack
 function placeSpheres(simObject){
-    const shift = zShiftSphere(simObject);
+    const shift = xyShiftSphere(simObject);
     if (shift > 0) {
-        simObject.spawnPosition.z = simObject.spawnPosition.z + shift;
+        simObject.spawnPosition.x = simObject.spawnPosition.x + shift;
         return placeSpheres(simObject);
     } else { return; }
 }
 
 //calculates the amount of the shift for stackCubes
-function zShiftSphere(simObject) {
+function xyShiftSphere(simObject) {
     let returnVal = 0;
     for (let k = 0; k < simObjects.length; k++) {
         if (simObject.spawnPosition.distanceTo(simObjects[k].spawnPosition)
