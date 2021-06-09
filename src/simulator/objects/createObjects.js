@@ -240,42 +240,43 @@ export function setSimObjectHighlight(raycaster) {
         }
     }
 }
-/*Deprecated
-export function setSimObjectHighlight(raycaster) {
+
+export function setTCSimObjectsOnClick(raycaster) {
     const intersections = raycaster.intersectObjects(simObjects, true);
-    const intersected = intersections.length > 0;
-    const workspace = Blockly.getMainWorkspace();
+    const intersected = intersections.length > 0 && intersections[0].object.parent.highlighted;
+    const scene = getScene();
     if (intersected) {
         const intersectedSimObj = intersections[0].object.parent;
-        console.log(intersections[0]);
-        if (intersectedSimObj.highlighted != intersected) {
-            intersectedSimObj.highlighted = intersected;
-            const colour = intersections[0].object.material.color.getHex();
-            intersections[0].object.material.emissive.setHex(colour);
-            intersectedSimObj.render();
-            //Highlights the corresponding Blockly block.
-            workspace.highlightBlock(intersectedSimObj.name);
-            for (const simObject of simObjects) {
-                if (intersectedSimObj.name != simObject.name) {
-                    simObject.highlighted = false;
-                    //simObject.material.emissive.setHex(0x000000);
-                    simObject.render();
-                }
+        if (intersectedSimObj.control.visible != intersected) {
+            if (intersectedSimObj.attached) {
+                return;
+            } else {
+                intersectedSimObj.control.setMode('rotate');
+                intersectedSimObj.control.visible = true;
+                intersectedSimObj.control.enabled = true;
             }
         }
+        const mode = intersectedSimObj.control.getMode();
+        scene.remove(intersectedSimObj.control);
+        if (mode == 'translate'){
+            intersectedSimObj.control.setMode('rotate');
+        }
+        if (mode == 'rotate'){
+            intersectedSimObj.control.setMode('translate');
+        }
+        scene.add(intersectedSimObj.control);
+
     } else {
         for (const simObject of simObjects) {
-            simObject.highlighted = false;
-            //simObject.material.emissive.setHex(0x000000);
-            simObject.render();
-            //Switches the highlighting of the corresponding Blockly block off.
-            workspace.highlightBlock(null);
+            simObject.control.visible = false;
+            simObject.control.enabled = false;
         }
     }
-}*/
+    requestAF();
+}
 
 //Switches the TransformControls of simobjects on and off and changes the mode.
-export function setTCSimObjectsOnClick(raycaster) {
+/*export function setTCSimObjectsOnClick(raycaster) {
     const intersections = raycaster.intersectObjects(simObjects, true);
     const intersectedSimObj = intersections[0].parent;
     const intersected = intersections.length > 0 && intersections[0].object.highlighted;
@@ -307,7 +308,7 @@ export function setTCSimObjectsOnClick(raycaster) {
         }
     }
     requestAF();
-}
+}*/
 
 //Returns a list with all names of simObjects (the uuids of the blockly blocks)
 //currently in the simObjects array
