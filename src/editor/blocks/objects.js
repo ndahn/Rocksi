@@ -3,6 +3,7 @@ import { getSimObject,
          getSimObjectIdx,
          randomColour,
          isAttached } from "../../simulator/objects/createObjects";
+import Simulation from "../../simulator/simulation";
 
 
 const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
@@ -101,6 +102,15 @@ Blockly.Blocks['add_sim_object'] = {
             fieldValues = simObject.getFieldValues();
         }
         return fieldValues;
+    },
+
+    setTaskspacePose: function (pose) {
+        const simObject = getSimObject(this.id);
+        if (simObject !== undefined) {
+            simObject.setFieldValues(pose);
+            simObject.updateFromFieldValues();
+            Simulation.instance.renderCallback();
+        }
     },
 
 	onchange: function (event) {

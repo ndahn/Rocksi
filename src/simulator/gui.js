@@ -118,6 +118,8 @@ function updateRobotJoints(robot, values, renderCallback) {
         let upper = joint.limit.upper;
         let rel = values[i];
         let abs = lower + (upper - lower) * (rel + 1) / 2;
+        
+        // We could also use robot.setPose, but since we already have the joint this is easier
         joint.setJointValue(abs);
     }
     renderCallback();

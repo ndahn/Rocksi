@@ -86,14 +86,7 @@ loadRobotModel(robot.xacro)
 	.then(model => {
 		robot.init(model);
 		$('.robot-info').on('click', evt => popInfo(robot.info.DE))
-
-		for (const j in robot.defaultPose) {
-			try {
-				robot.joints[j].setJointValue(robot.defaultPose[j]);
-			} catch (e) {
-				console.error('Failed to set default joint pose for joint ' + j + ': ' + e);
-			}
-		}
+		robot.setPose(robot.defaultPose);
 
 		initScene();
         //Lukas
