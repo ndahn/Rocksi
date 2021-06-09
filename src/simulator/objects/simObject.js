@@ -135,33 +135,27 @@ export class SimObject extends Group {
         this.render();
     }
 
-    createBody(shape) {
-        let body;
-        if ('cube' == shape) {
-            const shape = new Box(new Vec3(this.size.x * 0.5,
-                                           this.size.y * 0.5,
-                                           this.size.z * 0.5))
-            body = new Body({ mass: 0.07 })
-            body.material = new Material({ friction: 2, restitution: 1});
-            body.addShape(shape)
-            body.allowSleep = true;
+    createBody(shape, radius, size, mass, friction, restitution) {
+        const body = new Body({ mass: mass });
+        console.log(size);
+        body.material = new Material({ friction: friction, restitution: restitution});
+        body.allowSleep = true;
+        if ('box' === shape) {
+            const shape = new Box(new Vec3(size.x * 0.5,
+                                           size.y * 0.5,
+                                           size.z * 0.5))//cannon size is defined from the center
             body.sleepSpeedLimit = 0.5;
             body.sleepTimeLimit = 0.2;
+            body.addShape(shape);
         }
-        if ('sphere' == shape) {
-            this.geometry.computeBoundingSphere();
-            const radius = this.geometry.boundingSphere.radius;
+        if ('sphere' === shape) {
             const shape = new Sphere(radius);
-            body = new Body({ mass: 2.1 })
-            body.addShape(shape)
-            body.material = new Material({ friction: 1, restitution: -1});
-            body.allowSleep = true;
             body.sleepSpeedLimit = 1.2;
             body.sleepTimeLimit = 0.2;
+            body.addShape(shape);
         }
-
-        body.position.set(this.position)
-        body.name = this.name;
+        //body.addShape(shape);
+        body.position.copy(this.position);
         this.hasBody = true;
         this.body = body;
         this.body.sleep();
@@ -170,11 +164,12 @@ export class SimObject extends Group {
 
     changeShape(shape) {
         this.shape = shape;
-        console.log('changed to shape: ', shape);
+        for (const child of this.children) {
+            this.remove(child);
+        }
         addGeometry(this);
-        //this.body = null;
-        //this.createBody(shape);
         this.render();
+        console.log('changed to shape: ', shape);
     }
 
     updateBody() {
@@ -302,7 +297,7 @@ export class SimObject extends Group {
         world.removeBody(this.body);
     }
 
-    remove() {
+    removeFromScene() {
         const scene = getScene();
         const world = getWorld();
 
