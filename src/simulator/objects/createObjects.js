@@ -6,7 +6,9 @@ import { BoxBufferGeometry,
          Mesh,
          LoadingManager,
          Object3D,
-         Box3 } from 'three';
+         Box3,
+         Euler } from 'three';
+
 import { Vec3,
          Quaternion } from 'cannon-es';
 
@@ -32,18 +34,21 @@ let simObjects = [];
 //Loader for gltf
 function loadShaft(simObject) {
     const loader = new STLLoader();
+    const size = new Vector3();
     loader.load( '/models/simObject_shapes/shaft/shaft.stl', function ( geometry ) {
         const material = new MeshPhongMaterial( { color: simObject.colour} );
         const mesh = new Mesh( geometry, material );
         mesh.scale.set(0.03, 0.03, 0.03);
         mesh.geometry.computeBoundingBox();
         mesh.geometry.center();
+        mesh.rotateX(Math.PI * 0.5);
+        const tmpCylinder = new Box3().setFromObject(mesh);
+        tmpCylinder.getSize(size);
         simObject.add( mesh );
 
     });
+    return size;
 }
-
-
 
 //Simple box shape
 function createBoxMesh(simObject) {
@@ -110,9 +115,12 @@ export function addGeometry(simObject) {
             simObject.createBody('sphere', radius, 0, 2.1, 1, 0.1);
             break;
         case 'shaft':
+             const shaftSize = new Vector3(0.7, 3.3, 0.7);
              loadShaft(simObject);
-             simObject.render();
 
+             console.log(shaftSize);
+             simObject.createBody('cylinder', 0, shaftSize, 5, 2, 0.1);
+             simObject.render();
              break;
         default:
             console.error('Unknown SimObject shape: ', simObject.shape);

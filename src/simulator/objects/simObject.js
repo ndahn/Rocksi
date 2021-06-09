@@ -27,7 +27,8 @@ import { Box,
          Body,
          Material,
          ConvexPolyhedron,
-         Sphere } from 'cannon-es'
+         Sphere,
+         Cylinder } from 'cannon-es'
 
 import * as Blockly from 'blockly/core'
 
@@ -137,7 +138,6 @@ export class SimObject extends Group {
 
     createBody(shape, radius, size, mass, friction, restitution) {
         const body = new Body({ mass: mass });
-        console.log(size);
         body.material = new Material({ friction: friction, restitution: restitution});
         body.allowSleep = true;
         if ('box' === shape) {
@@ -151,6 +151,16 @@ export class SimObject extends Group {
         if ('sphere' === shape) {
             const shape = new Sphere(radius);
             body.sleepSpeedLimit = 1.2;
+            body.sleepTimeLimit = 0.2;
+            body.addShape(shape);
+        }
+        if ('cylinder' === shape) {
+            const radiusTop = size.x * 0.5;
+            const radiusBottom = size.z * 0.5;
+            const height = size.y;
+            const numSegments = 12
+            const shape = new Cylinder(radiusTop, radiusBottom, height, numSegments)
+            body.sleepSpeedLimit = 0.5;
             body.sleepTimeLimit = 0.2;
             body.addShape(shape);
         }
