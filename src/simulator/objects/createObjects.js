@@ -4,7 +4,8 @@ import { BoxBufferGeometry,
          SphereGeometry,
          Vector3,
          Mesh,
-         LoadingManager } from 'three';
+         LoadingManager,
+     Object3D } from 'three';
 
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 import { OBJLoader} from 'three/examples/jsm/loaders/OBJLoader.js';
@@ -54,8 +55,8 @@ function createBoxMesh(simObject) {
 
     const material = new MeshPhongMaterial({ color: simObject.colour });
     const mesh = new Mesh(geometry, material);
-    mesh.position.copy(simObject.spawnPosition);
-    mesh.setRotationFromEuler(simObject.spawnRotation);
+    //mesh.position.copy(simObject.spawnPosition);
+    //mesh.setRotationFromEuler(simObject.spawnRotation);
     return mesh;
 }
 
@@ -82,7 +83,7 @@ export function addGeometry(simObject) {
     switch (simObject.shape) {
         case 'cube':
             const cubeMesh = createBoxMesh(simObject);
-            cubeMesh.name = 'cubeMesh';
+            cubeMesh.name = simObject.name;
             simObject.add(cubeMesh);
             simObject.createBody('cube');
             break;
@@ -114,22 +115,21 @@ export function addGeometry(simObject) {
 
 //Adds the simObject
 export function addSimObject(blockUUID, fieldValues, pickedColour, shape) {
-    let newSimObject = new SimObject;
-    newSimObject.name = blockUUID;
-    newSimObject.shape = shape;
+    let simObject = new SimObject;
+    simObject.name = blockUUID;
+    simObject.shape = shape;
     if (fieldValues != undefined) {
-        newSimObject.setFieldValues(fieldValues);
-        newSimObject.updateFromFieldValues();
+        simObject.setFieldValues(fieldValues);
+        simObject.updateFromFieldValues();
     }
     if (pickedColour != undefined) {
-        newSimObject.colour = pickedColour;;
+        simObject.colour = pickedColour;;
     }
-    addGeometry(newSimObject);
-    setSpawnPosition(newSimObject);
-    newSimObject.add();
-    console.log(newSimObject);
-    newSimObject.updateFieldValues();
-    simObjects.push(newSimObject);
+    addGeometry(simObject);
+    setSpawnPosition(simObject);
+    simObject.addToScene();
+    simObject.updateFieldValues();
+    simObjects.push(simObject);
 }
 
 //Functions for positioning simObjects
@@ -217,21 +217,49 @@ export function resetAllSimObjects () {
 //transformControl event functions
 //Lights simObjects on mouseover, is called in scene.js by mouseover
 export function setSimObjectHighlight(raycaster) {
-    const intersections = raycaster.intersectObjects(simObjects);
+    const intersections = raycaster.intersectObjects(simObjects, true);
+    const intersected = intersections.length > 0;
+    if (intersected) {
+        const intersectedSimObj = intersections[0].object.parent;
+        if (intersectedSimObj.highlighted != intersected) {
+            intersectedSimObj.highlighted = intersected;
+            intersectedSimObj.highlight(true);
+            const limit = simObjects.length;
+            for (let i = 0; i < limit; i++) {
+                if (intersectedSimObj.name != simObjects[i].name) {
+                    simObjects[i].highlighted = false;
+                    simObjects[i].highlight(false);
+
+                }
+            }
+        }
+    } else {
+        const limit = simObjects.length;
+        for (let i = 0; i < limit; i++) { 
+            simObjects[i].highlighted = false;
+            simObjects[i].highlight(false);
+        }
+    }
+}
+/*Deprecated
+export function setSimObjectHighlight(raycaster) {
+    const intersections = raycaster.intersectObjects(simObjects, true);
     const intersected = intersections.length > 0;
     const workspace = Blockly.getMainWorkspace();
     if (intersected) {
-        if (intersections[0].object.highlighted != intersected) {
-            intersections[0].object.highlighted = intersected;
+        const intersectedSimObj = intersections[0].object.parent;
+        console.log(intersections[0]);
+        if (intersectedSimObj.highlighted != intersected) {
+            intersectedSimObj.highlighted = intersected;
             const colour = intersections[0].object.material.color.getHex();
             intersections[0].object.material.emissive.setHex(colour);
-            intersections[0].object.render();
+            intersectedSimObj.render();
             //Highlights the corresponding Blockly block.
-            workspace.highlightBlock(intersections[0].object.name);
+            workspace.highlightBlock(intersectedSimObj.name);
             for (const simObject of simObjects) {
-                if (intersections[0].object.name != simObject.name) {
+                if (intersectedSimObj.name != simObject.name) {
                     simObject.highlighted = false;
-                    simObject.material.emissive.setHex(0x000000);
+                    //simObject.material.emissive.setHex(0x000000);
                     simObject.render();
                 }
             }
@@ -239,17 +267,18 @@ export function setSimObjectHighlight(raycaster) {
     } else {
         for (const simObject of simObjects) {
             simObject.highlighted = false;
-            simObject.material.emissive.setHex(0x000000);
+            //simObject.material.emissive.setHex(0x000000);
             simObject.render();
             //Switches the highlighting of the corresponding Blockly block off.
             workspace.highlightBlock(null);
         }
     }
-}
+}*/
 
 //Switches the TransformControls of simobjects on and off and changes the mode.
 export function setTCSimObjectsOnClick(raycaster) {
-    const intersections = raycaster.intersectObjects(simObjects);
+    const intersections = raycaster.intersectObjects(simObjects, true);
+    const intersectedSimObj = intersections[0].parent;
     const intersected = intersections.length > 0 && intersections[0].object.highlighted;
     const scene = getScene();
     if (intersected) {
