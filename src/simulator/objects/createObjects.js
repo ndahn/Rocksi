@@ -5,16 +5,19 @@ import { BoxBufferGeometry,
          Vector3,
          Mesh,
          LoadingManager,
-     Object3D } from 'three';
+         Object3D,
+         Box3 } from 'three';
+import { Vec3,
+         Quaternion } from 'cannon-es';
 
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
-import { OBJLoader} from 'three/examples/jsm/loaders/OBJLoader.js';
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
 
-import * as Blockly from 'blockly/core'
+import * as Blockly from 'blockly/core';
 
-import { SimObject } from './simObject'
+import { SimObject } from './simObject';
 
-import { makeRock } from './rock'
+import { makeRock } from './rock';
 
 import { requestAF,
          getScene,
@@ -27,19 +30,17 @@ let simObjects = [];
 
 //Functions for creating meshes
 //Loader for gltf
-function loadShaft() {
+function loadShaft(simObject) {
+    const loader = new STLLoader();
+    loader.load( '/models/simObject_shapes/shaft/shaft.stl', function ( geometry ) {
+        const material = new MeshPhongMaterial( { color: simObject.colour} );
+        const mesh = new Mesh( geometry, material );
+        mesh.scale.set(0.03, 0.03, 0.03);
+        mesh.geometry.computeBoundingBox();
+        mesh.geometry.center();
+        simObject.add( mesh );
 
-    const scene = getScene();
-    let manager = new LoadingManager();
-    const objLoader = new OBJLoader();
-    objLoader.load('../../assets/models/simObject_shapes/shaft/tinker.obj', function(obj) {
-        const material = new MeshPhongMaterial({ color: 0x00ff00 });
-        obj.material = material;
-        obj.position.copy(new Vector3(2, 2, 2));
-        scene.add(obj);
     });
-    //let mesh = new Mesh(tmp.children[0].geometry, material);
-    return;
 }
 
 
@@ -80,33 +81,39 @@ function createSphereMesh(simObject) {
 
 //
 export function addGeometry(simObject) {
+    const size = new Vector3();
     switch (simObject.shape) {
         case 'cube':
             const cubeMesh = createBoxMesh(simObject);
-            cubeMesh.name = simObject.name;
+            const tmpCube = new Box3().setFromObject(cubeMesh);
+            tmpCube.getSize(size);
             simObject.add(cubeMesh);
-            simObject.createBody('cube');
+            simObject.createBody('box', 0, size, 0.5, 2, 0.1);
             break;
         case 'rock':
             const rockMesh = makeRock(50, simObject.size.z, simObject.colour);
-            let center = new Vector3();
-            simObject.geometry = rockMesh.geometry;
-            simObject.material = rockMesh.material;
-            simObject.geometry.computeBoundingBox();
-            simObject.geometry.center();
-            simObject.createBody('cube');
+            rockMesh.geometry.computeBoundingBox();
+            rockMesh.geometry.center();
+            const tmpBox = new Box3().setFromObject(rockMesh);
+            tmpBox.getSize(size);
+            size.x += Math.random() * 0.001;
+            size.y += Math.random() * 0.001;
+            size.z += Math.random() * 0.001;
+            simObject.add(rockMesh);
+            simObject.createBody('box', 0, size, 3, 2, 0.01);
             break;
         case 'sphere':
             const sphereMesh = createSphereMesh(simObject);
-            simObject.geometry = sphereMesh.geometry;
-            simObject.material = sphereMesh.material;
-            simObject.createBody('sphere');
+            sphereMesh.geometry.computeBoundingSphere();
+            const radius = sphereMesh.geometry.boundingSphere.radius;
+            simObject.add(sphereMesh);
+            simObject.createBody('sphere', radius, 0, 2.1, 1, 0.1);
             break;
         case 'shaft':
-            //const shaftMesh =
-             loadShaft();
-            //simObject.geometry = shaftMesh.geometry;
-            //simObject.material = new MeshPhongMaterial({ color: simObject.colour });
+             loadShaft(simObject);
+             simObject.render();
+
+             break;
         default:
             console.error('Unknown SimObject shape: ', simObject.shape);
             break;
@@ -145,10 +152,15 @@ function setSpawnPosition(simObject) {
         case 'sphere':
             placeSpheres(simObject);
             break;
+        case 'shaft':
+            placeShaft(simObject);
         default:
             console.error('Unknown SimObject shape: ', simObject.shape);
             break;
     }
+}
+function placeShaft(simobject) {
+    return;
 }
 
 //stacks cubes, until there are no more cubes to stack
@@ -199,7 +211,7 @@ export function remSimObjects(ids) {
         const deletedSimObject = simObjects.find(simObject => simObject.name === id);
         const idx = simObjects.findIndex(simObject => simObject.name === id);
         if (deletedSimObject != undefined) {
-            deletedSimObject.remove();
+            deletedSimObject.removeFromScene();
             simObjects.splice(idx, 1);
         }
     }
@@ -275,41 +287,6 @@ export function setTCSimObjectsOnClick(raycaster) {
     }
     requestAF();
 }
-
-//Switches the TransformControls of simobjects on and off and changes the mode.
-/*export function setTCSimObjectsOnClick(raycaster) {
-    const intersections = raycaster.intersectObjects(simObjects, true);
-    const intersectedSimObj = intersections[0].parent;
-    const intersected = intersections.length > 0 && intersections[0].object.highlighted;
-    const scene = getScene();
-    if (intersected) {
-        if (intersections[0].object.control.visible != intersected) {
-            if (intersections[0].object.attached) {
-                return;
-            } else {
-                intersections[0].object.control.setMode('rotate');
-                intersections[0].object.control.visible = true;
-                intersections[0].object.control.enabled = true;
-            }
-        }
-        const mode = intersections[0].object.control.getMode();
-        scene.remove(intersections[0].object.control);
-        if (mode == 'translate'){
-            intersections[0].object.control.setMode('rotate');
-        }
-        if (mode == 'rotate'){
-            intersections[0].object.control.setMode('translate');
-        }
-        scene.add(intersections[0].object.control);
-
-    } else {
-        for (const simObject of simObjects) {
-            simObject.control.visible = false;
-            simObject.control.enabled = false;
-        }
-    }
-    requestAF();
-}*/
 
 //Returns a list with all names of simObjects (the uuids of the blockly blocks)
 //currently in the simObjects array
@@ -388,4 +365,21 @@ export function randomColour() {
         colour += hexDigits[Math.floor(Math.random() * 16)];
     }
     return colour;
+}
+
+export function vector3ToVec3(vector3) {
+    console.log(vector3);
+    const result = new Vec3();
+    result.x = vector3.x;
+    result.y = vector3.y;
+    result.z = vector3.z;
+    return result;
+}
+
+export function vec3ToVector3(vec3) {
+    const result = new Vector3();
+    result.x = vec3.x;
+    result.y = vec3.y;
+    result.z = vec3.z;
+    return result;
 }
