@@ -219,25 +219,24 @@ export function resetAllSimObjects () {
 export function setSimObjectHighlight(raycaster) {
     const intersections = raycaster.intersectObjects(simObjects, true);
     const intersected = intersections.length > 0;
+    const workspace = Blockly.getMainWorkspace();
     if (intersected) {
         const intersectedSimObj = intersections[0].object.parent;
         if (intersectedSimObj.highlighted != intersected) {
-            intersectedSimObj.highlighted = intersected;
-            intersectedSimObj.highlight(true);
+            intersectedSimObj.highlight(intersected);
+            workspace.highlightBlock(intersectedSimObj.name);
             const limit = simObjects.length;
             for (let i = 0; i < limit; i++) {
                 if (intersectedSimObj.name != simObjects[i].name) {
-                    simObjects[i].highlighted = false;
                     simObjects[i].highlight(false);
-
                 }
             }
         }
     } else {
         const limit = simObjects.length;
-        for (let i = 0; i < limit; i++) { 
-            simObjects[i].highlighted = false;
+        for (let i = 0; i < limit; i++) {
             simObjects[i].highlight(false);
+            workspace.highlightBlock(null);
         }
     }
 }
