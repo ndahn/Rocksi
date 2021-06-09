@@ -33,7 +33,7 @@ import * as Blockly from 'blockly/core'
 
 const debug = true;
 
-export class SimObject extends Object3D {
+export class SimObject extends Group {
     constructor() {
         super();
         this.name = undefined;
@@ -187,12 +187,12 @@ export class SimObject extends Object3D {
         this.quaternion.copy(this.body.quaternion);
     }
 
-    add() {
+    addToScene() {
         const scene = getScene();
         this.updatePos(this.spawnPosition, this.spawnRotation)
         scene.add(this);
         this.initTransformControl();
-        this.updateMatrixWorld();
+        //this.updateMatrixWorld();
         this.render();
     }
 
@@ -260,6 +260,10 @@ export class SimObject extends Object3D {
         this.control.enabled = this.control.visible;
     }
 
+    highlight(status) {
+        console.log('Highlight: ', status);
+        return;
+    }
     addBodyToWorld() {
         const world = getWorld();
         world.addBody(this.body);
