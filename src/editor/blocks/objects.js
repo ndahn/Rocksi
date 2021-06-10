@@ -54,12 +54,12 @@ Blockly.Blocks['add_sim_object'] = {
                             "cube"
                         ],
                         [
-                            "Stein",
-                            "rock"
-                        ],
-                        [
                             "Kugel",
                             "sphere"
+                        ],
+                        [
+                            "Stein",
+                            "rock"
                         ],
                         [
                             "Welle",
@@ -98,7 +98,6 @@ Blockly.Blocks['add_sim_object'] = {
         const simObject = getSimObject(this.id);
 
         if (simObject != undefined) {
-            simObject.setSpawnPosition();
             fieldValues = simObject.getFieldValues();
         }
         return fieldValues;
