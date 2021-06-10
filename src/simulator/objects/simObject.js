@@ -20,7 +20,10 @@ import { getWorld } from '../physics';
 
 import { addSimObject,
          remSimObjects,
-         addGeometry } from './createObjects'
+         addGeometry,
+         stackCubes,
+         placeSpheres,
+         placeCylinder } from './createObjects'
 
 import { Box,
          Vec3,
@@ -49,6 +52,10 @@ export class SimObject extends Group {
         this._fieldValues = this._calcFieldValues();
         this.colour = '#eb4034'
         this.highlighted = false;
+        this.isSphere = false;
+        this.isCylinder = false;
+        this.isBox = true; //default is cube
+        this.radius = 0;
         if (debug) {
             console.log('simObject debug mode on!',);
         }
@@ -61,8 +68,18 @@ export class SimObject extends Group {
         let radValues = [];
 
         this.spawnPosition.toArray(fieldValues);
-        fieldValues[2] = fieldValues[2] - this.size.z * .5;
-        this.spawnRotation.toArray(radValues);
+        if (this.isSphere) {
+            fieldValues[2] = fieldValues[2] - this.radius;
+            this.spawnRotation.toArray(radValues);
+        } else if (this.isCylinder) {
+            fieldValues[2] = fieldValues[2] - this.size.z * .5;
+            this.spawnRotation.toArray(radValues);
+        } else {
+            fieldValues[2] = fieldValues[2] - this.size.z * .5;
+            this.spawnRotation.toArray(radValues);
+        }
+
+
 
         for (let i = 0; i < 3; i++) {
             let val = this._radToDeg(radValues[i]);
@@ -91,6 +108,26 @@ export class SimObject extends Group {
         this.spawnPosition.copy(this.position);
         this.spawnRotation.copy(this.rotation);
         this._fieldValues = this._calcFieldValues();
+    }
+
+    setSpawnPoint() {
+        switch (this.shape) {
+            case 'cube':
+                stackCubes(this);
+                break;
+            case 'rock':
+                stackCubes(this);
+                break;
+            case 'sphere':
+                placeSpheres(this);
+                break;
+            case 'shaft':
+                placeCylinder(this);
+                break;
+            default:
+                console.error('Unknown SimObject shape: ', this.shape);
+                break;
+        }
     }
 
     _fieldValuesToPos(fieldValues) {
@@ -324,7 +361,9 @@ export class SimObject extends Group {
     }
 
     setColour(colour) {
-        this.material = new MeshPhongMaterial({ color: colour });
+        for (const child of this.children) {
+            child.material = new MeshPhongMaterial({ color: colour });
+        }
     }
 
     reset() {
