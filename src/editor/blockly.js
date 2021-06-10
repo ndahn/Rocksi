@@ -403,10 +403,10 @@ function watchSpawnBlocks(event) {
                     fieldValues = undefined;
                 }
                 if (colour != null) {
-                    if (colour.type == 'colour_picker') {
+                    if (colour.type === 'colour_picker') {
                         pickedColour = color.getFieldValue('COLOUR');
                     }
-                    if (colour.type == 'colour_random') {
+                    if (colour.type === 'colour_random') {
                         pickedColour = randomColour();
                     } else {
                         pickedColour = undefined;
@@ -418,7 +418,7 @@ function watchSpawnBlocks(event) {
     }
 
     if(Blockly.Events.BLOCK_DELETE === event.type) {
-        console.log('Deleted: ', event.ids);
+        //console.log('Deleted: ', event.ids);
         remSimObjects(event.ids);
     }
 }
