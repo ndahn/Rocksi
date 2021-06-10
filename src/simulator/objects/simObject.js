@@ -21,7 +21,7 @@ import { getWorld } from '../physics';
 import { addSimObject,
          remSimObjects,
          addGeometry,
-         stackCubes,
+         placeCubes,
          placeSpheres,
          placeCylinder } from './createObjects'
 
@@ -35,14 +35,14 @@ import { Box,
 
 import * as Blockly from 'blockly/core'
 
-const debug = true;
+const debug = false;
 
 export class SimObject extends Group {
     constructor() {
         super();
         this.name = undefined;
         this.type = 'simObject';
-        this.shape = 'cube'; //default
+        this.shape = 'sphere'; //default
         this.attached = false;
         this.hasBody = false;
         this.spawnPosition = new Vector3(5, 0, this.size.z * .5);
@@ -52,9 +52,7 @@ export class SimObject extends Group {
         this._fieldValues = this._calcFieldValues();
         this.colour = '#eb4034'
         this.highlighted = false;
-        this.isSphere = false;
-        this.isCylinder = false;
-        this.isBox = true; //default is cube
+        this.bodyShape = 'sphere';
         this.radius = 0;
         if (debug) {
             console.log('simObject debug mode on!',);
@@ -63,24 +61,20 @@ export class SimObject extends Group {
     }
     size = new Vector3(.5, .5, .5);
 
+    //Positioning
     _calcFieldValues() {
         let fieldValues = [];
         let radValues = [];
 
         this.spawnPosition.toArray(fieldValues);
-        if (this.isSphere) {
+        if (this.bodyShape === 'sphere') {
             fieldValues[2] = fieldValues[2] - this.radius;
-            this.spawnRotation.toArray(radValues);
-        } else if (this.isCylinder) {
+        } else if (this.bodyShape === 'cylinder') {
             fieldValues[2] = fieldValues[2] - this.size.z * .5;
-            this.spawnRotation.toArray(radValues);
         } else {
             fieldValues[2] = fieldValues[2] - this.size.z * .5;
-            this.spawnRotation.toArray(radValues);
         }
-
-
-
+        this.spawnRotation.toArray(radValues);
         for (let i = 0; i < 3; i++) {
             let val = this._radToDeg(radValues[i]);
             fieldValues.push(parseInt(val.toFixed()));
@@ -111,21 +105,17 @@ export class SimObject extends Group {
     }
 
     setSpawnPoint() {
-        switch (this.shape) {
-            case 'cube':
-                stackCubes(this);
-                break;
-            case 'rock':
-                stackCubes(this);
+        switch (this.bodyShape) {
+            case 'box':
+                placeCubes(this);
                 break;
             case 'sphere':
                 placeSpheres(this);
                 break;
-            case 'shaft':
+            case 'cylinder':
                 placeCylinder(this);
-                break;
             default:
-                console.error('Unknown SimObject shape: ', this.shape);
+                console.error('Unknown SimObject body shape: ', this.bodyShape);
                 break;
         }
     }
@@ -153,95 +143,6 @@ export class SimObject extends Group {
     updatePos(vector, euler)  {
         this.position.copy(vector);
         this.setRotationFromEuler(euler);
-    }
-
-    render() { requestAF(); }
-
-    makeVisible() {
-        const scene = getScene();
-        scene.add(this.control);
-        this.addTransformListeners();
-        scene.add(this);
-        this.render();
-    }
-
-    hide() {
-        const scene = getScene();
-        scene.remove(this.control);
-        this.removeTransformListners();
-        scene.remove(this);
-        this.render();
-    }
-
-    createBody(shape, radius, size, mass, friction, restitution) {
-        const body = new Body({ mass: mass });
-        body.material = new Material({ friction: friction, restitution: restitution});
-        body.allowSleep = true;
-        if ('box' === shape) {
-            const shape = new Box(new Vec3(size.x * 0.5,
-                                           size.y * 0.5,
-                                           size.z * 0.5))//cannon size is defined from the center
-            body.sleepSpeedLimit = 0.5;
-            body.sleepTimeLimit = 0.2;
-            body.addShape(shape);
-        }
-        if ('sphere' === shape) {
-            const shape = new Sphere(radius);
-            body.sleepSpeedLimit = 1.2;
-            body.sleepTimeLimit = 0.2;
-            body.addShape(shape);
-        }
-        if ('cylinder' === shape) {
-            const radiusTop = size.x * 0.5;
-            const radiusBottom = size.z * 0.5;
-            const height = size.y;
-            const numSegments = 12
-            const shape = new Cylinder(radiusTop, radiusBottom, height, numSegments)
-            body.sleepSpeedLimit = 0.5;
-            body.sleepTimeLimit = 0.2;
-            body.addShape(shape);
-        }
-        //body.addShape(shape);
-        body.position.copy(this.position);
-        this.hasBody = true;
-        this.body = body;
-        this.body.sleep();
-        this.updateBody();
-    }
-
-    changeShape(shape) {
-        this.shape = shape;
-        for (const child of this.children) {
-            this.remove(child);
-        }
-        addGeometry(this);
-        this.render();
-        console.log('changed to shape: ', shape);
-    }
-
-    updateBody() {
-        this.body.position.copy(this.position);
-        this.body.quaternion.copy(this.quaternion);
-    }
-
-    updateMesh() {
-        this.position.copy(this.body.position);
-        this.quaternion.copy(this.body.quaternion);
-    }
-
-    addToScene() {
-        const scene = getScene();
-        this.updatePos(this.spawnPosition, this.spawnRotation)
-        scene.add(this);
-        this.initTransformControl();
-        //this.updateMatrixWorld();
-        this.render();
-    }
-
-    //callback for dragging-changed
-    _draggingCanged(event) {
-        const controlObj = getControl();
-        controlObj.orbitControls.enabled = ! event.value;
     }
 
     //callback for objectChange
@@ -275,31 +176,48 @@ export class SimObject extends Group {
         }
     }
 
-    addTransformListeners() {
-        this.control.addEventListener('dragging-changed',(event) => this._draggingCanged(event));
-        this.control.addEventListener('objectChange', () => this._objectChange());
-        addListeners();
-    }
+    //Visiblity and scene
+    render() { requestAF(); }
 
-    removeTransformListners() {
-        this.control.removeEventListener('dragging-changed',(event) => this._draggingCanged(event));
-        this.control.removeEventListener('objectChange', () => this._objectChange());
-        removeListeners();
-    }
-
-    initTransformControl() {
-        const controlObj = getControl();
+    addToScene() {
         const scene = getScene();
+        this.updatePos(this.spawnPosition, this.spawnRotation)
+        scene.add(this);
+        this.initTransformControl();
+        //this.updateMatrixWorld();
+        this.render();
+    }
 
-        this.control = new TransformControls(controlObj.camera, controlObj.renderer.domElement);
+    removeFromScene() {
+        const scene = getScene();
+        const world = getWorld();
 
-        this.addTransformListeners()
+        if (this.hasBody) { world.removeBody(this.body); }
+        if (this.isAttached) { scene.attach(this) }
 
-        this.control.attach(this);
+        this.control.visible = true; //otherwise the renderer throws an error.
+                                     //I suspect that threejs removes the
+                                     //controls if visible is false.
+        scene.remove(this.control);
+        scene.remove(this);
+
+        this.render();
+    }
+
+    makeVisible() {
+        const scene = getScene();
         scene.add(this.control);
+        this.addTransformListeners();
+        scene.add(this);
+        this.render();
+    }
 
-        this.control.visible = false;
-        this.control.enabled = this.control.visible;
+    hide() {
+        const scene = getScene();
+        scene.remove(this.control);
+        this.removeTransformListners();
+        scene.remove(this);
+        this.render();
     }
 
     highlight(status) {
@@ -334,36 +252,21 @@ export class SimObject extends Group {
         this.render();
     }
 
-    addBodyToWorld() {
-        const world = getWorld();
-        world.addBody(this.body);
-    }
-
-    removeBodyFromWorld() {
-        const world = getWorld();
-        world.removeBody(this.body);
-    }
-
-    removeFromScene() {
-        const scene = getScene();
-        const world = getWorld();
-
-        if (this.hasBody) { world.removeBody(this.body); }
-        if (this.isAttached) { scene.attach(this) }
-
-        this.control.visible = true; //otherwise the renderer throws an error.
-                                     //I suspect that threejs removes the
-                                     //controls if visible is false.
-        scene.remove(this.control);
-        scene.remove(this);
-
-        this.render();
-    }
-
     setColour(colour) {
         for (const child of this.children) {
             child.material = new MeshPhongMaterial({ color: colour });
         }
+    }
+
+    changeShape(shape) {
+        this.shape = shape;
+        for (const child of this.children) {
+            this.remove(child);
+        }
+        addGeometry(this);
+        //this.setSpawnPoint();
+        this.render();
+        console.log('Changed to shape: ', shape);
     }
 
     reset() {
@@ -381,11 +284,102 @@ export class SimObject extends Group {
         this.render();
     }
 
+    //Collision bodys
+    createBody(mass, friction, restitution) {
+        const body = new Body({ mass: mass });
+        body.material = new Material({ friction: friction, restitution: restitution});
+        body.allowSleep = true;
+        if ('box' === this.bodyShape) {
+            const shape = new Box(new Vec3(this.size.x * 0.5,
+                                           this.size.y * 0.5,
+                                           this.size.z * 0.5))//cannon size is defined from the center
+            body.sleepSpeedLimit = 0.5;
+            body.sleepTimeLimit = 0.2;
+            body.addShape(shape);
+        }
+        if ('sphere' === this.bodyShape) {
+            const shape = new Sphere(this.radius);
+            body.sleepSpeedLimit = 1.2;
+            body.sleepTimeLimit = 0.2;
+            body.addShape(shape);
+        }
+        if ('cylinder' === this.bodyShape) {
+            const radiusTop = this.size.x * 0.5;
+            const radiusBottom = this.size.z * 0.5;
+            const height = this.size.y;
+            const numSegments = 12
+            const shape = new Cylinder(radiusTop, radiusBottom, height, numSegments)
+            body.sleepSpeedLimit = 0.5;
+            body.sleepTimeLimit = 0.2;
+            body.addShape(shape);
+        }
+        //body.addShape(shape);
+        body.position.copy(this.position);
+        this.hasBody = true;
+        this.body = body;
+        this.body.sleep();
+        this.updateBody();
+    }
+
+    updateBody() {
+        this.body.position.copy(this.position);
+        this.body.quaternion.copy(this.quaternion);
+    }
+
+    updateMesh() {
+        this.position.copy(this.body.position);
+        this.quaternion.copy(this.body.quaternion);
+    }
+
+    addBodyToWorld() {
+        const world = getWorld();
+        world.addBody(this.body);
+    }
+
+    removeBodyFromWorld() {
+        const world = getWorld();
+        world.removeBody(this.body);
+    }
+
+    //Listeners for controls
+    initTransformControl() {
+        const controlObj = getControl();
+        const scene = getScene();
+
+        this.control = new TransformControls(controlObj.camera, controlObj.renderer.domElement);
+
+        this.addTransformListeners()
+
+        this.control.attach(this);
+        scene.add(this.control);
+
+        this.control.visible = false;
+        this.control.enabled = this.control.visible;
+    }
+
+    addTransformListeners() {
+        this.control.addEventListener('dragging-changed',(event) => this._draggingCanged(event));
+        this.control.addEventListener('objectChange', () => this._objectChange());
+        addListeners();
+    }
+
+    removeTransformListners() {
+        this.control.removeEventListener('dragging-changed',(event) => this._draggingCanged(event));
+        this.control.removeEventListener('objectChange', () => this._objectChange());
+        removeListeners();
+    }
+
+    //callback for dragging-changed
+    _draggingCanged(event) {
+        const controlObj = getControl();
+        controlObj.orbitControls.enabled = ! event.value;
+    }
+
+    //Interactions
     detachFromGripper(robot) {
         const scene = getScene();
         this.attached = false;
         this.control.enabled = true;
-
         scene.attach(this);
         this.updateMatrixWorld();
         this.addBodyToWorld();

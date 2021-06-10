@@ -45,7 +45,6 @@ function loadShaft(simObject) {
         const tmpCylinder = new Box3().setFromObject(mesh);
         tmpCylinder.getSize(size);
         simObject.add( mesh );
-
     });
     return size;
 }
@@ -68,13 +67,10 @@ function createBoxMesh(simObject) {
 
 //Simple cylinder
 function createCylinderMesh(simObject) {
-    simObject.geometry = new CylinderGeometry(.3,
-                                                    0,
-                                                        .5,
-                                                        10);
-
-    simObject.material = new MeshPhongMaterial({ color: simObject.colour });
-    return [geometry, material];
+    const cylinderMesh = new Mesh();
+    cylinderMesh.geometry = new CylinderGeometry(.3, 0, .5, 10);
+    cylinderMesh.material = new MeshPhongMaterial({ color: simObject.colour });
+    return cylinderMesh;
 }
 
 function createSphereMesh(simObject) {
@@ -84,13 +80,14 @@ function createSphereMesh(simObject) {
     return mesh;
 }
 
-//
+//adds a geometry to a simObject
 export function addGeometry(simObject) {
     const size = new Vector3();
     switch (simObject.shape) {
         case 'cube':
             const cubeMesh = createBoxMesh(simObject);
             const tmpCube = new Box3().setFromObject(cubeMesh);
+            simObject.bodyShape = 'box';
             tmpCube.getSize(size);
             simObject.add(cubeMesh);
             simObject.createBody('box', 0, size, 0.5, 2, 0.1);
@@ -101,27 +98,31 @@ export function addGeometry(simObject) {
             rockMesh.geometry.center();
             const tmpBox = new Box3().setFromObject(rockMesh);
             tmpBox.getSize(size);
+            simObject.bodyShape = 'box';
+            simObject.size = size;
             size.x += Math.random() * 0.001;
             size.y += Math.random() * 0.001;
             size.z += Math.random() * 0.001;
             simObject.add(rockMesh);
-            simObject.createBody('box', 0, size, 3, 2, 0.01);
+            simObject.createBody(3, 2, 0.01);//mass, friction, restitution
             break;
         case 'sphere':
             const sphereMesh = createSphereMesh(simObject);
             sphereMesh.geometry.computeBoundingSphere();
-            const radius = sphereMesh.geometry.boundingSphere.radius;
+            simObject.radius = sphereMesh.geometry.boundingSphere.radius;
+            simObject.bodyShape = 'sphere';
             simObject.add(sphereMesh);
-            simObject.createBody('sphere', radius, 0, 2.1, 1, 0.1);
+            simObject.createBody(2.1, 1, 0.1);
             break;
         case 'shaft':
-             const shaftSize = new Vector3(0.7, 3.3, 0.7);
-             loadShaft(simObject);
-
-             console.log(shaftSize);
-             simObject.createBody('cylinder', 0, shaftSize, 5, 2, 0.1);
-             simObject.render();
-             break;
+            const shaftSize = new Vector3(0.7, 3.3, 0.7);
+            loadShaft(simObject);
+            simObject.bodyShape = 'cylinder';
+            simObject.createBody(5, 2, 0.1);
+            simObject.render();
+            break;
+        case 'custom':
+            break;
         default:
             console.error('Unknown SimObject shape: ', simObject.shape);
             break;
@@ -141,63 +142,45 @@ export function addSimObject(blockUUID, fieldValues, pickedColour, shape) {
         simObject.colour = pickedColour;;
     }
     addGeometry(simObject);
-    setSpawnPosition(simObject);
+    simObject.setSpawnPoint();
     simObject.addToScene();
     simObject.updateFieldValues();
     simObjects.push(simObject);
 }
 
 //Functions for positioning simObjects
-//sets the spawnPosition depending on the shape
-function setSpawnPosition(simObject) {
-    switch (simObject.shape) {
-        case 'cube':
-            stackCubes(simObject);
-            break;
-        case 'rock':
-            stackCubes(simObject);
-            break;
-        case 'sphere':
-            placeSpheres(simObject);
-            break;
-        case 'shaft':
-            placeShaft(simObject);
-        default:
-            console.error('Unknown SimObject shape: ', simObject.shape);
-            break;
-    }
-}
-function placeShaft(simobject) {
+export function placeCylinder(simobject) {
     return;
 }
 
 //stacks cubes, until there are no more cubes to stack
-function placeSpheres(simObject){
-    const shift = xyShiftSphere(simObject);
+export function placeSpheres(simObject){
+    const shift = zShiftSphere(simObject);
     if (shift > 0) {
-        simObject.spawnPosition.x = simObject.spawnPosition.x + shift;
+        simObject.spawnPosition.z = simObject.spawnPosition.z + shift;
         return placeSpheres(simObject);
     } else { return; }
 }
 
 //calculates the amount of the shift for stackCubes
-function xyShiftSphere(simObject) {
+function zShiftSphere(simObject) {
     let returnVal = 0;
+    const diameter = simObject.radius * 2;
     for (let k = 0; k < simObjects.length; k++) {
         if (simObject.spawnPosition.distanceTo(simObjects[k].spawnPosition)
-                    < (simObject.geometry.radius)) {
-            returnVal = simObject.geometry.radius;
+                    < diameter) {
+            returnVal = diameter;
         }
     }
     return returnVal;
 }
 
 //stacks cubes, until there are no more cubes to stack
-function stackCubes(simObject){
+export function placeCubes(simObject){
     const shift = zShiftCubes(simObject);
     if (shift > 0) {
         simObject.spawnPosition.z = simObject.spawnPosition.z + shift;
-        return stackCubes(simObject);
+        return placeCubes(simObject);
     } else { return; }
 }
 
@@ -225,7 +208,7 @@ export function remSimObjects(ids) {
     }
 }
 
-//Does what it says
+//reset all simObjects in the scene
 export function resetAllSimObjects () {
     if (simObjects.length > 0) {
         for (const simObject of simObjects) {
@@ -296,9 +279,7 @@ export function setTCSimObjectsOnClick(raycaster) {
     requestAF();
 }
 
-//Returns a list with all names of simObjects (the uuids of the blockly blocks)
-//currently in the simObjects array
-//I need to implement some form of error checking here.
+//Functions for getting simObjects
 export function getSimObjectsNames() {
     let simObjectsNames = [];
     simObjects.forEach(simObject => {simObjectsNames.push(simObject.name)});
