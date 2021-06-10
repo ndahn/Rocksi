@@ -42,17 +42,15 @@ export class SimObject extends Group {
         super();
         this.name = undefined;
         this.type = 'simObject';
-        this.shape = 'sphere'; //default
+        this.shape = 'cube'; //default
         this.attached = false;
         this.hasBody = false;
-        this.spawnPosition = new Vector3(5, 0, this.size.z * .5);
-        this.spawnRotation = new Euler(0, 0, 0);
         this.body = undefined;
         this.control = undefined;
-        this._fieldValues = this._calcFieldValues();
+        this._fieldValues = [5, 0, 0, 0, 0, 0];
         this.colour = '#eb4034'
         this.highlighted = false;
-        this.bodyShape = 'sphere';
+        this.bodyShape = 'box';
         this.radius = 0;
         if (debug) {
             console.log('simObject debug mode on!',);
@@ -66,7 +64,7 @@ export class SimObject extends Group {
         let fieldValues = [];
         let radValues = [];
 
-        this.spawnPosition.toArray(fieldValues);
+        this.position.toArray(fieldValues);
         if (this.bodyShape === 'sphere') {
             fieldValues[2] = fieldValues[2] - this.radius;
         } else if (this.bodyShape === 'cylinder') {
@@ -74,7 +72,7 @@ export class SimObject extends Group {
         } else {
             fieldValues[2] = fieldValues[2] - this.size.z * .5;
         }
-        this.spawnRotation.toArray(radValues);
+        this.rotation.toArray(radValues);
         for (let i = 0; i < 3; i++) {
             let val = this._radToDeg(radValues[i]);
             fieldValues.push(parseInt(val.toFixed()));
@@ -98,62 +96,29 @@ export class SimObject extends Group {
         this._fieldValues = fieldValues;
     }
 
-    setSpawnPosition() {
-        this.spawnPosition.copy(this.position);
-        this.spawnRotation.copy(this.rotation);
-        this._fieldValues = this._calcFieldValues();
-    }
-
-    setSpawnPoint() {
-        switch (this.bodyShape) {
-            case 'box':
-                placeCubes(this);
-                break;
-            case 'sphere':
-                placeSpheres(this);
-                break;
-            case 'cylinder':
-                placeCylinder(this);
-            default:
-                console.error('Unknown SimObject body shape: ', this.bodyShape);
-                break;
-        }
-    }
-
-    _fieldValuesToPos(fieldValues) {
+    updateFromFieldValues() {
         let posArray = [];
         let eulArray = [];
         for (let i = 0; i < 3; i++) {
-            posArray.push(fieldValues[i]);
-            eulArray.push(parseFloat(this._degToRad(fieldValues[i + 3]).toFixed(3)));
+            posArray.push(this._fieldValues[i]);
+            eulArray.push(parseFloat(this._degToRad(this._fieldValues[i + 3]).toFixed(3)));
         }
 
         for (let i = 0; i < 2; i++) {
-            this.spawnPosition.setComponent(i, posArray[i]);
+            this.position.setComponent(i, posArray[i]);
         }
-        this.spawnPosition.setComponent(2, posArray[2] + this.size.z * .5);
-        this.spawnRotation.fromArray(eulArray);
+        this.position.setComponent(2, posArray[2] + this.size.z * .5);
+        this.rotation.fromArray(eulArray);
     }
 
-    updateFromFieldValues() {
-        this._fieldValuesToPos(this._fieldValues)
-        this.updatePos(this.spawnPosition, this.spawnRotation);
-    }
-
-    updatePos(vector, euler)  {
-        this.position.copy(vector);
-        this.setRotationFromEuler(euler);
+    checkPosition(){
+        return;
     }
 
     //callback for objectChange
     _objectChange() {
         if (this.control.visible && !this.attached) {
             if (this.position.z < 0) { this.position.z = this.size.z * .5; }
-
-            if (debug) {
-                this.setSpawnPosition();
-                this._updatePoseBlock();
-            }
             this.render();
         }
     }
@@ -181,10 +146,8 @@ export class SimObject extends Group {
 
     addToScene() {
         const scene = getScene();
-        this.updatePos(this.spawnPosition, this.spawnRotation)
         scene.add(this);
         this.initTransformControl();
-        //this.updateMatrixWorld();
         this.render();
     }
 
@@ -223,12 +186,6 @@ export class SimObject extends Group {
     highlight(status) {
         const limit = this.children.length;
         if (status) {
-            /*this.traverse((child) => {
-                if (child.material != undefined) {
-                    const colour = child.material.color.getHex();
-                    child.material.emissive.setHex(colour);
-                }
-            });*/
             for (let i = 0; i < limit; i++) {
                 if (this.children[i].material != undefined) {
                     const colour = this.children[i].material.color.getHex();
@@ -237,11 +194,6 @@ export class SimObject extends Group {
             }
             this.highlighted = status;
         } else if (!status) {
-            /*this.traverse((child) => {
-                if (child.material != undefined) {
-                    child.material.emissive.setHex(0x000000);
-                }
-            });*/
             for (let i = 0; i < limit; i++) {
                 if (this.children[i].material != undefined) {
                     this.children[i].material.emissive.setHex(0x000000);
@@ -263,9 +215,10 @@ export class SimObject extends Group {
         for (const child of this.children) {
             this.remove(child);
         }
+        this.removeFromScene();
         addGeometry(this);
-        //this.setSpawnPoint();
-        this.render();
+        this.checkPosition();
+        this.addToScene();
         console.log('Changed to shape: ', shape);
     }
 
@@ -274,13 +227,11 @@ export class SimObject extends Group {
             const world = getWorld();
             world.removeBody(this.body);
         }
-        this.position.copy(this.spawnPosition);
-        this.setRotationFromEuler(this.spawnRotation);
+        this.updateFromFieldValues()
         this.attached = false;
         this.scale.x = 1;
         this.scale.y = 1;
         this.scale.z = 1;
-
         this.render();
     }
 

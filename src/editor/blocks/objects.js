@@ -96,8 +96,8 @@ Blockly.Blocks['add_sim_object'] = {
     getTaskspacePose: function () {
         let fieldValues = [];
         const simObject = getSimObject(this.id);
-
         if (simObject != undefined) {
+            simObject.updateFieldValues();
             fieldValues = simObject.getFieldValues();
         }
         return fieldValues;

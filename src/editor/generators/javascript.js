@@ -77,6 +77,8 @@ Blockly.JavaScript["gripper_close"] = function (block) {
 
 Blockly.JavaScript["add_sim_object"] = function (block) {
     var idx = getSimObjectIdx(this.id);
+    var simObject = getSimObject(this.id);
+    simObject.updateFromFieldValues();
     var code = 'robot("startPhysicalBody", ' + idx + ');'
 	return code;
 };
