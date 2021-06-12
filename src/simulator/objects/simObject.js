@@ -23,7 +23,8 @@ import { addSimObject,
          addGeometry,
          placeCubes,
          placeSpheres,
-         placeCylinder } from './createObjects'
+         placeCylinder,
+         simDistanceing } from './createObjects'
 
 import { Box,
          Vec3,
@@ -112,7 +113,11 @@ export class SimObject extends Group {
     }
 
     checkPosition(){
-        return;
+        const world = getWorld();
+        for (let i = 0; i < 10; i++) {
+            this.updateBody();
+            world.step(1);
+        }
     }
 
     //callback for objectChange
@@ -121,6 +126,7 @@ export class SimObject extends Group {
             if (this.position.z < 0) { this.position.z = this.size.z * .5; }
             this.render();
         }
+        this.checkPosition();
     }
 
     _updatePoseBlock() {
@@ -146,8 +152,10 @@ export class SimObject extends Group {
 
     addToScene() {
         const scene = getScene();
+        const world = getWorld();
         scene.add(this);
         this.initTransformControl();
+
         this.render();
     }
 
@@ -155,7 +163,7 @@ export class SimObject extends Group {
         const scene = getScene();
         const world = getWorld();
 
-        if (this.hasBody) { world.removeBody(this.body); }
+        //if (this.hasBody) { world.removeBody(this.body); }
         if (this.isAttached) { scene.attach(this) }
 
         this.control.visible = true; //otherwise the renderer throws an error.
@@ -224,8 +232,8 @@ export class SimObject extends Group {
 
     reset() {
         if (this.hasBody) {
-            const world = getWorld();
-            world.removeBody(this.body);
+            //const world = getWorld();
+            //world.removeBody(this.body);
         }
         this.updateFromFieldValues()
         this.attached = false;
@@ -238,6 +246,7 @@ export class SimObject extends Group {
     //Collision bodys
     createBody(mass, friction, restitution) {
         const body = new Body({ mass: mass });
+        const world = getWorld();
         body.material = new Material({ friction: friction, restitution: restitution});
         body.allowSleep = true;
         if ('box' === this.bodyShape) {
@@ -247,6 +256,7 @@ export class SimObject extends Group {
             body.sleepSpeedLimit = 0.5;
             body.sleepTimeLimit = 0.2;
             body.addShape(shape);
+
         }
         if ('sphere' === this.bodyShape) {
             const shape = new Sphere(this.radius);
@@ -264,15 +274,22 @@ export class SimObject extends Group {
             body.sleepTimeLimit = 0.2;
             body.addShape(shape);
         }
-        //body.addShape(shape);
+        //body.allowSleep = false;
         body.position.copy(this.position);
         this.hasBody = true;
         this.body = body;
-        this.body.sleep();
+        this.body.name = this.name;
+        //this.body.sleep();
+        this.body.addEventListener('collide', (event) => {
+            console.log(event);
+            simDistanceing(event.body.name);
+        });
         this.updateBody();
+        world.addBody(this.body);
     }
 
     updateBody() {
+        this.body.wakeUp();
         this.body.position.copy(this.position);
         this.body.quaternion.copy(this.quaternion);
     }
@@ -283,8 +300,8 @@ export class SimObject extends Group {
     }
 
     addBodyToWorld() {
-        const world = getWorld();
-        world.addBody(this.body);
+        //const world = getWorld();
+        //world.addBody(this.body);
     }
 
     removeBodyFromWorld() {

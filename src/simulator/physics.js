@@ -64,6 +64,7 @@ export function initCannon() {
     floorBody.allowSleep = true;
     floorBody.sleepSpeedLimit = 1.2;
     floorBody.sleepTimeLimit = 0.1;
+    floorBody.name = 'the_floor'
     world.addBody(floorBody);
     initDone = true;
     console.log('Physics init done');

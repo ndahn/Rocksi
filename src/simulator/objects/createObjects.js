@@ -151,9 +151,17 @@ export function addSimObject(blockUUID, fieldValues, pickedColour, shape) {
         simObject.updateFromFieldValues();
         simObject.checkPosition();//Look for a collision
     }
+    simObject.updateBody();
     simObject.addToScene();
 }
 
+export function simDistanceing(simObjectName) {
+    const simObject = getSimObject(simObjectName);
+    if (simObject != undefined) {
+        console.log('Keep your distance!');
+
+    }
+}
 
 //stacks cubes, until there are no more cubes to stack
 export function placeCubes(simObject){
