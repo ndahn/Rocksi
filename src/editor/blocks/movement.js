@@ -239,7 +239,7 @@ Blockly.Blocks["task_space_pose"] = {
 		}
 	},
 
-    onchange: function(event) {
+    /*onchange: function(event) {
         const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
         var parent = this.getParent();
         if (parent != null && parent.type == 'add_sim_object') {
@@ -249,7 +249,7 @@ Blockly.Blocks["task_space_pose"] = {
                 this.setFieldValue(val, fieldKeys[i]);
             }
         }
-    }
+    }*/
 };
 
 Blockly.Blocks["joint_absolute"] = {
