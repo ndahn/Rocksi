@@ -87,6 +87,7 @@ export function addGeometry(simObject) {
             const tmpCube = new Box3().setFromObject(cubeMesh);
             simObject.bodyShape = 'box';
             tmpCube.getSize(size);
+            simObject.size.copy(size);
             simObject.add(cubeMesh);
             simObject.createBody(0.5, 2, 0.1);//mass, friction, restitution
             break;
@@ -100,7 +101,7 @@ export function addGeometry(simObject) {
             size.x += Math.random() * 0.001;
             size.y += Math.random() * 0.001;
             size.z += Math.random() * 0.001;
-            simObject.size = size;
+            simObject.size.copy(size);
             simObject.add(rockMesh);
             simObject.createBody(3, 2, 0.01);//mass, friction, restitution
             break;
@@ -116,6 +117,7 @@ export function addGeometry(simObject) {
             simObject.bodyShape = 'sphere';
             simObject.add(sphereMesh);
             simObject.createBody(2.1, 1, 0.1);//mass, friction, restitution
+            simObject.size.copy(size);
             break;
         case 'shaft':
             const shaftSize = new Vector3(0.7, 3.3, 0.7);
@@ -123,6 +125,7 @@ export function addGeometry(simObject) {
             simObject.bodyShape = 'cylinder';
             simObject.createBody(5, 2, 0.1);//mass, friction, restitution
             simObject.render();
+            simObject.size.copy(size);
             break;
         case 'custom':
             break;
@@ -145,46 +148,50 @@ export function addSimObject(blockUUID, fieldValues, pickedColour, shape) {
     if (fieldValues != undefined) {
         simObject.setFieldValues(fieldValues);
         simObject.updateFromFieldValues();
-        simObject.checkPosition();//Look for a collision using the cannon body
+        //simObject.checkPosition();//Look for a collision using the cannon body
     } else {
         simObject.setFieldValues(simObject.fieldValues);
         simObject.updateFromFieldValues();
-        simObject.checkPosition();//Look for a collision
+        //simObject.checkPosition();//Look for a collision
     }
-    simObject.updateBody();
     simObject.addToScene();
+    if (simObjects.length > 1) {
+        placeCubes(simObject);
+        simObject.updateFieldValues();
+        simObject._updatePoseBlock();
+    }
+    simObject.checkCollision = true;
+    simObject.updateBody();
 }
 
-export function simDistanceing(simObjectName) {
-    const simObject = getSimObject(simObjectName);
-    if (simObject != undefined) {
-        console.log('Keep your distance!');
-
+export function simObjectCollision(cannonEvent) {
+    const simObject = getSimObject(cannonEvent.body.name);
+    const target = getSimObject(cannonEvent.target.name)
+    if (simObject != undefined && simObject.checkCollision) {
+        console.log('Collision', simObject.name);
+        console.log(cannonEvent.body.interpolatedPosition);
+        simObject.position.copy(cannonEvent.body.interpolatedPosition);
+        target.position.copy(cannonEvent.target.interpolatedPosition);
     }
 }
 
 //stacks cubes, until there are no more cubes to stack
 export function placeCubes(simObject){
-    const shift = zShiftCubes(simObject);
-    console.log('shift', shift);
-    if (shift === 0) {
-        return;
-    } else {
-        simObject.position.z = simObject.position.z + shift;
-        return placeCubes(simObject);
-     }
-}
-
-//calculates the amount of the shift for stackCubes
-function zShiftCubes(simObject) {
-    let returnVal = 0;
+    let shift = 0;
     for (let k = 0; k < simObjects.length; k++) {
         if (simObject.position.distanceTo(simObjects[k].position)
-                    < (simObject.size.z * .5)) {
-            returnVal = simObject.size.z;
+                    < (simObject.size.z * .5)
+                    && simObject.name != simObjects[k].name) {
+            shift = simObject.size.z;
         }
     }
-    return returnVal;
+    console.log('shift', shift);
+    if (shift > 0) {
+        simObject.position.z = simObject.position.z + shift;
+        return placeCubes(simObject);
+    } else {
+        return;
+    }
 }
 
 //Removes the simObject from the simObjects array and from the threejs scene
