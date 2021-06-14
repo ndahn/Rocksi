@@ -16,15 +16,14 @@ import { requestAF,
          addListeners,
          removeListeners } from '../scene';
 
-import { getWorld } from '../physics';
+import { getWorld,
+         updateBodies,
+         updateCollisionBodies } from '../physics';
 
 import { addSimObject,
          remSimObjects,
          addGeometry,
-         placeCubes,
-         placeSpheres,
-         placeCylinder,
-         simDistanceing } from './createObjects'
+         simObjectCollision } from './createObjects'
 
 import { Box,
          Vec3,
@@ -56,6 +55,8 @@ export class SimObject extends Group {
         if (debug) {
             console.log('simObject debug mode on!',);
         }
+        this.mass = 0;
+        this.checkCollision = false;
 
     }
     size = new Vector3(.5, .5, .5);
@@ -113,20 +114,23 @@ export class SimObject extends Group {
     }
 
     checkPosition(){
-        const world = getWorld();
-        for (let i = 0; i < 10; i++) {
-            this.updateBody();
-            world.step(1);
-        }
+
     }
 
     //callback for objectChange
     _objectChange() {
+        const world = getWorld();
+        for (let i = 0; i < 10; i++) {
+            updateCollisionBodies();
+            world.step(0.2);
+        }
         if (this.control.visible && !this.attached) {
-            if (this.position.z < 0) { this.position.z = this.size.z * .5; }
+            if (this.position.z < 0) {
+                this.position.z = this.size.z * .5;
+                this.body.position.copy(this.position);
+            }
             this.render();
         }
-        this.checkPosition();
     }
 
     _updatePoseBlock() {
@@ -171,7 +175,7 @@ export class SimObject extends Group {
                                      //controls if visible is false.
         scene.remove(this.control);
         scene.remove(this);
-
+        world.removeBody(this.body);
         this.render();
     }
 
@@ -220,21 +224,18 @@ export class SimObject extends Group {
 
     changeShape(shape) {
         this.shape = shape;
+        const world = getWorld();
         for (const child of this.children) {
             this.remove(child);
         }
         this.removeFromScene();
+        world.removeBody(this.body);
         addGeometry(this);
-        this.checkPosition();
         this.addToScene();
         console.log('Changed to shape: ', shape);
     }
 
     reset() {
-        if (this.hasBody) {
-            //const world = getWorld();
-            //world.removeBody(this.body);
-        }
         this.updateFromFieldValues()
         this.attached = false;
         this.scale.x = 1;
@@ -277,19 +278,27 @@ export class SimObject extends Group {
         //body.allowSleep = false;
         body.position.copy(this.position);
         this.hasBody = true;
+        this.mass = mass;
         this.body = body;
         this.body.name = this.name;
         //this.body.sleep();
+
         this.body.addEventListener('collide', (event) => {
-            console.log(event);
-            simDistanceing(event.body.name);
+            simObjectCollision(event);
         });
-        this.updateBody();
+        this.updateCollisionBody();
         world.addBody(this.body);
     }
 
-    updateBody() {
+    updateCollisionBody() {
+        this.body.mass = 0;
+        this.body.isTrigger = true;
         this.body.wakeUp();
+        this.body.position.copy(this.position);
+        this.body.quaternion.copy(this.quaternion);
+    }
+
+    updateBody() {
         this.body.position.copy(this.position);
         this.body.quaternion.copy(this.quaternion);
     }

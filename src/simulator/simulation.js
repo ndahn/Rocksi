@@ -375,13 +375,19 @@ class TheSimulation {
         this.physicsDone = false;
         if (simObjects[simObjectsIdx].wasGripped) {
             simObjects[simObjectsIdx].wasGripped = false;
-            console.log('gripping');
         } else {
             simObjects[simObjectsIdx].reset();
             simObjects[simObjectsIdx].makeVisible();
+            simObjects[simObjectsIdx].body.removeEventListener('collide', (event) => {
+                simObjectCollision(event);
+            });
+            simObjects[simObjectsIdx].body.isTrigger = false;
+            simObjects[simObjectsIdx].body.mass = simObjects[simObjectsIdx].mass;
+            console.log(simObjects[simObjectsIdx].body.mass);
         }
+
         simObjects[simObjectsIdx].removeTransformListners();
-        simObjects[simObjectsIdx].addBodyToWorld();
+        //simObjects[simObjectsIdx].addBodyToWorld();
         simObjects[simObjectsIdx].updateBody();
         simObjects[simObjectsIdx].body.wakeUp();
         if (simObjectsIdx + 1 == simObjects.length) {

@@ -104,15 +104,14 @@ export function removeAllBodies(simObjects) {
     }
 }
 
-export function addBody(simObject) {
+/*export function addBody(simObject) {
     simObject.createBody();
     world.addBody(simObject.body)
 }
 
 export function removeBody(simObject) {
-        world.removeBody(simObject.body)
-        simObject.body = null;
-}
+        world.removeBody(simObject.body);
+}*/
 
 export function updateMeshes(simObjects) {
     let limit = simObjects.length;
@@ -123,9 +122,17 @@ export function updateMeshes(simObjects) {
     }
 }
 
-export function updateBodies(simObjects) {
+export function updateBodies() {
+    const simObjects = getSimObjects();
     for (let i = 0; i < simObjects.length; i++) {
         simObjects[i].updateBody();
+    }
+}
+
+export function updateCollisionBodies() {
+    const simObjects = getSimObjects();
+    for (let i = 0; i < simObjects.length; i++) {
+        simObjects[i].updateCollisionBody();
     }
 }
 
