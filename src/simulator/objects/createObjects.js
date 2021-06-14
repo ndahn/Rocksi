@@ -51,7 +51,6 @@ function loadShaft(simObject) {
 
 //Simple box shape
 function createBoxMesh(simObject) {
-
     const geometry = new BoxBufferGeometry( simObject.size.x,
                                             simObject.size.y,
                                             simObject.size.z,
@@ -158,7 +157,7 @@ export function addSimObject(blockUUID, fieldValues, pickedColour, shape) {
     if (simObjects.length > 1) {
         placeCubes(simObject);
         simObject.updateFieldValues();
-        simObject._updatePoseBlock();
+        simObject.updatePoseBlock();
     }
     simObject.checkCollision = true;
     simObject.updateBody();
@@ -167,11 +166,14 @@ export function addSimObject(blockUUID, fieldValues, pickedColour, shape) {
 export function simObjectCollision(cannonEvent) {
     const simObject = getSimObject(cannonEvent.body.name);
     const target = getSimObject(cannonEvent.target.name)
-    if (simObject != undefined && simObject.checkCollision) {
-        console.log('Collision', simObject.name);
-        console.log(cannonEvent.body.interpolatedPosition);
-        simObject.position.copy(cannonEvent.body.interpolatedPosition);
-        target.position.copy(cannonEvent.target.interpolatedPosition);
+    const world = getWorld();
+
+    if (simObject != undefined && target != undefined && simObject.checkCollision) {
+        if (target.control.visible) {
+            console.log('Collision with ', simObject.name);
+            console.log('Collision target ', target.name);
+            console.log(cannonEvent);
+        }
     }
 }
 
