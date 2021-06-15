@@ -41,12 +41,11 @@ function loadShaft(simObject) {
         mesh.scale.set(0.03, 0.03, 0.03);
         mesh.geometry.computeBoundingBox();
         mesh.geometry.center();
-        mesh.rotateX(Math.PI * 0.5);
-        const tmpCylinder = new Box3().setFromObject(mesh);
-        tmpCylinder.getSize(size);
+        const tmpBox = new Box3().setFromObject(mesh);
+        tmpBox.getSize(size);
+        simObject.size.copy(size);
         simObject.add( mesh );
     });
-    return size;
 }
 
 //Simple box shape
@@ -119,12 +118,11 @@ export function addGeometry(simObject) {
             simObject.size.copy(size);
             break;
         case 'shaft':
-            const shaftSize = new Vector3(0.7, 3.3, 0.7);
+            //const shaftSize = new Vector3(0.7, 3.3, 0.7);
             loadShaft(simObject);
             simObject.bodyShape = 'cylinder';
             simObject.createBody(5, 2, 0.1);//mass, friction, restitution
             simObject.render();
-            simObject.size.copy(size);
             break;
         case 'custom':
             break;
@@ -147,11 +145,9 @@ export function addSimObject(blockUUID, fieldValues, pickedColour, shape) {
     if (fieldValues != undefined) {
         simObject.setFieldValues(fieldValues);
         simObject.updateFromFieldValues();
-        //simObject.checkPosition();//Look for a collision using the cannon body
     } else {
         simObject.setFieldValues(simObject.fieldValues);
         simObject.updateFromFieldValues();
-        //simObject.checkPosition();//Look for a collision
     }
     simObject.addToScene();
     if (simObjects.length > 1) {
@@ -161,20 +157,6 @@ export function addSimObject(blockUUID, fieldValues, pickedColour, shape) {
     }
     simObject.checkCollision = true;
     simObject.updateBody();
-}
-
-export function simObjectCollision(cannonEvent) {
-    const simObject = getSimObject(cannonEvent.body.name);
-    const target = getSimObject(cannonEvent.target.name)
-    const world = getWorld();
-
-    if (simObject != undefined && target != undefined && simObject.checkCollision) {
-        if (target.control.visible) {
-            console.log('Collision with ', simObject.name);
-            console.log('Collision target ', target.name);
-            console.log(cannonEvent);
-        }
-    }
 }
 
 //stacks cubes, until there are no more cubes to stack

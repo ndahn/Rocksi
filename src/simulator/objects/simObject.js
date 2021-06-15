@@ -114,23 +114,12 @@ export class SimObject extends Group {
         this.rotation.fromArray(eulArray);
     }
 
-    checkPosition(){
-
-    }
 
     //callback for objectChange
     _objectChange() {
-        const world = getWorld();
-        this.body.mass = 0;
-        this.body.isTrigger = true;
-        this.body.wakeUp();
-        //updateCollisionBodies();
-        this.updateCollisionBody();
-        world.step(0.2);
         if (this.control.visible && !this.attached) {
             if (this.position.z < 0) {
                 this.position.z = this.size.z * .5;
-                this.body.position.copy(this.position);
             }
             this.render();
         }
@@ -270,8 +259,8 @@ export class SimObject extends Group {
         }
         if ('cylinder' === this.bodyShape) {
             const radiusTop = this.size.x * 0.5;
-            const radiusBottom = this.size.z * 0.5;
-            const height = this.size.y;
+            const radiusBottom =  this.size.y * 0.5;
+            const height = this.size.z;
             const numSegments = 12
             const shape = new Cylinder(radiusTop, radiusBottom, height, numSegments)
             body.sleepSpeedLimit = 0.5;
@@ -284,18 +273,9 @@ export class SimObject extends Group {
         this.mass = mass;
         this.body = body;
         this.body.name = this.name;
-        //this.body.sleep();
-
-        this.body.addEventListener('collide', (event) => {
-            simObjectCollision(event);
-        });
-        this.updateCollisionBody();
+        this.body.sleep();
+        this.updateBody();
         world.addBody(this.body);
-    }
-
-    updateCollisionBody() {
-        this.body.position.copy(this.position);
-        this.body.quaternion.copy(this.quaternion);
     }
 
     updateBody() {
