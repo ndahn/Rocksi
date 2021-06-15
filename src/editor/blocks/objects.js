@@ -65,6 +65,10 @@ Blockly.Blocks['add_sim_object'] = {
                             "Welle",
                             "shaft"
                         ],
+                        [
+                            "Extern",
+                            "custom"
+                        ],
                     ]
                 },
             ],

@@ -59,8 +59,9 @@ export class SimObject extends Group {
         this.checkCollision = false;
         this.collisionPosition = new Vector3();
         this.lastPositionsArray = [];
+        this.size = new Vector3(0.5, 0.5, 0.5);
     }
-    size = new Vector3(.5, .5, .5);
+    //size = new Vector3(.5, .5, .5);
 
     //Positioning
     _calcFieldValues() {
@@ -258,6 +259,7 @@ export class SimObject extends Group {
             body.addShape(shape);
         }
         if ('cylinder' === this.bodyShape) {
+            console.log('Body size: ', this.size);
             const radiusTop = this.size.x * 0.5;
             const radiusBottom =  this.size.y * 0.5;
             const height = this.size.z;

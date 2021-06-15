@@ -31,20 +31,26 @@ import { getWorld } from '../physics';
 let simObjects = [];
 
 //Functions for creating meshes
-//Loader for gltf
+//Loader for stl
 function loadShaft(simObject) {
+    const filePath = '/models/simObject_shapes/shaft/shaft.stl';
     const loader = new STLLoader();
     const size = new Vector3();
-    loader.load( '/models/simObject_shapes/shaft/shaft.stl', function ( geometry ) {
-        const material = new MeshPhongMaterial( { color: simObject.colour} );
-        const mesh = new Mesh( geometry, material );
-        mesh.scale.set(0.03, 0.03, 0.03);
-        mesh.geometry.computeBoundingBox();
-        mesh.geometry.center();
-        const tmpBox = new Box3().setFromObject(mesh);
-        tmpBox.getSize(size);
-        simObject.size.copy(size);
-        simObject.add( mesh );
+    return new Promise((resolve) => {
+        loader.load(
+            filePath, (geometry) =>  {
+            const material = new MeshPhongMaterial( { color: simObject.colour} );
+            const mesh = new Mesh( geometry, material );
+            mesh.scale.set(0.03, 0.03, 0.03);
+            mesh.geometry.computeBoundingBox();
+            mesh.geometry.center();
+            const tmpBox = new Box3().setFromObject(mesh);
+            tmpBox.getSize(size);
+            console.log(size);
+            simObject.size.copy(size);
+            console.log(simObject.size);
+            simObject.add( mesh );
+        });
     });
 }
 
@@ -81,6 +87,7 @@ export function addGeometry(simObject) {
     const size = new Vector3();
     switch (simObject.shape) {
         case 'cube':
+            simObject.size.copy(new Vector3(.5, .5, .5));
             const cubeMesh = createBoxMesh(simObject);
             const tmpCube = new Box3().setFromObject(cubeMesh);
             simObject.bodyShape = 'box';
@@ -118,18 +125,75 @@ export function addGeometry(simObject) {
             simObject.size.copy(size);
             break;
         case 'shaft':
-            //const shaftSize = new Vector3(0.7, 3.3, 0.7);
-            loadShaft(simObject);
-            simObject.bodyShape = 'cylinder';
-            simObject.createBody(5, 2, 0.1);//mass, friction, restitution
-            simObject.render();
+            const p = loadShaft(simObject);
+            p.then((simObject) => {
+                simObject.bodyShape = 'cylinder';
+                simObject.createBody(5, 2, 0.1);//mass, friction, restitution
+                simObject.render();
+            },
+            () => { console.error('Loading failed!');
+            });
             break;
         case 'custom':
+            loadFile(simObject);
             break;
         default:
             console.error('Unknown SimObject shape: ', simObject.shape);
             break;
     }
+}
+
+function loadFile(simObject) {
+    const upload = document.createElement('input');
+    const reader = new FileReader();
+
+    reader.addEventListener('load', (event) => {
+        const data = event.target.result;
+        const geometry = new STLLoader().parse( data );
+        const material = new MeshPhongMaterial({color: 0xFF00FF});
+        const mesh = new Mesh();
+        mesh.geometry = geometry;
+        mesh.material = material;
+        mesh.scale.set(0.03, 0.03, 0.03);
+        const scene = getScene();
+        //scene.add(mesh);
+        simObject.add(mesh);
+        console.log(mesh);
+    });
+
+    upload.setAttribute('type', 'file');
+    upload.setAttribute('accept', '.stl');
+    upload.onchange = (fileSelectedEvent) => {
+        try {
+            const file = fileSelectedEvent.target.files[0];
+            reader.readAsArrayBuffer(file);
+        }
+        catch (e) { console.log(e); }
+    }
+    document.body.appendChild(upload);
+    upload.click();
+    document.body.removeChild(upload);
+}
+
+function loadSTL(simObject, file) {
+    const loader = new STLLoader();
+    const size = new Vector3();
+    return new Promise((resolve) => {
+        loader.load(
+            file, (geometry) =>  {
+            const material = new MeshPhongMaterial( { color: simObject.colour} );
+            const mesh = new Mesh( geometry, material );
+            mesh.scale.set(0.03, 0.03, 0.03);
+            mesh.geometry.computeBoundingBox();
+            mesh.geometry.center();
+            const tmpBox = new Box3().setFromObject(mesh);
+            tmpBox.getSize(size);
+            console.log(size);
+            simObject.size.copy(size);
+            console.log(simObject.size);
+            simObject.add( mesh );
+        });
+    });
 }
 
 //Adds the simObject
