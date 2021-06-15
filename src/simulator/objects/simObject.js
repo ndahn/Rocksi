@@ -57,7 +57,8 @@ export class SimObject extends Group {
         }
         this.mass = 0;
         this.checkCollision = false;
-
+        this.collisionPosition = new Vector3();
+        this.lastPositionsArray = [];
     }
     size = new Vector3(.5, .5, .5);
 
@@ -120,10 +121,12 @@ export class SimObject extends Group {
     //callback for objectChange
     _objectChange() {
         const world = getWorld();
-        for (let i = 0; i < 10; i++) {
-            updateCollisionBodies();
-            world.step(0.2);
-        }
+        this.body.mass = 0;
+        this.body.isTrigger = true;
+        this.body.wakeUp();
+        //updateCollisionBodies();
+        this.updateCollisionBody();
+        world.step(0.2);
         if (this.control.visible && !this.attached) {
             if (this.position.z < 0) {
                 this.position.z = this.size.z * .5;
@@ -133,7 +136,7 @@ export class SimObject extends Group {
         }
     }
 
-    _updatePoseBlock() {
+    updatePoseBlock() {
         const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
         const workspace = Blockly.getMainWorkspace();
         if (workspace) {
@@ -291,9 +294,6 @@ export class SimObject extends Group {
     }
 
     updateCollisionBody() {
-        this.body.mass = 0;
-        this.body.isTrigger = true;
-        this.body.wakeUp();
         this.body.position.copy(this.position);
         this.body.quaternion.copy(this.quaternion);
     }
@@ -309,8 +309,8 @@ export class SimObject extends Group {
     }
 
     addBodyToWorld() {
-        //const world = getWorld();
-        //world.addBody(this.body);
+        const world = getWorld();
+        world.addBody(this.body);
     }
 
     removeBodyFromWorld() {
