@@ -228,8 +228,6 @@ export function addSimObject(blockUUID, fieldValues, pickedColour, shape) {
         simObject.updateFieldValues();
         simObject.updatePoseBlock();
     }
-    simObject.checkCollision = true;
-    simObject.updateBody();
 }
 
 //stacks cubes, until there are no more cubes to stack
@@ -385,15 +383,24 @@ export function checkGripperOrientation(simObject, robot) {
         const tcpQuat = new Quaternion();
         const simQuat = new Quaternion();
         const tcp = robot.tcp.object;
-        const tcpUp = new Vector3(1, 0, 0);
-        const simUp = new Vector3(1, 0, 0);
+        const tcpUp = new Vector3(0, 0, 1);
+        const simUp = new Vector3(0, 0, 1);
         simObject.getWorldQuaternion(simQuat);
         tcp.getWorldQuaternion(tcpQuat);
+        let rad = simQuat.angleTo(tcpQuat);
         tcpUp.applyQuaternion(tcpQuat);
         simUp.applyQuaternion(simQuat);
+        let rad2 = simUp.angleTo(tcpUp);
         console.log(robot.tcp.object);
-        console.log(tcpUp);
-        console.log(simUp);
+        console.log('Vector tcp', tcpUp);
+        console.log('Vector sim', simUp);
+        console.log('Angle sim to tcp quat', rad * 180 / Math.PI);
+        console.log('Angle sim to tcp vec', rad2 * 180 / Math.PI);
+        if (rad > 2 && rad < 3.7) {
+            returnVal = true;
+        } else {
+            returnVal = false;
+        }
     } else {
         returnVal = false;
     }
