@@ -7,10 +7,10 @@ import { BoxBufferGeometry,
          LoadingManager,
          Object3D,
          Box3,
-         Euler } from 'three';
+         Euler,
+         Quaternion } from 'three';
 
-import { Vec3,
-         Quaternion } from 'cannon-es';
+import { Vec3 } from 'cannon-es';
 
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
@@ -125,17 +125,11 @@ export function addGeometry(simObject) {
             simObject.size.copy(size);
             break;
         case 'shaft':
-            const p = loadShaft(simObject);
-            p.then((simObject) => {
-                simObject.bodyShape = 'cylinder';
-                simObject.createBody(5, 2, 0.1);//mass, friction, restitution
-                simObject.render();
-            },
-            () => { console.error('Loading failed!');
-            });
+            const assetPath = '/models/simObject_shapes/shaft/shaft.stl';
+            loadAssetSTL(simObject, assetPath);
             break;
         case 'custom':
-            loadFile(simObject);
+            loadUserSTL(simObject); //Body creation etc in event callback
             break;
         default:
             console.error('Unknown SimObject shape: ', simObject.shape);
@@ -143,22 +137,38 @@ export function addGeometry(simObject) {
     }
 }
 
-function loadFile(simObject) {
+function loadAssetSTL(simObject, assetPath) {
+    //const filePath = '/models/simObject_shapes/shaft/shaft.stl';
+    const loader = new STLLoader();
+    const size = new Vector3();
+    loader.load(
+        assetPath, (geometry) =>  {
+        const material = new MeshPhongMaterial( { color: simObject.colour} );
+        const mesh = new Mesh( geometry, material );
+        mesh.scale.set(0.03, 0.03, 0.03);
+        mesh.rotateX(Math.PI/2);
+        mesh.geometry.computeBoundingBox();
+        mesh.geometry.center();
+        const tmpBox = new Box3().setFromObject(mesh);
+        tmpBox.getSize(size);
+        console.log(size);
+        simObject.size.copy(size);
+        console.log(simObject.size);
+        simObject.add( mesh );
+        simObject.bodyShape = 'cylinder';
+        simObject.createBody(5, 2, 0.1);//mass, friction, restitution
+        simObject.render();
+        console.log(simObject);
+    });
+}
+
+function loadUserSTL(simObject) {
     const upload = document.createElement('input');
     const reader = new FileReader();
 
     reader.addEventListener('load', (event) => {
         const data = event.target.result;
-        const geometry = new STLLoader().parse( data );
-        const material = new MeshPhongMaterial({color: 0xFF00FF});
-        const mesh = new Mesh();
-        mesh.geometry = geometry;
-        mesh.material = material;
-        mesh.scale.set(0.03, 0.03, 0.03);
-        const scene = getScene();
-        //scene.add(mesh);
-        simObject.add(mesh);
-        console.log(mesh);
+        loadSTL(simObject, data);
     });
 
     upload.setAttribute('type', 'file');
@@ -175,25 +185,24 @@ function loadFile(simObject) {
     document.body.removeChild(upload);
 }
 
-function loadSTL(simObject, file) {
-    const loader = new STLLoader();
+function loadSTL(simObject, data){
+    const geometry = new STLLoader().parse( data );
+    const material = new MeshPhongMaterial({color: simObject.colour});
+    const mesh = new Mesh();
     const size = new Vector3();
-    return new Promise((resolve) => {
-        loader.load(
-            file, (geometry) =>  {
-            const material = new MeshPhongMaterial( { color: simObject.colour} );
-            const mesh = new Mesh( geometry, material );
-            mesh.scale.set(0.03, 0.03, 0.03);
-            mesh.geometry.computeBoundingBox();
-            mesh.geometry.center();
-            const tmpBox = new Box3().setFromObject(mesh);
-            tmpBox.getSize(size);
-            console.log(size);
-            simObject.size.copy(size);
-            console.log(simObject.size);
-            simObject.add( mesh );
-        });
-    });
+    const scaleFactor = simObject.defaultScaleFactor;
+    mesh.geometry = geometry;
+    mesh.material = material;
+    mesh.scale.set(scaleFactor, scaleFactor, scaleFactor);
+    mesh.geometry.computeBoundingBox();
+    mesh.geometry.center();
+    const tmpBox = new Box3().setFromObject(mesh);
+    tmpBox.getSize(size);
+    simObject.size.copy(size);
+    simObject.add(mesh);
+    simObject.bodyShape = 'box';
+    simObject.createBody(5, 2, 0.1);
+    simObject.render();
 }
 
 //Adds the simObject
@@ -370,6 +379,31 @@ export function getSimObjectByPos(position, accuracy) {
     return returnVal;
 }
 
+export function checkGripperOrientation(simObject, robot) {
+    let returnVal = true;
+    if (simObject != undefined) {
+        const tcpQuat = new Quaternion();
+        const simQuat = new Quaternion();
+        const tcp = robot.tcp.object;
+        const tcpUp = new Vector3(1, 0, 0);
+        const simUp = new Vector3(1, 0, 0);
+        simObject.getWorldQuaternion(simQuat);
+        tcp.getWorldQuaternion(tcpQuat);
+        tcpUp.applyQuaternion(tcpQuat);
+        simUp.applyQuaternion(simQuat);
+        console.log(robot.tcp.object);
+        console.log(tcpUp);
+        console.log(simUp);
+    } else {
+        returnVal = false;
+    }
+    return returnVal;
+}
+
+export function checkGrippable(simObject, robot) {
+    let returnVal = true;
+    return returnVal;
+}
 //Determin if a simobject is attached to the TCP
 export function isAttached() {
     let attached = false;

@@ -12,7 +12,9 @@ import { isAttached,
          getSimObjects,
          getSimObjectByPos,
          getSimObjectIdx,
-         resetAllSimObjects } from "./objects/createObjects"
+         resetAllSimObjects,
+         checkGripperOrientation,
+         checkGrippable } from "./objects/createObjects"
 
 
 function deg2rad(deg) {
@@ -293,11 +295,13 @@ class TheSimulation {
         let position = new Vector3;
         tcp.getWorldPosition(position);
         const simObject = getSimObjectByPos(position, 0.5);
-        if (isAttached() == false && simObject != undefined && robot.isGripperOpen()) {
-            simObject.attachToGripper(robot);
-            for (const finger of robot.hand.movable) {
-                    start[finger.name] = finger.angle;
-                    target[finger.name] = finger.limit.upper - (simObject.size.x * 0.2);//This is just for testing, Lukas
+        if (true) {//isAttached() == false && simObject != undefined && robot.isGripperOpen()) {
+            if (checkGrippable(simObject, robot) && checkGripperOrientation(simObject, robot)) {
+                simObject.attachToGripper(robot);
+                for (const finger of robot.hand.movable) {
+                        start[finger.name] = finger.angle;
+                        target[finger.name] = finger.limit.lower;// - (simObject.size.x * 0.2);//This is just for testing, Lukas
+                }
             }
         }
         //if not, close full

@@ -60,6 +60,7 @@ export class SimObject extends Group {
         this.collisionPosition = new Vector3();
         this.lastPositionsArray = [];
         this.size = new Vector3(0.5, 0.5, 0.5);
+        this.defaultScaleFactor = 0.03; //for tinkercad stl this seems to be the sweet spot.
     }
     //size = new Vector3(.5, .5, .5);
 
@@ -261,8 +262,8 @@ export class SimObject extends Group {
         if ('cylinder' === this.bodyShape) {
             console.log('Body size: ', this.size);
             const radiusTop = this.size.x * 0.5;
-            const radiusBottom =  this.size.y * 0.5;
-            const height = this.size.z;
+            const radiusBottom =  this.size.z * 0.5;
+            const height = this.size.y;
             const numSegments = 12
             const shape = new Cylinder(radiusTop, radiusBottom, height, numSegments)
             body.sleepSpeedLimit = 0.5;
