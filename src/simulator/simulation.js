@@ -295,7 +295,13 @@ class TheSimulation {
         let position = new Vector3;
         tcp.getWorldPosition(position);
         const simObject = getSimObjectByPos(position, 0.5);
-        if (true) {//isAttached() == false && simObject != undefined && robot.isGripperOpen()) {
+        if (simObject.allowUnrestrictedGripping) { //override
+            simObject.attachToGripper(robot);
+            for (const finger of robot.hand.movable) {
+                start[finger.name] = finger.angle;
+                target[finger.name] = finger.limit.lower;  // fully closed
+            }
+        } else if (isAttached() == false && simObject != undefined && robot.isGripperOpen()) {
             if (checkGrippable(simObject, robot) && checkGripperOrientation(simObject, robot)) {
                 simObject.attachToGripper(robot);
                 for (const finger of robot.hand.movable) {
