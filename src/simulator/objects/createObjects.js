@@ -362,12 +362,21 @@ export function getSimObjectIdx(simObjectName) {
 }
 
 //Returns the simObject to a corresponding threejs world position, with given accuracy
-export function getSimObjectByPos(position, accuracy) {
+export function getSimObjectByPos(position, accuracy = 0.3) {
     let returnVal = undefined;
+    let idx;
+    let distances = [];
     for (let i = 0; i < simObjects.length; i++) {
-        if (simObjects[i].position.distanceTo(position) <= accuracy) {
-            returnVal = simObjects[i];
-        }
+        distances.push(simObjects[i].position.distanceTo(position));
+    }
+    let min = Math.min(...distances);
+    for (let i = 0; i < distances.length; i++) {
+        if (min === distances[i]) { idx = i; }
+    }
+    const checkBox = new Box3().setFromObject(simObjects[idx]);
+    //console.log('checkBox contains position', checkBox.containsPoint(position));
+    if (checkBox.containsPoint(position)) {
+        returnVal = simObjects[idx];
     }
     return returnVal;
 }
