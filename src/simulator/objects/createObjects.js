@@ -372,19 +372,6 @@ export function getSimObjectByPos(position, accuracy) {
     return returnVal;
 }
 
-export function checkGripperOrientation(simObject, robot) {
-    let returnVal = true;
-    if (simObject != undefined) {
-    } else {
-        returnVal = false;
-    }
-    return returnVal;
-}
-
-export function checkGrippable(simObject, robot) {
-    let returnVal = true;
-    return returnVal;
-}
 //Determin if a simobject is attached to the TCP
 export function isAttached() {
     let attached = false;
