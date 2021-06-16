@@ -173,7 +173,8 @@ export class SimObject extends Object3D {
         const scene = getScene();
         scene.add(this.control);
         this.addTransformListeners();
-        scene.add(this);
+        //scene.add(this);
+        this.visible = true;
         this.render();
     }
 
@@ -181,7 +182,8 @@ export class SimObject extends Object3D {
         const scene = getScene();
         scene.remove(this.control);
         this.removeTransformListners();
-        scene.remove(this);
+        this.visible = false;
+        //scene.remove(this);
         this.render();
     }
 
@@ -391,8 +393,16 @@ export class SimObject extends Object3D {
     }
 
     setGripAxes() {
-        if (this != undefined) {
-            this.gripAxes = []; //empty array
+        this.gripAxes = []; //empty array
+        if (this.grippableAxisIndependent) {
+            return;
+        } else {
+
         }
     }
+
+    checkGripperOrientation() {
+        return true;
+    }
+
 }

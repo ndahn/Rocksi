@@ -11,11 +11,7 @@ import { isAttached,
          getAttachedObject,
          getSimObjects,
          getSimObjectByPos,
-         getSimObjectIdx,
-         resetAllSimObjects,
-         checkGripperOrientation,
-         checkGrippable } from "./objects/createObjects"
-
+         getSimObjectIdx } from "./objects/createObjects"
 
 function deg2rad(deg) {
     return deg * Math.PI / 180.0;
@@ -293,20 +289,42 @@ class TheSimulation {
         const target = {};
         const tcp = robot.tcp.object;
         let position = new Vector3;
+
         tcp.getWorldPosition(position);
-        const simObject = getSimObjectByPos(position, 0.5);
-        if (simObject.allowUnrestrictedGripping) { //override
-            simObject.attachToGripper(robot);
-            for (const finger of robot.hand.movable) {
-                start[finger.name] = finger.angle;
-                target[finger.name] = finger.limit.lower;  // fully closed
-            }
-        } else if (isAttached() == false && simObject != undefined && robot.isGripperOpen()) {
-            if (checkGrippable(simObject, robot) && checkGripperOrientation(simObject, robot)) {
+
+        const simObject = getSimObjectByPos(position, 1.5);
+
+        if (simObject != undefined) {
+            if (simObject.allowUnrestrictedGripping && isAttached() == false && robot.isGripperOpen()) { //override
                 simObject.attachToGripper(robot);
                 for (const finger of robot.hand.movable) {
-                        start[finger.name] = finger.angle;
-                        target[finger.name] = finger.limit.lower;// - (simObject.size.x * 0.2);//This is just for testing, Lukas
+                    start[finger.name] = finger.angle;
+                    target[finger.name] = finger.limit.lower;  // fully closed
+                }
+
+            } else if (isAttached() == false
+                       && robot.isGripperOpen()
+                       && simObject.isGrippable()
+                       && simObject.isGrippableAxisIndependent()) {
+
+                           simObject.attachToGripper(robot);
+
+               for (const finger of robot.hand.movable) {
+                       start[finger.name] = finger.angle;
+                       target[finger.name] = finger.limit.lower;// - (simObject.size.x * 0.2);//This is just for testing, Lukas
+               }
+
+           } else if (isAttached() == false
+                      && robot.isGripperOpen()
+                      && simObject.isGrippable()
+                      && !simObject.isGrippableAxisIndependent()) {
+
+                if (simObject.checkGripperOrientation(robot)) {
+                    simObject.attachToGripper(robot);
+                    for (const finger of robot.hand.movable) {
+                            start[finger.name] = finger.angle;
+                            target[finger.name] = finger.limit.lower;// - (simObject.size.x * 0.2);//This is just for testing, Lukas
+                    }
                 }
             }
         }
