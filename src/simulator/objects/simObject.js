@@ -2,7 +2,8 @@ import { Vector3,
          Euler,
          Object3D,
          AxesHelper,
-         MeshPhongMaterial } from 'three';
+         MeshPhongMaterial,
+         Quaternion } from 'three';
 
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 
@@ -393,16 +394,68 @@ export class SimObject extends Object3D {
     }
 
     setGripAxes() {
-        this.gripAxes = []; //empty array
-        if (this.grippableAxisIndependent) {
-            return;
-        } else {
-
+        const sizeArray = [];
+        const axisArray = [0, 0, 0];
+        this.gripAxes = []; //empty Vector3
+        this.size.toArray(sizeArray);
+        const min = Math.min(...sizeArray);
+        const max = Math.max(...sizeArray);
+        let maxIdx;
+        let minIdx;
+        console.log('min: ', min, 'max: ' , max);
+        for (let i = 0; i < sizeArray.length; i++) {
+            if (sizeArray[i] === max) {
+                maxIdx = i;
+            }
+            if (sizeArray[i] === min) {
+                minIdx = i;
+            }
         }
+        axisArray[maxIdx] = 1;
+        const axis = new Vector3().fromArray(axisArray);
+        console.log(axisArray);
+        console.log(axis);
+        this.gripAxes.push(axis);
     }
 
-    checkGripperOrientation() {
-        return true;
+    checkGripperOrientation(robot) {
+        let retrunVal = false;
+        const tcp = robot.tcp.object;
+        let xAxisRobot = new Vector3(1, 0, 0); //x direction
+        let yAxisRobot = new Vector3(0, 1, 0);
+        let zAxisRobot = new Vector3(0, 0, 1);
+        let gripAxis = this.gripAxes[0];
+        console.log(this.gripAxes[0]);
+        let tcpQuat = new Quaternion();
+        let simQuat = new Quaternion();
+
+        tcp.getWorldQuaternion(tcpQuat);
+        this.getWorldQuaternion(simQuat);
+
+        yAxisRobot.applyQuaternion(tcpQuat);
+        zAxisRobot.applyQuaternion(tcpQuat);
+        gripAxis.applyQuaternion(simQuat);
+
+        xAxisRobot.normalize();
+        yAxisRobot.normalize();
+        gripAxis.normalize();
+
+        let dotProY = gripAxis.dot(yAxisRobot);
+        let dotProZ = gripAxis.dot(zAxisRobot);
+
+        dotProY = Math.abs(dotProY);
+        dotProZ = Math.abs(dotProZ);
+
+        console.log('dotProY: ', dotProY);
+        console.log('dotProZ: ', dotProZ);
+
+        if (dotProY < 1 && dotProY > 0.85 && dotProZ < 0.1) {
+            retrunVal = false;
+        } else {
+            retrunVal = true;
+        }
+
+        return retrunVal;
     }
 
 }
