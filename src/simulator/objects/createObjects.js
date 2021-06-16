@@ -8,7 +8,8 @@ import { BoxBufferGeometry,
          Object3D,
          Box3,
          Euler,
-         Quaternion } from 'three';
+         Quaternion,
+         AxesHelper } from 'three';
 
 import { Vec3 } from 'cannon-es';
 
@@ -31,29 +32,6 @@ import { getWorld } from '../physics';
 let simObjects = [];
 
 //Functions for creating meshes
-//Loader for stl
-function loadShaft(simObject) {
-    const filePath = '/models/simObject_shapes/shaft/shaft.stl';
-    const loader = new STLLoader();
-    const size = new Vector3();
-    return new Promise((resolve) => {
-        loader.load(
-            filePath, (geometry) =>  {
-            const material = new MeshPhongMaterial( { color: simObject.colour} );
-            const mesh = new Mesh( geometry, material );
-            mesh.scale.set(0.03, 0.03, 0.03);
-            mesh.geometry.computeBoundingBox();
-            mesh.geometry.center();
-            const tmpBox = new Box3().setFromObject(mesh);
-            tmpBox.getSize(size);
-            console.log(size);
-            simObject.size.copy(size);
-            console.log(simObject.size);
-            simObject.add( mesh );
-        });
-    });
-}
-
 //Simple box shape
 function createBoxMesh(simObject) {
     const geometry = new BoxBufferGeometry( simObject.size.x,
@@ -77,7 +55,7 @@ function createCylinderMesh(simObject) {
 
 function createSphereMesh(simObject) {
     const mesh = new Mesh();
-    mesh.geometry = new SphereGeometry( simObject.size.z * 0.5, 32, 32 );
+    mesh.geometry = new SphereGeometry( simObject.size.z * 0.5, 12, 12 );
     mesh.material = new MeshPhongMaterial({ color: simObject.colour });
     return mesh;
 }
@@ -85,9 +63,12 @@ function createSphereMesh(simObject) {
 //adds a geometry to a simObject
 export function addGeometry(simObject) {
     const size = new Vector3();
+    if (simObject.axesHelper != undefined) {
+        simObject.axesHelper.dispose();
+    }
     switch (simObject.shape) {
         case 'cube':
-            simObject.size.copy(new Vector3(.5, .5, .5));
+            simObject.size.copy(new Vector3(.4, .4, .4));
             const cubeMesh = createBoxMesh(simObject);
             const tmpCube = new Box3().setFromObject(cubeMesh);
             simObject.bodyShape = 'box';
@@ -95,6 +76,8 @@ export function addGeometry(simObject) {
             simObject.size.copy(size);
             simObject.add(cubeMesh);
             simObject.createBody(0.5, 2, 0.1);//mass, friction, restitution
+            simObject.setGrippable();
+            simObject.setGripAxes();
             break;
         case 'rock':
             const rockMesh = makeRock(50, simObject.size.z, simObject.colour);
@@ -109,6 +92,8 @@ export function addGeometry(simObject) {
             simObject.size.copy(size);
             simObject.add(rockMesh);
             simObject.createBody(3, 2, 0.01);//mass, friction, restitution
+            simObject.setGrippable();
+            simObject.setGripAxes();
             break;
         case 'sphere':
             const sphereMesh = createSphereMesh(simObject);
@@ -116,13 +101,14 @@ export function addGeometry(simObject) {
             sphereMesh.geometry.computeBoundingBox();
             const tmp = new Box3().setFromObject(sphereMesh);
             tmp.getSize(size);
-            console.log(size);
             simObject.size = size;
             simObject.radius = sphereMesh.geometry.boundingSphere.radius;
             simObject.bodyShape = 'sphere';
             simObject.add(sphereMesh);
             simObject.createBody(2.1, 1, 0.1);//mass, friction, restitution
             simObject.size.copy(size);
+            simObject.setGrippable();
+            simObject.setGripAxes();
             break;
         case 'shaft':
             const assetPath = '/models/simObject_shapes/shaft/shaft.stl';
@@ -135,6 +121,10 @@ export function addGeometry(simObject) {
             console.error('Unknown SimObject shape: ', simObject.shape);
             break;
     }
+
+    const axesHelper = new AxesHelper(5);
+    simObject.axesHelper = axesHelper;
+    simObject.add(axesHelper);
 }
 
 function loadAssetSTL(simObject, assetPath) {
@@ -145,20 +135,23 @@ function loadAssetSTL(simObject, assetPath) {
         assetPath, (geometry) =>  {
         const material = new MeshPhongMaterial( { color: simObject.colour} );
         const mesh = new Mesh( geometry, material );
-        mesh.scale.set(0.03, 0.03, 0.03);
-        mesh.rotateX(Math.PI/2);
+        mesh.scale.set(simObject.defaultScaleFactor,
+                       simObject.defaultScaleFactor,
+                       simObject.defaultScaleFactor);
+
         mesh.geometry.computeBoundingBox();
         mesh.geometry.center();
+        mesh.rotation.x = Math.PI/2;
         const tmpBox = new Box3().setFromObject(mesh);
         tmpBox.getSize(size);
         console.log(size);
         simObject.size.copy(size);
-        console.log(simObject.size);
         simObject.add( mesh );
         simObject.bodyShape = 'cylinder';
         simObject.createBody(5, 2, 0.1);//mass, friction, restitution
+        simObject.setGrippable();
+        simObject.setGripAxes();
         simObject.render();
-        console.log(simObject);
     });
 }
 
@@ -202,6 +195,8 @@ function loadSTL(simObject, data){
     simObject.add(mesh);
     simObject.bodyShape = 'box';
     simObject.createBody(5, 2, 0.1);
+    simObject.setGrippable();
+    simObject.setGripAxes();
     simObject.render();
 }
 
@@ -380,27 +375,6 @@ export function getSimObjectByPos(position, accuracy) {
 export function checkGripperOrientation(simObject, robot) {
     let returnVal = true;
     if (simObject != undefined) {
-        const tcpQuat = new Quaternion();
-        const simQuat = new Quaternion();
-        const tcp = robot.tcp.object;
-        const tcpUp = new Vector3(0, 0, 1);
-        const simUp = new Vector3(0, 0, 1);
-        simObject.getWorldQuaternion(simQuat);
-        tcp.getWorldQuaternion(tcpQuat);
-        let rad = simQuat.angleTo(tcpQuat);
-        tcpUp.applyQuaternion(tcpQuat);
-        simUp.applyQuaternion(simQuat);
-        let rad2 = simUp.angleTo(tcpUp);
-        console.log(robot.tcp.object);
-        console.log('Vector tcp', tcpUp);
-        console.log('Vector sim', simUp);
-        console.log('Angle sim to tcp quat', rad * 180 / Math.PI);
-        console.log('Angle sim to tcp vec', rad2 * 180 / Math.PI);
-        if (rad > 2 && rad < 3.7) {
-            returnVal = true;
-        } else {
-            returnVal = false;
-        }
     } else {
         returnVal = false;
     }
