@@ -193,7 +193,7 @@ export class SimObject extends Group {
         const limit = this.children.length;
         if (status) {
             for (let i = 0; i < limit; i++) {
-                if (this.children[i].material != undefined) {
+                if (this.children[i].material.emissive != undefined) {
                     const colour = this.children[i].material.color.getHex();
                     this.children[i].material.emissive.setHex(colour);
                 }
@@ -201,7 +201,7 @@ export class SimObject extends Group {
             this.highlighted = status;
         } else if (!status) {
             for (let i = 0; i < limit; i++) {
-                if (this.children[i].material != undefined) {
+                if (this.children[i].material.emissive != undefined) {
                     this.children[i].material.emissive.setHex(0x000000);
                 }
             }
