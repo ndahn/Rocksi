@@ -1,11 +1,8 @@
-import { BoxBufferGeometry,
-         MeshPhongMaterial,
-         CylinderGeometry,
-         Mesh,
-         Vector3,
+import { Vector3,
          Euler,
          Object3D,
-         Group } from 'three';
+         AxesHelper,
+         MeshPhongMaterial } from 'three';
 
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 
@@ -35,9 +32,7 @@ import { Box,
 
 import * as Blockly from 'blockly/core'
 
-const debug = false;
-
-export class SimObject extends Group {
+export class SimObject extends Object3D {
     constructor() {
         super();
         this.name = undefined;
@@ -52,17 +47,18 @@ export class SimObject extends Group {
         this.highlighted = false;
         this.bodyShape = 'box';
         this.radius = 0;
-        if (debug) {
-            console.log('simObject debug mode on!',);
-        }
         this.mass = 0;
         this.checkCollision = false;
         this.collisionPosition = new Vector3();
         this.lastPositionsArray = [];
         this.size = new Vector3(0.5, 0.5, 0.5);
         this.defaultScaleFactor = 0.03; //for tinkercad stl this seems to be the sweet spot.
+        this.axesHelper = undefined;
+        this.grippable = true;
+        this.grippableAxisIndependent = true;
+        this.gripAxes = [];
+        this.allowUnrestrictedGripping = false;
     }
-    //size = new Vector3(.5, .5, .5);
 
     //Positioning
     _calcFieldValues() {
@@ -219,10 +215,10 @@ export class SimObject extends Group {
     changeShape(shape) {
         this.shape = shape;
         const world = getWorld();
-        for (const child of this.children) {
-            this.remove(child);
-        }
         this.removeFromScene();
+        for (let i = 0; i < this.children.length; i++) {
+            this.remove(this.children[i]);
+        }
         world.removeBody(this.body);
         addGeometry(this);
         this.addToScene();
@@ -359,5 +355,44 @@ export class SimObject extends Group {
         this.removeBodyFromWorld();
         tcp.attach(this);
         console.log('> Object gripped!');
+    }
+
+    isGrippable() {
+        return this.grippable;
+    }
+
+    isGrippableAxisIndependent() {
+        return this.grippableAxisIndependent;
+    }
+
+    setGrippable() {
+        const robot = getRobot();
+        const sizeArray = [];
+        const play = 0.01
+        const upperLimit = (robot.hand.movable[0].limit.upper * robot.modelScale * 2) + play; //Two finger grippers only
+        console.log('Upper limit gripper', upperLimit);
+        console.log('this.size', this.size);
+        this.size.toArray(sizeArray);
+        if (Math.max(...sizeArray) <= upperLimit) {
+            this.grippable = true;
+            this.grippableAxisIndependent = true;
+            console.log('condition 0', sizeArray);
+        } else if (Math.min(...sizeArray) <= upperLimit) {
+            this.grippable = true;
+            this.grippableAxisIndependent = false;
+            console.log('condition 1');
+        } else {
+            this.grippable = false;
+            this.grippableAxisIndependent = false;
+            console.log('condition 2');
+        }
+        console.log('The this ', this.name, 'is grippable', this.grippable);
+        console.log('The this ', this.name, 'is grippable on any axis', this.grippableAxisIndependent);
+    }
+
+    setGripAxes() {
+        if (this != undefined) {
+            this.gripAxes = []; //empty array
+        }
     }
 }
