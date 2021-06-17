@@ -117,8 +117,8 @@ Blockly.Blocks['add_sim_object'] = {
     },
 
 	onchange: function (event) {
-        const pose = this.getInputTargetBlock('POSE');
-        const colour = this.getInputTargetBlock('COLOUR');
+        const poseBlock = this.getInputTargetBlock('POSE');
+        const colorBlock = this.getInputTargetBlock('COLOUR');
         /*if (pose != null && event.blockId === pose.id && fieldKeys.includes(event.name)) {
             let fieldValues = [];
             const simObject = getSimObject(this.id)
@@ -130,25 +130,33 @@ Blockly.Blocks['add_sim_object'] = {
             simObject.render();
         }*/
 
-        if (colour != null && event.blockId === colour.id) {
-            var simObject = getSimObject(this.id);
+        let simObject = getSimObject(this.id);
+        if (!simObject) {
+            return;
+        }
 
-            if (colour.type == 'colour_random') {
-                var ranColour = randomColour();
-                simObject.setColour(ranColour);
+        if (colorBlock != null && event.blockId === colorBlock.id) {
+            if (colorBlock.type == 'colour_random') {
+                let ranColour = randomColour();
+                simObject.setColor(ranColour);
             }
 
-            if (colour.type == 'colour_picker') {
-                var pickColour = colour.getFieldValue('COLOUR');
-                simObject.setColour(pickColour);
+            if (colorBlock.type == 'colour_picker') {
+                let pickColour = colorBlock.getFieldValue('COLOUR');
+                simObject.setColor(pickColour);
             }
 
             simObject.render();
         }
 
         if (event.blockId === this.id && event.name == 'OBJECT_SHAPE') {
-            var simObject = getSimObject(this.id);
             simObject.changeShape(event.newValue);
+        }
+
+        if (colorBlock != null) {
+            // Allow the simObject to update its texture
+            simObject.setColor(simObject.color);
+            colorBlock.setColour(simObject.color);
         }
     }
 };

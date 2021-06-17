@@ -46,7 +46,7 @@ export class SimObject extends Object3D {
         this.body = undefined;
         this.control = undefined;
         this._fieldValues = [5, 0, 0, 0, 0, 0];
-        this.colour = '#eb4034'
+        this.color = '#eb4034'
         this.highlighted = false;
         this.bodyShape = 'box';
         this.radius = 0;
@@ -209,11 +209,12 @@ export class SimObject extends Object3D {
         this.render();
     }
 
-    setColour(colour) {
-      const limit = this.children.length;
-      const children = this.children;
+    setColor(color) {
+        const limit = this.children.length;
+        const children = this.children;
+        this.color = color;
         for (let i = 0; i < limit; i++) {
-            children[i].material = new MeshPhongMaterial({ color: colour });
+            children[i].material = new MeshPhongMaterial({ color: color });
         }
     }
 

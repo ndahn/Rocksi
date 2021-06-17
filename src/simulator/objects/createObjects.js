@@ -216,13 +216,13 @@ function loadSTL(simObject, data){
 }
 
 //Adds the simObject
-export function addSimObject(blockUUID, fieldValues, pickedColour, shape) {
+export function addSimObject(blockUUID, fieldValues, pickedColor, shape) {
     let simObject = new SimObject;
     simObject.name = blockUUID;
     simObjects.push(simObject);
     simObject.shape = shape;
-    if (pickedColour != undefined) {
-        simObject.colour = pickedColour;
+    if (pickedColor != undefined) {
+        simObject.color = pickedColor;
     }//else default is orange
     addGeometry(simObject);
     if (fieldValues != undefined) {
