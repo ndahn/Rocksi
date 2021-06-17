@@ -77,8 +77,23 @@ class TheSimulation {
     }
 
     async run(command, ...args) {
+        const sim = this;
+        const validCommands = {
+            'cancel': sim.cancel,
+            'setParam': sim.setParam,
+            'lockJoint': sim.lockJoint,
+            'unlockJoint': sim.unlockJoint,
+            'wait': sim.wait,
+            'move': sim.move,
+            'gripper_close': sim.gripper_close,
+            'gripper_open': sim.gripper_open,
+            'joint_absolute': sim.joint_absolute,
+            'joint_relative': sim.joint_relative,
+            'getPhysicsDone': sim.getPhysicsDone,
+        };
+
         try {
-            await this[command](...args);
+            await validCommands[command].call(this, ...args);
         }
         catch (e) {
             console.error('Failed to run command \'' + command + '(' + args + ')\':' + e);
