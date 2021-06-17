@@ -246,32 +246,41 @@ export class SimObject extends Object3D {
         const world = getWorld();
         body.material = new Material({ friction: friction, restitution: restitution});
         body.allowSleep = true;
-        if ('box' === this.bodyShape) {
-            const shape = new Box(new Vec3(this.size.x * 0.5,
-                                           this.size.y * 0.5,
-                                           this.size.z * 0.5))//cannon size is defined from the center
-            body.sleepSpeedLimit = 0.5;
-            body.sleepTimeLimit = 0.2;
-            body.addShape(shape);
+        switch (this.bodyShape){
+            case 'sphere':
+                { // scoping variables
+                    const sphere = new Sphere(this.radius);
+                    body.sleepSpeedLimit = 1.2;
+                    body.sleepTimeLimit = 0.2;
+                    body.addShape(sphere);
+                }
+                break;
 
+            case 'cylinder': 
+                { // scoping variables
+                    console.log('Body size: ', this.size);
+                    const radiusTop = this.size.x * 0.5;
+                    const radiusBottom =  this.size.z * 0.5;
+                    const height = this.size.y;
+                    const numSegments = 12
+                    const cylinder = new Cylinder(radiusTop, radiusBottom, height, numSegments)
+                    body.sleepSpeedLimit = 0.5;
+                    body.sleepTimeLimit = 0.2;
+                    body.addShape(cylinder);
+                } 
+                break;
+            
+            case 'box':
+            default:
+            {
+                //cannon size is defined from the center
+                const shape = new Box(new Vec3(this.size.x * 0.5, this.size.y * 0.5, this.size.z * 0.5))
+                body.sleepSpeedLimit = 0.5;
+                body.sleepTimeLimit = 0.2;
+                body.addShape(shape);
+            }
         }
-        if ('sphere' === this.bodyShape) {
-            const shape = new Sphere(this.radius);
-            body.sleepSpeedLimit = 1.2;
-            body.sleepTimeLimit = 0.2;
-            body.addShape(shape);
-        }
-        if ('cylinder' === this.bodyShape) {
-            console.log('Body size: ', this.size);
-            const radiusTop = this.size.x * 0.5;
-            const radiusBottom =  this.size.z * 0.5;
-            const height = this.size.y;
-            const numSegments = 12
-            const shape = new Cylinder(radiusTop, radiusBottom, height, numSegments)
-            body.sleepSpeedLimit = 0.5;
-            body.sleepTimeLimit = 0.2;
-            body.addShape(shape);
-        }
+        
         //body.allowSleep = false;
         body.position.copy(this.position);
         this.hasBody = true;
@@ -309,6 +318,7 @@ export class SimObject extends Object3D {
         const scene = getScene();
 
         this.control = new TransformControls(controlObj.camera, controlObj.renderer.domElement);
+        this.control.setSize(1.25);
 
         this.addTransformListeners()
 

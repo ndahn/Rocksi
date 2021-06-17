@@ -68,13 +68,11 @@ class TheSimulation {
     //Lukas
     resetSimObjects(visible = true) {
         const simObjects = getSimObjects();
-        if (simObjects != undefined) {
-            for (const simObject of simObjects) {
-                simObject.reset();
-                simObject.addTransformListeners();
-                if (visible) { simObject.makeVisible(); }
-                else if (!visible) { simObject.hide(); }
-            }
+        for (const simObject of simObjects) {
+            simObject.reset();
+            simObject.addTransformListeners();
+            if (visible) { simObject.makeVisible(); }
+            else if (!visible) { simObject.hide(); }
         }
     }
 
@@ -412,7 +410,7 @@ class TheSimulation {
         //simObjects[simObjectsIdx].addBodyToWorld();
         simObjects[simObjectsIdx].updateBody();
         simObjects[simObjectsIdx].body.wakeUp();
-        if (simObjectsIdx + 1 == simObjects.length) {
+        if (simObjectsIdx + 1 >= simObjects.length) {
             this.lastSimObjectProcessed = true;
         }
         if (!this.runningPhysics) {
@@ -423,20 +421,19 @@ class TheSimulation {
 
     getPhysicsDone() {
         const simObjects = getSimObjects();
-        if (simObjects != undefined) {
-
+        // if (simObjects.length > 0) {
             if ( !this.runningPhysics
                  && this.lastSimObjectProcessed
                  && !isWorldActive()) {
 
                      this.physicsDone = true;
-
-            } else { this.physicsDone = false; }
-        }
-
-        else {
-            this.physicsDone = true;
-        }
+            } else { 
+                this.physicsDone = false; 
+            }
+        // }
+        // else {
+        //     this.physicsDone = true;
+        // }
 
         return this.physicsDone;
     }

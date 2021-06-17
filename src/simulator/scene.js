@@ -72,6 +72,7 @@ let container;
 let camera, scene, renderer;
 let raycaster;
 let mouseXY = new Vector2();
+let mouseDrag = false;
 
 let tcptarget, groundLine;
 let cameraControl, transformControl;
@@ -250,6 +251,11 @@ function onCanvasResize() {
 
 function onMouseMove(evt) {
 	evt.preventDefault();
+
+	if (evt.movementX > 1 || evt.movementY > 1) {
+		mouseDrag = true;
+	}
+	
 	mouseXY.x = (evt.offsetX / container.clientWidth) * 2 - 1;
 	mouseXY.y = -(evt.offsetY / container.clientHeight) * 2 + 1;
 
@@ -309,19 +315,28 @@ function render() {
 //functions for simObject stuff, Lukas
 export function removeListeners() {
     if (container != undefined) {
-        container.removeEventListener('mousemove', onMouseMove);
-        container.removeEventListener('click', onClick); //Only used for TransformControls for simObjects, Lukas
+        container.removeEventListener('pointermove', onMouseMove);
+		container.removeEventListener('pointerdown', onMouseDown);
+        container.removeEventListener('pointerup', onMouseUp); //Only used for TransformControls for simObjects, Lukas
     }
 }
 
 export function addListeners() {
     if (container != undefined) {
-        container.addEventListener('mousemove', onMouseMove);
-        container.addEventListener('click', onClick); //Only used for TransformControls for simObjects, Lukas
+        container.addEventListener('pointermove', onMouseMove);
+		container.addEventListener('pointerdown', onMouseDown);
+        container.addEventListener('pointerup', onMouseUp); //Only used for TransformControls for simObjects, Lukas
     }
 }
 
-function onClick() {
+function onMouseDown() {
+	mouseDrag = false;
+}
+
+function onMouseUp() {
+	if (mouseDrag) {
+		return;
+	}
     setTCSimObjectsOnClick(raycaster);
 }
 

@@ -29,7 +29,10 @@ import { requestAF,
 
 import { getWorld } from '../physics';
 
+
 let simObjects = [];
+let controlledSimObject = undefined;
+
 
 //Functions for creating meshes
 //Simple box shape
@@ -124,7 +127,7 @@ export function addGeometry(simObject) {
 
     const axesHelper = new AxesHelper(5);
     simObject.axesHelper = axesHelper;
-    simObject.add(axesHelper);
+    //simObject.add(axesHelper);
 }
 
 function loadAssetSTL(simObject, assetPath) {
@@ -314,121 +317,135 @@ export function setSimObjectHighlight(raycaster) {
 export function setTCSimObjectsOnClick(raycaster) {
     const intersections = raycaster.intersectObjects(simObjects, true);
     const intersected = intersections.length > 0 && intersections[0].object.parent.highlighted;
-    const scene = getScene();
 
     if (intersected) {
         const intersectedSimObj = intersections[0].object.parent;
-        if (intersectedSimObj.control.visible != intersected) {
-            if (intersectedSimObj.attached) {
-                return;
-            } else {
-                intersectedSimObj.control.setMode('rotate');
-                intersectedSimObj.control.visible = true;
-                intersectedSimObj.control.enabled = true;
-            }
-        }
-        const mode = intersectedSimObj.control.getMode();
-        scene.remove(intersectedSimObj.control);
-
-        if (mode == 'translate'){
-            intersectedSimObj.control.setMode('rotate');
-        }
-        if (mode == 'rotate'){
-            intersectedSimObj.control.setMode('translate');
-        }
         
-        scene.add(intersectedSimObj.control);
+        if (intersectedSimObj === controlledSimObject) {
+            const mode = intersectedSimObj.control.getMode();
+            switch (mode) {
+                case 'translate':
+                    intersectedSimObj.control.setMode('rotate');
+                    break;
 
-    } else {
-        const limit = simObjects.length;
-        for (let i = 0; i < limit; i++) {
-            simObjects[i].control.visible = false;
-            simObjects[i].control.enabled = false;
+                case 'rotate':
+                default:
+                    intersectedSimObj.control.setMode('translate');
+            }
+            requestAF();
+            return;
         }
+
+        if (controlledSimObject != undefined) {
+            removeTC(controlledSimObject);
+        }
+
+        activateTC(intersectedSimObj);
+        controlledSimObject = intersectedSimObj;
+    }
+    else if (controlledSimObject != undefined) {
+        removeTC(controlledSimObject);
+        controlledSimObject = undefined;
     }
     requestAF();
 }
 
+function activateTC(simObject) {
+    simObject.control.setMode('translate');
+    simObject.control.visible = true;
+    simObject.control.enabled = true;
+
+    getScene().add(simObject.control);
+}
+
+function removeTC(simObject) {
+    getScene().remove(simObject.control);
+
+    simObject.control.setMode('rotate');
+    simObject.control.visible = false;    
+    simObject.control.enabled = false;
+}
+
+
 //Functions for getting simObjects
 export function getSimObjectsNames() {
     let simObjectsNames = [];
-    simObjects.forEach(simObject => {simObjectsNames.push(simObject.name)});
+    const simObjectsLen = simObjects.length;
+    for (let i = 0; i < simObjectsLen; i++) {
+        simObjectsNames.push(simObject.name);
+    }
     return simObjectsNames
 }
 
 //Returns all simObjects
 export function getSimObjects() {
-    let returnVal = undefined;
-    if (simObjects.length > 0) {
-        returnVal = simObjects;
-    }
-    return returnVal;
+    return simObjects;
 }
 
 //Returns the simObject by name (the uuid of the blockly block)
 export function getSimObject(simObjectName) {
-    let returnVal = undefined;
     const limit = simObjects.length;
     for (let i = 0; i < limit; i++) {
-      if (simObjectName == simObjects[i].name) { returnVal = simObjects[i]; }
+      if (simObjectName == simObjects[i].name) { 
+          return simObjects[i]; 
+        }
     }
-    return returnVal;
+    return undefined;
 }
 
 //Returns the index of a simObject in the simObjects array
 export function getSimObjectIdx(simObjectName) {
-    let returnVal = undefined;
-
     const limit = simObjects.length;
     for (let i = 0; i < limit; i++) {
-        if (simObjects[i].name == simObjectName) { returnVal = i; }
+        if (simObjects[i].name == simObjectName) { 
+            return i; 
+        }
     }
 
-    return returnVal;
+    return undefined;
 }
 
 //Returns the simObject to a corresponding threejs world position, with given accuracy
 export function getSimObjectByPos(position, accuracy = 0.3) {
-
-    let returnVal = undefined;
-    let idx;
-    let distances = [];
+    let minDist = 9999.0;
+    let minIdx = -1;
+    let dist;
+    
     const simObjectsLen = simObjects.length;
     for (let i = 0; i < simObjectsLen; i++) {
-        distances.push(simObjects[i].position.distanceTo(position));
+        dist = simObjects[i].position.distanceTo(position);
+        if (dist <= minDist) { 
+            min = dist;
+            minIdx = i; 
+        }
     }
 
-    const min = Math.min(...distances);
-    const distancesLen = distances.length
-    for (let i = 0; i < distancesLen; i++) {
-        if (min === distances[i]) { idx = i; }
+    if (minIdx < 0) {
+        return undefined;
     }
 
-    const checkBox = new Box3().setFromObject(simObjects[idx]);
-
+    const checkBox = new Box3().setFromObject(simObjects[minIdx]);
     if (checkBox.containsPoint(position)) {
-        returnVal = simObjects[idx];
+        return simObjects[minIdx];
     }
 
-    return returnVal;
+    return undefined;
 }
 
 //Determin if a simobject is attached to the TCP
 export function isAttached() {
-    let attached = false;
-    const limit = simObjects.length;
-    for (let i = 0; i < limit; i++) {
-        if (simObjects[i].attached == true) { attached = true; }
-    }
-    return attached;
+    return !!getAttachedObject();
 }
 
 //Return the first attached simObject
 export function getAttachedObject() {
     const limit = simObjects.length;
     for (let i = 0; i < limit; i++) {
-        if (simObjects[i].attached) { return simObjects[i] }
+        if (simObjects[i].attached) { 
+            return simObjects[i] 
+        }
     }
+    return undefined;
 }
 
 //Utils
