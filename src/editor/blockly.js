@@ -34,12 +34,11 @@ var Interpreter = require('js-interpreter');
 var ResizeSensor = require('css-element-queries/src/ResizeSensor');
 
 import Simulation from '../simulator/simulation'
+import { removeListeners, addListeners } from '../simulator/scene'
 
 
 var blocklyArea = document.querySelector('.blocks-container');
 var blocklyDiv = document.getElementById('blocks-canvas');
-
-const waitToFinish = 200; //Time to wait for the physics simulation to finish. Lukas
 
 var workspace = Blockly.inject(
     blocklyDiv,
@@ -332,6 +331,7 @@ function executeProgram() {
         throw new Error('Program has not been compiled yet');
     }
 
+    removeListeners();
     interpreter.paused_ = false;
 
     try {
@@ -350,10 +350,10 @@ function executeProgram() {
 
 function waitForPhysicsSim() {
     if (!simulation.getPhysicsDone()) {
-        console.log('Waiting ' + waitToFinish * 0.001 + ' seconds...');
+        //console.log('Waiting ' + waitToFinish * 0.001 + ' seconds...');
         setTimeout(() => {
             waitForPhysicsSim();
-        }, waitToFinish );
+        }, 200 );
     } else {
         onProgramFinished();
     }
@@ -362,23 +362,28 @@ function waitForPhysicsSim() {
 function onProgramError(e) {
     interpreter = null;
     workspace.highlightBlock(null);
-    runButton.classList.remove('running');
     simulation.resetSimObjects(true);
+
+    runButton.classList.remove('running');
     console.error('Program execution failed: ', e);
-    popError(e + '\n'
-        + (Blockly.Msg['SEE_CONSOLE'] || 'See console for additional details.'));
+    popError(e + '\n' + (Blockly.Msg['SEE_CONSOLE'] || 'See console for additional details.'));
+
+    addListeners();
 }
 
 function onProgramFinished() {
     // The generator may add some finalizing code in generator.finish(code), but if we
     // got this far it is most likely not required. Previous commit has a version executing
     // These final statements.
+    interpreter = null;
     workspace.highlightBlock(null);
     simulation.resetSimObjects(true);
 
     runButton.classList.remove('running');
     console.log('Execution finished');
     popSuccess(Blockly.Msg['EXEC_SUCCESS'] || "Program finished");
+
+    addListeners();
 }
 
 //Determin if a add_sim_object-block was added or removed form the Blockly Workspace.

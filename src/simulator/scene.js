@@ -287,8 +287,6 @@ function onTargetChange() {
 		}
 	);
 
-    GUI.onRobotMoved(robot);
-
 	// requestAnimationFrame is called in the transformControl's change-listener,
 	// so we can skip it here
 }
@@ -310,6 +308,7 @@ function updateGroundLine() {
 
 function render() {
     renderer.render(scene, camera);
+	GUI.onRobotMoved(robot);
 }
 
 //functions for simObject stuff, Lukas

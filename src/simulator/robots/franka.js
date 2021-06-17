@@ -62,7 +62,7 @@ class Franka extends Robot {
 			// 'panda_joint3',
 			"panda_joint4",
 			// 'panda_joint5',
-			'panda_joint6',
+			// 'panda_joint6',
 			// 'panda_joint7',
 		];
 

@@ -436,7 +436,7 @@ class TheSimulation {
 
     getPhysicsDone() {
         const simObjects = getSimObjects();
-        // if (simObjects.length > 0) {
+        if (simObjects.length > 0) {
             if ( !this.runningPhysics
                  && this.lastSimObjectProcessed
                  && !isWorldActive()) {
@@ -445,10 +445,10 @@ class TheSimulation {
             } else { 
                 this.physicsDone = false; 
             }
-        // }
-        // else {
-        //     this.physicsDone = true;
-        // }
+        }
+        else {
+            this.physicsDone = true;
+        }
 
         return this.physicsDone;
     }
