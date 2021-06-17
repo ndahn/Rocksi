@@ -1,10 +1,14 @@
 //cannon-es import
 import * as CANNON from 'cannon-es';
 import * as THREE from 'three';
+
 import { getSimObjects,
          getSimObject } from './objects/createObjects';
+
 import { getScene } from './scene';
+
 import cannonDebugger from 'cannon-es-debugger'
+
 //Physics setup
 //variables for the physics simulation
 const dt = 0.02
@@ -42,7 +46,6 @@ export function initRobotHitboxes(robot) {
     }**/
 }
 
-
 export function initCannon() {
     //World
     world = new CANNON.World();
@@ -66,6 +69,7 @@ export function initCannon() {
     floorBody.sleepTimeLimit = 0.1;
     floorBody.name = 'the_floor'
     world.addBody(floorBody);
+
     initDone = true;
     console.log('Physics init done');
     debug();
@@ -116,9 +120,9 @@ export function removeBody(simObject) {
 export function updateMeshes(simObjects) {
     let limit = simObjects.length;
     for (let i = 0; i < limit; i++) {
-        if (!simObjects[i].attached) {//fixes gripping issue
+        //if (!simObjects[i].attached) {//fixes gripping issue
             simObjects[i].updateMesh();
-        }
+        //}
     }
 }
 

@@ -295,7 +295,7 @@ class TheSimulation {
         const simObject = getSimObjectByPos(position, 1.5);
 
         if (simObject != undefined) {
-            if (simObject.allowUnrestrictedGripping && isAttached() == false && robot.isGripperOpen()) { //override
+            if (simObject.advancedGrippingOff && isAttached() == false && robot.isGripperOpen()) { //override
                 simObject.attachToGripper(robot);
                 for (const finger of robot.hand.movable) {
                     start[finger.name] = finger.angle;
@@ -406,12 +406,6 @@ class TheSimulation {
         } else {
             simObjects[simObjectsIdx].reset();
             simObjects[simObjectsIdx].makeVisible();
-            simObjects[simObjectsIdx].body.removeEventListener('collide', (event) => {
-                simObjectCollision(event);
-            });
-            simObjects[simObjectsIdx].body.isTrigger = false;
-            simObjects[simObjectsIdx].body.mass = simObjects[simObjectsIdx].mass;
-            console.log(simObjects[simObjectsIdx].body.mass);
         }
 
         simObjects[simObjectsIdx].removeTransformListners();

@@ -33,6 +33,8 @@ import { Box,
 
 import * as Blockly from 'blockly/core'
 
+const debug = true;
+
 export class SimObject extends Object3D {
     constructor() {
         super();
@@ -49,16 +51,15 @@ export class SimObject extends Object3D {
         this.bodyShape = 'box';
         this.radius = 0;
         this.mass = 0;
-        this.checkCollision = false;
-        this.collisionPosition = new Vector3();
-        this.lastPositionsArray = [];
         this.size = new Vector3(0.5, 0.5, 0.5);
-        this.defaultScaleFactor = 0.03; //for tinkercad stl this seems to be the sweet spot.
-        this.axesHelper = undefined;
+        this.defaultScaleFactor = new Vector3(1, 1, 1);
+        if (debug) {
+          this.axesHelper = undefined;
+        }
         this.grippable = true;
         this.grippableAxisIndependent = true;
         this.gripAxes = [];
-        this.allowUnrestrictedGripping = false;
+        this.advancedGrippingOff = false;
     }
 
     //Positioning
@@ -137,7 +138,6 @@ export class SimObject extends Object3D {
                         pose.setFieldValue(val, fieldKeys[i]);
                     }
                 }
-
             }
         }
     }
@@ -210,8 +210,10 @@ export class SimObject extends Object3D {
     }
 
     setColour(colour) {
-        for (const child of this.children) {
-            child.material = new MeshPhongMaterial({ color: colour });
+      const limit = this.children.length;
+      const children = this.children;
+        for (let i = 0; i < limit; i++) {
+            children[i].material = new MeshPhongMaterial({ color: colour });
         }
     }
 
@@ -219,8 +221,10 @@ export class SimObject extends Object3D {
         this.shape = shape;
         const world = getWorld();
         this.removeFromScene();
-        for (let i = 0; i < this.children.length; i++) {
-            this.remove(this.children[i]);
+        const limit = this.children.length;
+        const children = this.children;
+        for (let i = 0; i < limit; i++) {
+            this.remove(children[i]);
         }
         world.removeBody(this.body);
         addGeometry(this);
@@ -231,9 +235,8 @@ export class SimObject extends Object3D {
     reset() {
         this.updateFromFieldValues()
         this.attached = false;
-        this.scale.x = 1;
-        this.scale.y = 1;
-        this.scale.z = 1;
+        const sf = this.defaultScaleFactor;
+        this.scale.copy(sf);
         this.render();
     }
 
