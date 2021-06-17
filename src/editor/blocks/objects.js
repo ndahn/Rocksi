@@ -135,6 +135,10 @@ Blockly.Blocks['add_sim_object'] = {
             return;
         }
 
+        if (event.blockId === this.id && event.name == 'OBJECT_SHAPE') {
+            simObject.changeShape(event.newValue);
+        }
+
         if (colorBlock != null && event.blockId === colorBlock.id) {
             if (colorBlock.type == 'colour_random') {
                 let ranColour = randomColour();
@@ -145,18 +149,16 @@ Blockly.Blocks['add_sim_object'] = {
                 let pickColour = colorBlock.getFieldValue('COLOUR');
                 simObject.setColor(pickColour);
             }
-
-            simObject.render();
-        }
-
-        if (event.blockId === this.id && event.name == 'OBJECT_SHAPE') {
-            simObject.changeShape(event.newValue);
         }
 
         if (colorBlock != null) {
             // Allow the simObject to update its texture
             simObject.setColor(simObject.color);
-            colorBlock.setColour(simObject.color);
+            simObject.render();
+
+            if (colorBlock.type == 'colour_random') {
+                colorBlock.setColour(simObject.color);
+            }
         }
     }
 };
