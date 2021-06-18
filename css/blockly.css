@@ -111,10 +111,11 @@
 	border-radius: 10px;
 	box-sizing: border-box;
 	height: calc(100% - 10px);
-	top: 5px;
+	/* Makes issues when adding blocks from the toolbox (offset between block and pointer) */
+	/* top: 5px;
 	left: 5px;
 	bottom: 5px;
-	transform: none !important;
+	transform: none !important; */
 }
 
 .blocklyFlyoutBackground {

@@ -139,21 +139,20 @@ Blockly.Blocks['add_sim_object'] = {
             simObject.changeShape(event.newValue);
         }
 
-        if (colorBlock != null && event.blockId === colorBlock.id) {
-            if (colorBlock.type == 'colour_random') {
-                let ranColour = randomColour();
-                simObject.setColor(ranColour);
-            }
-
-            if (colorBlock.type == 'colour_picker') {
-                let pickColour = colorBlock.getFieldValue('COLOUR');
-                simObject.setColor(pickColour);
-            }
-        }
-
         if (colorBlock != null) {
-            // Allow the simObject to update its texture
-            simObject.setColor(simObject.color);
+            let color = simObject.color;
+
+            if (event.blockId === colorBlock.id) {
+                if (colorBlock.type == 'colour_random') {
+                    color = randomColour();
+                }
+                else if (colorBlock.type == 'colour_picker') {
+                    color = colorBlock.getFieldValue('COLOUR');
+                }
+            }
+
+            // Do this no matter what so the simObject updates its texture
+            simObject.setColor(color);
             simObject.render();
 
             if (colorBlock.type == 'colour_random') {
