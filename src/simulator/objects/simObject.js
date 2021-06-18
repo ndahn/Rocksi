@@ -10,9 +10,7 @@ import { TransformControls } from 'three/examples/jsm/controls/TransformControls
 import { requestAF,
          getScene,
          getRobot,
-         getControl,
-         addListeners,
-         removeListeners } from '../scene';
+         getControl } from '../scene';
 
 import { getWorld,
          updateBodies,
@@ -173,7 +171,6 @@ export class SimObject extends Object3D {
     makeVisible() {
         const scene = getScene();
         scene.add(this.control);
-        this.addTransformListeners();
         //scene.add(this);
         this.visible = true;
         this.render();
@@ -182,7 +179,7 @@ export class SimObject extends Object3D {
     hide() {
         const scene = getScene();
         scene.remove(this.control);
-        this.removeTransformListners();
+        this.setTransformControlEnabled(false);
         this.visible = false;
         //scene.remove(this);
         this.render();
@@ -321,7 +318,8 @@ export class SimObject extends Object3D {
         this.control = new TransformControls(controlObj.camera, controlObj.renderer.domElement);
         this.control.setSize(1.25);
 
-        this.addTransformListeners()
+        this.control.addEventListener('dragging-changed', evt => this._draggingCanged(evt));
+        this.control.addEventListener('objectChange', () => this._objectChange);
 
         this.control.attach(this);
         scene.add(this.control);
@@ -330,16 +328,10 @@ export class SimObject extends Object3D {
         this.control.enabled = this.control.visible;
     }
 
-    addTransformListeners() {
-        this.control.addEventListener('dragging-changed',(event) => this._draggingCanged(event));
-        this.control.addEventListener('objectChange', () => this._objectChange());
-        addListeners();
-    }
-
-    removeTransformListners() {
-        this.control.removeEventListener('dragging-changed',(event) => this._draggingCanged(event));
-        this.control.removeEventListener('objectChange', () => this._objectChange());
-        removeListeners();
+    setTransformControlEnabled(enabled) {
+        this.control.enabled = enabled;
+        this.control.visible = enabled;
+        getControl().orbitControls.enabled = !enabled;
     }
 
     //callback for dragging-changed

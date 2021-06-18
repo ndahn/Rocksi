@@ -71,8 +71,9 @@ switch (selectedRobot.toLowerCase()) {
 let container;
 let camera, scene, renderer;
 let raycaster;
-let mouseXY = new Vector2();
-let mouseDrag = false;
+let pointerDownXY = new Vector2();
+let pointerXY = new Vector2();
+let pointerDrag = false;
 
 let tcptarget, groundLine;
 let cameraControl, transformControl;
@@ -224,14 +225,14 @@ function initScene() {
 	// TODO setMode('rotate') on click event
 	transformControl.attach(tcptarget);
 	scene.add(transformControl);
-
+	
+	// TODO better support for phones and tablets: never show object TC, always show robot TC
 	if (canHover) {
 		transformControl.visible = false;
         raycaster = new Raycaster();
-		/*container.addEventListener('mousemove', onMouseMove);
-        container.addEventListener('click', onClick);
-        replaced by: addListeners()*/
-        addListeners();
+		container.addEventListener('pointermove', onPointerMove);
+		container.addEventListener('pointerdown', onPointerDown);
+        container.addEventListener('pointerup', onPointerUp);
 	}
 
 	let domParent = document.querySelector('.sim-container');
@@ -249,26 +250,6 @@ function onCanvasResize() {
 	requestAnimationFrame(render);
 }
 
-function onMouseMove(evt) {
-	evt.preventDefault();
-
-	if (evt.movementX > 1 || evt.movementY > 1) {
-		mouseDrag = true;
-	}
-	
-	mouseXY.x = (evt.offsetX / container.clientWidth) * 2 - 1;
-	mouseXY.y = -(evt.offsetY / container.clientHeight) * 2 + 1;
-
-    raycaster.setFromCamera(mouseXY, camera);
-    const intersections = raycaster.intersectObjects([tcptarget]);
-    setSimObjectHighlight(raycaster); //does this for all TransformControls of simObjects
-    let showTC = intersections.length > 0;
-
-    if (showTC !== transformControl.visible) {
-        transformControl.visible = showTC;
-        requestAnimationFrame(render);
-    }
-}
 
 function onTargetChange() {
 	// Prevent target from going beneath the floor
@@ -311,33 +292,39 @@ function render() {
 	GUI.onRobotMoved(robot);
 }
 
-//functions for simObject stuff, Lukas
-export function removeListeners() {
-    if (container != undefined) {
-        container.removeEventListener('pointermove', onMouseMove);
-		container.removeEventListener('pointerdown', onMouseDown);
-        container.removeEventListener('pointerup', onMouseUp); //Only used for TransformControls for simObjects, Lukas
+
+function onPointerMove(evt) {
+	evt.preventDefault();
+	pointerDrag = true;
+	
+	pointerXY.x = (evt.offsetX / container.clientWidth) * 2 - 1;
+	pointerXY.y = -(evt.offsetY / container.clientHeight) * 2 + 1;
+
+    raycaster.setFromCamera(pointerXY, camera);
+    const intersections = raycaster.intersectObjects([tcptarget]);
+    setSimObjectHighlight(raycaster); //does this for all TransformControls of simObjects
+    let showTC = intersections.length > 0;
+
+    if (showTC !== transformControl.visible) {
+        transformControl.visible = showTC;
+        requestAnimationFrame(render);
     }
 }
 
-export function addListeners() {
-    if (container != undefined) {
-        container.addEventListener('pointermove', onMouseMove);
-		container.addEventListener('pointerdown', onMouseDown);
-        container.addEventListener('pointerup', onMouseUp); //Only used for TransformControls for simObjects, Lukas
-    }
+function onPointerDown(evt) {
+	pointerDrag = false;
+	pointerDownXY.x = evt.offsetX;
+	pointerDownXY.y = evt.offsetY;
 }
 
-function onMouseDown() {
-	mouseDrag = false;
-}
-
-function onMouseUp() {
-	if (mouseDrag) {
+function onPointerUp(evt) {
+	// Don't change transform controls if the pointer was dragged at least (5) pixels
+	if (pointerDrag || new Vector2(evt.offsetX, evt.offsetY).sub(pointerDownXY).length() > 5) {
 		return;
 	}
-    setTCSimObjectsOnClick(raycaster);
+	setTCSimObjectsOnClick(raycaster);
 }
+
 
 export function requestAF () { requestAnimationFrame(render); }
 

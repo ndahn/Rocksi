@@ -15,7 +15,7 @@ const dt = 0.02
 let world;
 let robotBodies = [];
 let initDone = false;
-const debugOn =  true;
+const debugOn =  false;
 
 function debug() {
     if (debugOn) {

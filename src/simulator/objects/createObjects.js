@@ -337,33 +337,32 @@ export function setTCSimObjectsOnClick(raycaster) {
         }
 
         if (controlledSimObject != undefined) {
-            removeTC(controlledSimObject);
+            removeTransformControl(controlledSimObject);
         }
 
-        activateTC(intersectedSimObj);
+        activateTransformControl(intersectedSimObj);
         controlledSimObject = intersectedSimObj;
     }
     else if (controlledSimObject != undefined) {
-        removeTC(controlledSimObject);
+        removeTransformControl(controlledSimObject);
         controlledSimObject = undefined;
     }
+
     requestAF();
 }
 
-function activateTC(simObject) {
+function activateTransformControl(simObject) {
     simObject.control.setMode('translate');
-    simObject.control.visible = true;
-    simObject.control.enabled = true;
+    simObject.setTransformControlEnabled(true);
 
     getScene().add(simObject.control);
 }
 
-function removeTC(simObject) {
+function removeTransformControl(simObject) {
     getScene().remove(simObject.control);
 
     simObject.control.setMode('rotate');
-    simObject.control.visible = false;    
-    simObject.control.enabled = false;
+    simObject.setTransformControlEnabled(false);
 }
 
 
@@ -415,7 +414,7 @@ export function getSimObjectByPos(position, accuracy = 0.3) {
     for (let i = 0; i < simObjectsLen; i++) {
         dist = simObjects[i].position.distanceTo(position);
         if (dist <= minDist) { 
-            min = dist;
+            minDist = dist;
             minIdx = i; 
         }
     }

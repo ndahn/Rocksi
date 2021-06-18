@@ -71,8 +71,12 @@ class TheSimulation {
         for (const simObject of simObjects) {
             simObject.reset();
             simObject.addTransformListeners();
-            if (visible) { simObject.makeVisible(); }
-            else if (!visible) { simObject.hide(); }
+            if (visible) { 
+                simObject.makeVisible(); 
+            }
+            else { 
+                simObject.hide(); 
+            }
         }
     }
 
@@ -89,6 +93,7 @@ class TheSimulation {
             'gripper_open': sim.gripper_open,
             'joint_absolute': sim.joint_absolute,
             'joint_relative': sim.joint_relative,
+            'startPhysicalBody': sim.startPhysicalBody,
             'getPhysicsDone': sim.getPhysicsDone,
         };
 
