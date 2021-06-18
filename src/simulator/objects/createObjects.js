@@ -298,16 +298,13 @@ export function setSimObjectHighlight(raycaster) {
         const intersectedSimObj = intersections[0].object.parent;
 
         if (intersectedSimObj.highlighted != intersected) {
+            const limit = simObjects.length;
+            for (let i = 0; i < limit; i++) {
+                simObjects[i].highlight(false);
+            }
 
             intersectedSimObj.highlight(intersected);
             workspace.highlightBlock(intersectedSimObj.name);
-
-            const limit = simObjects.length;
-            for (let i = 0; i < limit; i++) {
-                if (intersectedSimObj.name != simObjects[i].name) {
-                    simObjects[i].highlight(false);
-                }
-            }
         }
     } else {
         const limit = simObjects.length;
