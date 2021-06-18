@@ -7,9 +7,11 @@ export const BlocklyCustomDE = {
     LOAD: "\u{1F845} Programm laden",
     SAVE: "\u{1F847} Programm speichern",
     CODE_EXPORT: "\u2756 Code exportieren",
-
-    DUPLICATE_BLOCK: "\u25D0 Klonen",
+    INLINE_INPUTS: "\u25EB Horizontal anordnen",
+    EXTERNAL_INPUTS: "\u229F Vertikal anordnen",
+    DUPLICATE_BLOCK: "\uA698 Klonen",
     ADD_COMMENT: "\u270E Kommentar",
+    
     REMOVE_COMMENT: "\u{1F7A9} Kommentar löschen",
     COLLAPSE_BLOCK: "\u25F2 Reduzieren",
     EXPAND_BLOCK: "\u29C9 Erweitern",
