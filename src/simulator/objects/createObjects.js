@@ -333,7 +333,7 @@ export function setTCSimObjectsOnClick(raycaster) {
                     intersectedSimObj.control.setMode('translate');
             }
             requestAF();
-            return;
+            return intersected;
         }
 
         if (controlledSimObject != undefined) {
@@ -349,6 +349,7 @@ export function setTCSimObjectsOnClick(raycaster) {
     }
 
     requestAF();
+    return intersected;
 }
 
 function activateTransformControl(simObject) {

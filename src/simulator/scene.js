@@ -76,7 +76,8 @@ let pointerXY = new Vector2();
 let pointerDrag = false;
 
 let tcptarget, groundLine;
-let cameraControl, transformControl;
+let cameraControl, robotControl;
+let simObjectActive = false;
 let ik;
 
 const canHover = window.matchMedia('(hover: hover)').matches;
@@ -216,19 +217,20 @@ function initScene() {
 	groundLine.name = 'groundLine';
 	scene.add(groundLine);
 
-	transformControl = new TransformControls(camera, renderer.domElement);
-	transformControl.setSize(1.7);
-	transformControl.addEventListener("change", evt => requestAnimationFrame(render));
-	transformControl.addEventListener("objectChange", onTargetChange);
-	transformControl.addEventListener("dragging-changed", evt => cameraControl.enabled = !evt.value);
+	robotControl = new TransformControls(camera, renderer.domElement);
+	robotControl.setSize(1.7);
+	robotControl.addEventListener("change", evt => requestAnimationFrame(render));
+	robotControl.addEventListener("objectChange", onTargetChange);
+	robotControl.addEventListener("dragging-changed", evt => cameraControl.enabled = !evt.value);
 
 	// TODO setMode('rotate') on click event
-	transformControl.attach(tcptarget);
-	scene.add(transformControl);
+	robotControl.attach(tcptarget);
+	scene.add(robotControl);
 	
 	// TODO better support for phones and tablets: never show object TC, always show robot TC
 	if (canHover) {
-		transformControl.visible = false;
+		robotControl.visible = false;
+		robotControl.enabled = false;
         raycaster = new Raycaster();
 		container.addEventListener('pointermove', onPointerMove);
 		container.addEventListener('pointerdown', onPointerDown);
@@ -301,14 +303,21 @@ function onPointerMove(evt) {
 	pointerXY.y = -(evt.offsetY / container.clientHeight) * 2 + 1;
 
     raycaster.setFromCamera(pointerXY, camera);
-    const intersections = raycaster.intersectObjects([tcptarget]);
     setSimObjectHighlight(raycaster); //does this for all TransformControls of simObjects
-    let showTC = intersections.length > 0;
+	let showTC = false;
 
-    if (showTC !== transformControl.visible) {
-        transformControl.visible = showTC;
-        requestAnimationFrame(render);
+	// Only show the robot controls if no object is visible
+	if (!simObjectActive) {
+    	const intersections = raycaster.intersectObjects([tcptarget]);
+    	showTC = intersections.length > 0;
+	}
+
+    if (showTC !== robotControl.visible) {
+        robotControl.visible = showTC;
+		robotControl.enabled = showTC;
     }
+	
+	requestAnimationFrame(render);
 }
 
 function onPointerDown(evt) {
@@ -322,7 +331,7 @@ function onPointerUp(evt) {
 	if (pointerDrag || new Vector2(evt.offsetX, evt.offsetY).sub(pointerDownXY).length() > 5) {
 		return;
 	}
-	setTCSimObjectsOnClick(raycaster);
+	simObjectActive = setTCSimObjectsOnClick(raycaster);
 }
 
 
