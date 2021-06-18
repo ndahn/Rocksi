@@ -109,8 +109,11 @@ class MessageBox {
 	}
 
 	hide(msgboxBox) {
-		msgboxBox.classList.add("msgbox-box-hide");
-		document.querySelector(this.id).removeChild(msgboxBox);
+		try {
+			msgboxBox.classList.add("msgbox-box-hide");
+			document.querySelector(this.id).removeChild(msgboxBox);
+		}
+		catch {}
 	}
 }
 

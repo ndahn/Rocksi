@@ -71,7 +71,7 @@ switch (selectedRobot.toLowerCase()) {
 let container;
 let camera, scene, renderer;
 let raycaster;
-let pointerDownXY = new Vector2();
+let pointerDownPixels = new Vector2();
 let pointerXY = new Vector2();
 let pointerDrag = false;
 
@@ -218,7 +218,7 @@ function initScene() {
 	scene.add(groundLine);
 
 	robotControl = new TransformControls(camera, renderer.domElement);
-	robotControl.setSize(1.7);
+	robotControl.setSize(canHover ? 1.7 : 3);
 	robotControl.addEventListener("change", evt => requestAnimationFrame(render));
 	robotControl.addEventListener("objectChange", onTargetChange);
 	robotControl.addEventListener("dragging-changed", evt => cameraControl.enabled = !evt.value);
@@ -227,13 +227,10 @@ function initScene() {
 	robotControl.attach(tcptarget);
 	scene.add(robotControl);
 	
-	// TODO better support for phones and tablets: never show object TC, always show robot TC
-	if (canHover) {
-		robotControl.visible = false;
-		robotControl.enabled = false;
-        raycaster = new Raycaster();
-		enablePointerEvents();
-	}
+	robotControl.visible = false;
+	robotControl.enabled = false;
+	raycaster = new Raycaster();
+	enablePointerEvents();
 
 	let domParent = document.querySelector('.sim-container');
 	new ResizeSensor(domParent, onCanvasResize);
@@ -295,20 +292,32 @@ function render() {
 
 export function enablePointerEvents() {
 	if (canHover) {
-		container.addEventListener('pointermove', onPointerMove);
-		container.addEventListener('pointerdown', onPointerDown);
-		container.addEventListener('pointerup', onPointerUp);
+		container.addEventListener('pointermove', onHoverPointerMove);
+		container.addEventListener('pointerdown', onHoverPointerDown);
+		container.addEventListener('pointerup', onHoverPointerUp);
+	}
+	else {
+		container.addEventListener('pointermove', onClickPointerMove);
+		container.addEventListener('pointerdown', onClickPointerDown);
+		container.addEventListener('pointerup', onClickPointerUp);
 	}
 }
 
 export function disablePointerEvents() {
-	container.removeEventListener('pointermove', onPointerMove);
-	container.removeEventListener('pointerdown', onPointerDown);
-	container.removeEventListener('pointerup', onPointerUp);
+	if (canHover) {
+		container.removeEventListener('pointermove', onHoverPointerMove);
+		container.removeEventListener('pointerdown', onHoverPointerDown);
+		container.removeEventListener('pointerup', onHoverPointerUp);
+	}
+	else {
+		container.removeEventListener('pointermove', onClickPointerMove);
+		container.removeEventListener('pointerdown', onClickPointerDown);
+		container.removeEventListener('pointerup', onClickPointerUp);
+	}
 }
 
 
-function onPointerMove(evt) {
+function onHoverPointerMove(evt) {
 	evt.preventDefault();
 	pointerDrag = true;
 	
@@ -317,34 +326,74 @@ function onPointerMove(evt) {
 
     raycaster.setFromCamera(pointerXY, camera);
     setSimObjectHighlight(raycaster); //does this for all TransformControls of simObjects
-	let showTC = false;
+	let showRTC = false;
 
 	// Only show the robot controls if no object is visible
 	if (!simObjectActive) {
     	const intersections = raycaster.intersectObjects([tcptarget]);
-    	showTC = intersections.length > 0;
+    	showRTC = intersections.length > 0;
 	}
 
-    if (showTC !== robotControl.visible) {
-        robotControl.visible = showTC;
-		robotControl.enabled = showTC;
+    if (showRTC !== robotControl.visible) {
+        robotControl.visible = showRTC;
+		robotControl.enabled = showRTC;
     }
 	
 	requestAnimationFrame(render);
 }
 
-function onPointerDown(evt) {
+function onHoverPointerDown(evt) {
 	pointerDrag = false;
-	pointerDownXY.x = evt.offsetX;
-	pointerDownXY.y = evt.offsetY;
+	pointerDownPixels.x = evt.offsetX;
+	pointerDownPixels.y = evt.offsetY;
 }
 
-function onPointerUp(evt) {
+function onHoverPointerUp(evt) {
 	// Don't change transform controls if the pointer was dragged at least (5) pixels
-	if (pointerDrag || new Vector2(evt.offsetX, evt.offsetY).sub(pointerDownXY).length() > 5) {
+	if (pointerDrag || new Vector2(evt.offsetX, evt.offsetY).sub(pointerDownPixels).length() > 5) {
 		return;
 	}
 	simObjectActive = setTCSimObjectsOnClick(raycaster);
+}
+
+
+function onClickPointerMove(evt) {
+	evt.preventDefault();
+	pointerDrag = true;
+	requestAnimationFrame(render);
+}
+
+function onClickPointerDown(evt) {
+	pointerDrag = false;
+	pointerDownPixels.x = evt.offsetX;
+	pointerDownPixels.y = evt.offsetY;
+}
+
+function onClickPointerUp(evt) {
+	// Don't do anything if the pointer was dragged at least (5) pixels
+	if (pointerDrag || new Vector2(evt.offsetX, evt.offsetY).sub(pointerDownPixels).length() > 5) {
+		return;
+	}
+
+	pointerXY.x = (evt.offsetX / container.clientWidth) * 2 - 1;
+	pointerXY.y = -(evt.offsetY / container.clientHeight) * 2 + 1;
+	raycaster.setFromCamera(pointerXY, camera);
+
+	let showRTC = false;
+
+	// SimObjects first since they are harder to hit
+	let simObjectHit = setTCSimObjectsOnClick(raycaster);
+	if (!simObjectHit) {
+		let intersected = raycaster.intersectObjects([tcptarget]);
+		showRTC = intersected.length > 0;
+	}
+
+	if (showRTC !== robotControl.visible) {
+        robotControl.visible = showRTC;
+		robotControl.enabled = showRTC;
+    }
+	
+	requestAnimationFrame(render);
 }
 
 
@@ -359,6 +408,7 @@ export function getControl () {
         camera: camera,
         orbitControls: cameraControl,
         renderer: renderer,
+		canHover: canHover,
     }
     return contObj;
 }

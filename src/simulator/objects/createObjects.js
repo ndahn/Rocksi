@@ -316,7 +316,7 @@ export function setSimObjectHighlight(raycaster) {
 
 export function setTCSimObjectsOnClick(raycaster) {
     const intersections = raycaster.intersectObjects(simObjects, true);
-    const intersected = intersections.length > 0 && intersections[0].object.parent.highlighted;
+    const intersected = intersections.length > 0;
 
     if (intersected) {
         const intersectedSimObj = intersections[0].object.parent;
