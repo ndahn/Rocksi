@@ -331,7 +331,6 @@ export class SimObject extends Object3D {
     setTransformControlEnabled(enabled) {
         this.control.enabled = enabled;
         this.control.visible = enabled;
-        getControl().orbitControls.enabled = !enabled;
     }
 
     //callback for dragging-changed
