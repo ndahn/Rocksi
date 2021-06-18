@@ -3,7 +3,7 @@
 	max-width: 30%;
 	min-width: 300px;
 	position: fixed;
-	top: 15px;
+	bottom: 15px;
 	right: 20px;
 	z-index: 100;
 }

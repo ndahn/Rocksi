@@ -232,9 +232,7 @@ function initScene() {
 		robotControl.visible = false;
 		robotControl.enabled = false;
         raycaster = new Raycaster();
-		container.addEventListener('pointermove', onPointerMove);
-		container.addEventListener('pointerdown', onPointerDown);
-        container.addEventListener('pointerup', onPointerUp);
+		enablePointerEvents();
 	}
 
 	let domParent = document.querySelector('.sim-container');
@@ -292,6 +290,21 @@ function updateGroundLine() {
 function render() {
     renderer.render(scene, camera);
 	GUI.onRobotMoved(robot);
+}
+
+
+export function enablePointerEvents() {
+	if (canHover) {
+		container.addEventListener('pointermove', onPointerMove);
+		container.addEventListener('pointerdown', onPointerDown);
+		container.addEventListener('pointerup', onPointerUp);
+	}
+}
+
+export function disablePointerEvents() {
+	container.removeEventListener('pointermove', onPointerMove);
+	container.removeEventListener('pointerdown', onPointerDown);
+	container.removeEventListener('pointerup', onPointerUp);
 }
 
 

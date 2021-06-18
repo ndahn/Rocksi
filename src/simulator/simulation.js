@@ -70,7 +70,6 @@ class TheSimulation {
         const simObjects = getSimObjects();
         for (const simObject of simObjects) {
             simObject.reset();
-            simObject.addTransformListeners();
             if (visible) { 
                 simObject.makeVisible(); 
             }
@@ -426,7 +425,6 @@ class TheSimulation {
             simObjects[simObjectsIdx].makeVisible();
         }
 
-        simObjects[simObjectsIdx].removeTransformListners();
         //simObjects[simObjectsIdx].addBodyToWorld();
         simObjects[simObjectsIdx].updateBody();
         simObjects[simObjectsIdx].body.wakeUp();

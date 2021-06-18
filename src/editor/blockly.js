@@ -34,7 +34,7 @@ var Interpreter = require('js-interpreter');
 var ResizeSensor = require('css-element-queries/src/ResizeSensor');
 
 import Simulation from '../simulator/simulation'
-import { removeListeners, addListeners } from '../simulator/scene'
+import { disablePointerEvents, enablePointerEvents } from '../simulator/scene'
 
 
 var blocklyArea = document.querySelector('.blocks-container');
@@ -331,7 +331,7 @@ function executeProgram() {
         throw new Error('Program has not been compiled yet');
     }
 
-    removeListeners();
+    disablePointerEvents();
     interpreter.paused_ = false;
 
     try {
@@ -368,7 +368,7 @@ function onProgramError(e) {
     console.error('Program execution failed: ', e);
     popError(e + '\n' + (Blockly.Msg['SEE_CONSOLE'] || 'See console for additional details.'));
 
-    addListeners();
+    enablePointerEvents();
 }
 
 function onProgramFinished() {
@@ -383,7 +383,7 @@ function onProgramFinished() {
     console.log('Execution finished');
     popSuccess(Blockly.Msg['EXEC_SUCCESS'] || "Program finished");
 
-    addListeners();
+    enablePointerEvents();
 }
 
 //Determin if a add_sim_object-block was added or removed form the Blockly Workspace.
