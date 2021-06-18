@@ -354,6 +354,7 @@ function onHoverPointerUp(evt) {
 		return;
 	}
 	simObjectActive = setTCSimObjectsOnClick(raycaster);
+	requestAnimationFrame(render);
 }
 
 

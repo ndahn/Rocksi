@@ -285,6 +285,10 @@ export function remSimObjects(ids) {
 //transformControl event functions
 //Lights simObjects on mouseover, is called in scene.js by mouseover
 export function setSimObjectHighlight(raycaster) {
+    if (controlledSimObject != undefined) {
+        return;
+    }
+
     const intersections = raycaster.intersectObjects(simObjects, true);
     const intersected = intersections.length > 0;
     const workspace = Blockly.getMainWorkspace();
@@ -332,7 +336,7 @@ export function setTCSimObjectsOnClick(raycaster) {
                 default:
                     intersectedSimObj.control.setMode('translate');
             }
-            requestAF();
+            
             return intersected;
         }
 
@@ -344,11 +348,12 @@ export function setTCSimObjectsOnClick(raycaster) {
         controlledSimObject = intersectedSimObj;
     }
     else if (controlledSimObject != undefined) {
+        Blockly.getMainWorkspace().highlightBlock(null);
+        controlledSimObject.highlight(false);
         removeTransformControl(controlledSimObject);
         controlledSimObject = undefined;
     }
 
-    requestAF();
     return intersected;
 }
 
