@@ -426,11 +426,17 @@ export class SimObject extends Object3D {
     }
 
     checkGripperOrientation(robot) {
-        console.log('Robot links: ', robot.links);
+        console.log('Robot links: ', robot);
+        const tcp = robot.tcp.object;
+        robot.model.updateMatrixWorld(true);
+
         let zAxisRobot = new Vector3(0, 0, 1);
         let tcpQuat = new Quaternion();
         let simQuat = new Quaternion();
         let gripAxis = this.gripAxes[0];
+        const tcpPos = new Vector3;
+
+        tcp.getWorldPosition(tcpPos);
 
         tcp.getWorldQuaternion(tcpQuat);
         this.getWorldQuaternion(simQuat);
@@ -438,8 +444,40 @@ export class SimObject extends Object3D {
         zAxisRobot.applyQuaternion(tcpQuat);
         gripAxis.applyQuaternion(simQuat);
 
-        zAxisRobot.normalize();
-        checkPlane = new Plane();
+        let xi = gripAxis.angleTo(zAxisRobot);
+
+        console.log(this._radToDeg(xi));
+        //zAxisRobot.normalize();
+
+        const checkPlane = new Plane(zAxisRobot, tcpPos);
+        const help = new PlaneHelper(checkPlane, );
+        console.log('Plane: ', checkPlane);
+
+        const aVector = new Vector3(0, 1, 0); /*A vector that is normal
+                                                to the plane on the fingertip*/
+        const leftFinger = robot.hand.movable[0];
+        leftFinger.updateMatrixWorld(true);
+        let fingerQuat = new Quaternion();
+        console.log('fingerQuat: ', fingerQuat );
+        leftFinger.getWorldQuaternion(fingerQuat);
+        aVector.applyQuaternion(fingerQuat);
+
+        const aXz = new Vector3(0, 0, 0).crossVectors(aVector, zAxisRobot);
+        let roh = gripAxis.angleTo(aXz);
+        console.log('roh', this._radToDeg(roh));
+        console.log('aXz', aXz);
+        const projectionVec = new Vector3(1, 1, 1);
+        console.log('projectionVec: ', typeof projectionVec.x);
+        const pos = new Vector3;
+        this.updateMatrixWorld(true);
+        this.getWorldPosition(pos);
+        checkPlane.projectPoint (pos, projectionVec);
+        console.log('Point on Plane: ', projectionVec);
+        let phi = projectionVec.angleTo(aXz);
+        console.log('Phi: ', phi);
+
+
+
     }
 }
 
