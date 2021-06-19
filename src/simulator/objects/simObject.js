@@ -3,7 +3,9 @@ import { Vector3,
          Object3D,
          AxesHelper,
          MeshPhongMaterial,
-         Quaternion } from 'three';
+         Quaternion,
+         Plane,
+         PlaneHelper } from 'three';
 
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 
@@ -254,7 +256,7 @@ export class SimObject extends Object3D {
                 }
                 break;
 
-            case 'cylinder': 
+            case 'cylinder':
                 { // scoping variables
                     console.log('Body size: ', this.size);
                     const radiusTop = this.size.x * 0.5;
@@ -265,9 +267,9 @@ export class SimObject extends Object3D {
                     body.sleepSpeedLimit = 0.5;
                     body.sleepTimeLimit = 0.2;
                     body.addShape(cylinder);
-                } 
+                }
                 break;
-            
+
             case 'box':
             default:
             {
@@ -278,9 +280,9 @@ export class SimObject extends Object3D {
                 body.addShape(shape);
             }
         }
-        
+
         //body.allowSleep = false;
-        body.position.copy(this.position);
+        //body.position.copy(this.position);
         this.hasBody = true;
         this.mass = mass;
         this.body = body;
@@ -424,7 +426,25 @@ export class SimObject extends Object3D {
     }
 
     checkGripperOrientation(robot) {
-        let retrunVal = false;
+        console.log('Robot links: ', robot.links);
+        let zAxisRobot = new Vector3(0, 0, 1);
+        let tcpQuat = new Quaternion();
+        let simQuat = new Quaternion();
+        let gripAxis = this.gripAxes[0];
+
+        tcp.getWorldQuaternion(tcpQuat);
+        this.getWorldQuaternion(simQuat);
+
+        zAxisRobot.applyQuaternion(tcpQuat);
+        gripAxis.applyQuaternion(simQuat);
+
+        zAxisRobot.normalize();
+        checkPlane = new Plane();
+    }
+}
+
+
+/*        let retrunVal = false;
         const tcp = robot.tcp.object;
         let xAxisRobot = new Vector3(1, 0, 0); //x direction
         let yAxisRobot = new Vector3(0, 1, 0);
@@ -461,6 +481,4 @@ export class SimObject extends Object3D {
         }
 
         return retrunVal;
-    }
-
-}
+    }*/
