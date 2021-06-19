@@ -136,7 +136,7 @@ function loadAssetSTL(simObject, assetPath) {
     const size = new Vector3();
     loader.load(
         assetPath, (geometry) =>  {
-        const material = new MeshPhongMaterial( { color: simObject.colour} );
+        const material = new MeshPhongMaterial( { color: simObject.color} );
         const mesh = new Mesh( geometry, material );
 
         const sf = simObject.defaultScaleFactor.copy(new Vector3(.03, .03, .03));
@@ -321,7 +321,7 @@ export function setTCSimObjectsOnClick(raycaster) {
 
     if (intersected) {
         const intersectedSimObj = intersections[0].object.parent;
-        
+
         if (intersectedSimObj === controlledSimObject) {
             const mode = intersectedSimObj.control.getMode();
             switch (mode) {
@@ -333,7 +333,7 @@ export function setTCSimObjectsOnClick(raycaster) {
                 default:
                     intersectedSimObj.control.setMode('translate');
             }
-            
+
             return intersected;
         }
 
@@ -388,8 +388,8 @@ export function getSimObjects() {
 export function getSimObject(simObjectName) {
     const limit = simObjects.length;
     for (let i = 0; i < limit; i++) {
-      if (simObjectName == simObjects[i].name) { 
-          return simObjects[i]; 
+      if (simObjectName == simObjects[i].name) {
+          return simObjects[i];
         }
     }
     return undefined;
@@ -399,8 +399,8 @@ export function getSimObject(simObjectName) {
 export function getSimObjectIdx(simObjectName) {
     const limit = simObjects.length;
     for (let i = 0; i < limit; i++) {
-        if (simObjects[i].name == simObjectName) { 
-            return i; 
+        if (simObjects[i].name == simObjectName) {
+            return i;
         }
     }
 
@@ -412,13 +412,13 @@ export function getSimObjectByPos(position, accuracy = 0.3) {
     let minDist = 9999.0;
     let minIdx = -1;
     let dist;
-    
+
     const simObjectsLen = simObjects.length;
     for (let i = 0; i < simObjectsLen; i++) {
         dist = simObjects[i].position.distanceTo(position);
-        if (dist <= minDist) { 
+        if (dist <= minDist) {
             minDist = dist;
-            minIdx = i; 
+            minIdx = i;
         }
     }
 
@@ -443,8 +443,8 @@ export function isAttached() {
 export function getAttachedObject() {
     const limit = simObjects.length;
     for (let i = 0; i < limit; i++) {
-        if (simObjects[i].attached) { 
-            return simObjects[i] 
+        if (simObjects[i].attached) {
+            return simObjects[i]
         }
     }
     return undefined;
