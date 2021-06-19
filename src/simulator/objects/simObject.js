@@ -254,7 +254,7 @@ export class SimObject extends Object3D {
                 }
                 break;
 
-            case 'cylinder': 
+            case 'cylinder':
                 { // scoping variables
                     console.log('Body size: ', this.size);
                     const radiusTop = this.size.x * 0.5;
@@ -265,9 +265,9 @@ export class SimObject extends Object3D {
                     body.sleepSpeedLimit = 0.5;
                     body.sleepTimeLimit = 0.2;
                     body.addShape(cylinder);
-                } 
+                }
                 break;
-            
+
             case 'box':
             default:
             {
@@ -278,7 +278,7 @@ export class SimObject extends Object3D {
                 body.addShape(shape);
             }
         }
-        
+
         //body.allowSleep = false;
         body.position.copy(this.position);
         this.hasBody = true;
@@ -424,7 +424,12 @@ export class SimObject extends Object3D {
     }
 
     checkGripperOrientation(robot) {
-        let retrunVal = false;
+        console.log('Robot links: ', robot.links);
+    }
+}
+
+
+/*        let retrunVal = false;
         const tcp = robot.tcp.object;
         let xAxisRobot = new Vector3(1, 0, 0); //x direction
         let yAxisRobot = new Vector3(0, 1, 0);
@@ -461,6 +466,4 @@ export class SimObject extends Object3D {
         }
 
         return retrunVal;
-    }
-
-}
+    }*/
