@@ -423,31 +423,24 @@ export class SimObject extends Object3D {
     }
 
     checkGripperOrientation(robot) {
-        let returnVal = true;
+        let returnVal = false;
 
-        const scene = getScene();
+        //const scene = getScene();
+
+        //hand position for distCheck
+        const hand = robot.hand.links[0];
+        const handPos = new Vector3();
+        hand.getWorldPosition(handPos);
+
+        //tcp position and orientation for the axes
         const tcp = robot.tcp.object;
-
-        let zAxisTCP = new Vector3(0, 0, 1);
-
-        let tcpQuat = new Quaternion();
-        let simQuat = new Quaternion();
-
-        console.log('grip axis', this.gripAxis[0]);
-        let gripAxis = new Vector3(0, 1, 0);//this.gripAxes[0];
         const tcpPos = new Vector3();
-
+        const tcpQuat = new Quaternion();
         tcp.getWorldPosition(tcpPos);
-
         tcp.getWorldQuaternion(tcpQuat);
-        this.updateMatrixWorld(true);
-        this.getWorldQuaternion(simQuat);
-
+        const zAxisTCP = new Vector3(0, 0, 1);
         zAxisTCP.applyQuaternion(tcpQuat);
         zAxisTCP.normalize();
-
-        gripAxis.applyQuaternion(simQuat);
-        gripAxis.normalize();
 
         const fingerNormal = new Vector3(0, 1, 0); /*A vector that is normal
                                                     to the plane of the fingertip*/
@@ -457,36 +450,68 @@ export class SimObject extends Object3D {
         fingerNormal.applyQuaternion(fingerQuat);
         fingerNormal.normalize();
 
-        const fnCrossZ = new Vector3(0, 0, 0);
+        //Same for the simObject
+        let simQuat = new Quaternion();
+        let gripAxis = new Vector3().copy(this.gripAxes[0]);
+        this.getWorldQuaternion(simQuat);
+        gripAxis.applyQuaternion(simQuat);
+        gripAxis.normalize();
+        /*const fnCrossZ = new Vector3(0, 0, 0);
         fnCrossZ.crossVectors(fingerNormal, zAxisTCP);
-        fnCrossZ.normalize();
+        fnCrossZ.normalize();*/
 
-        const arrowHelperZtcp = new ArrowHelper( zAxisTCP, tcpPos, 5, 0xffff00 );//yellow
-        const arrowHelperyGrip = new ArrowHelper( fingerNormal, tcpPos, 5, 0xff00ff );//pink
-        const arrowObject = new ArrowHelper( gripAxis, tcpPos, 5, 0x00ff00 ); //green
-        const arrow = new ArrowHelper( fnCrossZ, tcpPos, 5, 0xff0000 ); //red
+        //helpers
+        //const arrowHelperZtcp = new ArrowHelper( zAxisTCP, tcpPos, 5, 0xffff00 );//yellow
+        //const arrowHelperyGrip = new ArrowHelper( fingerNormal, tcpPos, 5, 0xff00ff );//pink
+        //const arrowObject = new ArrowHelper( gripAxis, tcpPos, 5, 0x00ff00 ); //green
+        //const arrow = new ArrowHelper( fnCrossZ, tcpPos, 5, 0xff0000 ); //red
+        //scene.add(arrowHelperZtcp);
+        //scene.add(arrowHelperyGrip);
+        //scene.add(arrowObject);
+        //scene.add(arrow);
 
-        scene.add(arrowHelperZtcp);
-        scene.add(arrowHelperyGrip);
-        scene.add(arrowObject);
-        scene.add(arrow);
-
+        //Human readable angles...
         let xi = this._radToDeg(gripAxis.angleTo(zAxisTCP));
-        let roh = this._radToDeg(gripAxis.angleTo(fnCrossZ));
+        //let roh = this._radToDeg(gripAxis.angleTo(fnCrossZ));
         let tau = this._radToDeg(gripAxis.angleTo(fingerNormal));
 
-        console.log('Angle gripAxis to zAxisTCP (green to yellow)', xi);
-        console.log('Angle gripAxis to fnCrossZ (green to red)', roh);
-        console.log('Angle gripAxis to fingerNormal (green to pink)', tau);
+        console.log('Angle gripAxis to zAxisTCP, xi, (green to yellow)', xi);
+        //console.log('Angle gripAxis to fnCrossZ, roh, (green to red)', roh);
+        console.log('Angle gripAxis to fingerNormal, tau, (green to pink)', tau);
 
-        if (roh > 50) {
-            console.log('cannot grip');
-        } else if ( tau > 60){
-            console.log('cannot grip');
-        }   else {
-            console.log('can grip');
+        //distance check
+        let distance = this.position.distanceTo(tcpPos);
+        let distCheck = true;//distance >= tcpPos.distanceTo(handPos);
+        console.log('tcp hand distance', tcpPos.distanceTo(handPos));
+
+        if (75 < tau && tau < 115) { // check aginst the normal of the fingertip
+            if (0 < xi && xi < 15) { //check against the z-axis of the tcp
+
+                if (distCheck) {
+                    returnVal = true;
+                    console.log('can grip');
+                } else {
+                    returnVal = false;
+                    console.log('can not grip');
+                }
+            }
+            else if (170 < xi && xi < 185) { //check against the z-axis of the tcp
+                if (distCheck) {
+                    returnVal = true;
+                    console.log('can grip');
+                } else {
+                    returnVal = false;
+                    console.log('can not grip');
+                }
+            } else {
+                returnVal = true;
+                console.log('can grip');
+            }
+
+        } else {
+            returnVal = false;
+            console.log('can not grip');
         }
-
-
+        return returnVal;
     }
 }
