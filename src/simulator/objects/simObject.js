@@ -5,7 +5,8 @@ import { Vector3,
          MeshPhongMaterial,
          Quaternion,
          Plane,
-         PlaneHelper } from 'three';
+         PlaneHelper,
+         ArrowHelper } from 'three';
 
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 
@@ -380,36 +381,33 @@ export class SimObject extends Object3D {
         const sizeArray = [];
         const play = 0.01
         const upperLimit = (robot.hand.movable[0].limit.upper * robot.modelScale * 2) + play; //Two finger grippers only
-        console.log('Upper limit gripper', upperLimit);
-        console.log('this.size', this.size);
+
         this.size.toArray(sizeArray);
         if (Math.max(...sizeArray) <= upperLimit) {
             this.grippable = true;
             this.grippableAxisIndependent = true;
-            console.log('condition 0', sizeArray);
+
         } else if (Math.min(...sizeArray) <= upperLimit) {
             this.grippable = true;
             this.grippableAxisIndependent = false;
-            console.log('condition 1');
+
         } else {
             this.grippable = false;
             this.grippableAxisIndependent = false;
-            console.log('condition 2');
+
         }
-        console.log('The this ', this.name, 'is grippable', this.grippable);
-        console.log('The this ', this.name, 'is grippable on any axis', this.grippableAxisIndependent);
     }
 
     setGripAxes() {
         const sizeArray = [];
         const axisArray = [0, 0, 0];
-        this.gripAxes = []; //empty Vector3
+        this.gripAxes = [];
         this.size.toArray(sizeArray);
         const min = Math.min(...sizeArray);
         const max = Math.max(...sizeArray);
         let maxIdx;
         let minIdx;
-        console.log('min: ', min, 'max: ' , max);
+
         for (let i = 0; i < sizeArray.length; i++) {
             if (sizeArray[i] === max) {
                 maxIdx = i;
@@ -420,103 +418,75 @@ export class SimObject extends Object3D {
         }
         axisArray[maxIdx] = 1;
         const axis = new Vector3().fromArray(axisArray);
-        console.log(axisArray);
-        console.log(axis);
+
         this.gripAxes.push(axis);
     }
 
     checkGripperOrientation(robot) {
-        console.log('Robot links: ', robot);
-        const tcp = robot.tcp.object;
-        robot.model.updateMatrixWorld(true);
+        let returnVal = true;
 
-        let zAxisRobot = new Vector3(0, 0, 1);
+        const scene = getScene();
+        const tcp = robot.tcp.object;
+
+        let zAxisTCP = new Vector3(0, 0, 1);
+
         let tcpQuat = new Quaternion();
         let simQuat = new Quaternion();
-        let gripAxis = this.gripAxes[0];
-        const tcpPos = new Vector3;
+
+        console.log('grip axis', this.gripAxis[0]);
+        let gripAxis = new Vector3(0, 1, 0);//this.gripAxes[0];
+        const tcpPos = new Vector3();
 
         tcp.getWorldPosition(tcpPos);
 
         tcp.getWorldQuaternion(tcpQuat);
+        this.updateMatrixWorld(true);
         this.getWorldQuaternion(simQuat);
 
-        zAxisRobot.applyQuaternion(tcpQuat);
+        zAxisTCP.applyQuaternion(tcpQuat);
+        zAxisTCP.normalize();
+
         gripAxis.applyQuaternion(simQuat);
+        gripAxis.normalize();
 
-        let xi = gripAxis.angleTo(zAxisRobot);
-
-        console.log(this._radToDeg(xi));
-        //zAxisRobot.normalize();
-
-        const checkPlane = new Plane(zAxisRobot, tcpPos);
-        const help = new PlaneHelper(checkPlane, );
-        console.log('Plane: ', checkPlane);
-
-        const aVector = new Vector3(0, 1, 0); /*A vector that is normal
-                                                to the plane on the fingertip*/
+        const fingerNormal = new Vector3(0, 1, 0); /*A vector that is normal
+                                                    to the plane of the fingertip*/
         const leftFinger = robot.hand.movable[0];
-        leftFinger.updateMatrixWorld(true);
         let fingerQuat = new Quaternion();
-        console.log('fingerQuat: ', fingerQuat );
         leftFinger.getWorldQuaternion(fingerQuat);
-        aVector.applyQuaternion(fingerQuat);
+        fingerNormal.applyQuaternion(fingerQuat);
+        fingerNormal.normalize();
 
-        const aXz = new Vector3(0, 0, 0).crossVectors(aVector, zAxisRobot);
-        let roh = gripAxis.angleTo(aXz);
-        console.log('roh', this._radToDeg(roh));
-        console.log('aXz', aXz);
-        const projectionVec = new Vector3(1, 1, 1);
-        console.log('projectionVec: ', typeof projectionVec.x);
-        const pos = new Vector3;
-        this.updateMatrixWorld(true);
-        this.getWorldPosition(pos);
-        checkPlane.projectPoint (pos, projectionVec);
-        console.log('Point on Plane: ', projectionVec);
-        let phi = projectionVec.angleTo(aXz);
-        console.log('Phi: ', phi);
+        const fnCrossZ = new Vector3(0, 0, 0);
+        fnCrossZ.crossVectors(fingerNormal, zAxisTCP);
+        fnCrossZ.normalize();
 
+        const arrowHelperZtcp = new ArrowHelper( zAxisTCP, tcpPos, 5, 0xffff00 );//yellow
+        const arrowHelperyGrip = new ArrowHelper( fingerNormal, tcpPos, 5, 0xff00ff );//pink
+        const arrowObject = new ArrowHelper( gripAxis, tcpPos, 5, 0x00ff00 ); //green
+        const arrow = new ArrowHelper( fnCrossZ, tcpPos, 5, 0xff0000 ); //red
+
+        scene.add(arrowHelperZtcp);
+        scene.add(arrowHelperyGrip);
+        scene.add(arrowObject);
+        scene.add(arrow);
+
+        let xi = this._radToDeg(gripAxis.angleTo(zAxisTCP));
+        let roh = this._radToDeg(gripAxis.angleTo(fnCrossZ));
+        let tau = this._radToDeg(gripAxis.angleTo(fingerNormal));
+
+        console.log('Angle gripAxis to zAxisTCP (green to yellow)', xi);
+        console.log('Angle gripAxis to fnCrossZ (green to red)', roh);
+        console.log('Angle gripAxis to fingerNormal (green to pink)', tau);
+
+        if (roh > 50) {
+            console.log('cannot grip');
+        } else if ( tau > 60){
+            console.log('cannot grip');
+        }   else {
+            console.log('can grip');
+        }
 
 
     }
 }
-
-
-/*        let retrunVal = false;
-        const tcp = robot.tcp.object;
-        let xAxisRobot = new Vector3(1, 0, 0); //x direction
-        let yAxisRobot = new Vector3(0, 1, 0);
-        let zAxisRobot = new Vector3(0, 0, 1);
-        let gripAxis = this.gripAxes[0];
-        console.log(this.gripAxes[0]);
-        let tcpQuat = new Quaternion();
-        let simQuat = new Quaternion();
-
-        tcp.getWorldQuaternion(tcpQuat);
-        this.getWorldQuaternion(simQuat);
-
-        yAxisRobot.applyQuaternion(tcpQuat);
-        zAxisRobot.applyQuaternion(tcpQuat);
-        gripAxis.applyQuaternion(simQuat);
-
-        xAxisRobot.normalize();
-        yAxisRobot.normalize();
-        gripAxis.normalize();
-
-        let dotProY = gripAxis.dot(yAxisRobot);
-        let dotProZ = gripAxis.dot(zAxisRobot);
-
-        dotProY = Math.abs(dotProY);
-        dotProZ = Math.abs(dotProZ);
-
-        console.log('dotProY: ', dotProY);
-        console.log('dotProZ: ', dotProZ);
-
-        if (dotProY < 1 && dotProY > 0.85 && dotProZ < 0.1) {
-            retrunVal = false;
-        } else {
-            retrunVal = true;
-        }
-
-        return retrunVal;
-    }*/
