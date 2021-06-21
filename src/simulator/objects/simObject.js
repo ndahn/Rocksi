@@ -1,10 +1,11 @@
 import { Vector3,
          Euler,
          Object3D,
+         Box3,
+         Plane,
          AxesHelper,
          MeshPhongMaterial,
          Quaternion,
-         Plane,
          PlaneHelper,
          ArrowHelper } from 'three';
 
@@ -42,6 +43,8 @@ export class SimObject extends Object3D {
         this.attached = false;
         this.hasBody = false;
         this.body = undefined;
+        this.checkBox = undefined;
+        this.checkSphere = undefined;
         this.control = undefined;
         this._fieldValues = [5, 0, 0, 0, 0, 0];
         this.color = '#eb4034'
@@ -55,6 +58,7 @@ export class SimObject extends Object3D {
         this.grippableAxisIndependent = true;
         this.gripAxes = [];
         this.advancedGrippingOff = false;
+        this.floorHit;
     }
 
     //Positioning
@@ -112,6 +116,17 @@ export class SimObject extends Object3D {
 
     //callback for objectChange
     _objectChange() {
+        /*if (this.control.visible && !this.attached) {
+            const checkBox = new Box3().setFromObject(this);
+            const floor = new Plane(new Vector3(0, 0, 1));
+            if (floor.intersectsBox(checkBox) && !this.floorHit) {
+                const distance = floor.distanceToPoint(this.position);
+                this.floorHit = true;
+                this.position.z = this.size.z * .5 * this.scaleFactor;
+            } else if (!floor.intersectsBox(checkBox) && this.floorHit) {
+                this.floorHit = false;
+            }
+        }*/
         if (this.control.visible && !this.attached) {
             if (this.position.z < 0) {
                 this.position.z = this.size.z * .5;
@@ -239,8 +254,6 @@ export class SimObject extends Object3D {
         this.updateFromFieldValues()
         this.attached = false;
         this.removeBodyFromWorld()
-        //const sf = this.defaultScaleFactor;
-        //this.scale.copy(sf);
         this.render();
     }
 
@@ -262,7 +275,6 @@ export class SimObject extends Object3D {
 
             case 'cylinder':
                 { // scoping variables
-                    console.log('Body size: ', this.size);
                     const radiusTop = this.size.x * 0.5 * this.scaleFactor;
                     const radiusBottom =  this.size.z * 0.5 * this.scaleFactor;
                     const height = this.size.y * this.scaleFactor;
@@ -287,15 +299,12 @@ export class SimObject extends Object3D {
             }
         }
 
-        //body.allowSleep = false;
-        //body.position.copy(this.position);
         this.hasBody = true;
         this.mass = mass;
         this.body = body;
         this.body.name = this.name;
         this.body.sleep();
         this.updateBody();
-        //world.addBody(this.body);
     }
 
     updateBody() {
@@ -327,7 +336,7 @@ export class SimObject extends Object3D {
         this.control.setSize(controlObj.canHover ? 1.25 : 2.5);
 
         this.control.addEventListener('dragging-changed', evt => this._draggingCanged(evt));
-        this.control.addEventListener('objectChange', () => this._objectChange);
+        this.control.addEventListener('objectChange', () => this._objectChange());
 
         this.control.attach(this);
         scene.add(this.control);
@@ -403,6 +412,8 @@ export class SimObject extends Object3D {
             this.grippable = false;
             this.grippableAxisIndependent = false;
         }
+        console.log('simObject ', this.name, 'is grippable: ', this.grippable);
+        console.log('simObject ', this.name, 'is grippable on any axis: ', this.grippableAxisIndependent);
     }
 
     setGripAxes() {

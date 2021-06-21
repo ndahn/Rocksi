@@ -66,14 +66,14 @@ function createSphereMesh(simObject) {
 //adds a geometry to a simObject
 export function addGeometry(simObject) {
     const size = new Vector3();
-    const tmpBox =new Box3();
+    const checkBox = new Box3();
     switch (simObject.shape) {
         case 'cube':
             simObject.size.copy(new Vector3(.4, .4, .4));
             const cubeMesh = createBoxMesh(simObject);
-            tmpBox.setFromObject(cubeMesh);
+            checkBox.setFromObject(cubeMesh);
             simObject.bodyShape = 'box';
-            tmpBox.getSize(size);
+            checkBox.getSize(size);
             simObject.size.copy(size);
             simObject.add(cubeMesh);
             simObject.createBody(0.5, 2, 0.1);//mass, friction, restitution
@@ -84,8 +84,8 @@ export function addGeometry(simObject) {
             const rockMesh = makeRock(50, simObject.size.z, simObject.colour);
             rockMesh.geometry.computeBoundingBox();
             rockMesh.geometry.center();
-            tmpBox.setFromObject(rockMesh);
-            tmpBox.getSize(size);
+            checkBox.setFromObject(rockMesh);
+            checkBox.getSize(size);
             simObject.bodyShape = 'box';
             simObject.size.copy(size);
             simObject.add(rockMesh);
@@ -97,12 +97,15 @@ export function addGeometry(simObject) {
             const sphereMesh = createSphereMesh(simObject);
             sphereMesh.geometry.computeBoundingSphere();
             sphereMesh.geometry.computeBoundingBox();
-            tmpBox.setFromObject(sphereMesh);
-            tmpBox.getSize(size);
+            checkBox.setFromObject(sphereMesh);
+            checkBox.getSize(size);
             simObject.size.copy(size);
             simObject.radius = sphereMesh.geometry.boundingSphere.radius;
             simObject.bodyShape = 'sphere';
             simObject.add(sphereMesh);
+            //simObject.add(checkBox);
+            //const checkSphere = new Sphere(simObject.position, simObject.radius);
+            //simObject.checkSphere = checkSphere;
             simObject.createBody(2.1, 1, 0.1);//mass, friction, restitution
             simObject.setGrippable();
             simObject.setGripAxes();
@@ -110,7 +113,7 @@ export function addGeometry(simObject) {
         case 'shaft':
             const assetPath = '/models/simObject_shapes/shaft/shaft.stl';
             const shape = 'cylinder';
-            loadAssetSTL(simObject, assetPath, shape);
+            loadAssetSTL(simObject, assetPath, shape); //I have use the promise stuff here...
             break;
         case 'custom':
             loadUserSTL(simObject); //Body creation etc in event callback
@@ -120,9 +123,6 @@ export function addGeometry(simObject) {
             break;
     }
 
-    const axesHelper = new AxesHelper(5);
-    simObject.axesHelper = axesHelper;
-    //simObject.add(axesHelper);
 }
 
 function loadAssetSTL(simObject, assetPath, shape) {
@@ -189,8 +189,8 @@ function loadSTL(simObject, data){
     mesh.geometry = geometry;
     mesh.material = material;
 
-    const sf = simObject.defaultScaleFactor;
-    mesh.scale.copy(sf);
+    const sf = simObject.scaleFactor;
+    mesh.scale.set(sf, sf, sf);
 
     mesh.geometry.computeBoundingBox();
     mesh.geometry.center();
@@ -241,7 +241,7 @@ export function placeCubes(simObject){
     const limit = simObjects.length;
     for (let k = 0; k < limit; k++) {
         if (simObject.position.distanceTo(simObjects[k].position)
-                    < (simObject.size.z * .5)
+                    < (simObject.size.z * .5 * simObject.scaleFactor)
                     && simObject.name != simObjects[k].name) {
             shift = simObject.size.z;
         }
