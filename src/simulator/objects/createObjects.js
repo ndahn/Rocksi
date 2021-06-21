@@ -134,8 +134,8 @@ function loadAssetSTL(simObject, assetPath, shape) {
         const material = new MeshPhongMaterial( { color: simObject.color} );
         const mesh = new Mesh( geometry, material );
 
-        const sf = simObject.defaultScaleFactor.copy(new Vector3(.03, .03, .03));
-        mesh.scale.copy(sf);
+        simObject.scaleFactor = 0.3;
+        mesh.scale.copy(new Vector3(.03, .03, .03));
 
         mesh.geometry.computeBoundingBox();
         mesh.geometry.center();

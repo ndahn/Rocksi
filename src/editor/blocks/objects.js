@@ -1,4 +1,5 @@
 import * as Blockly from "blockly";
+import '@blockly/field-slider';
 import { getSimObject,
          getSimObjectIdx,
          randomColour,
@@ -88,6 +89,18 @@ Blockly.Blocks['add_sim_object'] = {
                     check: "TaskspacePose",
                 },
             ],
+            message3: "in der Skalierung %1 ",
+            args3:[
+                {
+                    type: "field_slider",
+                    name: "SCALE",
+                    value: 1,
+                    min: 0.001,
+                    max: 10,
+                    precision: 0.001
+
+                },
+            ],
             inputsInline: false,
             previousStatement: null,
             nextStatement: null,
@@ -138,6 +151,11 @@ Blockly.Blocks['add_sim_object'] = {
         if (event.blockId === this.id && event.name == 'OBJECT_SHAPE') {
             simObject.changeShape(event.newValue);
         }
+
+        if (event.blockId === this.id && event.name == 'SCALE') {
+            simObject.setScale(event.newValue);
+        }
+
 
         if (colorBlock != null) {
             let color = simObject.color;

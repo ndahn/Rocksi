@@ -50,7 +50,7 @@ export class SimObject extends Object3D {
         this.radius = 0;
         this.mass = 0;
         this.size = new Vector3(0.5, 0.5, 0.5);
-        this.defaultScaleFactor = new Vector3(1, 1, 1);
+        this.scaleFactor = 1;
         this.grippable = true;
         this.grippableAxisIndependent = true;
         this.gripAxes = [];
@@ -210,6 +210,15 @@ export class SimObject extends Object3D {
         }
     }
 
+    setScale(scale) {
+        this.scaleFactor = scale;
+        this.scale.set(scale, scale, scale);
+        this.createBody(0.5, 2, 0.1);
+        this.setGrippable();
+        this.setGripAxes();
+        this.render();
+    }
+
     changeShape(shape) {
         this.shape = shape;
         const world = getWorld();
@@ -244,7 +253,7 @@ export class SimObject extends Object3D {
         switch (this.bodyShape){
             case 'sphere':
                 { // scoping variables
-                    const sphere = new Sphere(this.radius);
+                    const sphere = new Sphere(this.radius * this.scaleFactor );
                     body.sleepSpeedLimit = 1.2;
                     body.sleepTimeLimit = 0.2;
                     body.addShape(sphere);
@@ -254,9 +263,9 @@ export class SimObject extends Object3D {
             case 'cylinder':
                 { // scoping variables
                     console.log('Body size: ', this.size);
-                    const radiusTop = this.size.x * 0.5;
-                    const radiusBottom =  this.size.z * 0.5;
-                    const height = this.size.y;
+                    const radiusTop = this.size.x * 0.5 * this.scaleFactor;
+                    const radiusBottom =  this.size.z * 0.5 * this.scaleFactor;
+                    const height = this.size.y * this.scaleFactor;
                     const numSegments = 12
                     const cylinder = new Cylinder(radiusTop, radiusBottom, height, numSegments)
                     body.sleepSpeedLimit = 0.5;
@@ -269,7 +278,9 @@ export class SimObject extends Object3D {
             default:
             {
                 //cannon size is defined from the center
-                const shape = new Box(new Vec3(this.size.x * 0.5, this.size.y * 0.5, this.size.z * 0.5))
+                const shape = new Box(new Vec3(this.size.x * 0.5 * this.scaleFactor,
+                                               this.size.y * 0.5 * this.scaleFactor,
+                                               this.size.z * 0.5 * this.scaleFactor))
                 body.sleepSpeedLimit = 0.5;
                 body.sleepTimeLimit = 0.2;
                 body.addShape(shape);
@@ -380,18 +391,17 @@ export class SimObject extends Object3D {
         const upperLimit = 0.8//(robot.hand.movable[0].limit.upper * robot.modelScale * 2) + play; //Two finger grippers only
 
         this.size.toArray(sizeArray);
-        if (Math.max(...sizeArray) <= upperLimit) {
+        if ((Math.max(...sizeArray)) * this.scaleFactor <= upperLimit) {
             this.grippable = true;
             this.grippableAxisIndependent = true;
 
-        } else if (Math.min(...sizeArray) <= upperLimit) {
+        } else if ((Math.min(...sizeArray)) * this.scaleFactor <= upperLimit) {
             this.grippable = true;
             this.grippableAxisIndependent = false;
 
         } else {
             this.grippable = false;
             this.grippableAxisIndependent = false;
-
         }
     }
 
