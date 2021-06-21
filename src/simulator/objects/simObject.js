@@ -376,8 +376,8 @@ export class SimObject extends Object3D {
     setGrippable() {
         const robot = getRobot();
         const sizeArray = [];
-        const play = 0.01
-        const upperLimit = (robot.hand.movable[0].limit.upper * robot.modelScale * 2) + play; //Two finger grippers only
+        const play = 0.2
+        const upperLimit = 0.8//(robot.hand.movable[0].limit.upper * robot.modelScale * 2) + play; //Two finger grippers only
 
         this.size.toArray(sizeArray);
         if (Math.max(...sizeArray) <= upperLimit) {
