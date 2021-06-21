@@ -19,7 +19,8 @@ import './generators/javascript'
 import { addSimObject,
          remSimObjects,
          getSimObjects,
-         randomColour } from '../simulator/objects/createObjects'
+         randomColour,
+         getControledSimObject } from '../simulator/objects/createObjects'
 
 
 import { popSuccess, popWarning, popError, popInfo } from '../alert'
@@ -332,6 +333,8 @@ function executeProgram() {
     }
 
     disablePointerEvents();
+    let controlledSimObject = getControledSimObject()
+    controlledSimObject = undefined;
     interpreter.paused_ = false;
 
     try {
