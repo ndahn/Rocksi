@@ -67,9 +67,6 @@ function createSphereMesh(simObject) {
 export function addGeometry(simObject) {
     const size = new Vector3();
     const tmpBox =new Box3();
-    if (simObject.axesHelper != undefined) {
-        simObject.axesHelper.dispose();
-    }
     switch (simObject.shape) {
         case 'cube':
             simObject.size.copy(new Vector3(.4, .4, .4));
@@ -90,9 +87,6 @@ export function addGeometry(simObject) {
             tmpBox.setFromObject(rockMesh);
             tmpBox.getSize(size);
             simObject.bodyShape = 'box';
-            size.x += Math.random() * 0.001;
-            size.y += Math.random() * 0.001;
-            size.z += Math.random() * 0.001;
             simObject.size.copy(size);
             simObject.add(rockMesh);
             simObject.createBody(3, 2, 0.01);//mass, friction, restitution
@@ -115,7 +109,8 @@ export function addGeometry(simObject) {
             break;
         case 'shaft':
             const assetPath = '/models/simObject_shapes/shaft/shaft.stl';
-            loadAssetSTL(simObject, assetPath);
+            const shape = 'cylinder';
+            loadAssetSTL(simObject, assetPath, shape);
             break;
         case 'custom':
             loadUserSTL(simObject); //Body creation etc in event callback
@@ -130,7 +125,7 @@ export function addGeometry(simObject) {
     //simObject.add(axesHelper);
 }
 
-function loadAssetSTL(simObject, assetPath) {
+function loadAssetSTL(simObject, assetPath, shape) {
     //const filePath = '/models/simObject_shapes/shaft/shaft.stl';
     const loader = new STLLoader();
     const size = new Vector3();
@@ -151,7 +146,7 @@ function loadAssetSTL(simObject, assetPath) {
         simObject.size.copy(size);
         simObject.add(mesh);
 
-        simObject.bodyShape = 'cylinder';
+        simObject.bodyShape = shape;
         simObject.createBody(5, 2, 0.1);//mass, friction, restitution
 
         simObject.setGrippable();
@@ -408,7 +403,7 @@ export function getSimObjectIdx(simObjectName) {
 }
 
 //Returns the simObject to a corresponding threejs world position, with given accuracy
-export function getSimObjectByPos(position, accuracy = 0.3) {
+export function getSimObjectByPos(position) {
     let minDist = 9999.0;
     let minIdx = -1;
     let dist;
@@ -467,7 +462,6 @@ export function randomColour() {
 }
 
 export function vector3ToVec3(vector3) {
-    console.log(vector3);
     const result = new Vec3();
     result.x = vector3.x;
     result.y = vector3.y;

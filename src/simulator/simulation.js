@@ -69,12 +69,15 @@ class TheSimulation {
     resetSimObjects(visible = true) {
         const simObjects = getSimObjects();
         for (const simObject of simObjects) {
-            simObject.reset();
-            if (visible) { 
-                simObject.makeVisible(); 
+            if (simObject.attached) {
+                simObject.detachFromGripper(this.robot);
             }
-            else { 
-                simObject.hide(); 
+            simObject.reset();
+            if (visible) {
+                simObject.makeVisible();
+            }
+            else {
+                simObject.hide();
             }
         }
     }
@@ -305,15 +308,19 @@ class TheSimulation {
         const start = {};
         const target = {};
         const tcp = robot.tcp.object;
-        let position = new Vector3;
+        let position = new Vector3();
 
         tcp.getWorldPosition(position);
 
-        const simObject = getSimObjectByPos(position, 1.5);
+        const simObject = getSimObjectByPos(position);
 
         if (simObject != undefined) {
-            if (simObject.advancedGrippingOff && isAttached() == false && robot.isGripperOpen()) { //override
+            if (simObject.advancedGrippingOff
+                && isAttached() == false
+                && robot.isGripperOpen()) { //override
+
                 simObject.attachToGripper(robot);
+
                 for (const finger of robot.hand.movable) {
                     start[finger.name] = finger.angle;
                     target[finger.name] = finger.limit.lower;  // fully closed
@@ -337,7 +344,9 @@ class TheSimulation {
                       && !simObject.isGrippableAxisIndependent()) {
 
                 if (simObject.checkGripperOrientation(robot)) {
+
                     simObject.attachToGripper(robot);
+
                     for (const finger of robot.hand.movable) {
                             start[finger.name] = finger.angle;
                             target[finger.name] = finger.limit.lower;// - (simObject.size.x * 0.2);//This is just for testing, Lukas
@@ -424,8 +433,7 @@ class TheSimulation {
             simObjects[simObjectsIdx].reset();
             simObjects[simObjectsIdx].makeVisible();
         }
-
-        //simObjects[simObjectsIdx].addBodyToWorld();
+        simObjects[simObjectsIdx].addBodyToWorld();
         simObjects[simObjectsIdx].updateBody();
         simObjects[simObjectsIdx].body.wakeUp();
         if (simObjectsIdx + 1 >= simObjects.length) {
@@ -445,12 +453,12 @@ class TheSimulation {
                  && !isWorldActive()) {
 
                      this.physicsDone = true;
-            } else { 
-                this.physicsDone = false; 
+            } else {
+                this.physicsDone = false;
             }
         }
         else {
-            this.physicsDone = true;
+            //this.physicsDone = true;
         }
 
         return this.physicsDone;

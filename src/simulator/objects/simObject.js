@@ -34,8 +34,6 @@ import { Box,
 
 import * as Blockly from 'blockly/core'
 
-const debug = true;
-
 export class SimObject extends Object3D {
     constructor() {
         super();
@@ -54,9 +52,6 @@ export class SimObject extends Object3D {
         this.mass = 0;
         this.size = new Vector3(0.5, 0.5, 0.5);
         this.defaultScaleFactor = new Vector3(1, 1, 1);
-        if (debug) {
-          this.axesHelper = undefined;
-        }
         this.grippable = true;
         this.grippableAxisIndependent = true;
         this.gripAxes = [];
@@ -159,7 +154,7 @@ export class SimObject extends Object3D {
         const scene = getScene();
         const world = getWorld();
 
-        //if (this.hasBody) { world.removeBody(this.body); }
+        if (this.hasBody) { world.removeBody(this.body); }
         if (this.isAttached) { scene.attach(this) }
 
         this.control.visible = true; //otherwise the renderer throws an error.
@@ -174,7 +169,6 @@ export class SimObject extends Object3D {
     makeVisible() {
         const scene = getScene();
         scene.add(this.control);
-        //scene.add(this);
         this.visible = true;
         this.render();
     }
@@ -184,7 +178,6 @@ export class SimObject extends Object3D {
         scene.remove(this.control);
         this.setTransformControlEnabled(false);
         this.visible = false;
-        //scene.remove(this);
         this.render();
     }
 
@@ -236,8 +229,9 @@ export class SimObject extends Object3D {
     reset() {
         this.updateFromFieldValues()
         this.attached = false;
-        const sf = this.defaultScaleFactor;
-        this.scale.copy(sf);
+        this.removeBodyFromWorld()
+        //const sf = this.defaultScaleFactor;
+        //this.scale.copy(sf);
         this.render();
     }
 
@@ -290,7 +284,7 @@ export class SimObject extends Object3D {
         this.body.name = this.name;
         this.body.sleep();
         this.updateBody();
-        world.addBody(this.body);
+        //world.addBody(this.body);
     }
 
     updateBody() {
@@ -345,10 +339,9 @@ export class SimObject extends Object3D {
     //Interactions
     detachFromGripper(robot) {
         const scene = getScene();
+        scene.attach(this);
         this.attached = false;
         this.control.enabled = true;
-        scene.attach(this);
-        this.updateMatrixWorld();
         this.addBodyToWorld();
         this.updateBody();
         this.body.wakeUp();
@@ -357,14 +350,18 @@ export class SimObject extends Object3D {
     }
 
     attachToGripper(robot) {
+
+        this.removeBodyFromWorld();
         const scene = getScene();
         const tcp = robot.tcp.object;
         this.attached = true;
         this.wasGripped = true;
         this.control.enabled = false;
         scene.remove(this.control);
-        this.removeBodyFromWorld();
         tcp.attach(this);
+        //this.position.set(0, 0, 0);
+        this.updateBody();/* this is important, i dont know why
+                            updateBody has to be the last thing to be executed...*/
         console.log('> Object gripped!');
     }
 
