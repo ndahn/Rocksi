@@ -363,8 +363,8 @@ function removeTransformControl(simObject) {
     simObject.setTransformControlEnabled(false);
 }
 
-export function getControledSimObject() {
-    return controlledSimObject;
+export function remControledSimObject() {
+    controlledSimObject = undefined;
 }
 
 //Functions for getting simObjects

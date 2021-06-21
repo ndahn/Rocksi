@@ -16,13 +16,12 @@ import { requestAF,
          getControl } from '../scene';
 
 import { getWorld,
-         updateBodies,
-         updateCollisionBodies } from '../physics';
+         updateBodies } from '../physics';
 
 import { addSimObject,
          remSimObjects,
          addGeometry,
-         simObjectCollision } from './createObjects'
+         remControledSimObject } from './createObjects'
 
 import { Box,
          Vec3,
@@ -222,6 +221,7 @@ export class SimObject extends Object3D {
         }
         world.removeBody(this.body);
         addGeometry(this);
+        remControledSimObject();
         this.addToScene();
         console.log('Changed to shape: ', shape);
     }
