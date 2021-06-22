@@ -116,22 +116,24 @@ export class SimObject extends Object3D {
 
     //callback for objectChange
     _objectChange() {
-        /*if (this.control.visible && !this.attached) {
+        if (this.control.visible && !this.attached) {
             const checkBox = new Box3().setFromObject(this);
             const floor = new Plane(new Vector3(0, 0, 1));
-            if (floor.intersectsBox(checkBox) && !this.floorHit) {
-                const distance = floor.distanceToPoint(this.position);
-                this.floorHit = true;
-                this.position.z = this.size.z * .5 * this.scaleFactor;
-            } else if (!floor.intersectsBox(checkBox) && this.floorHit) {
-                this.floorHit = false;
+            const distance = floor.distanceToPoint(this.position);
+            if (floor.intersectsBox(checkBox)) {
+                this.control.enabled = false;
+                this.position.z = this.position.z + 0.001
+                return this._objectChange();
+
+            } else if (distance < 0) {
+                this.position.z = 0;
+                this.control.enabled = false;
+                return this._objectChange();
             }
-        }*/
-        if (this.control.visible && !this.attached) {
-            if (this.position.z < 0) {
-                this.position.z = this.size.z * .5;
+            else {
+                this.control.enabled = true;
+                return;
             }
-            this.render();
         }
     }
 
