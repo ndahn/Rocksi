@@ -132,16 +132,17 @@ Blockly.Blocks['add_sim_object'] = {
 	onchange: function (event) {
         const poseBlock = this.getInputTargetBlock('POSE');
         const colorBlock = this.getInputTargetBlock('COLOUR');
-        /*if (pose != null && event.blockId === pose.id && fieldKeys.includes(event.name)) {
+
+        if (poseBlock != null && event.blockId === poseBlock.id && fieldKeys.includes(event.name)) {
             let fieldValues = [];
             const simObject = getSimObject(this.id)
             for (let i = 0; i < fieldKeys.length; i++) {
-                fieldValues.push(pose.getFieldValue(fieldKeys[i]));
+                fieldValues.push(poseBlock.getFieldValue(fieldKeys[i]));
             }
             simObject.setFieldValues(fieldValues);
             simObject.updateFromFieldValues();
             simObject.render();
-        }*/
+        }
 
         let simObject = getSimObject(this.id);
         if (!simObject) {
