@@ -185,6 +185,7 @@ Blockly.Blocks["task_space_pose"] = {
 					"type": "field_number",
 					"name": "Z",
 					"value": 0,
+                    "min": 0,
 					"precision": 0.1,
 				},
 				{
