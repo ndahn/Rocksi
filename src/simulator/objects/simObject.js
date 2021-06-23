@@ -230,7 +230,15 @@ export class SimObject extends Object3D {
     setScale(scale) {
         this.scaleFactor = scale;
         this.scale.set(scale, scale, scale);
-        this.createBody(0.5, 2, 0.1);
+        this.children[0].geometry.computeBoundingBox();
+        this.children[0].geometry.boundingBox.getCenter();
+        this.children[0].geometry.center();
+        const size = new Vector3();
+        const tmpBox = new Box3().setFromObject(this);
+        tmpBox.getSize(size);
+
+        this.size.copy(size);
+        this.createBody(0.5 * scale, 2, 0.1);
         this.setGrippable();
         this.setGripAxes();
         this.render();
@@ -277,9 +285,9 @@ export class SimObject extends Object3D {
 
             case 'cylinder':
                 { // scoping variables
-                    const radiusTop = this.size.x * 0.5 * this.scaleFactor;
-                    const radiusBottom =  this.size.z * 0.5 * this.scaleFactor;
-                    const height = this.size.y * this.scaleFactor;
+                    const radiusTop = this.size.x * 0.5;
+                    const radiusBottom =  this.size.z * 0.5;
+                    const height = this.size.y;
                     const numSegments = 12
                     const cylinder = new Cylinder(radiusTop, radiusBottom, height, numSegments)
                     body.sleepSpeedLimit = 0.5;
@@ -292,9 +300,9 @@ export class SimObject extends Object3D {
             default:
             {
                 //cannon size is defined from the center
-                const shape = new Box(new Vec3(this.size.x * 0.5 * this.scaleFactor,
-                                               this.size.y * 0.5 * this.scaleFactor,
-                                               this.size.z * 0.5 * this.scaleFactor))
+                const shape = new Box(new Vec3(this.size.x * 0.5,
+                                               this.size.y * 0.5,
+                                               this.size.z * 0.5))
                 body.sleepSpeedLimit = 0.5;
                 body.sleepTimeLimit = 0.2;
                 body.addShape(shape);
