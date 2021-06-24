@@ -264,7 +264,7 @@ class TheSimulation {
                     robot.ikEnabled,
                     {
                         // This should be precise to avoid surprises for the user
-                        iterations: 30,
+                        maxIterations: 30,
                         stopDistance: 0.05,
                         jointLimits: robot.interactionJointLimits,
                         apply: false
