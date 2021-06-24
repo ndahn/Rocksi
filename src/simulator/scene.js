@@ -259,7 +259,9 @@ function onTargetChange() {
 		robot,
 		robot.ikEnabled,
 		{
-			iterations: 3,
+			// we don't have to be all that precise here
+			maxIterations: 3,
+			stopDistance: 0.1,
 			jointLimits: robot.interactionJointLimits,
 			apply: true
 		}

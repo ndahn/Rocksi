@@ -5,6 +5,10 @@ const FIELD_ID_LEFT = 'LeftMutatorField';
 const FIELD_ID_RIGHT = 'RightMutatorField';
 
 
+// TODO Use a custom field to avoid field spacing
+// See https://developers.google.com/blockly/guides/create-custom-blocks/fields/customizing-fields/extending
+
+
 function createButton(iconPath, altText, tooltip) {
     let icon = Blockly.utils.dom.createSvgElement(
         Blockly.utils.Svg.SVG,

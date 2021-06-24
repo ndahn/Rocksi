@@ -53,6 +53,10 @@
 	color: #ff6680;
 }
 
+#blockly-4\.label {
+	color: #888888;
+}
+
 .blocklyTreeLabel::before {
 	font-family: 'Font Awesome 5 Free';
 	font-size: 2.2em;
@@ -76,6 +80,10 @@
 	content: '\f6be';
 }
 
+#blockly-4\.label::before {
+	content: '\f492';
+}
+
 #blockly-0 {
 	animation: wiggle 6s infinite;
 }
@@ -87,12 +95,17 @@
 
 #blockly-2 {
 	animation: wiggle 6s infinite;
-	animation-delay: 110ms;
+	animation-delay: 140ms;
 }
 
 #blockly-3 {
 	animation: wiggle 6s infinite;
 	animation-delay: 210ms;
+}
+
+#blockly-4 {
+	animation: wiggle 6s infinite;
+	animation-delay: 280ms;
 }
 
 @keyframes wiggle {

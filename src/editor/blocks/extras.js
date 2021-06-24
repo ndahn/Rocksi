@@ -16,7 +16,7 @@ Blockly.Blocks["comment"] = {
 			],
 			previousStatement: null,
 			nextStatement: null,
-			style: 'extras_blocks',
+			style: 'structure_blocks',
 			tooltip: "Kommentar, hat keine Auswirkungen",
 			helpUrl: "",
 		});

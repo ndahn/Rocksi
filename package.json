@@ -12,7 +12,7 @@
   "dependencies": {
     "@blockly/field-slider": "^2.1.19",
     "@fortawesome/fontawesome-free": "^5.15.2",
-    "blockly": "^4.20201217.0",
+    "blockly": "^5.20210325.1",
     "blocks": "^0.3.5",
     "cannon-es": "^0.17.1",
     "cannon-es-debugger": "^0.1.2",

@@ -44,7 +44,7 @@ Blockly.Blocks['add_sim_object'] = {
 	init: function () {
         this.jsonInit({
             type: "add_sim_object",
-            message0: "Generiert einen %1",
+            message0: "Platziere einen %1",
             args0: [
                 {
                     "type": "field_dropdown",
@@ -92,20 +92,16 @@ Blockly.Blocks['add_sim_object'] = {
             message3: "in der Skalierung %1 ",
             args3:[
                 {
-                    type: "field_slider",
+                    type: "input_value",
                     name: "SCALE",
-                    value: 1,
-                    min: 0.001,
-                    max: 10,
-                    precision: 0.001
-
+                    check: "Number",
                 },
             ],
             inputsInline: false,
             previousStatement: null,
             nextStatement: null,
             style: 'objects_blocks',
-            tooltip: "Fügt ein Objekt hinzu, diese wird zur Laufzeit erstellt.",
+            tooltip: "Fügt ein Objekt hinzu, dass der Roboter greifen kann.",
             helpUrl: "",
         });
     },
@@ -130,8 +126,18 @@ Blockly.Blocks['add_sim_object'] = {
     },
 
 	onchange: function (event) {
+        let simObject = getSimObject(this.id);
+        if (!simObject) {
+            return;
+        }
+
         const poseBlock = this.getInputTargetBlock('POSE');
         const colorBlock = this.getInputTargetBlock('COLOUR');
+        const scaleBlock = this.getInputTargetBlock('SCALE');
+
+        if (event.blockId === this.id && event.name == 'OBJECT_SHAPE') {
+            simObject.changeShape(event.newValue);
+        }
 
         if (poseBlock != null && event.blockId === poseBlock.id && fieldKeys.includes(event.name)) {
             let fieldValues = [];
@@ -144,19 +150,9 @@ Blockly.Blocks['add_sim_object'] = {
             simObject.render();
         }
 
-        let simObject = getSimObject(this.id);
-        if (!simObject) {
-            return;
-        }
-
-        if (event.blockId === this.id && event.name == 'OBJECT_SHAPE') {
-            simObject.changeShape(event.newValue);
-        }
-
-        if (event.blockId === this.id && event.name == 'SCALE') {
+        if (scaleBlock != null && event.blockId === scaleBlock.id) {
             simObject.setScale(event.newValue);
         }
-
 
         if (colorBlock != null) {
             let color = simObject.color;

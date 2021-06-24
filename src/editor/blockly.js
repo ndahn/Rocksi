@@ -10,6 +10,7 @@ import './constants/params'
 Blockly.setLocale(BlocklyDE);
 Blockly.setLocale(BlocklyCustomDE);
 
+import './blocks/helpers'
 import './blocks/movement'
 import './blocks/objects'
 import './blocks/extras'

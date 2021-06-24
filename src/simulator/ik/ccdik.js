@@ -8,7 +8,8 @@ class CCDIK {
     constructor(scene, robot) {}
 
     solve(target, robot, joints, {
-        iterations = 1,
+        maxIterations = 1,
+        stopDistance = 0.1,
         jointLimits = {},
         apply = false
     } = {}) {
@@ -39,7 +40,7 @@ class CCDIK {
 
         target.getWorldPosition(targetPosition);
         
-        for (let iter = 0; iter < iterations; iter++) {
+        for (let iter = 0; iter < maxIterations; iter++) {
             // Rotate each joint so that the endeffector moves towards the target
             for (let i = movable.length - 1; i >= 0; i--) {
                 const joint = movable[i];
@@ -82,6 +83,12 @@ class CCDIK {
 
                 joint.setJointValue(angle);
                 solution[joint.name] = joint.angle;
+            }
+
+            robot.tcp.object.getWorldPosition(tipPosition);
+            if (targetPosition.distanceTo(tipPosition) < stopDistance) {
+                //console.log('IK solution found after ' + iter + ' iterations');
+                break;
             }
         }
 
