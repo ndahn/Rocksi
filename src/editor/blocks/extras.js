@@ -6,7 +6,7 @@ Blockly.Blocks["comment"] = {
 	init: function () {
 		this.jsonInit({
 			type: "comment",
-			message0: "Kommentar %1",
+			message0: "%{BKY_ROCKSI_BLOCK_COMMENT}",
 			args0: [
 				{
 					type: "field_input",
@@ -17,7 +17,7 @@ Blockly.Blocks["comment"] = {
 			previousStatement: null,
 			nextStatement: null,
 			style: 'structure_blocks',
-			tooltip: "Kommentar, hat keine Auswirkungen",
+			tooltip: "%{BKY_ROCKSI_BLOCK_COMMENT_TOOLTIP}",
 			helpUrl: "",
 		});
 	},
@@ -27,7 +27,7 @@ Blockly.Blocks["wait"] = {
 	init: function () {
 		this.jsonInit({
 			type: "wait",
-			message0: "Warte %1 Sekunden",
+			message0: "%{BKY_ROCKSI_BLOCK_WAIT}",
 			args0: [
 				{
 					"type": "field_number",
@@ -40,7 +40,7 @@ Blockly.Blocks["wait"] = {
 			previousStatement: null,
 			nextStatement: null,
 			style: 'extras_blocks',
-			tooltip: "Warte eine bestimmte Zeit, bevor der nächste Block ausgeführt wird",
+			tooltip: "%{BKY_ROCKSI_BLOCK_WAIT_TOOLTIP}",
 			helpUrl: "",
 		});
 	},
@@ -50,14 +50,14 @@ Blockly.Blocks["set_speed"] = {
 	init: function () {
 		this.jsonInit({
 			"type": "set_speed",
-			"message0": "Geschwindigkeit %1 %2 %%",
+			"message0": "%{BKY_ROCKSI_BLOCK_SETSPEED}",
 			"args0": [
 			  {
 				"type": "field_dropdown",
 				"name": "MOTION_TYPE",
 				"options": [
-					["Bewegung", "move"],
-					["Greifer", "gripper"]
+					["%{BKY_ROCKSI_BLOCK_SETSPEED_MOVE}", "move"],
+					["%{BKY_ROCKSI_BLOCK_SETSPEED_GRIPPER}", "gripper"]
 				]
 			  },
 			  {
@@ -72,7 +72,7 @@ Blockly.Blocks["set_speed"] = {
 			previousStatement: null,
 			nextStatement: null,
 			style: 'extras_blocks',
-			"tooltip": "Ändere die Bewegungsgeschwindigkeit des Roboters.",
+			"tooltip": "%{BKY_ROCKSI_BLOCK_SETSPEED_TOOLTIP}",
 			"helpUrl": ""
 		  });
 	},
@@ -90,7 +90,7 @@ Blockly.Blocks["joint_lock"] = {
 
 		this.jsonInit({
 			type: "joint_lock",
-			message0: "Sperre %1",
+			message0: "%{BKY_ROCKSI_BLOCK_JOINTLOCK}",
 			args0: [
 				{
 					"type": "field_dropdown",
@@ -102,8 +102,7 @@ Blockly.Blocks["joint_lock"] = {
 			previousStatement: null,
 			nextStatement: null,
 			style: 'extras_blocks',
-			tooltip:
-				"Verhindert Änderungen des Gelenkwinkels für das gewählte Gelenk",
+			tooltip: "%{BKY_ROCKSI_BLOCK_JOINTLOCK_TOOLTIP}",
 			helpUrl: "",
 		});
 	},
@@ -121,7 +120,7 @@ Blockly.Blocks["joint_unlock"] = {
 
 		this.jsonInit({
 			type: "joint_unlock",
-			message0: "Entsperre %1",
+			message0: "%{BKY_ROCKSI_BLOCK_JOINTUNLOCK}",
 			args0: [
 				{
 					"type": "field_dropdown",
@@ -133,8 +132,7 @@ Blockly.Blocks["joint_unlock"] = {
 			previousStatement: null,
 			nextStatement: null,
 			style: 'extras_blocks',
-			tooltip:
-				"Erlaubt Änderungen des Gelenkwinkels für das gewählte Gelenk",
+			tooltip: "%{BKY_ROCKSI_BLOCK_JOINTUNLOCK_TOOLTIP}",
 			helpUrl: "",
 		});
 	},

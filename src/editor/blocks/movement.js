@@ -8,7 +8,7 @@ Blockly.Blocks["move"] = {
 	init: function () {
 		this.jsonInit({
 			type: "move",
-			message0: "Bewegung %1",
+			message0: "%{BKY_ROCKSI_BLOCK_MOVE}",
 			args0: [
 				{
 					type: "input_value",
@@ -20,8 +20,7 @@ Blockly.Blocks["move"] = {
 			previousStatement: null,
 			nextStatement: "Array",
 			style: 'movement_blocks',
-			tooltip:
-				"Füge rechts eine Joint oder Task Space Pose hinzu, zu der sich der Roboter bewegen soll",
+			tooltip: "%{BKY_ROCKSI_BLOCK_MOVE_TOOLTIP}",
 			helpUrl: "",
 		});
 	},
@@ -82,11 +81,10 @@ Blockly.Blocks["default_pose"] = {
 	init: function () {
 		this.jsonInit({
 			type: "default_pose",
-			message0: "Startpose",
+			message0: "%{BKY_ROCKSI_BLOCK_DEFAULTPOSE}",
 			output: "JointspacePose",
 			style: 'movement_blocks',
-			tooltip:
-				"Die Standard-Pose des Roboters",
+			tooltip: "%{BKY_ROCKSI_BLOCK_DEFAULTPOSE_TOOLTIP}",
 			helpUrl: "",
 		});
 
@@ -135,8 +133,7 @@ Blockly.Blocks["joint_space_pose"] = {
 			inputsInline: true,
 			output: "JointspacePose",
 			style: 'movement_blocks',
-			tooltip:
-				"Eine Pose im Gelenkwinkelraum (ein Winkel pro Gelenk beginnend an der Basis)",
+			tooltip: "%{BKY_ROCKSI_BLOCK_JOINTSPACEPOSE_TOOLTIP}",
 			helpUrl: "",
 			mutator: 'left_right_mutator',
 		});
@@ -212,8 +209,7 @@ Blockly.Blocks["task_space_pose"] = {
 			inputsInline: true,
 			output: "TaskspacePose",
 			style: 'movement_blocks',
-			tooltip:
-				"Eine Pose im Arbeitsraum (Position und Orientierung des Endeffektors)",
+			tooltip: "%{BKY_ROCKSI_BLOCK_TASKSPACEPOSE_TOOLTIP}",
 			helpUrl: "",
 			mutator: 'left_right_mutator',
 		});
@@ -267,7 +263,7 @@ Blockly.Blocks["joint_absolute"] = {
 
 		this.jsonInit({
 			type: "joint_absolute",
-			message0: "Gelenkwinkel (absolut) %1 %2",
+			message0: "%{BKY_ROCKSI_BLOCK_JOINTABSOLUTE}",
 			args0: [
 				{
 					"type": "field_dropdown",
@@ -284,8 +280,7 @@ Blockly.Blocks["joint_absolute"] = {
 			previousStatement: null,
 			nextStatement: null,
 			style: 'movement_blocks',
-			tooltip:
-				"Bewege ein einzelnes Gelenk in eine bestimmte Position",
+			tooltip: "%{BKY_ROCKSI_BLOCK_JOINTABSOLUTE_TOOLTIP}",
 			helpUrl: "",
 		});
 	},
@@ -303,7 +298,7 @@ Blockly.Blocks["joint_relative"] = {
 
 		this.jsonInit({
 			type: "joint_relative",
-			message0: "Gelenkwinkel (relativ) %1 %2",
+			message0: "%{BKY_ROCKSI_BLOCK_JOINTRELATIVE}",
 			args0: [
 				{
 					"type": "field_dropdown",
@@ -320,8 +315,7 @@ Blockly.Blocks["joint_relative"] = {
 			previousStatement: null,
 			nextStatement: null,
 			style: "movement_blocks",
-			tooltip:
-				"Drehe ein einzelnes Gelenk um den angegebenen Winkel",
+			tooltip: "%{BKY_ROCKSI_BLOCK_JOINTRELATIVE_TOOLTIP}",
 			helpUrl: "",
 		});
 	},

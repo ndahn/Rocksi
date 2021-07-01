@@ -1,9 +1,7 @@
 import * as Blockly from "blockly";
 import '@blockly/field-slider';
 import { getSimObject,
-         getSimObjectIdx,
-         randomColour,
-         isAttached } from "../../simulator/objects/createObjects";
+         randomColour } from "../../simulator/objects/createObjects";
 import Simulation from "../../simulator/simulation";
 
 
@@ -13,11 +11,11 @@ Blockly.Blocks["gripper_open"] = {
 	init: function () {
 		this.jsonInit({
 			type: "gripper_open",
-			message0: "Greifer öffnen",
+			message0: "%{BKY_ROCKSI_BLOCK_GRIPPEROPEN}",
 			previousStatement: null,
 			nextStatement: null,
 			style: 'objects_blocks',
-			tooltip: "Öffnet den Greifer auf volle Weite",
+			tooltip: "%{BKY_ROCKSI_BLOCK_GRIPPEROPEN_TOOLTIP}",
 			helpUrl: "",
 		});
 	},
@@ -27,11 +25,11 @@ Blockly.Blocks["gripper_close"] = {
 	init: function () {
 		this.jsonInit({
 			type: "gripper_close",
-			message0: "Greifer schließen",
+			message0: "%{BKY_ROCKSI_BLOCK_GRIPPERCLOSE}",
 			previousStatement: null,
 			nextStatement: null,
 			style: 'objects_blocks',
-			tooltip: "Schließt den Greifer vollständig",
+			tooltip: "%{BKY_ROCKSI_BLOCK_GRIPPERCLOSE_TOOLTIP}",
 			helpUrl: "",
 		});
 	},
@@ -44,36 +42,36 @@ Blockly.Blocks['add_sim_object'] = {
 	init: function () {
         this.jsonInit({
             type: "add_sim_object",
-            message0: "Platziere einen %1",
+            message0: "%{BKY_ROCKSI_BLOCK_SIMOBJECT}",
             args0: [
                 {
                     "type": "field_dropdown",
                     "name": "OBJECT_SHAPE",
                     "options": [
                         [
-                            "Würfel",
+                            "%{BKY_ROCKSI_BLOCK_SIMOBJECT_CUBE}",
                             "cube"
                         ],
                         [
-                            "Kugel",
+                            "%{BKY_ROCKSI_BLOCK_SIMOBJECT_SPHERE}",
                             "sphere"
                         ],
                         [
-                            "Stein",
+                            "%{BKY_ROCKSI_BLOCK_SIMOBJECT_ROCK}",
                             "rock"
                         ],
                         [
-                            "Welle",
+                            "%{BKY_ROCKSI_BLOCK_SIMOBJECT_SHAFT}",
                             "shaft"
                         ],
                         [
-                            "Lade...",
+                            "%{BKY_ROCKSI_BLOCK_SIMOBJECT_CUSTOM}",
                             "custom"
                         ],
                     ]
                 },
             ],
-            message1: "in der Farbe %1 ",
+            message1: "%{BKY_ROCKSI_BLOCK_SIMOBJECT_COLOR}",
             args1: [
                 {
                     type: "input_value",
@@ -81,7 +79,7 @@ Blockly.Blocks['add_sim_object'] = {
                     check: "Colour",
                 },
             ],
-            message2: "an Position %1 ",
+            message2: "%{BKY_ROCKSI_BLOCK_SIMOBJECT_POSITION}",
             args2:[
                 {
                     type: "input_value",
@@ -89,7 +87,7 @@ Blockly.Blocks['add_sim_object'] = {
                     check: "TaskspacePose",
                 },
             ],
-            message3: "in der Skalierung %1 ",
+            message3: "%{BKY_ROCKSI_BLOCK_SIMOBJECT_SCALE}",
             args3:[
                 {
                     type: "input_value",
@@ -101,7 +99,7 @@ Blockly.Blocks['add_sim_object'] = {
             previousStatement: null,
             nextStatement: null,
             style: 'objects_blocks',
-            tooltip: "Fügt ein Objekt hinzu, dass der Roboter greifen kann.",
+            tooltip: "%{BKY_ROCKSI_BLOCK_SIMOBJECT_TOOLTIP}",
             helpUrl: "",
         });
     },
@@ -182,11 +180,10 @@ Blockly.Blocks["physics_done"] = {
 	init: function () {
 		this.jsonInit({
 			type: "physics_done",
-			message0: "Physiksimulation abgeschlossen?",
+			message0: "%{BKY_ROCKSI_BLOCK_PHYSICSDONE}",
 			output: "Boolean",
 			style: 'objects_blocks',
-			tooltip:
-				"Gibt Wahr zurück solange sich noch Objekte bewegen (nicht der Roboter).",
+			tooltip: "%{BKY_ROCKSI_BLOCK_PHYSICSDONE_TOOLTIP}",
 			helpUrl: "",
 		});
     }
@@ -197,11 +194,10 @@ Blockly.Blocks["is_attached"] = {
 	init: function () {
 		this.jsonInit({
 			type: "is_attached",
-			message0: "Gegriffen?",
+			message0: "%{BKY_ROCKSI_BLOCK_HOLDING}",
 			output: "Boolean",
 			style: 'objects_blocks',
-			tooltip:
-				"Gibt Wahr zurück wenn der Roboter etwas gegriffen hat",
+			tooltip: "%{BKY_ROCKSI_BLOCK_HOLDING_TOOLTIP}",
 			helpUrl: "",
 		});
     }
