@@ -1,8 +1,33 @@
 import * as UIL from "uil"
+import { getDesiredLanguage, getDesiredRobot } from "../helpers";
+import { addRenderCallback } from "./scene";
 import Simulation from "./simulation"
+import { localize } from "../helpers";
 
 
 const theRobots = ['Franka', 'Niryo'];
+let currentRobotIdx = 0;
+{
+    let currentRobot = getDesiredRobot().toLowerCase();
+    for (let i = 0; i < theRobots.length; i++) {
+        if (theRobots[i].toLowerCase() == currentRobot) {
+            currentRobotIdx = i;
+            break;
+        }
+    }
+}
+
+const theLanguages = ['EN', 'DE'];
+let currentLanguageIdx = 0;
+{
+    let currentLanguage = getDesiredLanguage().toUpperCase();
+    for (let i = 0; i < theLanguages.length; i++) {
+        if (theLanguages[i] == currentLanguage) {
+            currentLanguageIdx = i;
+            break;
+        }
+    }
+}
 
 
 var gui = null;
@@ -15,12 +40,13 @@ export function initGui(robot, cameraControl, renderCall) {
 
     gui.add('title', { name: 'Rocksi', prefix: 'v2.0' });
     
-    let robotIdx = getCurrentRobotIndex();
-    const robotList = gui.add('list', { name: 'Roboter', list: theRobots, value: robotIdx }).onChange( val => loadRobot(robotList, val) );
+    const robotList = gui.add('list', { name: 'Roboter', list: theRobots, value: currentRobotIdx }).onChange( val => loadRobot(robotList, val) );
+
+    const languages = gui.add('list', { name: 'Sprache', list: theLanguages, value: currentLanguageIdx }).onChange( val => switchLanguage(languages, val) );
 
     let gripperButtons = gui.add('button', { name: '', value: ['Öffnen', 'Schließen']}).onChange( val => setGripper(val) );
     gripperButtons.label('Greifer', 1)
-
+    
     let jointValuesRelative = getRobotJointValuesRelative(robot);
     jointList = gui.add('graph', { name: 'Gelenkwinkel', value: jointValuesRelative, neg: true, precision: 2, h:80 }).onChange( vals => updateRobotJoints(robot, vals, renderCall) );
 
@@ -37,9 +63,11 @@ export function initGui(robot, cameraControl, renderCall) {
     gui.setHeight();
     gui.bottomText = ['Roboter', 'Schließen'];
     gui.bottom.textContent = 'Roboter';
+
+    addRenderCallback(onRobotMoved);
 }
 
-export function onRobotMoved(robot) {
+function onRobotMoved(robot) {
     let jointValuesRelative = getRobotJointValuesRelative(robot);
     
     // UIL.Graph doesn't handle setValue properly, so we have to update an internal variable as well
@@ -50,19 +78,6 @@ export function onRobotMoved(robot) {
     jointList.setValue(jointValuesRelative);
 };
 
-
-function getCurrentRobotIndex() {
-    let params = new URLSearchParams(location.search);
-    let selectedRobot = params.get('robot') || 'Franka';
-
-    for (let idx = 0; idx < theRobots.length; idx++) {
-        if (theRobots[idx].toLowerCase() === selectedRobot.toLowerCase()) {
-            return idx;
-        }
-    }
-
-    return 0;
-}
 
 function getRobotJointValuesRelative(robot) {
     let values = [];
@@ -77,22 +92,42 @@ function getRobotJointValuesRelative(robot) {
 }
 
 
-function loadRobot(robotList, robotName) {
-    let robotIdx = getCurrentRobotIndex();
-    if (theRobots[robotIdx] === robotName) {
+function loadRobot(guiRobotList, robotName) {
+    if (theRobots[currentRobotIdx] === robotName) {
         return;
     }
 
     let ok = window.confirm("Möchtest du den " + robotName + " Roboter laden? Dein aktuelles Programm geht dabei verloren!");
     if (ok) {
-        let baseURL = window.location.href.split('?')[0];
-        window.location.replace(baseURL + '?robot=' + robotName);
+        let url = window.location;
+        let params = new URLSearchParams(url.search);
+        params.set('robot', robotName);
+        window.location.replace(url.origin + url.pathname + '?' + params.toString());
     }
     else {
-        robotList.setList(theRobots, robotIdx);
-        robotList.close();
+        guiRobotList.setList(theRobots, robotIdx);
+        guiRobotList.close();
     }
 }
+
+function switchLanguage(guiLanguageList, language) {
+    if (theLanguages[currentLanguageIdx] === language) {
+        return;
+    }
+
+    let ok = window.confirm(localize('GUI_CONFIRM_SWITCH_LANGUAGE'));
+    if (ok) {
+        let url = window.location;
+        let params = new URLSearchParams(url.search);
+        params.set('lang', language);
+        window.location.replace(url.origin + url.pathname + '?' + params.toString());
+    }
+    else {
+        guiLanguageList.setList(theLanguages, currentLanguageIdx);
+        guiLanguageList.close();
+    }
+}
+
 
 function setGripper(val) {
     Simulation.getInstance().then(sim => {

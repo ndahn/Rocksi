@@ -1,21 +1,9 @@
 import * as Blockly from 'blockly/core'
 
 // Setup the language early so the correct messages are loaded by later imports
-let params = new URLSearchParams(location.search);
-let language = params.get('lang');
+import { getDesiredLanguage } from '../helpers'
 
-if (!language) {
-    language = 'en';
-    for (let lang of navigator.languages) {
-        // May include IETF language tags like en-US
-        let langPrimary = lang.split('-')[0].toLowerCase();
-        if (['de', 'en'].includes(langPrimary)) {
-            language = langPrimary;
-            break;
-        }
-    }
-}
-
+const language = getDesiredLanguage();
 let BlocklyLang = null;
 let BlocklyLangCustom = null;
 

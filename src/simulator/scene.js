@@ -18,13 +18,11 @@ import {
 	Line,
 	LineBasicMaterial,
 	Raycaster,
-	Vector2,
-	ArrowHelper
+	Vector2
 } from "three";
 
 //Imports for managing objects and physics, Lukas
-import { initCannon,
-         initRobotHitboxes } from './physics';
+import { initCannon } from './physics';
 
 import { setSimObjectHighlight,
          setTCSimObjectsOnClick } from './objects/createObjects';
@@ -40,18 +38,16 @@ var ResizeSensor = require("css-element-queries/src/ResizeSensor");
 import { XacroLoader } from "xacro-parser";
 import URDFLoader from "urdf-loader";
 
-// import { loadCached } from "../cachedb";
-// import makeRock from './objects/rock'
 import { default as IKSolver } from "./ik/ccdik"
 //import { default as IKSolver } from "./ik/fabrik"
 import Simulation from "./simulation"
 import * as GUI from "./gui"
 import { popInfo } from "../alert"
+import { getDesiredRobot } from "../helpers";
 
 const path = require('path');
 
-let params = new URLSearchParams(location.search);
-const selectedRobot = params.get('robot') || 'franka';
+const selectedRobot = getDesiredRobot();
 let robot;
 
 switch (selectedRobot.toLowerCase()) {
@@ -80,6 +76,7 @@ let cameraControl, robotControl;
 let simObjectActive = false;
 let ik;
 
+const renderCallbacks = [];
 const canHover = window.matchMedia('(hover: hover)').matches;
 
 //loadCached('robots', './models/export/franka_description.zip')
@@ -288,7 +285,10 @@ function updateGroundLine() {
 
 function render() {
     renderer.render(scene, camera);
-	GUI.onRobotMoved(robot);
+	
+	for (let cb of renderCallbacks) {
+		cb(robot);
+	}
 }
 
 
@@ -399,6 +399,14 @@ function onClickPointerUp(evt) {
 	requestAnimationFrame(render);
 }
 
+
+export function addRenderCallback (callback) {
+	if (renderCallbacks.includes(callback)) {
+		return;
+	}
+
+	renderCallbacks.push(callback);
+}
 
 export function requestAF () { requestAnimationFrame(render); }
 
