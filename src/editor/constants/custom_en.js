@@ -1,0 +1,25 @@
+export const BlocklyCustomEN = {
+    UNDO: "\u21B6 Undo",
+    REDO: "\u21B7 Redo",
+    CLEAN_UP: "\u2833 Clean Up",
+    DELETE_BLOCK: "\u2298 Delete",
+    DELETE_X_BLOCKS: "\u2298 Delete %1 blocks",
+    LOAD: "\u{1F845} Load program...",
+    SAVE: "\u{1F847} Save program...",
+    CODE_EXPORT: "\u2756 Export code...",
+    INLINE_INPUTS: "\u25EB Arrange horizontal",
+    EXTERNAL_INPUTS: "\u229F Arrange vertical",
+    DUPLICATE_BLOCK: "\uA698 Clone",
+    ADD_COMMENT: "\u270E Comment",
+    
+    REMOVE_COMMENT: "\u{1F7A9} Delete comment",
+    COLLAPSE_BLOCK: "\u25F2 Reduce",
+    EXPAND_BLOCK: "\u29C9 Expand",
+    DISABLE_BLOCK: "\u{1F5F2} Deactivate",
+    ENABLE_BLOCK: "\u{1F5F2} Activate",
+
+    EXEC_ERROR: "Program exception",
+    EXEC_SUCCESS: "Program finished",
+    EMPTY_PROGRAM: "Empty program",
+    SEE_CONSOLE: "Please find additional details in the browser console.",
+}

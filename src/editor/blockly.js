@@ -1,15 +1,45 @@
 import * as Blockly from 'blockly/core'
+
+// Setup the language early so the correct messages are loaded by later imports
+let params = new URLSearchParams(location.search);
+let language = params.get('lang');
+
+if (!language) {
+    language = 'en';
+    for (let lang of navigator.languages) {
+        // May include IETF language tags like en-US
+        let langPrimary = lang.split('-')[0].toLowerCase();
+        if (['de', 'en'].includes(langPrimary)) {
+            language = langPrimary;
+            break;
+        }
+    }
+}
+
+let BlocklyLang = null;
+let BlocklyLangCustom = null;
+
+switch (language.toLowerCase()) {
+    case 'de':
+        BlocklyLang = require('blockly/msg/de');
+        BlocklyLangCustom = require('./constants/custom_de').BlocklyCustomDE;
+        break;
+
+    case 'en':
+    default:
+        BlocklyLang = require('blockly/msg/en');
+        BlocklyLangCustom = require('./constants/custom_en').BlocklyCustomEN;
+}
+
+Blockly.setLocale(BlocklyLang);
+Blockly.setLocale(BlocklyLangCustom);
+
+
 import 'blockly/blocks'
 import 'blockly/javascript'
 
-import * as BlocklyDE from 'blockly/msg/de'
-import { BlocklyCustomDE } from './constants/msg'
 import './constants/colors'
 import './constants/params'
-
-Blockly.setLocale(BlocklyDE);
-Blockly.setLocale(BlocklyCustomDE);
-
 import './blocks/helpers'
 import './blocks/movement'
 import './blocks/objects'
