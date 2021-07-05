@@ -34,6 +34,9 @@ import './blocks/objects'
 import './blocks/extras'
 import './generators/javascript'
 
+// Toolbox XML is imported for parcel
+import * as ToolboxXML from './toolbox.xml'
+
 //imports for adding and removing 3D-objects, Lukas
 import { addSimObject,
          remSimObjects,
@@ -63,7 +66,7 @@ var blocklyDiv = document.getElementById('blocks-canvas');
 var workspace = Blockly.inject(
     blocklyDiv,
     {
-        toolbox: document.getElementById('blocks-toolbox'),
+        toolbox: ToolboxXML.default,
         renderer: 'geras',
         horizontalLayout: false,
         grid: {

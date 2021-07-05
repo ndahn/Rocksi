@@ -23,6 +23,12 @@ export const BlocklyCustomDE = {
     EMPTY_PROGRAM: "Leeres Programm",
     SEE_CONSOLE: "Weitere Details in der Browser-Konsole.",
 
+    ROCKSI_CATEGORY_MOVE: "Bewegung",
+    ROCKSI_CATEGORY_OBJECTS: "Objekte",
+    ROCKSI_CATEGORY_LOGIC: "Logik",
+    ROCKSI_CATEGORY_EXTRAS: "Extras",
+    ROCKSI_CATEGORY_EXAMPLES: "Beispiele",
+
     ROCKSI_BLOCK_MOVE: "Bewegung %1",
     ROCKSI_BLOCK_MOVE_TOOLTIP: "Füge rechts eine Joint oder Task Space Pose hinzu, zu der sich der Roboter bewegen soll",
     ROCKSI_BLOCK_DEFAULTPOSE: "Startpose",
