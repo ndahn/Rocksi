@@ -20,9 +20,9 @@ let currentRobotIdx = 0;
 const theLanguages = ['EN', 'DE'];
 let currentLanguageIdx = 0;
 {
-    let currentLanguage = getDesiredLanguage().toUpperCase();
+    let currentLanguage = getDesiredLanguage();
     for (let i = 0; i < theLanguages.length; i++) {
-        if (theLanguages[i] == currentLanguage) {
+        if (theLanguages[i].toLowerCase() == currentLanguage) {
             currentLanguageIdx = i;
             break;
         }
@@ -40,29 +40,29 @@ export function initGui(robot, cameraControl, renderCall) {
 
     gui.add('title', { name: 'Rocksi', prefix: 'v2.0' });
     
-    const robotList = gui.add('list', { name: 'Roboter', list: theRobots, value: currentRobotIdx }).onChange( val => loadRobot(robotList, val) );
+    const robotList = gui.add('list', { name: localize('GUI_ROBOT'), list: theRobots, value: currentRobotIdx }).onChange( val => loadRobot(robotList, val) );
 
-    const languages = gui.add('list', { name: 'Sprache', list: theLanguages, value: currentLanguageIdx }).onChange( val => switchLanguage(languages, val) );
+    const languages = gui.add('list', { name: localize('GUI_LANGUAGE'), list: theLanguages, value: currentLanguageIdx }).onChange( val => switchLanguage(languages, val) );
 
-    let gripperButtons = gui.add('button', { name: '', value: ['Öffnen', 'Schließen']}).onChange( val => setGripper(val) );
-    gripperButtons.label('Greifer', 1)
+    let gripperButtons = gui.add('button', { name: '', value: [localize('GUI_OPEN'), localize('GUI_CLOSE')]}).onChange( val => setGripper(val) );
+    gripperButtons.label(localize('GUI_GRIPPER'), 1)
     
     let jointValuesRelative = getRobotJointValuesRelative(robot);
-    jointList = gui.add('graph', { name: 'Gelenkwinkel', value: jointValuesRelative, neg: true, precision: 2, h:80 }).onChange( vals => updateRobotJoints(robot, vals, renderCall) );
+    jointList = gui.add('graph', { name: localize('GUI_JOINTS'), value: jointValuesRelative, neg: true, precision: 2, h:80 }).onChange( vals => updateRobotJoints(robot, vals, renderCall) );
 
-    let ikgroup = gui.add('group', { name: 'IK Gelenke' });
+    let ikgroup = gui.add('group', { name: localize('GUI_IK_JOINTS') });
     for (let joint of robot.arm.movable) {
         let active = robot.ikEnabled.includes(joint.name);
         ikgroup.add('bool', { name: joint.name, value: active, h: 20 }).onChange( val => onJointIKChange(robot, joint.name, val) );
     }
     
-    gui.add('button', { name: '', value: ['Roboter zurücksetzen'], p: 0 }).onChange( val => resetRobot(robot, renderCall) );
-    gui.add('button', { name: '', value: ['Ansicht zurücksetzen'], p: 0 }).onChange( val => cameraControl.reset() );
+    gui.add('button', { name: '', value: [localize('GUI_RESET_ROBOT')], p: 0 }).onChange( val => resetRobot(robot, renderCall) );
+    gui.add('button', { name: '', value: [localize('GUI_RESET_VIEW')], p: 0 }).onChange( val => cameraControl.reset() );
 
     gui.isOpen = false;
     gui.setHeight();
-    gui.bottomText = ['Roboter', 'Schließen'];
-    gui.bottom.textContent = 'Roboter';
+    gui.bottomText = [localize('GUI_ROBOT'), localize('tutorial-1')];
+    gui.bottom.textContent = localize('GUI_ROBOT');
 
     addRenderCallback(onRobotMoved);
 }
@@ -97,7 +97,8 @@ function loadRobot(guiRobotList, robotName) {
         return;
     }
 
-    let ok = window.confirm("Möchtest du den " + robotName + " Roboter laden? Dein aktuelles Programm geht dabei verloren!");
+    // "Möchtest du den " + robotName + " Roboter laden? Dein aktuelles Programm geht dabei verloren!"
+    let ok = window.confirm(localize('GUI_CONFIRM_SWITCH_ROBOT'));
     if (ok) {
         let url = window.location;
         let params = new URLSearchParams(url.search);

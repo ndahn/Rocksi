@@ -1,5 +1,22 @@
 import Split from 'split.js'
 import lozad from 'lozad'
+//import { getDesiredLanguage } from './helpers'
+
+
+jQuery(document).ready(function() {
+    $.i18n().load({
+        'en': {
+            'tutorial-1': 'English Test'
+        },
+        'de': {
+            'tutorial-1': 'German Test'
+        }
+    });
+
+    $.i18n().locale = getDesiredLanguage();
+    $('body').i18n();
+});
+
 
 // Split panes
 Split(['#split-pane-1', '#split-pane-2'], {
@@ -110,3 +127,4 @@ lazyObserver.observe();
 import 'blockly'
 import './simulator/scene'
 import './editor/blockly'
+import { getDesiredLanguage } from './helpers';

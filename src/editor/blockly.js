@@ -7,7 +7,7 @@ const language = getDesiredLanguage();
 let BlocklyLang = null;
 let BlocklyLangCustom = null;
 
-switch (language.toLowerCase()) {
+switch (language) {
     case 'de':
         BlocklyLang = require('blockly/msg/de');
         BlocklyLangCustom = require('./constants/custom_de').BlocklyCustomDE;

@@ -22,12 +22,15 @@ export function getDesiredLanguage() {
         }
     }
 
-    return language;
+    return language.toLowerCase();
 }
 
-export function localize(key) {
-    if (!key.match(/%{.*}/g)) {
-        key = '%{' + key + '}';
+export function localize(key, ...args) {
+    let value = $.i18n(key);
+
+    for (let i = 0; i < args.length; i++) {
+        value = value.replace('$' + i, args[i]);
     }
-    return Blockly.utils.replaceMessageReferences(key);
+
+    return value;
 }
