@@ -1,0 +1,30 @@
+{
+    "@metadata": {
+        "authors": [
+          "Nikolas Dahn"
+        ],
+        "last-updated": "2021-07-17",
+        "locale": "de",
+        "message-documentation": "qqq"
+    },
+
+    "robot-loading": "Lade Roboter...",
+
+    "tutorial-1-heading": "Behalte den Überblick",
+    "tutorial-1": "Über das Menü links kannst du schnell zwischen den Ansichten wechseln.",
+    "tutorial-2-heading": "Voll im Bilde",
+    "tutorial-2-desktop": "Mit Links- und Rechtsklick drehst du dir die Welt, wie sie dir gefällt.",
+    "tutorial-2-mobile": "Mit den gewohnten Touch-Gesten findest du jedes Detail.",
+    "tutorial-3-heading": "Handzahm",
+    "tutorial-3": "Den Roboter kannst du direkt in der 3D-Ansicht bewegen. Über das Menü kannst du auch gezielt einzelne Gelenke steuern.",
+    "tutorial-4-heading": "Das Leben ist ein Puzzle-Spiel",
+    "tutorial-4": "Mithilfe der Puzzleteile kannst du dir schnell ein Programm für den Roboter zusammenzubauen.",
+    "tutorial-5-heading": "Aus dem Kontext gerissen",
+    "tutorial-5": "Das Kontext-Menü gibt dir weitere Optionen. Außerdem kannst du so deine Programme speichern und laden.",
+    "tutorial-6-heading": "Let it go",
+    "tutorial-6": "Um ein Programm auszuführen klickst du in der 3D-Ansicht auf den Play-Button.",
+    "tutorial-rf-heading": "Der Roboterführerschein",
+    "tutorial-rf": "Du möchtest noch mehr wissen oder dir war etwas unklar? Dann mach doch unseren kostenlosen {{link:Roboterführerschein|https://www.robotikschulungen.de}}",
+
+    "about-robokind": ""
+}

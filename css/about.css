@@ -44,3 +44,34 @@
 .about-info a:visited {
 	color: steelblue;
 }
+
+.about-panels {
+	margin-top: .5em;
+}
+
+.accordion {
+	color: white !important;
+	display: inline;
+	width: 49%;
+}
+
+.accordion.active span {
+	text-decoration: underline;
+}
+
+.accordion:hover span {
+	text-decoration: underline;
+}
+
+.accordion::before {
+	content: '\f0da';
+	text-decoration: none !important;
+	font-family: 'Font Awesome 5 Free';
+	font-size: 1.2em;
+	font-weight: bold;
+	margin-right: .5em;
+}
+
+.accordion.active::before {
+	content: '\f0d7';
+}

@@ -1,21 +1,54 @@
 import Split from 'split.js'
 import lozad from 'lozad'
-//import { getDesiredLanguage } from './helpers'
+import * as html_de from './i18n/html_de.json'
+import * as html_en from './i18n/html_en.json'
 
 
+// Localize the page
 jQuery(document).ready(function() {
-    $.i18n().load({
-        'en': {
-            'tutorial-1': 'English Test'
-        },
-        'de': {
-            'tutorial-1': 'German Test'
+    $.extend($.i18n.parser.emitter, {
+        link: function(nodes) {
+            let target = nodes[2] || "_blank";
+            // requires the data-i18n tag to start with [html]
+            return '<a href="' + nodes[1] + '" target ="' + target + '">' + nodes[0] + '</a>';
         }
+    });
+
+    $.i18n().load({
+        'en': html_en,
+        'de': html_de,
     });
 
     $.i18n().locale = getDesiredLanguage();
     $('body').i18n();
 });
+
+
+// Accordion handlers
+let accordions = document.getElementsByClassName("accordion");
+
+function setAccordionVisible(accordion, visible) {
+    let panel = document.querySelector(accordion.getAttribute('panel'));
+    if (visible) {
+        accordion.classList.add('active')
+        panel.style.maxHeight = panel.scrollHeight + "px";
+    } else {
+        accordion.classList.remove('active')
+        panel.style.maxHeight = null;
+    }
+}
+
+for (let i = 0; i < accordions.length; i++) {
+    accordions[i].addEventListener("click", function(event) {
+        event.stopPropagation();
+        
+        let show = !this.classList.contains('active');
+        for (let acc of accordions) {
+            setAccordionVisible(acc, false);
+        }
+        setAccordionVisible(this, show);
+    });
+}
 
 
 // Split panes
@@ -108,6 +141,9 @@ $('#about-btn').on('click', evt => {
 });
 $('#about-lightbox').on('click', evt => {
     $('#about-lightbox').hide();
+    for (let acc of accordions) {
+        setAccordionVisible(acc, false);
+    }
 });
 
 

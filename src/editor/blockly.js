@@ -10,13 +10,13 @@ let BlocklyLangCustom = null;
 switch (language) {
     case 'de':
         BlocklyLang = require('blockly/msg/de');
-        BlocklyLangCustom = require('./constants/custom_de').BlocklyCustomDE;
+        BlocklyLangCustom = require('../i18n/blockly_de').BlocklyCustomDE;
         break;
 
     case 'en':
     default:
         BlocklyLang = require('blockly/msg/en');
-        BlocklyLangCustom = require('./constants/custom_en').BlocklyCustomEN;
+        BlocklyLangCustom = require('../i18n/blockly_en').BlocklyCustomEN;
 }
 
 Blockly.setLocale(BlocklyLang);

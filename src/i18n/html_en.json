@@ -1,0 +1,30 @@
+{
+    "@metadata": {
+        "authors": [
+          "Nikolas Dahn"
+        ],
+        "last-updated": "2021-07-17",
+        "locale": "en",
+        "message-documentation": "qqq"
+    },
+
+    "robot-loading": "Loading Robot...",
+
+    "tutorial-1-heading": "Organizing Yourself",
+    "tutorial-1": "Quickly switch between views using the menu on the left.",
+    "tutorial-2-heading": "Taking Perspective",
+    "tutorial-2-desktop": "Use left click, right click and mouse wheel to move around.",
+    "tutorial-2-mobile": "Use finger gestures to move around.",
+    "tutorial-3-heading": "Taming the Robot",
+    "tutorial-3": "Control the robot by clicking and dragging its gripper. You can control individual joints through the GUI in the top right.",
+    "tutorial-4-heading": "Those Who Program",
+    "tutorial-4": "By combining puzzle pieces from the toolbox you can quickly create a program for the robot.",
+    "tutorial-5-heading": "Context is Everything",
+    "tutorial-5": "The context menus give you additional control over your program. You can also load and save programs there!",
+    "tutorial-6-heading": "Let it go",
+    "tutorial-6": "To run your program just click the large play button in the 3D view.",
+    "tutorial-rf-heading": "Robot's Driving License",
+    "tutorial-rf": "You want to know more about robots? Our free {{link:robot driver's license|https://www.robotikschulungen.de}} has you covered!",
+
+    "about-robokind": ""
+}

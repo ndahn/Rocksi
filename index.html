@@ -14,6 +14,9 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.7/jquery.i18n.min.js" integrity="sha512-a0tGMh5o0nCoRDiMVaSmiWgB9s/JqfC+PQZHWANTzIhasvm5eH9NkWTmJ4WloaQWLT8fEzRBjvADgFNDf0WusQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.7/jquery.i18n.messagestore.min.js" integrity="sha512-/hv/2tE0W63ywFkKYwtnbYdBwlS+tjEw/TWvGD31awT1bbEliLB0G0akHicAUJVLPSCE6LVEnfdJy0lPkrauvg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.7/jquery.i18n.parser.min.js" integrity="sha512-7SqTAqYSZQLut/vsxY2AFpb+kHhx97D6aBE/mxasqUzdoFqdBunJexJX+I51Uj1j2o9yD9JtNyMZ1PXDMnJMoQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.7/jquery.i18n.emitter.min.js" integrity="sha512-Yw0lHnAEswccgVMDJm0wNcn6VoLj6g/xAerqevklCx+D1eBBJZDvs6N7vzmlgmpT9SrZ/QsWDjWVOV8d5InotA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.7/jquery.i18n.emitter.bidi.min.js" integrity="sha512-dWOh8gVtmoq3jnJMksc/K9sgWuSkRc61EbqofuiLsUeYjkZeelYM7mRHQ9+B9ggZhXtz6u9IFR98v6QpZfxuRg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	</head>
 	<body>
 		<div class="main-container">
@@ -35,7 +38,7 @@
 			</button>
 			<div id="split-pane-2" class="split sim-container">
 				<div class="loading-message">
-					<h3>Lade Roboter...</h3>
+					<h3 data-i18n="robot-loading">Loading...</h3>
 				</div>
 				<div id="sim-canvas"></div>
 				<button class="run-button" disabled autocomplete="off">
@@ -58,74 +61,73 @@
 					<!-- Open/close viewports -->
 					<input class="tutorial-radio" id="tutorial-radio-0" name="tutorial" autocomplete="off" type="radio" checked>
 					<div class="tutorial-slide">
-						<h3>Behalte den Überblick</h3>
+						<h3 data-i18n="tutorial-1-heading"></h3>
 						<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
 							<source data-src="assets/tutorial/01_panels.mp4" type="video/mp4">
 						</video>
-						<p data-i18n="tutorial-1">Über das Menü links kannst du schnell zwischen den Ansichten wechseln.</p>
+						<p data-i18n="tutorial-1"></p>
 					</div>
 
 					<!-- Moving in 3D -->
 					<input class="tutorial-radio" id="tutorial-radio-1" name="tutorial" autocomplete="off" type="radio">
 					<div class="tutorial-slide">
-						<h3>Voll im Bilde</h3>
+						<h3 data-i18n="tutorial-2-heading"></h3>
 						<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
 							<source data-src="assets/tutorial/02_viewport.mp4" type="video/mp4">
 						</video>
-						<p class="desktop-only">Mit Links- und Rechtsklick drehst du dir die Welt, wie sie dir gefällt.</p>
-						<p class="mobile-only">Mit den gewohnten Touch-Gesten findest du jedes Detail.</p>
+						<p class="desktop-only" data-i18n="tutorial-2-desktop"></p>
+						<p class="mobile-only" data-i18n="tutorial-2-mobile"></p>
 					</div>
 
 					<!-- Controlling the robot -->
 					<input class="tutorial-radio" id="tutorial-radio-2" name="tutorial" autocomplete="off" type="radio">
 					<div class="tutorial-slide">
-						<h3>Handzahm</h3>
+						<h3 data-i18n="tutorial-3-heading"></h3>
 						<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
 							<source data-src="assets/tutorial/03_robot-move.mp4" type="video/mp4">
 						</video>
-						<p>Den Roboter kannst du direkt in der 3D-Ansicht bewegen. Über das Menü kannst du auch gezielt einzelne Gelenke steuern.</p>
+						<p data-i18n="tutorial-3"></p>
 					</div>
 
 					<!-- Programming with blocks -->
 					<input class="tutorial-radio" id="tutorial-radio-3" name="tutorial" autocomplete="off" type="radio">
 					<div class="tutorial-slide">
-						<h3>Das Leben ist ein Puzzle-Spiel</h3>
+						<h3 data-i18n="tutorial-4-heading"></h3>
 						<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
 							<source data-src="assets/tutorial/04_blockly.mp4" type="video/mp4">
 						</video>
-						<p>Mithilfe der Puzzleteile kannst du dir schnell ein Programm für den Roboter zusammenzubauen.</p>
+						<p data-i18n="tutorial-4"></p>
 					</div>
 
 					<!-- Context menu -->
 					<input class="tutorial-radio" id="tutorial-radio-4" name="tutorial" autocomplete="off" type="radio">
 					<div class="tutorial-slide">
-						<h3>Aus dem Kontext gerissen</h3>
+						<h3 data-i18n="tutorial-5-heading"></h3>
 						<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
 							<source data-src="assets/tutorial/05_context-menu.mp4" type="video/mp4">
 						</video>
-						<p>Das Kontext-Menü gibt dir weitere Optionen. Außerdem kannst du so deine Programme speichern und laden.</p>
+						<p data-i18n="tutorial-5"></p>
 					</div>
 
 					<!-- Executing a program -->
 					<input class="tutorial-radio" id="tutorial-radio-5" name="tutorial" autocomplete="off" type="radio">
 					<div class="tutorial-slide">
-						<h3>You better run</h3>
+						<h3 data-i18n="tutorial-6-heading"></h3>
 						<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
 							<source data-src="assets/tutorial/06_execution.mp4" type="video/mp4">
 						</video>
-						<p>Um ein Programm auszuführen klickst du in der 3D-Ansicht auf den Play-Button.</p>
+						<p data-i18n="tutorial-6"></p>
 					</div>
 
 					<!-- Further reading -->
 					<input class="tutorial-radio" id="tutorial-radio-6" name="tutorial" autocomplete="off" type="radio">
 					<div class="tutorial-slide">
-						<h3>Der Roboterführerschein</h3>
+						<h3 data-i18n="tutorial-rf-heading"></h3>
 						<a href="https://www.robotikschulungen.de" target="_blank">
 							<img class="tutorial-media" src="assets/images/rofu_collage.jpg">
 						</a>
-						<p>
-							Du möchtest noch mehr wissen oder dir war etwas unklar? Dann mach doch unseren kostenlosen
-							<a href="https://www.robotikschulungen.de" target="_blank">Roboterführerschein</a>!
+						<p data-i18n="[html]tutorial-rf">
+							
 						</p>
 					</div>
 
@@ -148,7 +150,21 @@
 						Rocksi &copy; Robokind 2021<br>
 						Code: <a href="https://github.com/ndahn/" target="_blank">Nikolas Dahn</a>,
 						      <a href="https://github.com/lgreipel/" target="_blank">Lukas Greipel</a><br>
-						<a href="https://www.robokind.de" target="_blank">www.robokind.de</a>
+						<div style="margin-top: 20px;">
+							<a class="accordion" href="#" panel="#imprint-panel"><span data-i18n="imprint">Imprint</span></a>
+							<a class="accordion" href="#" panel="#privacy-panel"><span data-i18n="privacy-policy">Privacy Policy</span></a>
+
+							<div class="about-panels">
+								<div id="imprint-panel" class="accordion-panel" data-i18n="[html]imprint-content">
+									<a href="https://www.robokind.de" target="_blank">www.robokind.de</a><br>
+									nikolas.dahn@robokind.de
+								</div>
+
+								<div id="privacy-panel" class="accordion-panel" data-i18n="[html]privacy-content">
+									<a href="https://robokind.de/privacy-policy/">https://robokind.de/privacy-policy/</a>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
