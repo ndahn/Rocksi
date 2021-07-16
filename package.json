@@ -45,10 +45,18 @@
     "parcel-plugin-static-files-copy": "^2.5.0"
   },
   "staticFiles": {
-    "staticPath": "assets",
-    "excludeGlob": [
-      "tutorial",
-      "tutorial/**"
+    "staticPath": [
+      {
+        "staticPath": "assets",
+        "excludeGlob": [
+          "tutorial",
+          "tutorial/**"
+        ]
+      },
+      {
+        "staticPath": "i18n",
+        "staticOutDir": "i18n"
+      }
     ]
   }
 }

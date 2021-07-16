@@ -26,11 +26,5 @@ export function getDesiredLanguage() {
 }
 
 export function localize(key, ...args) {
-    let value = $.i18n(key);
-
-    for (let i = 0; i < args.length; i++) {
-        value = value.replace('$' + i, args[i]);
-    }
-
-    return value;
+    return $.i18n(key, ...args);
 }

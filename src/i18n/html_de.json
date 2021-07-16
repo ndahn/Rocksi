@@ -26,5 +26,21 @@
     "tutorial-rf-heading": "Der Roboterführerschein",
     "tutorial-rf": "Du möchtest noch mehr wissen oder dir war etwas unklar? Dann mach doch unseren kostenlosen {{link:Roboterführerschein|https://www.robotikschulungen.de}}",
 
-    "about-robokind": ""
+    "imprint": "Impressum",
+    "privacy": "Datenschutz",
+    "imprint-content": "/i18n/imprint_de.html",
+    "privacy-content": "/i18n/privacy_de.html",
+
+    "gui-robot": "Roboter",
+    "gui-language": "Sprache",
+    "gui-gripper": "Greifer",
+    "gui-gripper-open": "Öffnen",
+    "gui-gripper-close": "Schließen",
+    "gui-joints": "Gelenkwinkel",
+    "gui-ik-joints": "IK Gelenke",
+    "gui-reset-robot": "Roboter zurücksetzen",
+    "gui-reset-view": "Ansicht zurücksetzen",
+    "gui-close": "Schließen",
+    "gui-confirm-switch-robot": "Möchtest du den $1 Roboter laden? Dein aktuelles Programm geht dabei verloren!",
+    "gui-confirm-switch-language": "Möchtest du die Sprache wechseln? Dein aktuelles Programm geht dabei verloren!"
 }

@@ -19,8 +19,26 @@ jQuery(document).ready(function() {
         'de': html_de,
     });
 
-    $.i18n().locale = getDesiredLanguage();
+    let lang = getDesiredLanguage();
+    $.i18n().locale = lang;
     $('body').i18n();
+
+    $('.i18n-only').hide();
+    $('.i18n-only.' + lang).show();
+    
+    // In some caces localizations are saved as external resources
+    let loadExternal = document.querySelectorAll('[load-i18n]');
+    for (let i = loadExternal.length; i--;) {
+        let elem = loadExternal[i];
+        let key = elem.getAttribute('load-i18n');
+        let val = $.i18n(key);
+
+        $(elem).load(val, function (res, status, xhr) {
+            if (status == 'error') {
+                $(elem).append('Error: ' + xhr.status + ':: ' + xhr.statusText);
+            }
+        });
+    }
 });
 
 
@@ -30,10 +48,23 @@ let accordions = document.getElementsByClassName("accordion");
 function setAccordionVisible(accordion, visible) {
     let panel = document.querySelector(accordion.getAttribute('panel'));
     if (visible) {
+        // Calculate available space taking into account any already open active panels
+        let maxHeight = Math.min(window.outerHeight, document.documentElement.clientHeight) - 60;
+        maxHeight += $(panel.parentNode).find('.accordion-panel.active').height() || 0;
+
+        // Subtract the height of all siblings of this node's parents
+        let sibling = panel.parentNode.parentNode.firstElementChild;
+        do {
+            maxHeight -= sibling.offsetHeight;
+        } while (sibling = sibling.nextElementSibling);
+        maxHeight = Math.min(maxHeight, panel.scrollHeight);
+
         accordion.classList.add('active')
-        panel.style.maxHeight = panel.scrollHeight + "px";
+        panel.classList.add('active');
+        panel.style.maxHeight = maxHeight + 'px';
     } else {
         accordion.classList.remove('active')
+        panel.classList.remove('active');
         panel.style.maxHeight = null;
     }
 }
@@ -41,12 +72,16 @@ function setAccordionVisible(accordion, visible) {
 for (let i = 0; i < accordions.length; i++) {
     accordions[i].addEventListener("click", function(event) {
         event.stopPropagation();
-        
         let show = !this.classList.contains('active');
-        for (let acc of accordions) {
-            setAccordionVisible(acc, false);
-        }
+
+        // Show the revealed panel first so that it can take already open panels into account 
+        // before they become animated.
         setAccordionVisible(this, show);
+        for (let acc of accordions) {
+            if (acc !== this) {
+                setAccordionVisible(acc, false);
+            }
+        }
     });
 }
 
@@ -136,13 +171,21 @@ $('#tutorial-close-btn').on('click', evt => {
     });
 });
 
+
 $('#about-btn').on('click', evt => {
+    $('#robot-gui').hide();
     $('#about-lightbox').show();
 });
 $('#about-lightbox').on('click', evt => {
-    $('#about-lightbox').hide();
+    let about = $('#about-lightbox');
+    about.hide();
+    $('#robot-gui').show();
+
+    // Close all about section accordions
     for (let acc of accordions) {
-        setAccordionVisible(acc, false);
+        if (about.find(acc).length) {
+            setAccordionVisible(acc, false);
+        }
     }
 });
 

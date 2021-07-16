@@ -16,7 +16,7 @@
 .about-box {
 	display: flex;
 	position: absolute;
-	width: 20%;
+	width: 30%;
 	min-width: 300px;
 	left: 50%;
 	top: 50%;
@@ -28,15 +28,24 @@
 	align-items: center;
 }
 
+@media only screen and (orientation: landscape) and (max-device-width : 1024px) {
+	.about-box {
+		width: 60%;
+	}
+}
+
 .about-logo {
-	margin: 20px 5% 10px 5%;
+	position: relative;
+	left: 50%;
+	transform: translateX(-50%);
+	margin-top: 1.5em;
+	max-height: 4.5rem;
 	max-width: 90%;
-	max-height: 90%;
 }
 
 .about-info {
 	max-width: 90%;
-	margin: 20px 5% 20px 5%;
+	margin: 20px 5% 0 5%;
 	line-height: 1.5em;
 	text-align: center;
 }
@@ -46,24 +55,40 @@
 }
 
 .about-panels {
-	margin-top: .5em;
+	max-width: 100%;
+	margin: 0;
+	margin-bottom: 1em;
+}
+
+.about-panels .accordion-headers {
+	text-align: center;
+	margin-bottom: 7px;
 }
 
 .accordion {
 	color: white !important;
 	display: inline;
-	width: 49%;
+	width: 33%;
 }
 
-.accordion.active span {
+.about-panels .accordion-panel h3:not(:first) {
+	margin-top: 2em;
+    margin-bottom: .3em;
+}
+
+.about-panels .accordion-panel p {
+	margin-top: 1em;
+}
+
+.about-panels .accordion-panel.active {
+	min-height: 150px;
+}
+
+.about-panels .accordion:hover span {
 	text-decoration: underline;
 }
 
-.accordion:hover span {
-	text-decoration: underline;
-}
-
-.accordion::before {
+.about-panels .accordion::before {
 	content: '\f0da';
 	text-decoration: none !important;
 	font-family: 'Font Awesome 5 Free';
@@ -72,6 +97,6 @@
 	margin-right: .5em;
 }
 
-.accordion.active::before {
+.about-panels .accordion.active::before {
 	content: '\f0d7';
 }

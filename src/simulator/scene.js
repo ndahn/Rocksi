@@ -79,9 +79,6 @@ let ik;
 const renderCallbacks = [];
 const canHover = window.matchMedia('(hover: hover)').matches;
 
-//loadCached('robots', './models/export/franka_description.zip')
-//    .then(result => loadRobotModel(result))
-//    .catch(error => console.error(error.message));
 loadRobotModel(robot.xacro)
 	.then(model => {
 		robot.init(model);
@@ -89,10 +86,7 @@ loadRobotModel(robot.xacro)
 		robot.setPose(robot.defaultPose);
 
 		initScene();
-        //Lukas
         initCannon();
-        //initRobotHitboxes(robot); Not working... Lukas
-		$('.loading-message').hide();
 
 		ik = new IKSolver(scene, robot);
 		Simulation.init(robot, ik, ikRender);
@@ -119,7 +113,7 @@ function loadRobotModel(url) {
 		xacroLoader.load(
 			url,
 			(xml) => {
-				let manager = new LoadingManager(undefined, render);
+				let manager = new LoadingManager(onLoadComplete, render);
 				const urdfLoader = new URDFLoader(manager);
 				urdfLoader.packages = robot.packages;
 				urdfLoader.workingPath = LoaderUtils.extractUrlBase(url);
@@ -133,6 +127,10 @@ function loadRobotModel(url) {
 			}
 		);
 	});
+}
+
+function onLoadComplete() {
+	$('.loading-lightbox').hide();
 }
 
 

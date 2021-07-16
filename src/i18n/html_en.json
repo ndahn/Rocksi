@@ -26,5 +26,23 @@
     "tutorial-rf-heading": "Robot's Driving License",
     "tutorial-rf": "You want to know more about robots? Our free {{link:robot driver's license|https://www.robotikschulungen.de}} has you covered!",
 
-    "about-robokind": ""
+    "imprint": "Imprint",
+    "privacy": "Privacy Policy",
+    "imprint-content": "/i18n/imprint_en.html",
+
+    "__TODO__": "### ADD TRANSLATION OF PRIVACY POLICY! ###",
+    "privacy-content": "/i18n/privacy_de.html",
+
+    "gui-robot": "Robot",
+    "gui-language": "Language",
+    "gui-gripper": "Gripper",
+    "gui-gripper-open": "Open",
+    "gui-gripper-close": "Close",
+    "gui-joints": "Joint Values",
+    "gui-ik-joints": "IK Joints",
+    "gui-reset-robot": "Reset Robot",
+    "gui-reset-view": "Reset Viewport",
+    "gui-close": "Close",
+    "gui-confirm-switch-robot": "Are you sure you want to load the $1 robot? Any unsaved programs will be lost!",
+    "gui-confirm-switch-language": "Are you sure you want to change language? Any unsaved programs will be lost!"
 }

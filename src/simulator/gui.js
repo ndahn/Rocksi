@@ -40,29 +40,29 @@ export function initGui(robot, cameraControl, renderCall) {
 
     gui.add('title', { name: 'Rocksi', prefix: 'v2.0' });
     
-    const robotList = gui.add('list', { name: localize('GUI_ROBOT'), list: theRobots, value: currentRobotIdx }).onChange( val => loadRobot(robotList, val) );
+    const robotList = gui.add('list', { name: localize('gui-robot'), list: theRobots, value: currentRobotIdx }).onChange( val => loadRobot(robotList, val) );
 
-    const languages = gui.add('list', { name: localize('GUI_LANGUAGE'), list: theLanguages, value: currentLanguageIdx }).onChange( val => switchLanguage(languages, val) );
+    const languages = gui.add('list', { name: localize('gui-language'), list: theLanguages, value: currentLanguageIdx }).onChange( val => switchLanguage(languages, val) );
 
-    let gripperButtons = gui.add('button', { name: '', value: [localize('GUI_OPEN'), localize('GUI_CLOSE')]}).onChange( val => setGripper(val) );
-    gripperButtons.label(localize('GUI_GRIPPER'), 1)
+    let gripperButtons = gui.add('button', { name: '', value: [localize('gui-gripper-open'), localize('gui-gripper-close')]}).onChange( val => setGripper(val) );
+    gripperButtons.label(localize('gui-gripper'), 1)
     
     let jointValuesRelative = getRobotJointValuesRelative(robot);
-    jointList = gui.add('graph', { name: localize('GUI_JOINTS'), value: jointValuesRelative, neg: true, precision: 2, h:80 }).onChange( vals => updateRobotJoints(robot, vals, renderCall) );
+    jointList = gui.add('graph', { name: localize('gui-joints'), value: jointValuesRelative, neg: true, precision: 2, h:80 }).onChange( vals => updateRobotJoints(robot, vals, renderCall) );
 
-    let ikgroup = gui.add('group', { name: localize('GUI_IK_JOINTS') });
+    let ikgroup = gui.add('group', { name: localize('gui-ik-joints') });
     for (let joint of robot.arm.movable) {
         let active = robot.ikEnabled.includes(joint.name);
         ikgroup.add('bool', { name: joint.name, value: active, h: 20 }).onChange( val => onJointIKChange(robot, joint.name, val) );
     }
     
-    gui.add('button', { name: '', value: [localize('GUI_RESET_ROBOT')], p: 0 }).onChange( val => resetRobot(robot, renderCall) );
-    gui.add('button', { name: '', value: [localize('GUI_RESET_VIEW')], p: 0 }).onChange( val => cameraControl.reset() );
+    gui.add('button', { name: '', value: [localize('gui-reset-robot')], p: 0 }).onChange( val => resetRobot(robot, renderCall) );
+    gui.add('button', { name: '', value: [localize('gui-reset-view')], p: 0 }).onChange( val => cameraControl.reset() );
 
     gui.isOpen = false;
     gui.setHeight();
-    gui.bottomText = [localize('GUI_ROBOT'), localize('tutorial-1')];
-    gui.bottom.textContent = localize('GUI_ROBOT');
+    gui.bottomText = [localize('gui-robot'), localize('gui-close')];
+    gui.bottom.textContent = localize('gui-robot');
 
     addRenderCallback(onRobotMoved);
 }
@@ -97,8 +97,7 @@ function loadRobot(guiRobotList, robotName) {
         return;
     }
 
-    // "Möchtest du den " + robotName + " Roboter laden? Dein aktuelles Programm geht dabei verloren!"
-    let ok = window.confirm(localize('GUI_CONFIRM_SWITCH_ROBOT'));
+    let ok = window.confirm(localize('gui-confirm-switch-robot', robotName));
     if (ok) {
         let url = window.location;
         let params = new URLSearchParams(url.search);
@@ -116,7 +115,7 @@ function switchLanguage(guiLanguageList, language) {
         return;
     }
 
-    let ok = window.confirm(localize('GUI_CONFIRM_SWITCH_LANGUAGE'));
+    let ok = window.confirm(localize('gui-confirm-switch-language', language));
     if (ok) {
         let url = window.location;
         let params = new URLSearchParams(url.search);
@@ -133,11 +132,11 @@ function switchLanguage(guiLanguageList, language) {
 function setGripper(val) {
     Simulation.getInstance().then(sim => {
         switch (val) {
-            case 'Öffnen':
+            case localize('gui-gripper-open'):
                 sim.gripper_open();
                 break;
 
-            case 'Schließen':
+            case localize('gui-gripper-close'):
                 sim.gripper_close();
                 break;
 
