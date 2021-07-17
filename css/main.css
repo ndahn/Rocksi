@@ -121,12 +121,13 @@ a {
 	height: 100%;
 }
 
-.loading-message {
+.loading-text {
 	position: absolute;
 	top: 50%;
 	right: 50%;
 	transform: translate(50%, -50%);
 	text-align: center;
+	z-index: 2;
 }
 
 .loading-text {
