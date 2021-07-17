@@ -29,9 +29,7 @@
     "imprint": "Imprint",
     "privacy": "Privacy Policy",
     "imprint-content": "/i18n/imprint_en.html",
-
-    "__TODO__": "### ADD TRANSLATION OF PRIVACY POLICY! ###",
-    "privacy-content": "/i18n/privacy_de.html",
+    "privacy-content": "/i18n/privacy_en.html",
 
     "gui-robot": "Robot",
     "gui-language": "Language",
