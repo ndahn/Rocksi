@@ -28,8 +28,8 @@
 
     "imprint": "Impressum",
     "privacy": "Datenschutz",
-    "imprint-content": "/i18n/imprint_de.html",
-    "privacy-content": "/i18n/privacy_de.html",
+    "imprint-content": "i18n/imprint_de.html",
+    "privacy-content": "i18n/privacy_de.html",
 
     "gui-robot": "Roboter",
     "gui-language": "Sprache",
@@ -42,5 +42,9 @@
     "gui-reset-view": "Ansicht zurücksetzen",
     "gui-close": "Schließen",
     "gui-confirm-switch-robot": "Möchtest du den $1 Roboter laden? Dein aktuelles Programm geht dabei verloren!",
-    "gui-confirm-switch-language": "Möchtest du die Sprache wechseln? Dein aktuelles Programm geht dabei verloren!"
+    "gui-confirm-switch-language": "Möchtest du die Sprache wechseln? Dein aktuelles Programm geht dabei verloren!",
+    "gui-robot-info": "Info",
+
+    "franka-info": "Der Roboter von Franka Emika zeichnet sich durch 7 Gelenkfreiheitsgrade und einen hohen Grad von Feingefühl aus. Dadurch kann sich Franka ähnlich wie der menschliche Arm bewegen und auch auf leichte Berührungen reagieren. <p><a href=\"https://franka.de/\" target=\"_blank\">www.franka.de</a></p>",
+    "niryo-info": "Niryo stellt kleine Desktoproboter mit 6 Gelenken her, die vor allem für den Bildungsbereich gedacht sind. Mit einem 3D-Drucker können technisch Begeisterte den Roboter sogar selbst bauen! <p><a href=\"https://niryo.com/\" target=\"_blank\">www.niryo.com</a></p>"
 }

@@ -46,12 +46,6 @@ export default class Robot {
         // Additional macros that will be required for loading the Xacro
         this.rosMacros = {};
 
-        // Descriptions of the robot in various languages
-        this.info = {
-            DE: '',
-            EN: '',
-        };
-
         this.modelScale = 1;
 
         // Names of links and joints grouped by what they belong to

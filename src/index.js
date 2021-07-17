@@ -4,23 +4,26 @@ import * as html_de from './i18n/html_de.json'
 import * as html_en from './i18n/html_en.json'
 
 
+// Initialize localization so it's immediately available
+$.extend($.i18n.parser.emitter, {
+    link: function(nodes) {
+        let target = nodes[2] || "_blank";
+        // requires the data-i18n tag to start with [html]
+        return '<a href="' + nodes[1] + '" target ="' + target + '">' + nodes[0] + '</a>';
+    }
+});
+
+$.i18n().load({
+    'en': html_en,
+    'de': html_de,
+});
+
+const lang = getDesiredLanguage();
+$.i18n().locale = lang;
+
+
 // Localize the page
 jQuery(document).ready(function() {
-    $.extend($.i18n.parser.emitter, {
-        link: function(nodes) {
-            let target = nodes[2] || "_blank";
-            // requires the data-i18n tag to start with [html]
-            return '<a href="' + nodes[1] + '" target ="' + target + '">' + nodes[0] + '</a>';
-        }
-    });
-
-    $.i18n().load({
-        'en': html_en,
-        'de': html_de,
-    });
-
-    let lang = getDesiredLanguage();
-    $.i18n().locale = lang;
     $('body').i18n();
 
     $('.i18n-only').hide();

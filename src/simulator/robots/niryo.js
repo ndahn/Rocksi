@@ -6,9 +6,6 @@ class Niryo extends Robot {
 	constructor() {
 		super("Niryo", "niryo_robot_description", "urdf/ned/niryo_ned_gripper.urdf.xacro");
 
-		this.info.DE = 'Niryo';
-		this.info.EN = 'Niryo';
-
 		this.partNames.arm = [
 			"joint_1",
 			"shoulder_link",

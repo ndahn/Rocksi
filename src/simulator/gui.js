@@ -3,6 +3,7 @@ import { getDesiredLanguage, getDesiredRobot } from "../helpers";
 import { addRenderCallback } from "./scene";
 import Simulation from "./simulation"
 import { localize } from "../helpers";
+import { popInfo } from "../alert";
 
 
 const theRobots = ['Franka', 'Niryo'];
@@ -40,9 +41,10 @@ export function initGui(robot, cameraControl, renderCall) {
 
     gui.add('title', { name: 'Rocksi', prefix: 'v2.0' });
     
-    const robotList = gui.add('list', { name: localize('gui-robot'), list: theRobots, value: currentRobotIdx }).onChange( val => loadRobot(robotList, val) );
-
     const languages = gui.add('list', { name: localize('gui-language'), list: theLanguages, value: currentLanguageIdx }).onChange( val => switchLanguage(languages, val) );
+    
+    const robotList = gui.add('list', { name: localize('gui-robot'), list: theRobots, value: currentRobotIdx }).onChange( val => loadRobot(robotList, val) );
+    gui.add('button', { name: '', value: [localize('gui-robot-info')]}).onChange( val => showRobotInfo(robot) );
 
     let gripperButtons = gui.add('button', { name: '', value: [localize('gui-gripper-open'), localize('gui-gripper-close')]}).onChange( val => setGripper(val) );
     gripperButtons.label(localize('gui-gripper'), 1)
@@ -92,6 +94,24 @@ function getRobotJointValuesRelative(robot) {
 }
 
 
+function switchLanguage(guiLanguageList, language) {
+    if (theLanguages[currentLanguageIdx] === language) {
+        return;
+    }
+
+    let ok = window.confirm(localize('gui-confirm-switch-language', language));
+    if (ok) {
+        let url = window.location;
+        let params = new URLSearchParams(url.search);
+        params.set('lang', language);
+        window.location.replace(url.origin + url.pathname + '?' + params.toString());
+    }
+    else {
+        guiLanguageList.setList(theLanguages, currentLanguageIdx);
+        guiLanguageList.close();
+    }
+}
+
 function loadRobot(guiRobotList, robotName) {
     if (theRobots[currentRobotIdx] === robotName) {
         return;
@@ -110,22 +130,8 @@ function loadRobot(guiRobotList, robotName) {
     }
 }
 
-function switchLanguage(guiLanguageList, language) {
-    if (theLanguages[currentLanguageIdx] === language) {
-        return;
-    }
-
-    let ok = window.confirm(localize('gui-confirm-switch-language', language));
-    if (ok) {
-        let url = window.location;
-        let params = new URLSearchParams(url.search);
-        params.set('lang', language);
-        window.location.replace(url.origin + url.pathname + '?' + params.toString());
-    }
-    else {
-        guiLanguageList.setList(theLanguages, currentLanguageIdx);
-        guiLanguageList.close();
-    }
+function showRobotInfo(robot) {
+    popInfo(localize(robot.name.toLowerCase() + '-info'));
 }
 
 

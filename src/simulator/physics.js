@@ -71,7 +71,7 @@ export function initCannon() {
     world.addBody(floorBody);
 
     initDone = true;
-    console.log('Physics init done');
+    //console.log('Physics init done');
     debug();
 }
 

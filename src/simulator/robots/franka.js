@@ -5,16 +5,6 @@ class Franka extends Robot {
 	constructor() {
 		super("Franka", "franka_description", "robots/panda_arm_hand.urdf.xacro");
 
-		this.info.EN = "Franka Emika's robot features 7 joint degrees of freedem as well as a high degree " +
-			"of sensitivity. This allows it to move similar to a human arm and react to even " +
-			"light touches. The model can be found on their " +
-			"<a href=\"https://github.com/frankaemika/franka_ros\" target=\"_blank\">GitHub page</a>.";
-		
-		this.info.DE = "Der Roboter von Franka Emika zeichnet sich durch 7 Gelenkfreiheitsgrade und einen " +
-			"hohen Grad von Feingefühl aus. Dadurch kann sich Franka ähnlich wie der menschliche " +
-			"Arm bewegen und auch auf leichte Berührungen reagieren. Das Modell stammt von Frankas " +
-			"<a href=\"https://github.com/frankaemika/franka_ros\" target=\"_blank\">GitHub Seite</a>.";
-		
 		this.partNames.arm = [
 			"panda_joint0",
 			"panda_link0",

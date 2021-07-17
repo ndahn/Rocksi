@@ -61,6 +61,10 @@
 	display: inline-block;
 }
 
+.msgbox-text a {
+	color: #fff;
+}
+
 .msgbox-close {
 	color: #ffffff;
 	font-weight: bold;
