@@ -67,6 +67,8 @@
 	display: block;
 	max-height: 60%;
 	max-width: 90%;
+	margin-left: auto;
+	margin-right: auto;
     background-color: black;
 }
 
