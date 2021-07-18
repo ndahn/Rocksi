@@ -23,17 +23,68 @@
      inkscape:pagecheckerboard="0"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="0.47433592"
-     inkscape:cx="772.12883"
-     inkscape:cy="801.67"
+     inkscape:zoom="1.3416246"
+     inkscape:cx="781.88788"
+     inkscape:cy="953.69451"
      inkscape:window-width="1920"
      inkscape:window-height="1027"
-     inkscape:window-x="1912"
+     inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
   <defs
-     id="defs2" />
+     id="defs2">
+    <linearGradient
+       id="linearGradient6057"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#ffa5ff;stop-opacity:1;"
+         offset="0"
+         id="stop6055" />
+    </linearGradient>
+    <inkscape:path-effect
+       effect="mirror_symmetry"
+       start_point="175.81599,253.4338"
+       end_point="157.82065,271.43657"
+       center_point="166.81832,262.43518"
+       id="path-effect1722"
+       is_visible="true"
+       lpeversion="1.1"
+       mode="free"
+       discard_orig_path="false"
+       fuse_paths="false"
+       oposite_fuse="true"
+       split_items="false"
+       split_open="false" />
+    <inkscape:path-effect
+       effect="mirror_symmetry"
+       start_point="181.77315,247.35723"
+       end_point="181.77315,271.43657"
+       center_point="181.77315,259.3969"
+       id="path-effect1427"
+       is_visible="true"
+       lpeversion="1.1"
+       mode="free"
+       discard_orig_path="false"
+       fuse_paths="false"
+       oposite_fuse="false"
+       split_items="false"
+       split_open="false" />
+    <inkscape:path-effect
+       effect="mirror_symmetry"
+       start_point="169.41679,251.81363"
+       end_point="169.41679,277.27769"
+       center_point="169.41679,264.54566"
+       id="path-effect1086"
+       is_visible="true"
+       lpeversion="1.1"
+       mode="free"
+       discard_orig_path="false"
+       fuse_paths="false"
+       oposite_fuse="false"
+       split_items="false"
+       split_open="false" />
+  </defs>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
@@ -201,5 +252,16 @@
        cx="253.76859"
        cy="263.04599"
        r="3.3996487" />
+    <path
+       style="fill:#1ea5ff;fill-opacity:1;stroke:none;stroke-width:0.0273659px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 157.82129,271.43657 v -8.20696 c 0,0 0.17338,-0.71391 0.90769,-0.75471 0.73432,-0.0408 1.36664,0.8975 2.71288,0.8975 1.34624,0 2.5089,-1.35644 2.48851,-2.79447 -0.0223,-1.57522 -1.20216,-2.63184 -2.34572,-2.69248 -1.34625,-0.0714 -2.18274,0.89175 -2.84547,0.8771 -0.65328,-0.0144 -0.91789,-0.69352 -0.91789,-0.69352 v -4.64352 h 6.47623 c 0,0 0.63958,-0.37305 0.62883,-0.88896 -0.0171,-0.82127 -0.66121,-1.4401 -0.8392,-2.3717 -0.20977,-1.09794 0.85208,-2.80699 2.55609,-2.80762 2.3661,-10e-4 2.93726,1.83578 2.83527,2.77407 -0.10199,0.93829 -0.9631,2.03275 -0.77264,2.56536 0.25199,0.70465 0.65025,0.72885 0.65025,0.72885 h 6.46603 m -18.00151,18.01042 8.20696,-0.003 c 0,0 0.71384,-0.17368 0.75434,-0.908 0.0405,-0.73434 -0.89806,-1.36627 -0.89862,-2.71251 -5.6e-4,-1.34624 1.3554,-2.50946 2.79344,-2.48967 1.57523,0.0217 2.63234,1.20108 2.69345,2.34461 0.072,1.34622 -0.89085,2.18311 -0.87593,2.84583 0.0147,0.65328 0.6939,0.91761 0.6939,0.91761 l 4.64352,-0.002 -0.003,-6.47623 c 0,0 0.37279,-0.63973 0.8887,-0.6292 0.82128,0.0168 1.44037,0.66062 2.37205,0.83822 1.09802,0.20932 2.80663,-0.85323 2.80656,-2.55724 2e-5,-2.3661 -1.83699,-2.93651 -2.77524,-2.83413 -0.93825,0.10238 -2.03235,0.96394 -2.56504,0.7737 -0.70475,-0.2517 -0.72912,-0.64995 -0.72912,-0.64995 l -0.003,-6.46603"
+       id="path1406"
+       sodipodi:nodetypes="ccssssscccssssscc"
+       inkscape:export-filename="D:\Code\workspace\Rocksi\favicon.png"
+       inkscape:export-xdpi="47.880001"
+       inkscape:export-ydpi="47.880001"
+       inkscape:path-effect="#path-effect1722"
+       inkscape:original-d="m 157.82129,271.43657 v -8.20696 c 0,0 0.17338,-0.71391 0.90769,-0.75471 0.73432,-0.0408 1.36664,0.8975 2.71288,0.8975 1.34624,0 2.5089,-1.35644 2.48851,-2.79447 -0.0223,-1.57522 -1.20216,-2.63184 -2.34572,-2.69248 -1.34625,-0.0714 -2.18274,0.89175 -2.84547,0.8771 -0.65328,-0.0144 -0.91789,-0.69352 -0.91789,-0.69352 v -4.64352 h 6.47623 c 0,0 0.63958,-0.37305 0.62883,-0.88896 -0.0171,-0.82127 -0.66121,-1.4401 -0.8392,-2.3717 -0.20977,-1.09794 0.85208,-2.80699 2.55609,-2.80762 2.3661,-10e-4 2.93726,1.83578 2.83527,2.77407 -0.10199,0.93829 -0.9631,2.03275 -0.77264,2.56536 0.25199,0.70465 0.65025,0.72885 0.65025,0.72885 h 6.46603"
+       transform="rotate(-45,180.02802,236.44746)" />
   </g>
 </svg>

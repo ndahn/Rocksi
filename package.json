@@ -49,6 +49,8 @@
       {
         "staticPath": "assets",
         "excludeGlob": [
+          "src",
+          "src/**",
           "tutorial",
           "tutorial/**"
         ]
