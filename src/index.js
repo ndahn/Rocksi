@@ -119,8 +119,8 @@ $('#blocks-btn').on('click', evt => {
         view.animate({ width: 0 }, animDuration);
         $('#split-pane-1').animate({ width: '100%' }, animDuration);
 
+        $('#robot-gui').hide();
         if (isMobile()) {
-            $('#robot-gui').hide();
             $('#blockly-mobile-menu').show();
         }
     } else {
@@ -128,8 +128,8 @@ $('#blocks-btn').on('click', evt => {
         view.animate({ width: targetRatio + '%' }, animDuration);
         $('#split-pane-1').animate({ width: (100 - targetRatio) + '%' }, animDuration);
         
+        $('#robot-gui').show();
         if (isMobile()) {
-            $('#robot-gui').show();
             $('#blockly-mobile-menu').hide();
         }
     }
@@ -143,8 +143,8 @@ $('#viewport-btn').on('click', evt => {
         view.animate({ width: 0 }, animDuration);
         $('#split-pane-2').animate({ width: '100%' }, animDuration);
 
+        $('#robot-gui').show();
         if (isMobile()) {
-            $('#robot-gui').show();
             $('#blockly-mobile-menu').hide();
         }
     } else {
@@ -152,8 +152,8 @@ $('#viewport-btn').on('click', evt => {
         view.animate({ width: targetRatio + '%' }, animDuration);
         $('#split-pane-2').animate({ width: (100 - targetRatio) + '%' }, animDuration);
 
+        $('#robot-gui').hide();
         if (isMobile()) {
-            $('#robot-gui').hide();
             $('#blockly-mobile-menu').show();
         }
     }
