@@ -24,7 +24,7 @@ import {
 //Imports for managing objects and physics, Lukas
 import { initCannon } from './physics';
 
-import { setSimObjectHighlight,
+import { remControledSimObject, setSimObjectHighlight,
          setTCSimObjectsOnClick } from './objects/createObjects';
 
 // In ROS models Z points upwards
@@ -43,7 +43,7 @@ import { default as IKSolver } from "./ik/ccdik"
 import Simulation from "./simulation"
 import * as GUI from "./gui"
 import { popInfo } from "../alert"
-import { getDesiredRobot } from "../helpers";
+import { canHover, getDesiredRobot, isMobile } from "../helpers";
 
 const path = require('path');
 
@@ -77,7 +77,6 @@ let simObjectActive = false;
 let ik;
 
 const renderCallbacks = [];
-const canHover = window.matchMedia('(hover: hover)').matches;
 
 loadRobotModel(robot.xacro)
 	.then(model => {
@@ -213,7 +212,7 @@ function initScene() {
 	scene.add(groundLine);
 
 	robotControl = new TransformControls(camera, renderer.domElement);
-	robotControl.setSize(canHover ? 1.7 : 3);
+	robotControl.setSize(canHover() ? 1.7 : 3);
 	robotControl.addEventListener("change", evt => requestAnimationFrame(render));
 	robotControl.addEventListener("objectChange", onTargetChange);
 	robotControl.addEventListener("dragging-changed", evt => cameraControl.enabled = !evt.value);
@@ -232,6 +231,10 @@ function initScene() {
 	onCanvasResize();
 
 	GUI.initGui(robot, cameraControl, ikRender);
+
+	if (isMobile()) {
+		$('#robot-gui').hide();
+	}
 }
 
 function onCanvasResize() {
@@ -291,7 +294,7 @@ function render() {
 
 
 export function enablePointerEvents() {
-	if (canHover) {
+	if (canHover()) {
 		container.addEventListener('pointermove', onHoverPointerMove);
 		container.addEventListener('pointerdown', onHoverPointerDown);
 		container.addEventListener('pointerup', onHoverPointerUp);
@@ -304,7 +307,7 @@ export function enablePointerEvents() {
 }
 
 export function disablePointerEvents() {
-	if (canHover) {
+	if (canHover()) {
 		container.removeEventListener('pointermove', onHoverPointerMove);
 		container.removeEventListener('pointerdown', onHoverPointerDown);
 		container.removeEventListener('pointerup', onHoverPointerUp);
@@ -314,6 +317,10 @@ export function disablePointerEvents() {
 		container.removeEventListener('pointerdown', onClickPointerDown);
 		container.removeEventListener('pointerup', onClickPointerUp);
 	}
+
+	remControledSimObject();
+	robotControl.visible = false;
+	robotControl.enabled = false;
 }
 
 
@@ -417,7 +424,6 @@ export function getControl () {
         camera: camera,
         orbitControls: cameraControl,
         renderer: renderer,
-		canHover: canHover,
     }
     return contObj;
 }

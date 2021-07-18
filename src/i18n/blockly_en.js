@@ -74,4 +74,7 @@ export const BlocklyCustomEN = {
 
     ROCKSI_BLOCK_SCALE: "%1",
     ROCKSI_BLOCK_SCALE_TOOLTIP: "A factor",
+
+    ROCKSI_EXAMPLE_PICK_N_PLACE: "Pick & Place: picking up and letting go of an object",
+    ROCKSI_EXAMPLE_PICK_N_PLACE_COMMENT_1: "Jointspace poses will always be more reliable!"
 }

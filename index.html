@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Rocksi</title>
+		<title>Rocksi - Robot Blocks Simulator</title>
+		<link rel="shortcut icon" type="image/jpg" href="favicon.png"/>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<meta name="author" content="Nikolas Dahn">
-		<meta name="description" content="Rocksi is a robot simulator that allows you to program a 3D robot arm using blockly blocks. It helps students and teachers to learn about robots without having access to them.">
+		<meta name="description" data-i18n="[content]seo-description" content="Rocksi is a free robot simulator that runs in any modern browser and allows you to program a 3D robot arm using blockly visual programming.">
+		<meta name="keywords" content="robot programming, roboter programmieren, roboter simulieren, online robot simulator, robot simulator for ios, robot simulator for android, franka emika simulator, niryo simulator, block programming, visual programming, platform independent robot simulator">
 		<link type="text/css" rel="stylesheet" href="./css/main.css">
 		<link type="text/css" rel="stylesheet" href="./css/spinner.css">
 		<link type="text/css" rel="stylesheet" href="./css/alerts.css">
@@ -13,15 +15,37 @@
 		<link type="text/css" rel="stylesheet" href="./css/viewport.css">
 		<link type="text/css" rel="stylesheet" href="./css/tutorial.css">
 		<link type="text/css" rel="stylesheet" href="./css/about.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.7/jquery.i18n.min.js" integrity="sha512-a0tGMh5o0nCoRDiMVaSmiWgB9s/JqfC+PQZHWANTzIhasvm5eH9NkWTmJ4WloaQWLT8fEzRBjvADgFNDf0WusQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.7/jquery.i18n.messagestore.min.js" integrity="sha512-/hv/2tE0W63ywFkKYwtnbYdBwlS+tjEw/TWvGD31awT1bbEliLB0G0akHicAUJVLPSCE6LVEnfdJy0lPkrauvg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.7/jquery.i18n.parser.min.js" integrity="sha512-7SqTAqYSZQLut/vsxY2AFpb+kHhx97D6aBE/mxasqUzdoFqdBunJexJX+I51Uj1j2o9yD9JtNyMZ1PXDMnJMoQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.7/jquery.i18n.emitter.min.js" integrity="sha512-Yw0lHnAEswccgVMDJm0wNcn6VoLj6g/xAerqevklCx+D1eBBJZDvs6N7vzmlgmpT9SrZ/QsWDjWVOV8d5InotA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.7/jquery.i18n.emitter.bidi.min.js" integrity="sha512-dWOh8gVtmoq3jnJMksc/K9sgWuSkRc61EbqofuiLsUeYjkZeelYM7mRHQ9+B9ggZhXtz6u9IFR98v6QpZfxuRg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	</head>
 	<body>
+		<!-- Only for SEO -->
+		<div style="display: none">
+			<!-- Copy of text kept here to make sure search engines see it -->
+			<h1 data-i18n="seo-header">Simulate and program virtual robots in your browser!</h1>
+			<p data-i18n="[html]seo-text">
+				Rocksi is a simulator that allows you to freely program a 3D virtual robot similar to scratch or Lego Mindstorms. 
+				Rocksi runs on any modern browser (Firefox, Chrome, Safari...) and device (iPhone, iPad, IOS, Android, Linux, 
+				Windows, ...) - no download or installation! Rocksi is also completely free of charge with no registration required. 
+				<br>
+				Rocksi was written to make robots more accessible for everybody, and especially with education in mind. Use it 
+				however you see fit, e.g. school classes, university lectures, workshops, fairs, etc.! At the moments robots by 
+				Franka Emika and Niryo are included, with more to come as manufacturers approach us.
+				<br>
+				Rocksi was written for the <a href="https://robokind.de" target="_blank">Robokind Foundation</a> in Germany 
+				which creates lectures and workshops on robotics. Their free online courses on robotics - e.g. the robot driver's 
+				license - can be found at <a href="https://robotikschulungen.de" target="_blank">www.robotikschulungen.de</a>.
+			</p>
+			<p>
+				<a rel="alternate" href="/?lang=DE">Deutsch</a>
+				<a rel="alternate" href="/?lang=EN">English</a>
+			</p>
+		</div>
 		<div class="main-container">
 			<div class="loading-lightbox">
 				<div class="loading-message">
@@ -33,7 +57,7 @@
 					</p>
 				</div>
 			</div>
-			<button id="blocks-btn" class="tab-label">
+			<button id="blocks-btn" class="tab-label" aria-label="Blocks">
 				<i class="fas fa-puzzle-piece"></i>
 				<!-- <i class="fas fa-shapes"></i> -->
 				<!-- <i class="fas fa-project-diagram"></i> -->
@@ -46,7 +70,7 @@
 				</div>
 			</div>
 
-			<button id="viewport-btn" class="tab-label">
+			<button id="viewport-btn" class="tab-label" aria-label="Robot">
 				<i class="fas fa-eye"></i>
 			</button>
 			<div id="split-pane-2" class="split sim-container">
@@ -60,7 +84,7 @@
 			</div>
 
 
-			<button id="tutorial-btn" class="tab-label">
+			<button id="tutorial-btn" class="tab-label" aria-label="Tutorial">
 				<i class="far fa-life-ring"></i>
 				<div id="first-time-hint">
 					<i class="fas fa-angle-double-left"></i>
@@ -68,86 +92,123 @@
 			</button>
 			<div id="tutorial-container">
 				<div class="slide-container">
-					<!-- Open/close viewports -->
+					<!-- Introduction -->
 					<input class="tutorial-radio" id="tutorial-radio-0" name="tutorial" autocomplete="off" type="radio" checked>
 					<div class="tutorial-slide">
-						<h3 data-i18n="tutorial-1-heading"></h3>
-						<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
-							<source data-src="assets/tutorial/01_panels.mp4" type="video/mp4">
-						</video>
-						<p data-i18n="tutorial-1"></p>
+						<div class="slide-content">
+							<h3 data-i18n="tutorial-0-heading">Rocksi</h3>
+							<p>
+								<p data-i18n="[html]tutorial-0-intro"></p>
+								<div class="fas fa-cat" style="color: #EA3546; font-size: 3em;"></div>
+								<p data-i18n="[html]tutorial-0-start"></p>
+								<hr style="margin: 20px 15% 20px 15%">
+								<div>
+									<span data-i18n="[html]tutorial-0-social">Updates & Feedback<br></span>
+									<div>
+										<a href="https://twitter.com/RocksiDev" rel="noopener" target="_blank" aria-label="Twitter">
+											<div class="round-icon fab fa-twitter"></div><!--
+										--></a>
+										<a href="mailto:nikolas@robokind.de" aria-label="Email">
+											<div class="round-icon fas fa-envelope"></div><!--
+										--></a>
+									</div>
+								</div>
+							</p>
+						</div>
+					</div>
+
+					<!-- Open/close viewports -->
+					<input class="tutorial-radio" id="tutorial-radio-1" name="tutorial" autocomplete="off" type="radio">
+					<div class="tutorial-slide">
+						<div class="slide-content">
+							<h3 data-i18n="tutorial-1-heading"></h3>
+							<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
+								<source data-src="assets/tutorial/01_panels.mp4" type="video/mp4">
+							</video>
+							<p data-i18n="[html]tutorial-1"></p>
+						</div>
 					</div>
 
 					<!-- Moving in 3D -->
-					<input class="tutorial-radio" id="tutorial-radio-1" name="tutorial" autocomplete="off" type="radio">
+					<input class="tutorial-radio" id="tutorial-radio-2" name="tutorial" autocomplete="off" type="radio">
 					<div class="tutorial-slide">
-						<h3 data-i18n="tutorial-2-heading"></h3>
-						<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
-							<source data-src="assets/tutorial/02_viewport.mp4" type="video/mp4">
-						</video>
-						<p class="desktop-only" data-i18n="tutorial-2-desktop"></p>
-						<p class="mobile-only" data-i18n="tutorial-2-mobile"></p>
+						<div class="slide-content">
+							<h3 data-i18n="tutorial-2-heading"></h3>
+							<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
+								<source data-src="assets/tutorial/02_viewport.mp4" type="video/mp4">
+							</video>
+							<p class="desktop-only" data-i18n="[html]tutorial-2-desktop"></p>
+							<p class="mobile-only" data-i18n="[html]tutorial-2-mobile"></p>
+						</div>
 					</div>
 
 					<!-- Controlling the robot -->
-					<input class="tutorial-radio" id="tutorial-radio-2" name="tutorial" autocomplete="off" type="radio">
+					<input class="tutorial-radio" id="tutorial-radio-3" name="tutorial" autocomplete="off" type="radio">
 					<div class="tutorial-slide">
-						<h3 data-i18n="tutorial-3-heading"></h3>
-						<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
-							<source data-src="assets/tutorial/03_robot-move.mp4" type="video/mp4">
-						</video>
-						<p data-i18n="tutorial-3"></p>
+						<div class="slide-content">
+							<h3 data-i18n="tutorial-3-heading"></h3>
+							<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
+								<source data-src="assets/tutorial/03_robot-move.mp4" type="video/mp4">
+							</video>
+							<p data-i18n="[html]tutorial-3"></p>
+						</div>
 					</div>
 
 					<!-- Programming with blocks -->
-					<input class="tutorial-radio" id="tutorial-radio-3" name="tutorial" autocomplete="off" type="radio">
+					<input class="tutorial-radio" id="tutorial-radio-4" name="tutorial" autocomplete="off" type="radio">
 					<div class="tutorial-slide">
-						<h3 data-i18n="tutorial-4-heading"></h3>
-						<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
-							<source data-src="assets/tutorial/04_blockly.mp4" type="video/mp4">
-						</video>
-						<p data-i18n="tutorial-4"></p>
+						<div class="slide-content">
+							<h3 data-i18n="tutorial-4-heading"></h3>
+							<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
+								<source data-src="assets/tutorial/04_blockly.mp4" type="video/mp4">
+							</video>
+							<p data-i18n="[html]tutorial-4"></p>
+						</div>
 					</div>
 
 					<!-- Context menu -->
-					<input class="tutorial-radio" id="tutorial-radio-4" name="tutorial" autocomplete="off" type="radio">
+					<input class="tutorial-radio" id="tutorial-radio-5" name="tutorial" autocomplete="off" type="radio">
 					<div class="tutorial-slide">
-						<h3 data-i18n="tutorial-5-heading"></h3>
-						<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
-							<source data-src="assets/tutorial/05_context-menu.mp4" type="video/mp4">
-						</video>
-						<p data-i18n="tutorial-5"></p>
+						<div class="slide-content">
+							<h3 data-i18n="tutorial-5-heading"></h3>
+							<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
+								<source data-src="assets/tutorial/05_context-menu.mp4" type="video/mp4">
+							</video>
+							<p data-i18n="[html]tutorial-5"></p>
+						</div>
 					</div>
 
 					<!-- Executing a program -->
-					<input class="tutorial-radio" id="tutorial-radio-5" name="tutorial" autocomplete="off" type="radio">
+					<input class="tutorial-radio" id="tutorial-radio-6" name="tutorial" autocomplete="off" type="radio">
 					<div class="tutorial-slide">
-						<h3 data-i18n="tutorial-6-heading"></h3>
-						<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
-							<source data-src="assets/tutorial/06_execution.mp4" type="video/mp4">
-						</video>
-						<p data-i18n="tutorial-6"></p>
+						<div class="slide-content">
+							<h3 data-i18n="tutorial-6-heading"></h3>
+							<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
+								<source data-src="assets/tutorial/06_execution.mp4" type="video/mp4">
+							</video>
+							<p data-i18n="[html]tutorial-6"></p>
+						</div>
 					</div>
 
 					<!-- Further reading -->
-					<input class="tutorial-radio" id="tutorial-radio-6" name="tutorial" autocomplete="off" type="radio">
+					<input class="tutorial-radio" id="tutorial-radio-7" name="tutorial" autocomplete="off" type="radio">
 					<div class="tutorial-slide">
-						<h3 data-i18n="tutorial-rf-heading"></h3>
-						<a href="https://www.robotikschulungen.de" target="_blank">
-							<img class="tutorial-media" src="assets/images/rofu_collage.jpg">
-						</a>
-						<p data-i18n="[html]tutorial-rf">
-							
-						</p>
+						<div class="slide-content">
+							<h3 data-i18n="tutorial-rf-heading"></h3>
+							<a href="https://www.robotikschulungen.de" target="_blank">
+								<img class="tutorial-media" src="assets/images/rofu_collage.jpg">
+							</a>
+							<p data-i18n="[html]tutorial-rf"></p>
+						</div>
 					</div>
 
-					<div id="tutorial-close-btn">&#128937;</div>
+					<div id="tutorial-close-btn" class="fas fa-times" aria-label="Close Tutorial"></div>
 				</div>
 
 			</div>
 
 
-			<button id="about-btn" class="tab-label" href="#about-lightbox">
+			<button id="about-btn" class="tab-label" href="#about-lightbox" aria-label="About">
 				<i class="fas fa-info-circle"></i>
 				<!-- <i class="fas fa-question-circle"></i> -->
 			</button>
@@ -160,6 +221,14 @@
 						Rocksi &copy; Robokind 2021<br>
 						Code: <a href="https://github.com/ndahn/" target="_blank">Nikolas Dahn</a>,
 						      <a href="https://github.com/lgreipel/" target="_blank">Lukas Greipel</a><br>
+						<div style="margin-top: .5em">
+							<a href="https://twitter.com/RocksiDev" rel="noopener" target="_blank" aria-label="Twitter">
+								<div class="round-icon fab fa-twitter"></div><!--
+							--></a>
+							<a href="mailto:nikolas@robokind.de" aria-label="Email">
+								<div class="round-icon fas fa-envelope"></div><!--
+							--></a>
+						</div>
 						<hr>
 					</div>
 					<div class="about-panels">

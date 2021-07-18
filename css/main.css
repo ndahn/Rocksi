@@ -146,6 +146,35 @@ a {
 }
 
 
+.round-icon {
+	display: inline;
+	width: 40px;
+	height: 40px;
+	border-radius: 100%;
+	background-color: #777777;
+	margin: 5px;
+	text-align: center;
+}
+
+.round-icon::before {
+	font-size: 1.3em;
+	position: relative;
+	top: 25%;
+}
+
+a .round-icon {
+	color: white;
+}
+
+a:hover .round-icon {
+	color: rgb(30, 165, 255);
+}
+
+
+.desktop-only {
+	display: initial;
+}
+
 .mobile-only {
 	display: none;
 }
@@ -153,6 +182,10 @@ a {
 @media (hover: none) and (pointer: coarse) {
 	.desktop-only {
 		display: none;
+	}
+
+	.mobile-only {
+		display: initial;
 	}
 }
 

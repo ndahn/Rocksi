@@ -364,6 +364,10 @@ function removeTransformControl(simObject) {
 }
 
 export function remControledSimObject() {
+    if (controlledSimObject) {
+        removeTransformControl(controlledSimObject);
+    }
+
     controlledSimObject = undefined;
 }
 

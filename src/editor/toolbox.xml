@@ -63,7 +63,7 @@
     <category name="%{BKY_ROCKSI_CATEGORY_EXAMPLES}" categorystyle="examples_category">
         <!-- Pick & Place -->
         <block type="comment">
-            <field name="COMMENT">Pick &amp; Place: ein Objekt aufheben und loslassen</field>
+            <field name="COMMENT">%{BKY_ROCKSI_EXAMPLE_PICK_N_PLACE}</field>
             <next>
                 <block type="move">
                     <value name="POSE">
@@ -97,7 +97,7 @@
                                             <field name="SECONDS">1</field>
                                             <next>
                                                 <block type="move">
-                                                    <comment pinned="false">Eine Gelenkwinkelpose ist immer zuverlässiger!</comment>
+                                                    <comment pinned="false">%{BKY_ROCKSI_EXAMPLE_PICK_N_PLACE_COMMENT_1}</comment>
                                                     <value name="POSE">
                                                         <block type="task_space_pose">
                                                             <field name="X">5</field>

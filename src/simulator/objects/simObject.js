@@ -33,6 +33,7 @@ import { Box,
          Cylinder } from 'cannon-es'
 
 import * as Blockly from 'blockly/core'
+import { canHover } from '../../helpers';
 
 export class SimObject extends Object3D {
     constructor() {
@@ -343,7 +344,7 @@ export class SimObject extends Object3D {
         const scene = getScene();
 
         this.control = new TransformControls(controlObj.camera, controlObj.renderer.domElement);
-        this.control.setSize(controlObj.canHover ? 1.25 : 2.5);
+        this.control.setSize(canHover() ? 1.25 : 2.5);
 
         this.control.addEventListener('dragging-changed', evt => this._draggingCanged(evt));
         this.control.addEventListener('objectChange', () => this._objectChange());
@@ -422,8 +423,8 @@ export class SimObject extends Object3D {
             this.grippable = false;
             this.grippableAxisIndependent = false;
         }
-        console.log('simObject ', this.name, 'is grippable: ', this.grippable);
-        console.log('simObject ', this.name, 'is grippable on any axis: ', this.grippableAxisIndependent);
+        //console.log('simObject ', this.name, 'is grippable: ', this.grippable);
+        //console.log('simObject ', this.name, 'is grippable on any axis: ', this.grippableAxisIndependent);
     }
 
     setGripAxes() {

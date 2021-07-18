@@ -1,5 +1,6 @@
 import Split from 'split.js'
 import lozad from 'lozad'
+import { getDesiredLanguage, isMobile } from './helpers';
 import * as html_de from './i18n/html_de.json'
 import * as html_en from './i18n/html_en.json'
 
@@ -103,7 +104,7 @@ Split(['#split-pane-1', '#split-pane-2'], {
 // Tabs
 let animDuration = 200;
 let targetRatio = 50;
-if (document.body.clientWidth < 768) {
+if (isMobile()) {
     targetRatio = 100;
     // If not hidden the initial expansion will not work correctly
     $('#split-pane-2').hide();
@@ -117,10 +118,20 @@ $('#blocks-btn').on('click', evt => {
         // Shrink blocks view to 0, expand 3D view
         view.animate({ width: 0 }, animDuration);
         $('#split-pane-1').animate({ width: '100%' }, animDuration);
+
+        if (isMobile()) {
+            $('#robot-gui').hide();
+            $('#blockly-mobile-menu').show();
+        }
     } else {
         // Expand blocks view to targetRatio, 3D view will take up the rest
         view.animate({ width: targetRatio + '%' }, animDuration);
         $('#split-pane-1').animate({ width: (100 - targetRatio) + '%' }, animDuration);
+        
+        if (isMobile()) {
+            $('#robot-gui').show();
+            $('#blockly-mobile-menu').hide();
+        }
     }
 });
 
@@ -131,10 +142,20 @@ $('#viewport-btn').on('click', evt => {
         // Shrink 3D view to 0, expand blocks view
         view.animate({ width: 0 }, animDuration);
         $('#split-pane-2').animate({ width: '100%' }, animDuration);
+
+        if (isMobile()) {
+            $('#robot-gui').show();
+            $('#blockly-mobile-menu').hide();
+        }
     } else {
         // Expand 3D view to targetRatio, blocks view will take up the rest
         view.animate({ width: targetRatio + '%' }, animDuration);
         $('#split-pane-2').animate({ width: (100 - targetRatio) + '%' }, animDuration);
+
+        if (isMobile()) {
+            $('#robot-gui').hide();
+            $('#blockly-mobile-menu').show();
+        }
     }
 });
 
@@ -207,6 +228,6 @@ lazyObserver.observe();
 
 // Somehow loading blockly early improves page loading
 import 'blockly'
+import './blockly_fixes'
 import './simulator/scene'
 import './editor/blockly'
-import { getDesiredLanguage } from './helpers';

@@ -74,4 +74,7 @@ export const BlocklyCustomDE = {
 
     ROCKSI_BLOCK_SCALE: "%1",
     ROCKSI_BLOCK_SCALE_TOOLTIP: "Ein Faktor",
+
+    ROCKSI_EXAMPLE_PICK_N_PLACE: "Pick & Place: ein Objekt aufheben und loslassen",
+    ROCKSI_EXAMPLE_PICK_N_PLACE_COMMENT_1: "Eine Gelenkwinkelpose ist immer zuverlässiger!"
 }

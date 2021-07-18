@@ -8,8 +8,16 @@
         "message-documentation": "qqq"
     },
 
+    "seo-description": "Rocksi is a free robot simulator that runs in any modern browser and allows you to program a 3D robot arm using blockly visual programming.",
+    "seo-header": "Simulate and program virtual robots in your browser!",
+    "seo-text": "Rocksi is a simulator that allows you to freely program a 3D virtual robot similar to scratch or Lego Mindstorms. Rocksi runs on any modern browser (Firefox, Chrome, Safari...) and device (iPhone, iPad, IOS, Android, Linux, Windows, ...) - no download or installation! Rocksi is also completely free of charge with no registration required.<br>Rocksi was written to make robots more accessible for everybody, and especially with education in mind. Use it however you see fit, e.g. school classes, university lectures, workshops, fairs, etc.!At the moments robots by Franka Emika and Niryo are included, with more to come as manufacturers approach us.<br>Rocksi was written for the <a href=\"https://robokind.de\" target=\"_blank\">Robokind Foundation</a> in Germany which creates lectures and workshops on robotics. Their free online courses on robotics - e.g. the robot driver's license - can be found at <a href=\"https://robotikschulungen.de\" target=\"_blank\">www.robotikschulungen.de</a>.",
+
     "robot-loading": "Loading Robot...",
 
+    "tutorial-0-heading": "Welcome to Rocksi!",
+    "tutorial-0-intro": "Robots are expensive, so for many people it's impossible to get to know them properly. But humans love touching things! Rocksi was created to make robots more accessible. Whether you're a teacher, a student, a specialist worker or just interested, Rocksi enables you to understand and share the very core concepts of robotics.",
+    "tutorial-0-start": "To get started, click the arrow on the right to jump to the first tutorial.<br><i>I hope you enjoy!</i>",
+    "tutorial-0-social": "Updates & Feedback",
     "tutorial-1-heading": "Organizing Yourself",
     "tutorial-1": "Quickly switch between views using the menu on the left.",
     "tutorial-2-heading": "Taking Perspective",
@@ -23,7 +31,7 @@
     "tutorial-5": "The context menus give you additional control over your program. You can also load and save programs there!",
     "tutorial-6-heading": "Let it go",
     "tutorial-6": "To run your program just click the large play button in the 3D view.",
-    "tutorial-rf-heading": "Robot's Driving License",
+    "tutorial-rf-heading": "Robot Driver's License",
     "tutorial-rf": "You want to know more about robots? Our free {{link:robot driver's license|https://www.robotikschulungen.de}} has you covered!",
 
     "imprint": "Imprint",
