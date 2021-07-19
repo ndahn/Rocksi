@@ -3,7 +3,7 @@ import { getDesiredLanguage, getDesiredRobot } from "../helpers";
 import { addRenderCallback } from "./scene";
 import Simulation from "./simulation"
 import { localize } from "../helpers";
-import { popInfo } from "../alert";
+import { msgBoxInfo } from "../alert";
 
 
 const theRobots = ['Franka', 'Niryo'];
@@ -67,19 +67,23 @@ export function initGui(robot, cameraControl, renderCall) {
     gui.bottom.textContent = localize('gui-robot');
 
     // Important to make touch inputs work properly!
-    gui.rezone();
+    recalc();
 
     addRenderCallback(onRobotMoved);
 }
 
 export function show() {
     gui.hide(false);
-    gui.rezone();
+    recalc();
 }
 
 export function hide() {
     gui.hide(true);
-    gui.rezone();
+    recalc();
+}
+
+function recalc() {
+    
 }
 
 function onRobotMoved(robot) {
@@ -144,7 +148,7 @@ function loadRobot(guiRobotList, robotName) {
 }
 
 function showRobotInfo(robot) {
-    popInfo(localize(robot.name.toLowerCase() + '-info'));
+    msgBoxInfo({ closeTime: 20000 }).show(localize(robot.name.toLowerCase() + '-info'));
 }
 
 

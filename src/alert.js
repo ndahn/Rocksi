@@ -118,37 +118,35 @@ class MessageBox {
 }
 
 
-let msgboxInfo = new MessageBox('#msgbox-area', {
-	closeTime: 4000,
-	hideCloseButton: true,
-	closeOnClick: true,
-	csscls: ["info"]
-});
+function makeMsgBox(type, closeTime, hideCloseButton, closeOnClick) {
+	return new MessageBox('#msgbox-area', {
+		closeTime: closeTime,
+		hideCloseButton: hideCloseButton,
+		closeOnClick: closeOnClick,
+		csscls: type
+	});
+}
 
-let msgboxSuccess = new MessageBox('#msgbox-area', {
-	closeTime: 4000,
-	hideCloseButton: true,
-	closeOnClick: true,
-	csscls: ["success"]
-});
+function msgBoxInfo({closeTime = 4000, hideCloseButton = true, closeOnClick = true} = {}) {
+	return makeMsgBox(["info"], closeTime, hideCloseButton, closeOnClick);
+}
 
-let msgboxWarning = new MessageBox('#msgbox-area', {
-	closeTime: 4000,
-	hideCloseButton: true,
-	closeOnClick: true,
-	csscls: ["warning"]
-});
+function msgBoxSuccess({closeTime = 4000, hideCloseButton = true, closeOnClick = true} = {}) {
+	return makeMsgBox(["success"], closeTime, hideCloseButton, closeOnClick);
+}
 
-let msgboxError = new MessageBox('#msgbox-area', {
-	closeTime: 6000,
-	hideCloseButton: true,
-	closeOnClick: true,
-	csscls: ["error"]
-});
+function msgBoxWarning({closeTime = 4000, hideCloseButton = true, closeOnClick = true} = {}) {
+	return makeMsgBox(["warning"], closeTime, hideCloseButton, closeOnClick);
+}
 
-let popInfo = (msg, cb) => msgboxInfo.show(msg, cb);
-let popSuccess = (msg, cb) => msgboxSuccess.show(msg, cb);
-let popWarning = (msg, cb) => msgboxWarning.show(msg, cb);
-let popError = (msg, cb) => msgboxError.show(msg, cb);
+function msgBoxError({closeTime = 6000, hideCloseButton = true, closeOnClick = true} = {}) {
+	return makeMsgBox(["error"], closeTime, hideCloseButton, closeOnClick);
+}
 
-export { MessageBox, popInfo, popSuccess, popWarning, popError };
+
+let popInfo = (msg, closeCallback) => msgBoxInfo().show(msg, closeCallback);
+let popSuccess = (msg, closeCallback) => msgBoxSuccess().show(msg, closeCallback);
+let popWarning = (msg, closeCallback) => msgBoxWarning().show(msg, closeCallback);
+let popError = (msg, closeCallback) => msgBoxError().show(msg, closeCallback);
+
+export { MessageBox, popInfo, popSuccess, popWarning, popError, msgBoxInfo, msgBoxSuccess, msgBoxWarning, msgBoxError, makeMsgBox };
