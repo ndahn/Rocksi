@@ -66,7 +66,20 @@ export function initGui(robot, cameraControl, renderCall) {
     gui.bottomText = [localize('gui-robot'), localize('gui-close')];
     gui.bottom.textContent = localize('gui-robot');
 
+    // Important to make touch inputs work properly!
+    gui.rezone();
+
     addRenderCallback(onRobotMoved);
+}
+
+export function show() {
+    gui.hide(false);
+    gui.rezone();
+}
+
+export function hide() {
+    gui.hide(true);
+    gui.rezone();
 }
 
 function onRobotMoved(robot) {

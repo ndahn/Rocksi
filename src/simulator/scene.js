@@ -43,7 +43,7 @@ import { default as IKSolver } from "./ik/ccdik"
 import Simulation from "./simulation"
 import * as GUI from "./gui"
 import { popInfo } from "../alert"
-import { canHover, getDesiredRobot, isMobile } from "../helpers";
+import { canHover, getDesiredRobot, isTouch } from "../helpers";
 
 const path = require('path');
 
@@ -231,10 +231,6 @@ function initScene() {
 	onCanvasResize();
 
 	GUI.initGui(robot, cameraControl, ikRender);
-
-	if (isMobile()) {
-		$('#robot-gui').hide();
-	}
 }
 
 function onCanvasResize() {

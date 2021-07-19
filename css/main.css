@@ -59,6 +59,7 @@ a {
 	border-radius: 0;
 	outline: 0;
 	cursor: pointer;
+	z-index: 98;
 }
 
 .tab-label:hover {

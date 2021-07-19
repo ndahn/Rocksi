@@ -1,6 +1,7 @@
 import Split from 'split.js'
 import lozad from 'lozad'
-import { getDesiredLanguage, isMobile } from './helpers';
+import * as GUI from './simulator/gui'
+import { getDesiredLanguage, isTouch, isNarrowScreen } from './helpers';
 import * as html_de from './i18n/html_de.json'
 import * as html_en from './i18n/html_en.json'
 
@@ -104,7 +105,7 @@ Split(['#split-pane-1', '#split-pane-2'], {
 // Tabs
 let animDuration = 200;
 let targetRatio = 50;
-if (isMobile()) {
+if (isNarrowScreen()) {
     targetRatio = 100;
     // If not hidden the initial expansion will not work correctly
     $('#split-pane-2').hide();
@@ -118,20 +119,12 @@ $('#blocks-btn').on('click', evt => {
         // Shrink blocks view to 0, expand 3D view
         view.animate({ width: 0 }, animDuration);
         $('#split-pane-1').animate({ width: '100%' }, animDuration);
-
-        $('#robot-gui').hide();
-        if (isMobile()) {
-            $('#blockly-mobile-menu').show();
-        }
+        // GUI.hide();
     } else {
         // Expand blocks view to targetRatio, 3D view will take up the rest
         view.animate({ width: targetRatio + '%' }, animDuration);
         $('#split-pane-1').animate({ width: (100 - targetRatio) + '%' }, animDuration);
-        
-        $('#robot-gui').show();
-        if (isMobile()) {
-            $('#blockly-mobile-menu').hide();
-        }
+        // GUI.show();
     }
 });
 
@@ -142,20 +135,12 @@ $('#viewport-btn').on('click', evt => {
         // Shrink 3D view to 0, expand blocks view
         view.animate({ width: 0 }, animDuration);
         $('#split-pane-2').animate({ width: '100%' }, animDuration);
-
-        $('#robot-gui').show();
-        if (isMobile()) {
-            $('#blockly-mobile-menu').hide();
-        }
+        // GUI.show();
     } else {
         // Expand 3D view to targetRatio, blocks view will take up the rest
         view.animate({ width: targetRatio + '%' }, animDuration);
         $('#split-pane-2').animate({ width: (100 - targetRatio) + '%' }, animDuration);
-
-        $('#robot-gui').hide();
-        if (isMobile()) {
-            $('#blockly-mobile-menu').show();
-        }
+        // GUI.hide();
     }
 });
 
@@ -231,3 +216,4 @@ import 'blockly'
 import './blockly_fixes'
 import './simulator/scene'
 import './editor/blockly'
+
