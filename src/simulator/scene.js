@@ -43,7 +43,7 @@ import { default as IKSolver } from "./ik/ccdik"
 import Simulation from "./simulation"
 import * as GUI from "./gui"
 import { popInfo } from "../alert"
-import { canHover, getDesiredRobot, isTouch } from "../helpers";
+import { getDesiredRobot, canHover, isNarrowScreen } from "../helpers";
 
 const path = require('path');
 
@@ -231,6 +231,10 @@ function initScene() {
 	onCanvasResize();
 
 	GUI.initGui(robot, cameraControl, ikRender);
+
+	if (isNarrowScreen()) {
+		GUI.hide();
+	}
 }
 
 function onCanvasResize() {
