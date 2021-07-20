@@ -104,24 +104,28 @@ Split(['#split-pane-1', '#split-pane-2'], {
 
 // Tabs
 let animDuration = 200;
-let targetRatio = 50;
+
+function getSplitpaneRatio() {
+    return isNarrowScreen() ? 100 : 50;
+}
+
+// On narrow screens show a full pane
 if (isNarrowScreen()) {
-    targetRatio = 100;
     // If not hidden the initial expansion will not work correctly
-    $('#split-pane-2').hide();
-    $('#split-pane-1').css('width', '100%');
+    $('#split-pane-1').hide();
+    $('#split-pane-2').css('width', '100%');
 }
 
 $('#blocks-btn').on('click', evt => {
     let view = $('#split-pane-2');
-    view.show();
     if (view.width() > 0) {
         // Shrink blocks view to 0, expand 3D view
         view.animate({ width: 0 }, animDuration);
-        $('#split-pane-1').animate({ width: '100%' }, animDuration);
+        $('#split-pane-1').show().animate({ width: '100%' }, animDuration);
         // GUI.hide();
     } else {
         // Expand blocks view to targetRatio, 3D view will take up the rest
+        let targetRatio = getSplitpaneRatio();
         view.animate({ width: targetRatio + '%' }, animDuration);
         $('#split-pane-1').animate({ width: (100 - targetRatio) + '%' }, animDuration);
         // GUI.show();
@@ -130,14 +134,14 @@ $('#blocks-btn').on('click', evt => {
 
 $('#viewport-btn').on('click', evt => {
     let view = $('#split-pane-1');
-    view.show();
     if (view.width() > 0) {
         // Shrink 3D view to 0, expand blocks view
         view.animate({ width: 0 }, animDuration);
-        $('#split-pane-2').animate({ width: '100%' }, animDuration);
+        $('#split-pane-2').show().animate({ width: '100%' }, animDuration);
         // GUI.show();
     } else {
         // Expand 3D view to targetRatio, blocks view will take up the rest
+        let targetRatio = getSplitpaneRatio();
         view.animate({ width: targetRatio + '%' }, animDuration);
         $('#split-pane-2').animate({ width: (100 - targetRatio) + '%' }, animDuration);
         // GUI.hide();
@@ -185,17 +189,32 @@ $('#about-btn').on('click', evt => {
     $('#robot-gui').hide();
     $('#about-lightbox').show();
 });
-$('#about-lightbox').on('click', evt => {
-    let about = $('#about-lightbox');
-    about.hide();
-    $('#robot-gui').show();
+$(function() {
+    let dragging = false;
+    $('#about-lightbox')
+    .mousedown(function() {
+        $(window).mousemove(function() {
+            dragging = true;
+            $(window).unbind('mousemove');
+        });
+    })
+    .mouseup(function () {
+        let moved = dragging;
+        dragging = false;
+        $(window).unbind('mousemove');
+        if (!moved) {
+            let about = $('#about-lightbox');
+            about.hide();
+            $('#robot-gui').show();
 
-    // Close all about section accordions
-    for (let acc of accordions) {
-        if (about.find(acc).length) {
-            setAccordionVisible(acc, false);
+            // Close all about section accordions
+            for (let acc of accordions) {
+                if (about.find(acc).length) {
+                    setAccordionVisible(acc, false);
+                }
+            }
         }
-    }
+    });
 });
 
 

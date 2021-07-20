@@ -231,10 +231,6 @@ function initScene() {
 	onCanvasResize();
 
 	GUI.initGui(robot, cameraControl, ikRender);
-
-	if (isNarrowScreen()) {
-		GUI.hide();
-	}
 }
 
 function onCanvasResize() {
