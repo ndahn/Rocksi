@@ -192,17 +192,23 @@ $('#about-btn').on('click', evt => {
 $(function() {
     let dragging = false;
     $('#about-lightbox')
-    .mousedown(function() {
-        $(window).mousemove(function() {
+    .pointerdown(function() {
+        $(window).pointermove(function() {
             dragging = true;
-            $(window).unbind('mousemove');
+            $(window).unbind('pointermove');
         });
     })
-    .mouseup(function () {
+    .pointerup(function (evt) {
         let moved = dragging;
         dragging = false;
-        $(window).unbind('mousemove');
+        $(window).unbind('pointermove');
         if (!moved) {
+            // Only react to clicks outside #about-box
+            let box = $('#about-box');
+            if (box.is(evt.target) || box.has(evt.target).length > 0) {
+                return;
+            }
+
             let about = $('#about-lightbox');
             about.hide();
             $('#robot-gui').show();
