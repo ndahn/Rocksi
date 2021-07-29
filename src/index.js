@@ -189,38 +189,23 @@ $('#about-btn').on('click', evt => {
     $('#robot-gui').hide();
     $('#about-lightbox').show();
 });
-$(function() {
-    let dragging = false;
-    $('#about-lightbox')
-    .pointerdown(function() {
-        $(window).pointermove(function() {
-            dragging = true;
-            $(window).unbind('pointermove');
-        });
-    })
-    .pointerup(function (evt) {
-        let moved = dragging;
-        dragging = false;
-        $(window).unbind('pointermove');
-        if (!moved) {
-            // Only react to clicks outside #about-box
-            let box = $('#about-box');
-            if (box.is(evt.target) || box.has(evt.target).length > 0) {
-                return;
-            }
+$('#about-lightbox').click(function (evt) {
+    // Only react to clicks outside #about-box
+    let box = $('#about-box');
+    if (box.is(evt.target) || box.has(evt.target).length > 0) {
+        return;
+    }
 
-            let about = $('#about-lightbox');
-            about.hide();
-            $('#robot-gui').show();
+    let about = $('#about-lightbox');
+    about.hide();
+    $('#robot-gui').show();
 
-            // Close all about section accordions
-            for (let acc of accordions) {
-                if (about.find(acc).length) {
-                    setAccordionVisible(acc, false);
-                }
-            }
+    // Close all about section accordions
+    for (let acc of accordions) {
+        if (about.find(acc).length) {
+            setAccordionVisible(acc, false);
         }
-    });
+    }
 });
 
 

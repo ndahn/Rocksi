@@ -13,7 +13,7 @@
 	display: block;
 }
 
-.about-box {
+#about-box {
 	display: flex;
 	position: absolute;
 	width: 30%;
@@ -29,7 +29,7 @@
 }
 
 @media only screen and (orientation: landscape) and (max-device-width : 1024px) {
-	.about-box {
+	#about-box {
 		width: 60%;
 	}
 }
