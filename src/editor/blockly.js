@@ -447,7 +447,6 @@ function watchSpawnBlocks(event) {
     }
 
     if(Blockly.Events.BLOCK_DELETE === event.type) {
-        //console.log('Deleted: ', event.ids);
         remSimObjects(event.ids);
     }
 }
