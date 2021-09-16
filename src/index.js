@@ -1,7 +1,7 @@
 import Split from 'split.js'
 import lozad from 'lozad'
 import * as GUI from './simulator/gui'
-import { getDesiredLanguage, isTouch, isNarrowScreen } from './helpers';
+import { getDesiredLanguage, isTouch, isNarrowScreen, localize } from './helpers';
 import * as html_de from './i18n/html_de.json'
 import * as html_en from './i18n/html_en.json'
 
@@ -219,6 +219,12 @@ $('body').on('click.first-time-hint', evt => {
 // Lazy loads everything with css class 'lozad', e.g. tutorial videos
 const lazyObserver = lozad();
 lazyObserver.observe();
+
+
+// Warn user before navigating away
+window.onbeforeunload = function() {
+    return localize('warn-unsaved');
+}
 
 
 // Somehow loading blockly early improves page loading

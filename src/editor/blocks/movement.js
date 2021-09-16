@@ -153,7 +153,7 @@ Blockly.Blocks["joint_space_pose"] = {
 		var parent = this.getParent();
         if (parent != null && typeof parent.setJointspacePose === 'function') {
 			let pose = [];
-			for (let i = 1; i < 8; i++) {
+			for (let i = 1; i <= this.numJoints; i++) {
 				pose.push(this.getFieldValue('JOINT_' + i));
 			}
             parent.setJointspacePose(pose);

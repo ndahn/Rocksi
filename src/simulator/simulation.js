@@ -13,6 +13,11 @@ import { isAttached,
          getSimObjectByPos,
          getSimObjectIdx } from "./objects/createObjects"
 
+
+
+const _slowdown_factor = 1.5;
+
+
 function deg2rad(deg) {
     return deg * Math.PI / 180.0;
 }
@@ -33,7 +38,7 @@ function getDuration(robot, target, vmax) {
         smax = Math.max(smax, Math.abs(robot.joints[j].angle - target[j]));
     }
 
-    return smax / vmax * 1000;  // ms
+    return smax / vmax * 1000 * _slowdown_factor;  // ms
 }
 
 class TheSimulation {
@@ -45,10 +50,9 @@ class TheSimulation {
         this.lockedJointIndices = [];
 
         this.running = false;
-        this.velocities = {
-            move: 0.5,
-            gripper: 0.5
-        }
+        this.velocities = {}
+        this.setDefaultVelocities();
+
         //Physics and triggers, Lukas
         this.runningPhysics = false;
         this.physicsDone = true;
@@ -157,7 +161,7 @@ class TheSimulation {
         this.velocities = {
             move: 0.5,
             gripper: 0.5
-        }
+        };
     }
 
 
