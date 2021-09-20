@@ -103,9 +103,6 @@ export function addGeometry(simObject) {
             simObject.radius = sphereMesh.geometry.boundingSphere.radius;
             simObject.bodyShape = 'sphere';
             simObject.add(sphereMesh);
-            //simObject.add(checkBox);
-            //const checkSphere = new Sphere(simObject.position, simObject.radius);
-            //simObject.checkSphere = checkSphere;
             simObject.createBody(2.1, 1, 0.1);//mass, friction, restitution
             simObject.setGrippable();
             simObject.setGripAxes();
@@ -122,7 +119,6 @@ export function addGeometry(simObject) {
             console.error('Unknown SimObject shape: ', simObject.shape);
             break;
     }
-
 }
 
 function loadAssetSTL(simObject, assetPath, shape) {
@@ -268,14 +264,6 @@ export function remSimObjects(ids) {
     }
 }
 
-//reset all simObjects in the scene, deprecated
-/*export function resetAllSimObjects () {
-    if (simObjects.length > 0) {
-        for (const simObject of simObjects) {
-            simObject.reset();
-        }
-    }
-}*/
 
 //transformControl event functions
 //Lights simObjects on mouseover, is called in scene.js by mouseover
