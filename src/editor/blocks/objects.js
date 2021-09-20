@@ -35,7 +35,7 @@ Blockly.Blocks["gripper_close"] = {
 	},
 };
 
-//simObjects stuff, Lukas
+//Spawn block definition and other 3D-object interaction blocks, Lukas
 
 //The SimObject:
 Blockly.Blocks['add_sim_object'] = {
@@ -137,18 +137,19 @@ Blockly.Blocks['add_sim_object'] = {
             simObject.changeShape(event.newValue);
         }
 
-        if (poseBlock != null && event.blockId === poseBlock.id && fieldKeys.includes(event.name)) {
+        if (poseBlock !== null && event.blockId === poseBlock.id && fieldKeys.includes(event.name)) {
             let fieldValues = [];
             const simObject = getSimObject(this.id)
             for (let i = 0; i < fieldKeys.length; i++) {
                 fieldValues.push(poseBlock.getFieldValue(fieldKeys[i]));
             }
+
             simObject.setFieldValues(fieldValues);
             simObject.updateFromFieldValues();
-            simObject.render();
+            Simulation.instance.renderCallback();
         }
 
-        if (scaleBlock != null && event.blockId === scaleBlock.id) {
+        if (scaleBlock !== null && event.blockId === scaleBlock.id) {
             simObject.setScale(event.newValue);
         }
 
