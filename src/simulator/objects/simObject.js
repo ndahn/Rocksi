@@ -39,16 +39,16 @@ export class SimObject extends Object3D {
     constructor() {
         super();
         this.name = undefined;
-        this.type = 'simObject';
+        this.type = 'simObject'; //not used, set for development purposes
         this.shape = 'cube'; //default
-        this.attached = false;
+        this.attached = false; //for the gripper interaction
         this.hasBody = false;
         this.body = undefined;
         this.checkBox = undefined;
         this.checkSphere = undefined;
         this.control = undefined;
         this._fieldValues = [5, 0, 0, 0, 0, 0];
-        this.color = '#eb4034'
+        this.color = '#eb4034' //light orange, default fallback color
         this.highlighted = false;
         this.bodyShape = 'box';
         this.radius = 0;
@@ -59,7 +59,6 @@ export class SimObject extends Object3D {
         this.grippableAxisIndependent = true;
         this.gripAxes = [];
         this.advancedGrippingOff = false;
-        this.floorHit;
     }
 
     //Positioning
