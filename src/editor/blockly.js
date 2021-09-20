@@ -40,7 +40,6 @@ import * as ToolboxXML from './toolbox.xml'
 //imports for adding and removing 3D-objects, Lukas
 import { addSimObject,
          remSimObjects,
-         getSimObjects,
          randomColour,
          remControledSimObject } from '../simulator/objects/createObjects'
 
