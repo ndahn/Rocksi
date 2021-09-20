@@ -218,7 +218,7 @@ export function addSimObject(blockUUID, fieldValues, pickedColor, shape) {
     simObject.shape = shape;
     if (pickedColor != undefined) {
         simObject.color = pickedColor;
-    }//else default is orange
+    }
     addGeometry(simObject);
     if (fieldValues != undefined) {
         simObject.setFieldValues(fieldValues);
