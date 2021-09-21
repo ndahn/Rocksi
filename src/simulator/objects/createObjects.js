@@ -69,10 +69,7 @@ export function addGeometry(simObject) {
         case 'cube':
             simObject.size.copy(new Vector3(.4, .4, .4));
             const cubeMesh = createBoxMesh(simObject);
-            checkBox.setFromObject(cubeMesh);
             simObject.bodyShape = 'box';
-            checkBox.getSize(size);
-            simObject.size.copy(size);
             simObject.add(cubeMesh);
             simObject.createBody(0.5, 2, 0.1);//mass, friction, restitution
             simObject.setGrippable();
@@ -206,14 +203,18 @@ function loadSTL(simObject, data){
 
 //Adds the simObject
 export function addSimObject(blockUUID, fieldValues, pickedColor, shape) {
+
     let simObject = new SimObject;
     simObject.name = blockUUID;
     simObjects.push(simObject);
     simObject.shape = shape;
+
     if (pickedColor != undefined) {
         simObject.color = pickedColor;
     }
+
     addGeometry(simObject);
+
     if (fieldValues != undefined) {
         simObject.setFieldValues(fieldValues);
         simObject.updateFromFieldValues();
@@ -221,7 +222,9 @@ export function addSimObject(blockUUID, fieldValues, pickedColor, shape) {
         simObject.setFieldValues(simObject.fieldValues);
         simObject.updateFromFieldValues();
     }
+
     simObject.addToScene();
+
     if (simObjects.length > 1) {
         placeCubes(simObject);
         simObject.updateFieldValues();
