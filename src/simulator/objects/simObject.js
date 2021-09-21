@@ -484,19 +484,6 @@ export class SimObject extends Object3D {
         this.getWorldQuaternion(simQuat);
         gripAxis.applyQuaternion(simQuat);
         gripAxis.normalize();
-        /*const fnCrossZ = new Vector3(0, 0, 0);
-        fnCrossZ.crossVectors(fingerNormal, zAxisTCP);
-        fnCrossZ.normalize();*/
-
-        //helpers
-        //const arrowHelperZtcp = new ArrowHelper( zAxisTCP, tcpPos, 5, 0xffff00 );//yellow
-        //const arrowHelperyGrip = new ArrowHelper( fingerNormal, tcpPos, 5, 0xff00ff );//pink
-        //const arrowObject = new ArrowHelper( gripAxis, tcpPos, 5, 0x00ff00 ); //green
-        //const arrow = new ArrowHelper( fnCrossZ, tcpPos, 5, 0xff0000 ); //red
-        //scene.add(arrowHelperZtcp);
-        //scene.add(arrowHelperyGrip);
-        //scene.add(arrowObject);
-        //scene.add(arrow);
 
         //Human readable angles...
         let xi = this._radToDeg(gripAxis.angleTo(zAxisTCP));
@@ -504,13 +491,11 @@ export class SimObject extends Object3D {
         let tau = this._radToDeg(gripAxis.angleTo(fingerNormal));
 
         console.log('Angle gripAxis to zAxisTCP, xi, (green to yellow)', xi);
-        //console.log('Angle gripAxis to fnCrossZ, roh, (green to red)', roh);
         console.log('Angle gripAxis to fingerNormal, tau, (green to pink)', tau);
 
         //distance check
         let distance = this.position.distanceTo(tcpPos);
         let distCheck = true;//distance >= tcpPos.distanceTo(handPos);
-        console.log('tcp hand distance', tcpPos.distanceTo(handPos));
 
         if (75 < tau && tau < 115) { // check aginst the normal of the fingertip
             if (0 < xi && xi < 15) { //check against the z-axis of the tcp
