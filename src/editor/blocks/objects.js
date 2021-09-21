@@ -139,7 +139,6 @@ Blockly.Blocks['add_sim_object'] = {
 
         if (poseBlock !== null && event.blockId === poseBlock.id && fieldKeys.includes(event.name)) {
             let fieldValues = [];
-            const simObject = getSimObject(this.id)
             for (let i = 0; i < fieldKeys.length; i++) {
                 fieldValues.push(poseBlock.getFieldValue(fieldKeys[i]));
             }
