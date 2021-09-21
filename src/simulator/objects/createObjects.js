@@ -29,10 +29,8 @@ import { requestAF,
 
 import { getWorld } from '../physics';
 
-
 let simObjects = [];
 let controlledSimObject = undefined;
-
 
 //Functions for creating meshes
 //Simple box shape
@@ -264,7 +262,6 @@ export function remSimObjects(ids) {
     }
 }
 
-
 //transformControl event functions
 //Lights simObjects on mouseover, is called in scene.js by mouseover
 export function setSimObjectHighlight(raycaster) {
@@ -454,20 +451,4 @@ export function randomColour() {
         colour += hexDigits[Math.floor(Math.random() * 16)];
     }
     return colour;
-}
-
-export function vector3ToVec3(vector3) {
-    const result = new Vec3();
-    result.x = vector3.x;
-    result.y = vector3.y;
-    result.z = vector3.z;
-    return result;
-}
-
-export function vec3ToVector3(vec3) {
-    const result = new Vector3();
-    result.x = vec3.x;
-    result.y = vec3.y;
-    result.z = vec3.z;
-    return result;
 }
