@@ -166,7 +166,7 @@ Blockly.Blocks['add_sim_object'] = {
 
             // Do this no matter what so the simObject updates its texture
             simObject.setColor(color);
-            simObject.render();
+            Simulation.instance.renderCallback();
 
             if (colorBlock.type == 'colour_random') {
                 colorBlock.setColour(simObject.color);
