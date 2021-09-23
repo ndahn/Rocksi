@@ -137,6 +137,7 @@ export class SimObject extends Object3D {
         }
     }
 
+    //not used right now. Updates the attachted pose block.
     updatePoseBlock() {
         const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
         const workspace = Blockly.getMainWorkspace();
@@ -389,7 +390,6 @@ export class SimObject extends Object3D {
         this.control.enabled = false;
         scene.remove(this.control);
         tcp.attach(this);
-        //this.position.set(0, 0, 0);
         this.updateBody();/* this is important, i dont know why
                             updateBody has to be the last thing to be executed...*/
         console.log('> Object gripped!');
