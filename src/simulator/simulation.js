@@ -437,7 +437,6 @@ class TheSimulation {
             simObjects[simObjectsIdx].wasGripped = false;
         } else {
             simObjects[simObjectsIdx].reset();
-            //simObjects[simObjectsIdx].makeVisible();
         }
         simObjects[simObjectsIdx].visible = true;
         simObjects[simObjectsIdx].addBodyToWorld();
