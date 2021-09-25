@@ -117,7 +117,7 @@ Blockly.Blocks['add_sim_object'] = {
     setTaskspacePose: function (pose) {
         const simObject = getSimObject(this.id);
         if (simObject !== undefined) {
-            simObject.setFieldValues(pose);
+            //simObject.setFieldValues(pose);
             simObject.updateFromFieldValues();
             Simulation.instance.renderCallback();
         }
