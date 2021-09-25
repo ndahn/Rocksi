@@ -13,7 +13,6 @@ import cannonDebugger from 'cannon-es-debugger'
 //variables for the physics simulation
 const dt = 0.02
 let world;
-let robotBodies = [];
 let initDone = false;
 const debugOn =  false;
 
@@ -22,28 +21,6 @@ function debug() {
         const scene = getScene();
         cannonDebugger(scene, world.bodies);
     }
-}
-
-export function initRobotHitboxes(robot) {
-    /**console.log('Robot: ', robot);
-    const scene = getScene();
-    const links = robot.arm.links;
-    let i = 1;
-    let linkWorldPosition = new THREE.Vector3();
-    let linkWorldQuat = new THREE.Vector2();
-    for (const link of links) {
-		link.getWorldPosition(linkWorldPosition);
-        //link.getWorldQuaternion(linkWorldQuat);
-		const geometry = new THREE.BoxGeometry( 1,2,1 );
-		const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-		const cube = new THREE.Mesh( geometry, material );
-        cube.position.copy(linkWorldPosition);
-        //cube.quaternion.copy(linkWorldQuat);
-		cube.visible = false;
-		const box = new THREE.BoxHelper( cube );
-		scene.add( box );
-		scene.add( cube );
-    }**/
 }
 
 export function initCannon() {
@@ -71,7 +48,6 @@ export function initCannon() {
     world.addBody(floorBody);
 
     initDone = true;
-    //console.log('Physics init done');
     debug();
 }
 
@@ -93,12 +69,10 @@ export function updatePhysics() {
 
 export function addBodyToWorld(simObject) {
     world.addBody(simObject.body);
-    //debug();
 }
 
 export function removeBodyFromWorld(simObject) {
         world.removeBody(simObject.body)
-        //simObject.body = null;
 }
 
 //Removes every body, not used right now.
@@ -108,21 +82,10 @@ export function removeAllBodies(simObjects) {
     }
 }
 
-/*export function addBody(simObject) {
-    simObject.createBody();
-    world.addBody(simObject.body)
-}
-
-export function removeBody(simObject) {
-        world.removeBody(simObject.body);
-}*/
-
 export function updateMeshes(simObjects) {
     let limit = simObjects.length;
     for (let i = 0; i < limit; i++) {
-        //if (!simObjects[i].attached) {//fixes gripping issue
-            simObjects[i].updateMesh();
-        //}
+        simObjects[i].updateMesh();
     }
 }
 
@@ -130,13 +93,6 @@ export function updateBodies() {
     const simObjects = getSimObjects();
     for (let i = 0; i < simObjects.length; i++) {
         simObjects[i].updateBody();
-    }
-}
-
-export function updateCollisionBodies() {
-    const simObjects = getSimObjects();
-    for (let i = 0; i < simObjects.length; i++) {
-        simObjects[i].updateCollisionBody();
     }
 }
 
