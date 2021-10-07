@@ -202,7 +202,7 @@ function loadSTL(simObject, data){
 }
 
 //Adds the simObject
-export function addSimObject(blockUUID, fieldValues, pickedColor, shape) {
+export function addSimObject(blockUUID, fieldValues, pickedColor, shape, scale) {
 
     let simObject = new SimObject;
     simObject.name = blockUUID;
@@ -224,6 +224,10 @@ export function addSimObject(blockUUID, fieldValues, pickedColor, shape) {
     }
 
     simObject.addToScene();
+
+    if (scale != 1) {
+        simObject.setScale(scale)
+    }
 
     if (simObjects.length > 1) {
         placeCubes(simObject);

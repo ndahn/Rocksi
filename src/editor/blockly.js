@@ -419,10 +419,11 @@ function watchSpawnBlocks(event) {
             if (newBlock.type === 'add_sim_object') {
                 const shape = newBlock.getFieldValue('OBJECT_SHAPE');
                 const pose = newBlock.getInputTargetBlock('POSE');
-                const colour = newBlock.getInputTargetBlock('COLOUR');
+                const color = newBlock.getInputTargetBlock('COLOUR');
+                const scaleBlock = newBlock.getInputTargetBlock('SCALE');
                 const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
                 let fieldValues = [];
-                let pickedColour;
+                let pickedColor;
                 if (pose != null) {
                     for (let i = 0; i < fieldKeys.length; i++) {
                         fieldValues.push(pose.getFieldValue(fieldKeys[i]));
@@ -430,17 +431,20 @@ function watchSpawnBlocks(event) {
                 } else {
                     fieldValues = undefined;
                 }
-                if (colour != null) {
-                    if (colour.type === 'colour_picker') {
-                        pickedColour = color.getFieldValue('COLOUR');
+                if (color != null) {
+                    if (color.type === 'colour_picker') {
+                        pickedColor = color.getFieldValue('COLOUR');
                     }
-                    if (colour.type === 'colour_random') {
-                        pickedColour = randomColour();
+                    if (color.type === 'colour_random') {
+                        pickedColor = randomColour();
                     } else {
-                        pickedColour = undefined;
+                        pickedColor = undefined;
                     }
                 }
-                addSimObject(newBlock.id, fieldValues, pickedColour, shape);
+
+                let scale = scaleBlock.getFieldValue('NUM');
+
+                addSimObject(newBlock.id, fieldValues, pickedColor, shape, scale);
             }
         }
     }
