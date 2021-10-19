@@ -424,6 +424,7 @@ function watchSpawnBlocks(event) {
                 const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
                 let fieldValues = [];
                 let pickedColor;
+                let scale;
                 if (pose != null) {
                     for (let i = 0; i < fieldKeys.length; i++) {
                         fieldValues.push(pose.getFieldValue(fieldKeys[i]));
@@ -441,8 +442,11 @@ function watchSpawnBlocks(event) {
                         pickedColor = undefined;
                     }
                 }
-
-                let scale = scaleBlock.getFieldValue('NUM');
+                if (scaleBlock != null){
+                    scale = scaleBlock.getFieldValue('NUM');
+                } else {
+                    scale = 1;
+                }
 
                 addSimObject(newBlock.id, fieldValues, pickedColor, shape, scale);
             }
