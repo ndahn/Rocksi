@@ -219,7 +219,7 @@ export function addSimObject(blockUUID, fieldValues, pickedColor, shape, scale) 
         simObject.setFieldValues(fieldValues);
         simObject.updateFromFieldValues();
     } else {
-        simObject.setFieldValues(simObject.fieldValues);
+        simObject.setFieldValues(simObject._fieldValues);
         simObject.updateFromFieldValues();
     }
 
@@ -228,7 +228,6 @@ export function addSimObject(blockUUID, fieldValues, pickedColor, shape, scale) 
     if (scale != 1) {
         simObject.setScale(scale)
     }
-
     if (simObjects.length > 1) {
         placeCubes(simObject);
         simObject.updateFieldValues();
