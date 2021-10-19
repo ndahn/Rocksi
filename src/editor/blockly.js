@@ -337,9 +337,15 @@ function compileProgram() {
     simulation.reset();
     const visible = false;
     simulation.resetSimObjects(visible);
-    let code = Blockly.JavaScript.workspaceToCode(workspace);
-    console.log(code);
-    interpreter = new Interpreter(code, simulationAPI);
+    try {
+        let code = Blockly.JavaScript.workspaceToCode(workspace);
+        console.log(code);
+        interpreter = new Interpreter(code, simulationAPI);
+    } 
+    catch (e) {
+        onProgramError(e);
+        throw e;
+    }
 }
 
 function pauseExecution() {
@@ -411,7 +417,6 @@ function onProgramFinished() {
 
 //Determin if a add_sim_object-block was added or removed form the Blockly Workspace.
 //If added, add a new 3D-object. If removed remove the 3D-object assosiated with the block.
-//Lukas
 function watchSpawnBlocks(event) {
     if(Blockly.Events.BLOCK_CREATE === event.type) {
         for (let i = 0; i < event.ids.length; i++) {
