@@ -63,7 +63,6 @@ switch (selectedRobot.toLowerCase()) {
 		throw ('Unknown robot \'' + selectedRobot + '\'');
 }
 
-
 let container;
 let camera, scene, renderer;
 let raycaster;
@@ -220,7 +219,7 @@ function initScene() {
 	// TODO setMode('rotate') on click event
 	robotControl.attach(tcptarget);
 	scene.add(robotControl);
-	
+
 	robotControl.visible = false;
 	robotControl.enabled = false;
 	raycaster = new Raycaster();
@@ -282,12 +281,11 @@ function updateGroundLine() {
 
 function render() {
     renderer.render(scene, camera);
-	
+
 	for (let cb of renderCallbacks) {
 		cb(robot);
 	}
 }
-
 
 export function enablePointerEvents() {
 	if (canHover()) {
@@ -323,12 +321,12 @@ export function disablePointerEvents() {
 function onHoverPointerMove(evt) {
 	evt.preventDefault();
 	pointerDrag = true;
-	
+
 	pointerXY.x = (evt.offsetX / container.clientWidth) * 2 - 1;
 	pointerXY.y = -(evt.offsetY / container.clientHeight) * 2 + 1;
 
     raycaster.setFromCamera(pointerXY, camera);
-    setSimObjectHighlight(raycaster); //does this for all TransformControls of simObjects
+    setSimObjectHighlight(raycaster); //does this for all TransformControls of simObjects, Lukas Greipel
 	let showRTC = false;
 
 	// Only show the robot controls if no object is visible
@@ -341,7 +339,7 @@ function onHoverPointerMove(evt) {
         robotControl.visible = showRTC;
 		robotControl.enabled = showRTC;
     }
-	
+
 	requestAnimationFrame(render);
 }
 
@@ -396,7 +394,7 @@ function onClickPointerUp(evt) {
         robotControl.visible = showRTC;
 		robotControl.enabled = showRTC;
     }
-	
+
 	requestAnimationFrame(render);
 }
 
@@ -409,6 +407,7 @@ export function addRenderCallback (callback) {
 	renderCallbacks.push(callback);
 }
 
+//Functions for access to the scene and the robot model. Lukas Greipel
 export function requestAF () { requestAnimationFrame(render); }
 
 export function getScene () { return scene; }
