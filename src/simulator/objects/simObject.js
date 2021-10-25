@@ -137,6 +137,23 @@ export class SimObject extends Object3D {
         }
     }
 
+    _floorCollision() {
+        const checkBox = new Box3().setFromObject(this);
+        const floor = new Plane(new Vector3(0, 0, 1));
+        const distance = floor.distanceToPoint(this.position);
+        if (floor.intersectsBox(checkBox)) {
+            this.position.z = this.position.z + 0.001
+            return this._floorCollision();
+
+        } else if (distance < 0) {
+            this.position.z = 0;
+            return this._floorCollision();
+        }
+        else {
+            return;
+        }
+    }
+
     //not used right now. Updates the attachted pose block.
     updatePoseBlock() {
         const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
@@ -242,6 +259,7 @@ export class SimObject extends Object3D {
         this.createBody(0.5 * scale, 2, 0.1);
         this.setGrippable();
         this.setGripAxes();
+        this._floorCollision();
         this.render();
     }
 
