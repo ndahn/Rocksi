@@ -1,3 +1,6 @@
+/**
+Class for the object interaction, Lukas Greipel
+**/
 import { Vector3,
          Euler,
          Object3D,
@@ -58,7 +61,8 @@ export class SimObject extends Object3D {
         this.grippable = true;
         this.grippableAxisIndependent = true;
         this.gripAxes = [];
-        this.advancedGrippingOff = false;
+        this.advancedGrippingOff = false; //For debug and development, turns off orientation
+                                          //based gripping.
     }
 
     //Positioning
@@ -113,7 +117,6 @@ export class SimObject extends Object3D {
         this.rotation.fromArray(eulArray);
     }
 
-
     //callback for objectChange
     _objectChange() {
         if (this.control.visible && !this.attached) {
@@ -137,6 +140,7 @@ export class SimObject extends Object3D {
         }
     }
 
+    //Use with caution, sets z-position until not intersecting with the floor.
     _floorCollision() {
         const checkBox = new Box3().setFromObject(this);
         const floor = new Plane(new Vector3(0, 0, 1));
@@ -173,7 +177,7 @@ export class SimObject extends Object3D {
     }
 
     //Visiblity and scene
-    render() { requestAF(); }
+    render() { requestAF(); }//It is better to use the method provided by the simulator.
 
     addToScene() {
         const scene = getScene();
@@ -401,7 +405,6 @@ export class SimObject extends Object3D {
     }
 
     attachToGripper(robot) {
-
         this.removeBodyFromWorld();
         const scene = getScene();
         const tcp = robot.tcp.object;
@@ -507,7 +510,7 @@ export class SimObject extends Object3D {
 
         //Human readable angles...
         let xi = this._radToDeg(gripAxis.angleTo(zAxisTCP));
-        //let roh = this._radToDeg(gripAxis.angleTo(fnCrossZ));
+
         let tau = this._radToDeg(gripAxis.angleTo(fingerNormal));
 
         console.log('Angle gripAxis to zAxisTCP, xi, (green to yellow)', xi);
