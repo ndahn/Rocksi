@@ -223,24 +223,37 @@ export function addSimObject(blockUUID, fieldValues, color, shape, scale) {
     simObject.addToScene();
 
     if (scale != 1) {
-        simObject.setScale(scale)
+        simObject.setScale(scale);
     }
     if (simObjects.length > 1) {
-        placeCubes(simObject);
+        place3Dobjects(simObject);
         simObject.updateFieldValues();
         simObject.updatePoseBlock();
     }
 }
 
 //stacks cubes, until there are no more cubes to stack
-export function placeCubes(simObject){
-    let shift = 0;
+export function place3Dobjects(simObject){
     const limit = simObjects.length;
     for (let k = 0; k < limit; k++) {
-        if (simObject.position.distanceTo(simObjects[k].position)
-                    < (simObject.size.z * .5 * simObject.scaleFactor)
+        if (simObjects[k].name != simObject.name){
+
+            let box = new Box3().setFromObject(simObject);
+            let checkBox = new Box3().setFromObject(simObjects[k]);
+            let intersecting = true;
+
+            while (intersecting) {
+                simObject.position.z = simObject.position.z + 0.001;
+                box.setFromObject(simObject);
+                intersecting = box.intersectsBox(checkBox);
+            }
+        }
+    }
+}
+        /**if (simObjects[k].position.distanceTo(simObject.position)
+                    < (simObjects[k].size.z)
                     && simObject.name != simObjects[k].name) {
-            shift = simObject.size.z;
+            shift = simObjects[k].size.z * .5;
         }
     }
 
@@ -249,8 +262,8 @@ export function placeCubes(simObject){
         return placeCubes(simObject);
     } else {
         return;
-    }
-}
+    }**/
+
 
 //Removes the simObject from the simObjects array and from the threejs scene
 export function remSimObjects(ids) {
