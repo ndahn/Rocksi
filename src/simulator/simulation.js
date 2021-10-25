@@ -69,7 +69,8 @@ class TheSimulation {
         this.runningPhysics = false;
     }
 
-    //Lukas
+    //Resets the simObjects to the position and orientation in the pose block.
+    //Lukas Greipel
     resetSimObjects(visible = true) {
         const simObjects = getSimObjects();
         for (const simObject of simObjects) {
@@ -129,7 +130,6 @@ class TheSimulation {
 
     }
 
-
     setParam(param, value) {
         console.log('> Setting ' + param + ' to ' + value);
         try {
@@ -164,7 +164,6 @@ class TheSimulation {
         };
     }
 
-
     lockJoint(jointIdx) {
         console.log('> Locking joint ' + jointIdx);
 
@@ -193,7 +192,6 @@ class TheSimulation {
         this.lockedJointIndices = [];
     }
 
-
     getJointSpacePose() {
         const robot = this.robot;
         const pose = [];
@@ -219,7 +217,6 @@ class TheSimulation {
         pose.push(pos.x, pos.y, pos.z, rot.x, rot.y, rot.z);
         return pose;
     }
-
 
     wait(ms) {
         console.log('> Waiting ' + ms + ' ms');
@@ -318,12 +315,12 @@ class TheSimulation {
 
         tcp.getWorldPosition(position);
 
-        const simObject = getSimObjectByPos(position);
-
+        const simObject = getSimObjectByPos(position);//Retruns a simObject, if tcp is inside a box around it. Lukas Greipel
+        //Gripping a simObject if it is available, Lukas Greipel
         if (simObject != undefined) {
-            if (simObject.advancedGrippingOff
+            if (simObject.advancedGrippingOff //override for debug
                 && isAttached() == false
-                && robot.isGripperOpen()) { //override
+                && robot.isGripperOpen()) {
 
                 simObject.attachToGripper(robot);
 
@@ -379,9 +376,9 @@ class TheSimulation {
         const robot = this.robot;
         const start = {};
         const target = {};
-        //let mesh;
 
-        //If an object is currently gripped, detach it from the gripper, Lukas
+        /**If an object is currently gripped, detach it from the gripper
+        and activate the physics, Lukas Greipel**/
         if (isAttached() == true) {
             const simObject = getAttachedObject();
             simObject.detachFromGripper(robot);
@@ -390,6 +387,7 @@ class TheSimulation {
                 this.startPhysicalBody(idx);
             }
         }
+
         for (const finger of robot.hand.movable) {
             start[finger.name] = finger.angle;
             target[finger.name] = finger.limit.upper;  // fully opened
@@ -429,7 +427,7 @@ class TheSimulation {
         return this.joint_absolute(jointIdx, angleAbs);
     }
 
-    //Lukas
+    //Activate simObject and start physics if not already running, Lukas Greipel
     startPhysicalBody(simObjectsIdx) {
         const simObjects = getSimObjects();
         this.physicsDone = false;
@@ -451,6 +449,7 @@ class TheSimulation {
         }
     }
 
+    //Returns state of physics simulation, Lukas Greipel
     getPhysicsDone() {
         const simObjects = getSimObjects();
         if (simObjects.length > 0) {
@@ -463,15 +462,12 @@ class TheSimulation {
                 this.physicsDone = false;
             }
         }
-        else {
-            //this.physicsDone = true;
-        }
-
         return this.physicsDone;
     }
 
+    //Physics animation loop, Lukas Greipel
     _animatePhysics() {
-        updatePhysics();
+        updatePhysics(); //Updates the 3D object positions and orientations 
         this.renderCallback();
         if (!isWorldActive()) {
             console.log('Physics rendering halted.');
