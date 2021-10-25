@@ -22,7 +22,6 @@ switch (language) {
 Blockly.setLocale(BlocklyLang);
 Blockly.setLocale(BlocklyLangCustom);
 
-
 import 'blockly/blocks'
 import 'blockly/javascript'
 
@@ -37,12 +36,11 @@ import './generators/javascript'
 // Toolbox XML is imported for parcel
 import * as ToolboxXML from './toolbox.xml'
 
-//imports for adding and removing 3D-objects, Lukas
+//imports for adding and removing 3D-objects, Lukas Greipel
 import { addSimObject,
          remSimObjects,
          randomColour,
          remControledSimObject } from '../simulator/objects/createObjects'
-
 
 import { popSuccess, popWarning, popError, popInfo } from '../alert'
 
@@ -377,9 +375,9 @@ function executeProgram() {
     }
 }
 
+//Waits until physics are done. Lukas Greipel
 function waitForPhysicsSim() {
     if (!simulation.getPhysicsDone()) {
-        //console.log('Waiting ' + waitToFinish * 0.001 + ' seconds...');
         setTimeout(() => {
             waitForPhysicsSim();
         }, 200 );
@@ -417,6 +415,7 @@ function onProgramFinished() {
 
 //Determin if a add_sim_object-block was added or removed form the Blockly Workspace.
 //If added, add a new 3D-object. If removed remove the 3D-object assosiated with the block.
+//Lukas Greipel
 function watchSpawnBlocks(event) {
     if(Blockly.Events.BLOCK_CREATE === event.type) {
         for (let i = 0; i < event.ids.length; i++) {
@@ -439,7 +438,7 @@ function watchSpawnBlocks(event) {
                 }
 
                 if (color != null) {
-                    console.log(color);
+
                     if (color.type === 'colour_picker') {
                         pickedColor = color.getFieldValue('COLOUR');
                     }
