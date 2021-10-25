@@ -35,9 +35,8 @@ Blockly.Blocks["gripper_close"] = {
 	},
 };
 
-//Spawn block definition and other 3D-object interaction blocks, Lukas
-
-//The SimObject:
+//Spawn block definition and other 3D-object interaction blocks, Lukas Greipel
+//The SimObject spawn block:
 Blockly.Blocks['add_sim_object'] = {
 	init: function () {
         this.jsonInit({
@@ -45,7 +44,7 @@ Blockly.Blocks['add_sim_object'] = {
             message0: "%{BKY_ROCKSI_BLOCK_SIMOBJECT}",
             args0: [
                 {
-                    "type": "field_dropdown",
+                    "type": "field_dropdown", //Menu for the shape
                     "name": "OBJECT_SHAPE",
                     "options": [
                         [
