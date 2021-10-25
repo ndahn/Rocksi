@@ -154,7 +154,7 @@ export class SimObject extends Object3D {
         }
     }
 
-    //not used right now. Updates the attachted pose block.
+    //Updates the attachted pose block.
     updatePoseBlock() {
         const fieldKeys = ['X', 'Y', 'Z', 'ROLL', 'PITCH', 'YAW'];
         const workspace = Blockly.getMainWorkspace();
@@ -260,6 +260,8 @@ export class SimObject extends Object3D {
         this.setGrippable();
         this.setGripAxes();
         this._floorCollision();
+        this.updateFieldValues();
+        this.updatePoseBlock();
         this.render();
     }
 
