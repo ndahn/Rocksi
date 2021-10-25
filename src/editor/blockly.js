@@ -341,7 +341,7 @@ function compileProgram() {
         let code = Blockly.JavaScript.workspaceToCode(workspace);
         console.log(code);
         interpreter = new Interpreter(code, simulationAPI);
-    } 
+    }
     catch (e) {
         onProgramError(e);
         throw e;
@@ -437,22 +437,23 @@ function watchSpawnBlocks(event) {
                 } else {
                     fieldValues = undefined;
                 }
+
                 if (color != null) {
+                    console.log(color);
                     if (color.type === 'colour_picker') {
                         pickedColor = color.getFieldValue('COLOUR');
                     }
                     if (color.type === 'colour_random') {
                         pickedColor = randomColour();
-                    } else {
-                        pickedColor = undefined;
                     }
+                } else {
+                    pickedColor = undefined;
                 }
                 if (scaleBlock != null){
                     scale = scaleBlock.getFieldValue('NUM');
                 } else {
                     scale = 1;
                 }
-
                 addSimObject(newBlock.id, fieldValues, pickedColor, shape, scale);
             }
         }

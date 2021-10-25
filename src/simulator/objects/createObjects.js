@@ -202,16 +202,13 @@ function loadSTL(simObject, data){
 }
 
 //Adds the simObject
-export function addSimObject(blockUUID, fieldValues, pickedColor, shape, scale) {
+export function addSimObject(blockUUID, fieldValues, color, shape, scale) {
 
     let simObject = new SimObject;
     simObject.name = blockUUID;
     simObjects.push(simObject);
     simObject.shape = shape;
-
-    if (pickedColor != undefined) {
-        simObject.color = pickedColor;
-    }
+    simObject.color = color;
 
     addGeometry(simObject);
 
@@ -259,8 +256,8 @@ export function placeCubes(simObject){
 export function remSimObjects(ids) {
     const limit = ids.length;
     for (let i = 0; i < limit; i++) {
-        const deletedSimObject = simObjects.find(simObject => simObject.name === ids[i]);
-        const idx = simObjects.findIndex(simObject => simObject.name === ids[i]);
+        const deletedSimObject = getSimObject(ids[i]); //simObjects.find(simObject => simObject.name === ids[i]);
+        const idx = getSimObjectIdx(ids[i]);//simObjects.findIndex(simObject => simObject.name === ids[i]);
         if (deletedSimObject != undefined) {
             deletedSimObject.removeFromScene();
             simObjects.splice(idx, 1);
@@ -379,25 +376,29 @@ export function getSimObjects() {
 
 //Returns the simObject by name (the uuid of the blockly block)
 export function getSimObject(simObjectName) {
-    const limit = simObjects.length;
+    const simObject = simObjects.find(simObject => simObject.name === simObjectName);
+    return simObject;
+    /**const limit = simObjects.length;
     for (let i = 0; i < limit; i++) {
       if (simObjectName == simObjects[i].name) {
           return simObjects[i];
         }
     }
-    return undefined;
+    return undefined;**/
 }
 
 //Returns the index of a simObject in the simObjects array
 export function getSimObjectIdx(simObjectName) {
-    const limit = simObjects.length;
+    const idx = simObjects.findIndex(simObject => simObject.name === simObjectName);
+    return idx;
+    /**const limit = simObjects.length;
     for (let i = 0; i < limit; i++) {
         if (simObjects[i].name == simObjectName) {
             return i;
         }
     }
 
-    return undefined;
+    return undefined;**/
 }
 
 //Returns the simObject to a corresponding threejs world position, with given accuracy
