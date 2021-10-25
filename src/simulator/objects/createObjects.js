@@ -1,3 +1,6 @@
+/**
+This script handeles the 3D object addition. Lukas Greipel
+**/
 import { BoxBufferGeometry,
          MeshPhongMaterial,
          CylinderGeometry,
@@ -29,7 +32,9 @@ import { requestAF,
 
 import { getWorld } from '../physics';
 
+//simObjects array
 let simObjects = [];
+//This stores the currently via the tranform controls controlled simObject
 let controlledSimObject = undefined;
 
 //Functions for creating meshes
@@ -53,7 +58,7 @@ function createCylinderMesh(simObject) {
     cylinderMesh.material = new MeshPhongMaterial({ color: simObject.colour });
     return cylinderMesh;
 }
-
+//Simple sphere
 function createSphereMesh(simObject) {
     const mesh = new Mesh();
     mesh.geometry = new SphereGeometry( simObject.size.z * 0.5, 12, 12 );
@@ -61,7 +66,7 @@ function createSphereMesh(simObject) {
     return mesh;
 }
 
-//adds a geometry to a simObject
+//Adds a geometry to a simObject.
 export function addGeometry(simObject) {
     const size = new Vector3();
     const checkBox = new Box3();
@@ -75,6 +80,7 @@ export function addGeometry(simObject) {
             simObject.setGrippable();
             simObject.setGripAxes();
             break;
+
         case 'rock':
             const rockMesh = makeRock(50, simObject.size.z, simObject.colour);
             rockMesh.geometry.computeBoundingBox();
@@ -88,6 +94,7 @@ export function addGeometry(simObject) {
             simObject.setGrippable();
             simObject.setGripAxes();
             break;
+
         case 'sphere':
             const sphereMesh = createSphereMesh(simObject);
             sphereMesh.geometry.computeBoundingSphere();
@@ -102,20 +109,24 @@ export function addGeometry(simObject) {
             simObject.setGrippable();
             simObject.setGripAxes();
             break;
+
         case 'shaft':
             const assetPath = '/models/simObject_shapes/shaft/shaft.stl';
             const shape = 'cylinder';
             loadAssetSTL(simObject, assetPath, shape); //I have use the promise stuff here...
             break;
+
         case 'custom':
             loadUserSTL(simObject); //Body creation etc in event callback
             break;
+
         default:
             console.error('Unknown SimObject shape: ', simObject.shape);
             break;
     }
 }
 
+//Loads a 3D object from file.
 function loadAssetSTL(simObject, assetPath, shape) {
     //const filePath = '/models/simObject_shapes/shaft/shaft.stl';
     const loader = new STLLoader();
@@ -147,6 +158,7 @@ function loadAssetSTL(simObject, assetPath, shape) {
     });
 }
 
+//Loads a 3D object added by the user.
 function loadUserSTL(simObject) {
     const upload = document.createElement('input');
     const reader = new FileReader();
@@ -170,6 +182,7 @@ function loadUserSTL(simObject) {
     document.body.removeChild(upload);
 }
 
+//Loads a stl into a simObject
 function loadSTL(simObject, data){
     const geometry = new STLLoader().parse( data );
     const material = new MeshPhongMaterial({color: simObject.colour});
@@ -201,7 +214,7 @@ function loadSTL(simObject, data){
     simObject.render();
 }
 
-//Adds the simObject
+//Create a new SimObject and add a 3D model to the simObject
 export function addSimObject(blockUUID, fieldValues, color, shape, scale) {
 
     let simObject = new SimObject;
@@ -232,7 +245,7 @@ export function addSimObject(blockUUID, fieldValues, color, shape, scale) {
     }
 }
 
-//stacks cubes, until there are no more cubes to stack
+//Places 3D objects on top of each other.
 export function place3Dobjects(simObject){
     const limit = simObjects.length;
     for (let k = 0; k < limit; k++) {
@@ -250,27 +263,13 @@ export function place3Dobjects(simObject){
         }
     }
 }
-        /**if (simObjects[k].position.distanceTo(simObject.position)
-                    < (simObjects[k].size.z)
-                    && simObject.name != simObjects[k].name) {
-            shift = simObjects[k].size.z * .5;
-        }
-    }
-
-    if (shift > 0) {
-        simObject.position.z = simObject.position.z + shift;
-        return placeCubes(simObject);
-    } else {
-        return;
-    }**/
-
 
 //Removes the simObject from the simObjects array and from the threejs scene
 export function remSimObjects(ids) {
     const limit = ids.length;
     for (let i = 0; i < limit; i++) {
-        const deletedSimObject = getSimObject(ids[i]); //simObjects.find(simObject => simObject.name === ids[i]);
-        const idx = getSimObjectIdx(ids[i]);//simObjects.findIndex(simObject => simObject.name === ids[i]);
+        const deletedSimObject = getSimObject(ids[i]);
+        const idx = getSimObjectIdx(ids[i]);
         if (deletedSimObject != undefined) {
             deletedSimObject.removeFromScene();
             simObjects.splice(idx, 1);
@@ -311,6 +310,7 @@ export function setSimObjectHighlight(raycaster) {
     }
 }
 
+//Changes controls on click.
 export function setTCSimObjectsOnClick(raycaster) {
     const intersections = raycaster.intersectObjects(simObjects, true);
     const intersected = intersections.length > 0;
@@ -350,6 +350,7 @@ export function setTCSimObjectsOnClick(raycaster) {
     return intersected;
 }
 
+//Activates the TransformControls
 function activateTransformControl(simObject) {
     simObject.control.setMode('translate');
     simObject.setTransformControlEnabled(true);
@@ -357,6 +358,7 @@ function activateTransformControl(simObject) {
     getScene().add(simObject.control);
 }
 
+//Removes the TransformControls
 function removeTransformControl(simObject) {
     getScene().remove(simObject.control);
 
@@ -364,6 +366,7 @@ function removeTransformControl(simObject) {
     simObject.setTransformControlEnabled(false);
 }
 
+//Removes the controled simObject from the buffer.
 export function remControledSimObject() {
     if (controlledSimObject) {
         removeTransformControl(controlledSimObject);
@@ -373,6 +376,7 @@ export function remControledSimObject() {
 }
 
 //Functions for getting simObjects
+//Retruns all names of simObjects in order in a array
 export function getSimObjectsNames() {
     let simObjectsNames = [];
     const simObjectsLen = simObjects.length;
@@ -382,39 +386,25 @@ export function getSimObjectsNames() {
     return simObjectsNames
 }
 
-//Returns all simObjects
+//Returns simObjects array
 export function getSimObjects() {
     return simObjects;
 }
 
 //Returns the simObject by name (the uuid of the blockly block)
 export function getSimObject(simObjectName) {
-    const simObject = simObjects.find(simObject => simObject.name === simObjectName);
+    const simObject = simObjects.find(simObject =>
+                                      simObject.name === simObjectName);
     return simObject;
-    /**const limit = simObjects.length;
-    for (let i = 0; i < limit; i++) {
-      if (simObjectName == simObjects[i].name) {
-          return simObjects[i];
-        }
-    }
-    return undefined;**/
 }
 
 //Returns the index of a simObject in the simObjects array
 export function getSimObjectIdx(simObjectName) {
     const idx = simObjects.findIndex(simObject => simObject.name === simObjectName);
     return idx;
-    /**const limit = simObjects.length;
-    for (let i = 0; i < limit; i++) {
-        if (simObjects[i].name == simObjectName) {
-            return i;
-        }
-    }
-
-    return undefined;**/
 }
 
-//Returns the simObject to a corresponding threejs world position, with given accuracy
+//Returns the simObject to a corresponding THREE.js world position
 export function getSimObjectByPos(position) {
     let minDist = 9999.0;
     let minIdx = -1;
@@ -463,7 +453,7 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
 }
 
-//random colours for fancy cubes
+//Random colors for fancy cubes
 export function randomColour() {
     const hexDigits = '0123456789ABCDEF';
     let colour = '#';
