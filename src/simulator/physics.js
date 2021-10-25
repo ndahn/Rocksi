@@ -1,3 +1,7 @@
+/**
+This script handels the setup for the physics engine. Lukas Greipel
+**/
+
 //cannon-es import
 import * as CANNON from 'cannon-es';
 import * as THREE from 'three';
@@ -28,8 +32,6 @@ export function initCannon() {
     world = new CANNON.World();
     world.gravity.set(0, 0, -9.81);
     world.broadphase = new CANNON.NaiveBroadphase();
-    //const solver = new CANNON.GSSolver()
-    //world.solver = solver;
     world.solver.tolerance = 0.001
     world.quatNormalizeFast = true;
     world.solver.iterations = 10;
