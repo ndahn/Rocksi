@@ -35,7 +35,7 @@ Blockly.Blocks["gripper_close"] = {
 	},
 };
 
-//Spawn block definition and other 3D-object interaction blocks, Lukas Greipel
+//Spawn block definition and other 3D-object interaction blocks
 //The SimObject spawn block:
 Blockly.Blocks['add_sim_object'] = {
 	init: function () {

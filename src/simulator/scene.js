@@ -21,7 +21,7 @@ import {
 	Vector2
 } from "three";
 
-//Imports for managing objects and physics, Lukas
+//Imports for managing objects and physics
 import { initCannon } from './physics';
 
 import { remControledSimObject, setSimObjectHighlight,
@@ -326,7 +326,7 @@ function onHoverPointerMove(evt) {
 	pointerXY.y = -(evt.offsetY / container.clientHeight) * 2 + 1;
 
     raycaster.setFromCamera(pointerXY, camera);
-    setSimObjectHighlight(raycaster); //does this for all TransformControls of simObjects, Lukas Greipel
+    setSimObjectHighlight(raycaster); //does this for all TransformControls of simObjects
 	let showRTC = false;
 
 	// Only show the robot controls if no object is visible
@@ -407,7 +407,7 @@ export function addRenderCallback (callback) {
 	renderCallbacks.push(callback);
 }
 
-//Functions for access to the scene and the robot model. Lukas Greipel
+//Functions for access to the scene and the robot model
 export function requestAF () { requestAnimationFrame(render); }
 
 export function getScene () { return scene; }

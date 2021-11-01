@@ -1,5 +1,5 @@
 /**
-This script handeles the 3D object addition. Lukas Greipel
+This script handeles the 3D object addition
 **/
 import { BoxBufferGeometry,
          MeshPhongMaterial,

@@ -36,7 +36,7 @@ import './generators/javascript'
 // Toolbox XML is imported for parcel
 import * as ToolboxXML from './toolbox.xml'
 
-//imports for adding and removing 3D-objects, Lukas Greipel
+//imports for adding and removing 3D-objects
 import { addSimObject,
          remSimObjects,
          randomColour,
@@ -285,7 +285,7 @@ runButton.onclick = function () {
         if (workspace.getTopBlocks(false).length == 0) {
             popWarning(Blockly.Msg['EMPTY_PROGRAM'] || "Empty program");
         }
-        //event listener off, lukas
+        //event listener off
         compileProgram();
         executeProgram();
     }
@@ -375,7 +375,7 @@ function executeProgram() {
     }
 }
 
-//Waits until physics are done. Lukas Greipel
+//Waits until physics are done
 function waitForPhysicsSim() {
     if (!simulation.getPhysicsDone()) {
         setTimeout(() => {
@@ -415,7 +415,6 @@ function onProgramFinished() {
 
 //Determin if a add_sim_object-block was added or removed form the Blockly Workspace.
 //If added, add a new 3D-object. If removed remove the 3D-object assosiated with the block.
-//Lukas Greipel
 function watchSpawnBlocks(event) {
     if(Blockly.Events.BLOCK_CREATE === event.type) {
         for (let i = 0; i < event.ids.length; i++) {

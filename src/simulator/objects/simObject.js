@@ -1,5 +1,5 @@
 /**
-Class for the object interaction, Lukas Greipel
+Class for the object interaction
 **/
 import { Vector3,
          Euler,

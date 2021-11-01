@@ -1,6 +1,6 @@
 import { Object3D, Vector3, Euler } from "three"
 
-//function for updating the physics, Lukas
+//function for updating the physics
 import { updatePhysics,
          isWorldActive,
          updateBodies, } from './physics'
@@ -53,7 +53,7 @@ class TheSimulation {
         this.velocities = {}
         this.setDefaultVelocities();
 
-        //Physics and triggers, Lukas
+        //Physics and triggers
         this.runningPhysics = false;
         this.physicsDone = true;
         this.lastSimObjectProcessed = false;
@@ -70,7 +70,6 @@ class TheSimulation {
     }
 
     //Resets the simObjects to the position and orientation in the pose block.
-    //Lukas Greipel
     resetSimObjects(visible = true) {
         const simObjects = getSimObjects();
         for (const simObject of simObjects) {
@@ -315,8 +314,8 @@ class TheSimulation {
 
         tcp.getWorldPosition(position);
 
-        const simObject = getSimObjectByPos(position);//Retruns a simObject, if tcp is inside a box around it. Lukas Greipel
-        //Gripping a simObject if it is available, Lukas Greipel
+        const simObject = getSimObjectByPos(position);//Retruns a simObject, if tcp is inside a box around it
+        //Gripping a simObject if it is available
         if (simObject != undefined) {
             if (simObject.advancedGrippingOff //override for debug
                 && isAttached() == false
@@ -338,7 +337,7 @@ class TheSimulation {
 
                for (const finger of robot.hand.movable) {
                        start[finger.name] = finger.angle;
-                       target[finger.name] = finger.limit.lower;// - (simObject.size.x * 0.2);//This is just for testing, Lukas
+                       target[finger.name] = finger.limit.lower;// - (simObject.size.x * 0.2);//This is just for testing
                }
 
            } else if (isAttached() == false
@@ -352,7 +351,7 @@ class TheSimulation {
 
                     for (const finger of robot.hand.movable) {
                             start[finger.name] = finger.angle;
-                            target[finger.name] = finger.limit.lower;// - (simObject.size.x * 0.2);//This is just for testing, Lukas
+                            target[finger.name] = finger.limit.lower;// - (simObject.size.x * 0.2);//This is just for testing
                     }
                 }
             }
@@ -377,8 +376,8 @@ class TheSimulation {
         const start = {};
         const target = {};
 
-        /**If an object is currently gripped, detach it from the gripper
-        and activate the physics, Lukas Greipel**/
+        // If an object is currently gripped, detach it from the gripper
+        // and activate the physics
         if (isAttached() == true) {
             const simObject = getAttachedObject();
             simObject.detachFromGripper(robot);
@@ -427,7 +426,7 @@ class TheSimulation {
         return this.joint_absolute(jointIdx, angleAbs);
     }
 
-    //Activate simObject and start physics if not already running, Lukas Greipel
+    //Activate simObject and start physics if not already running
     startPhysicalBody(simObjectsIdx) {
         const simObjects = getSimObjects();
         this.physicsDone = false;
@@ -449,7 +448,7 @@ class TheSimulation {
         }
     }
 
-    //Returns state of physics simulation, Lukas Greipel
+    //Returns state of physics simulation
     getPhysicsDone() {
         const simObjects = getSimObjects();
         if (simObjects.length > 0) {
@@ -465,7 +464,7 @@ class TheSimulation {
         return this.physicsDone;
     }
 
-    //Physics animation loop, Lukas Greipel
+    //Physics animation loop
     _animatePhysics() {
         updatePhysics(); //Updates the 3D object positions and orientations 
         this.renderCallback();

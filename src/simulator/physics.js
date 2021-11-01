@@ -1,5 +1,5 @@
 /**
-This script handels the setup for the physics engine. Lukas Greipel
+This script handels the setup for the physics engine
 **/
 
 //cannon-es import

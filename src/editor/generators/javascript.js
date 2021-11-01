@@ -1,5 +1,5 @@
 import * as Blockly from "blockly";
-//Imports for SimObject and related stuff, Lukas
+//Imports for SimObject and related stuff
 import  Simulation from "../../simulator/simulation";
 
 import { getSimObject,
