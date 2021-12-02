@@ -57,5 +57,6 @@
     "gui-robot-info": "Info",
 
     "franka-info": "Franka Emika's robot features 7 joint degrees of freedem as well as a high degree of sensitivity. This allows it to move similar to a human arm and react to even light touches. <p><a href=\"https://franka.de/\" target=\"_blank\">www.franka.de</a></p>",
-    "niryo-info": "Niryo creates robots with 6 joints that are meant to be used in education. The robot is open source, so if you have the parts and a 3d printer you can even build it yourself! <p><a href=\"https://niryo.com/\" target=\"_blank\">www.niryo.com</a></p>"
+    "niryo-info": "Niryo creates robots with 6 joints that are meant to be used in education. The robot is open source, so if you have the parts and a 3d printer you can even build it yourself! <p><a href=\"https://niryo.com/\" target=\"_blank\">www.niryo.com</a></p>",
+    "sawyer-info": "The Sawyer is the successor of the two-armed Baxter robot and is very popular in research. The arrangements of joints creates some very unusual movement patterns! <p><a href=\"https://www.rethinkrobotics.com/sawyer/\" target=\"_blank\">www.rethinkrobotics.com/sawyer/</a></p>"
 }

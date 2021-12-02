@@ -6,7 +6,7 @@ import { localize } from "../helpers";
 import { msgBoxInfo } from "../alert";
 
 
-const theRobots = ['Franka', 'Niryo'];
+const theRobots = ['Franka', 'Niryo', 'Sawyer'];
 let currentRobotIdx = 0;
 {
     let currentRobot = getDesiredRobot().toLowerCase();

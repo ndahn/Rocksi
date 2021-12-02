@@ -57,5 +57,6 @@
     "gui-robot-info": "Info",
 
     "franka-info": "Der Roboter von Franka Emika zeichnet sich durch 7 Gelenkfreiheitsgrade und einen hohen Grad von Feingefühl aus. Dadurch kann sich Franka ähnlich wie der menschliche Arm bewegen und auch auf leichte Berührungen reagieren. <p><a href=\"https://franka.de/\" target=\"_blank\">www.franka.de</a></p>",
-    "niryo-info": "Niryo stellt kleine Desktoproboter mit 6 Gelenken her, die vor allem für den Bildungsbereich gedacht sind. Mit einem 3D-Drucker können technisch Begeisterte den Roboter sogar selbst bauen! <p><a href=\"https://niryo.com/\" target=\"_blank\">www.niryo.com</a></p>"
+    "niryo-info": "Niryo stellt kleine Desktoproboter mit 6 Gelenken her, die vor allem für den Bildungsbereich gedacht sind. Mit einem 3D-Drucker können technisch Begeisterte den Roboter sogar selbst bauen! <p><a href=\"https://niryo.com/\" target=\"_blank\">www.niryo.com</a></p>",
+    "sawyer-info": "Der Sawyer ist der Nachfolger des bekannten zweiarmigen Baxter Roboters und ist äußerst beliebt in der Forschung. Die Anordnung der Gelenke führt zu einigen sehr ungewöhnlichen Bewegungen! <p><a href=\"https://www.rethinkrobotics.com/de/sawyer/\" target=\"_blank\">www.rethinkrobotics.com/de/sawyer/</a></p>"
 }
