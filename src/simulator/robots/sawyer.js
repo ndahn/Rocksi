@@ -1,58 +1,17 @@
-import Robot from './robotbase'
+import Robot, { getPackage } from './robotbase'
 
 
 class Sawyer extends Robot {
 	constructor() {
 		super("Sawyer", "sawyer_description", "urdf/sawyer_rocksi.urdf.xacro");
 
-		this.partNames.arm = [
-			"base",
-			"torso",
-			"right_arm_mount",
-			"torso_t0",
-			"right_arm_base_link",
-			"right_l0",
-			"right_j0",
-			// "head",
-			// "head_pan",
-			// "right_torso_itb_l",
-			// "right_torso_itb_j",
-			"right_l1",
-			"right_j1",
-			"right_l2",
-			"right_j2",
-			"right_l3",
-			"right_j3",
-			"right_l4",
-			"right_j4",
-			// "right_arm_itb_l",
-			// "right_arm_itb_j",
-			"right_l5",
-			"right_j5",
-			// "right_hand_camera_l",
-			// "right_hand_camera_j",
-			// "right_wrist_l",
-			// "right_wrist_j",
-			"right_l6",
-			"right_j6",
-			// "right_hand_l",
-			// "right_hand_j",
-			// "right_l1_2",
-			// "right_j1_2",
-			// "right_l2_2",
-			// "right_j2_2",
-			// "right_l4_2",
-			// "right_j4_2",
-			// "screen",
-			// "display_joint",
-			// "head_camera_l",
-			// "head_camera_j"
-		];
-		this.partNames.hand = [
-			"right_hand_l",
-			"right_hand_j",
-		];
+		// 2 finger and 3 finger grippers. Edit the URDF to decide which one to load!
+		this.packages.robotiq_2f_85_gripper_visualization = getPackage('robotiq_2f_85_gripper_visualization');
+		this.packages.robotiq_3f_gripper_visualization = getPackage('robotiq_3f_gripper_visualization');
 
+		this.robotRoot = "base";
+		this.handRoot = "right_hand_l";
+		
 		this.modelScale = 10;
 		
 		this.defaultPose = {
@@ -66,7 +25,6 @@ class Sawyer extends Robot {
 		};
 
 		this.tcp.parent = "right_hand_l";
-		this.tcp.position = [0, 0, 0.05];
 
 		this.ikEnabled = [
 			"right_j0",
@@ -81,6 +39,20 @@ class Sawyer extends Robot {
 		this.interactionJointLimits = {
 			//panda_joint4: { upper: -Math.PI / 6 },
 		};
+	}
+
+	init(model) {
+		if ("robotiq_arg2f_base_link" in model.frames) {
+			// 2 finger gripper
+			this.tcp.position = [0, 0, 0.15];
+			this.hand.invertOpenClose = true;
+		}
+		else {
+			// 3 finger gripper
+			this.tcp.position = [0.05, 0, 0];
+		}
+		
+		return super.init(model);
 	}
 }
 

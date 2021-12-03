@@ -1,5 +1,21 @@
 import { PointsMaterial, Geometry, Points } from "three";
 
+
+// A version of traverse that will stop a branch when the callback returns "true"
+function traverse(obj, cb, descendants = "children") {
+	let ret = cb(obj);
+
+	if (ret || !obj[descendants]) {
+		return;
+	}
+
+	const children = obj[descendants];
+	for (let i = 0; i < children.length; i++) {
+		traverse(children[i], cb, descendants);
+	}
+}
+
+
 function showPoints(scene, positions, color = null) {
 	let material = new PointsMaterial({
 			size: 10,
@@ -41,4 +57,4 @@ function signedAngleDifference(a1, a2) {
 }
 
 
-export { showPoints, showAxes, signedAngleDifference }
+export { traverse, showPoints, showAxes, signedAngleDifference }

@@ -5,33 +5,8 @@ class Franka extends Robot {
 	constructor() {
 		super("Franka", "franka_description", "robots/panda_arm_hand.urdf.xacro");
 
-		this.partNames.arm = [
-			"panda_joint0",
-			"panda_link0",
-			"panda_joint1",
-			"panda_link1",
-			"panda_joint2",
-			"panda_link2",
-			"panda_joint3",
-			"panda_link3",
-			"panda_joint4",
-			"panda_link4",
-			"panda_joint5",
-			"panda_link5",
-			"panda_joint6",
-			"panda_link6",
-			"panda_joint7",
-			"panda_link7",
-			"panda_joint8"
-		];
-		this.partNames.hand = [
-			"panda_hand_joint",
-			"panda_hand",
-			"panda_finger_joint1",
-			"panda_leftfinger",
-			"panda_finger_joint2",
-			"panda_rightfinger",
-		];
+		this.robotRoot = "panda_link0";
+		this.handRoot = "panda_hand";
 
 		this.modelScale = 10;
 		

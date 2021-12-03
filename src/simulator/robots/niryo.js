@@ -6,30 +6,8 @@ class Niryo extends Robot {
 	constructor() {
 		super("Niryo", "niryo_robot_description", "urdf/ned/niryo_ned_gripper.urdf.xacro");
 
-		this.partNames.arm = [
-			"joint_1",
-			"shoulder_link",
-			"joint_2",
-			"arm_link",
-			"joint_3",
-			"elbow_link",
-			"joint_4",
-			"forearm_link",
-			"joint_5",
-			"wrist_link",
-			"joint_6",
-			"hand_link",
-			"hand_tool_joint",
-			"tool_link"
-		];
-		this.partNames.hand = [
-			"joint_to_gripper",
-			"base_gripper_1",
-			"joint_base_to_mors_1",
-			"mors_1",
-			"joint_base_to_mors_2",
-			"mors_2"
-		];
+		this.robotRoot = "base_link";
+		this.handRoot = "tool_link";
 
 		this.modelScale = 20;
 

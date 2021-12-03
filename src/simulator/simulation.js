@@ -325,7 +325,7 @@ class TheSimulation {
 
                 for (const finger of robot.hand.movable) {
                     start[finger.name] = finger.angle;
-                    target[finger.name] = finger.limit.lower;  // fully closed
+                    target[finger.name] = finger.states.closed;  // fully closed
                 }
 
             } else if (isAttached() == false
@@ -335,12 +335,12 @@ class TheSimulation {
 
                            simObject.attachToGripper(robot);
 
-               for (const finger of robot.hand.movable) {
+                for (const finger of robot.hand.movable) {
                        start[finger.name] = finger.angle;
-                       target[finger.name] = finger.limit.lower;// - (simObject.size.x * 0.2);//This is just for testing
-               }
+                       target[finger.name] = finger.states.closed;// - (simObject.size.x * 0.2);//This is just for testing
+                }
 
-           } else if (isAttached() == false
+            } else if (isAttached() == false
                       && robot.isGripperOpen()
                       && simObject.isGrippable()
                       && !simObject.isGrippableAxisIndependent()) {
@@ -351,7 +351,7 @@ class TheSimulation {
 
                     for (const finger of robot.hand.movable) {
                             start[finger.name] = finger.angle;
-                            target[finger.name] = finger.limit.lower;// - (simObject.size.x * 0.2);//This is just for testing
+                            target[finger.name] = finger.states.closed;// - (simObject.size.x * 0.2);//This is just for testing
                     }
                 }
             }
@@ -360,7 +360,7 @@ class TheSimulation {
         else {
             for (const finger of robot.hand.movable) {
                 start[finger.name] = finger.angle;
-                target[finger.name] = finger.limit.lower;  // fully closed
+                target[finger.name] = finger.states.closed;  // fully closed
             }
         }
 
@@ -389,7 +389,7 @@ class TheSimulation {
 
         for (const finger of robot.hand.movable) {
             start[finger.name] = finger.angle;
-            target[finger.name] = finger.limit.upper;  // fully opened
+            target[finger.name] = finger.states.opened;  // fully opened
         }
 
         const duration = getDuration(robot, target, this.velocities.gripper);

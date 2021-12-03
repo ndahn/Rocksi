@@ -133,6 +133,7 @@ function loadRobotModel(url) {
 
 function onLoadComplete() {
 	$('.loading-lightbox').hide();
+	robot.onLoadComplete();
 }
 
 

@@ -1,8 +1,10 @@
 import { Object3D, Vector3, Quaternion, Euler, Bone } from "three";
+import { traverse } from "../utils"
 const path = require('path');
 
 
 export const MODELS_ROOT = path.join(process.env.PUBLIC_URL || '', "/models/");
+export const getPackage = (name) => path.join(MODELS_ROOT, name);
 
 
 export default class Robot {
@@ -17,10 +19,9 @@ export default class Robot {
         this.joints = []
 
         // Required for find_package
-        var theRobot = this;
         this.packages = {
             get [packagename]() {
-                return theRobot.package;
+                return getPackage(packagename); 
             }
         };
 
@@ -36,7 +37,11 @@ export default class Robot {
             joints: [],
             movable: [],
             links: [],
+            invertOpenClose: false,
         };
+
+        this.robotRoot = "";
+        this.handRoot = "";
 
 
         /* =============================================================
@@ -107,29 +112,51 @@ export default class Robot {
 				new Euler().set(...this.tcp.rotation)
 			)
         );
-        this.getTCPParent().add(this.tcp.object);
+        this.getFrame(this.tcp.parent).add(this.tcp.object);
 
-		model.traverse((child) => {
-			let container;
-			if (this.isArm(child)) {
-				container = this.arm;
-			} else if (this.isHand(child)) {
-				container = this.hand;
-            } else {
-                // Continue to traverse
-				return;
-			}
+        this.robotRoot = this.getFrame(this.robotRoot);
+        traverse(this.robotRoot, (obj) => {
+            if (obj.name === this.handRoot) {
+                return true;
+            }
 
-			if (this.isJoint(child)) {
-				container.joints.push(child);
-				if (this.isMovable(child)) {
-					container.movable.push(child);
-				}
-			} else if (this.isLink(child)) {
-				container.links.push(child);
-			}
-		});
+            this.partNames.arm.push(obj.name);
+
+            if (this.isJoint(obj)) {
+                this.arm.joints.push(obj);
+                if (this.isMovable(obj)) {
+                    this.arm.movable.push(obj);
+                }
+            }
+            else if (this.isLink(obj)) {
+                this.arm.links.push(obj);
+            }
+        });
+
+        this.handRoot = this.getFrame(this.handRoot);
+        traverse(this.handRoot, (obj) => {
+            this.partNames.hand.push(obj.name);
+
+            if (this.isJoint(obj)) {
+                this.hand.joints.push(obj);
+                if (this.isMovable(obj)) {
+                    this.hand.movable.push(obj);
+                }
+            }
+            else if (this.isLink(obj)) {
+                this.hand.links.push(obj);
+            }
+        });
+
+        for (let joint of this.hand.movable) {
+            joint.states = {
+                closed: this.hand.invertOpenClose ? joint.limit.upper : joint.limit.lower,
+                opened: this.hand.invertOpenClose ? joint.limit.lower : joint.limit.upper,
+            };
+        }
     }
+
+    onLoadComplete() {}
 
 
     get root() {
@@ -249,8 +276,8 @@ export default class Robot {
 		return null;
     }
     
-	getTCPParent() {
-		return this.model.frames[this.tcp.parent];
+	getFrame(name) {
+		return this.model.frames[name];
     }
 
 
