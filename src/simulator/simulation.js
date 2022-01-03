@@ -314,13 +314,21 @@ class TheSimulation {
 
         tcp.getWorldPosition(position);
 
+        if (isAttached()) {
+            // An object is already attached to the gripper, we can't grip another one
+            console.log('... but an object is already held');
+            throw new Error('already gripping');
+        }
+
         const simObject = getSimObjectByPos(position);//Retruns a simObject, if tcp is inside a box around it
         //Gripping a simObject if it is available
-        if (simObject != undefined) {
-            if (simObject.advancedGrippingOff //override for debug
-                && isAttached() == false
-                && robot.isGripperOpen()) {
-
+        if (simObject != undefined
+            && simObject.isGrippable()) 
+        {
+            if (!robot.useAdvancedGripping
+                || simObject.isGrippableAxisIndependent()
+                || simObject.checkGripperOrientation(robot))
+            {
                 simObject.attachToGripper(robot);
 
                 for (const finger of robot.hand.movable) {
@@ -328,32 +336,10 @@ class TheSimulation {
                     target[finger.name] = finger.states.closed;  // fully closed
                 }
 
-            } else if (isAttached() == false
-                       && robot.isGripperOpen()
-                       && simObject.isGrippable()
-                       && simObject.isGrippableAxisIndependent()) {
-
-                           simObject.attachToGripper(robot);
-
-                for (const finger of robot.hand.movable) {
-                       start[finger.name] = finger.angle;
-                       target[finger.name] = finger.states.closed;// - (simObject.size.x * 0.2);//This is just for testing
-                }
-
-            } else if (isAttached() == false
-                      && robot.isGripperOpen()
-                      && simObject.isGrippable()
-                      && !simObject.isGrippableAxisIndependent()) {
-
-                if (simObject.checkGripperOrientation(robot)) {
-
-                    simObject.attachToGripper(robot);
-
-                    for (const finger of robot.hand.movable) {
-                            start[finger.name] = finger.angle;
-                            target[finger.name] = finger.states.closed;// - (simObject.size.x * 0.2);//This is just for testing
-                    }
-                }
+            }
+            else {
+                console.log('... but object does not fit inside gripper (realistic gripping is on)');
+                throw new Error('ungrippable');
             }
         }
         //if not, close full

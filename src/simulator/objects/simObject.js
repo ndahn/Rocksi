@@ -61,8 +61,6 @@ export class SimObject extends Object3D {
         this.grippable = true;
         this.grippableAxisIndependent = true;
         this.gripAxes = [];
-        this.advancedGrippingOff = false; //For debug and development, turns off orientation
-                                          //based gripping.
     }
 
     //Positioning

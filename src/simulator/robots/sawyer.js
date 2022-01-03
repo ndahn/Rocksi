@@ -28,11 +28,12 @@ class Sawyer extends Robot {
 
 		this.ikEnabled = [
 			"right_j0",
+			//"head_pan",
 			"right_j1",
 			"right_j2",
 			"right_j3",
-			//"right_j4",
-			"right_j5",
+			"right_j4",
+			//"right_j5",
 			//"right_j6",
 		];
 

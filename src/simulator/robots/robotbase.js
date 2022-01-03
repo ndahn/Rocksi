@@ -13,6 +13,9 @@ export default class Robot {
         this._package = packagename + '/';
         this._xacro = xacro;
 
+        // Whether to use orientation based gripping
+        this.useAdvancedGripping = true;
+
         // This will store the model loaded by URDFLoader
         this.model = {}
         this.links = []
@@ -114,6 +117,7 @@ export default class Robot {
         );
         this.getFrame(this.tcp.parent).add(this.tcp.object);
 
+        // Find all joints and links from the robot root up to the hand root
         this.robotRoot = this.getFrame(this.robotRoot);
         traverse(this.robotRoot, (obj) => {
             if (obj.name === this.handRoot) {
@@ -133,6 +137,7 @@ export default class Robot {
             }
         });
 
+        // Find all joints and links from the hand root onwards
         this.handRoot = this.getFrame(this.handRoot);
         traverse(this.handRoot, (obj) => {
             this.partNames.hand.push(obj.name);

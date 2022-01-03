@@ -41,25 +41,84 @@ export function initGui(robot, cameraControl, renderCall) {
 
     gui.add('title', { name: 'Rocksi', prefix: 'v2.0' });
     
-    const languages = gui.add('list', { name: localize('gui-language'), list: theLanguages, value: currentLanguageIdx }).onChange( val => switchLanguage(languages, val) );
+    const languages = gui.add('list', 
+                                { name: localize('gui-language'), 
+                                  list: theLanguages, 
+                                  value: currentLanguageIdx })
+                        .onChange( 
+                            val => switchLanguage(languages, val) 
+                        );
     
-    const robotList = gui.add('list', { name: localize('gui-robot'), list: theRobots, value: currentRobotIdx }).onChange( val => loadRobot(robotList, val) );
-    gui.add('button', { name: '', value: [localize('gui-robot-info')]}).onChange( val => showRobotInfo(robot) );
+    const robotList = gui.add('list', 
+                                { name: localize('gui-robot'), 
+                                  list: theRobots, 
+                                  value: currentRobotIdx })
+                        .onChange( 
+                            val => loadRobot(robotList, val) 
+                        );
 
-    let gripperButtons = gui.add('button', { name: '', value: [localize('gui-gripper-open'), localize('gui-gripper-close')]}).onChange( val => setGripper(val) );
+    gui.add('button', 
+            { name: '', 
+              value: [localize('gui-robot-info')] })
+        .onChange( 
+            val => showRobotInfo(robot) 
+        );
+
+    let gripperButtons = gui.add('button', 
+                                    { name: '',
+                                      value: [localize('gui-gripper-open'), 
+                                      localize('gui-gripper-close')]})
+                            .onChange( 
+                                val => setGripper(val) 
+                            );
     gripperButtons.label(localize('gui-gripper'), 1)
+
+    // let advancedGripping = gui.add('bool', 
+    //                                 { name: localize('gui-advanced-gripping'), 
+    //                                 value: robot.useAdvancedGripping, 
+    //                                 mode: 0 })
+    //                             .onChange( 
+    //                                 val => { robot.useAdvancedGripping = val; } 
+    //                             );
     
     let jointValuesRelative = getRobotJointValuesRelative(robot);
-    jointList = gui.add('graph', { name: localize('gui-joints'), value: jointValuesRelative, neg: true, precision: 2, h:80 }).onChange( vals => updateRobotJoints(robot, vals, renderCall) );
+    jointList = gui.add('graph', 
+                        { name: localize('gui-joints'), 
+                        value: jointValuesRelative, 
+                        neg: true, 
+                        precision: 2, 
+                        h:80 })
+                    .onChange( 
+                        vals => updateRobotJoints(robot, vals, renderCall) 
+                    );
 
     let ikgroup = gui.add('group', { name: localize('gui-ik-joints') });
     for (let joint of robot.arm.movable) {
         let active = robot.ikEnabled.includes(joint.name);
-        ikgroup.add('bool', { name: joint.name, value: active, h: 20 }).onChange( val => onJointIKChange(robot, joint.name, val) );
+        ikgroup.add('bool', 
+                    { name: joint.name, 
+                      value: active, 
+                      h: 20 })
+                .onChange( 
+                    val => onJointIKChange(robot, joint.name, val) 
+                );
     }
     
-    gui.add('button', { name: '', value: [localize('gui-reset-robot')], p: 0 }).onChange( val => resetRobot(robot, renderCall) );
-    gui.add('button', { name: '', value: [localize('gui-reset-view')], p: 0 }).onChange( val => cameraControl.reset() );
+    gui.add('button', 
+            { name: '', 
+              value: [localize('gui-reset-robot')], 
+              p: 0 })
+        .onChange( 
+            val => resetRobot(robot, renderCall) 
+        );
+
+    gui.add('button', 
+            { name: '', 
+              value: [localize('gui-reset-view')], 
+              p: 0 })
+        .onChange( 
+            val => cameraControl.reset() 
+        );
 
     gui.isOpen = false;
     gui.setHeight();

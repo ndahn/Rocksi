@@ -47,6 +47,7 @@
     "gui-gripper": "Greifer",
     "gui-gripper-open": "Öffnen",
     "gui-gripper-close": "Schließen",
+    "gui-advanced-gripping": "Reales Greifen",
     "gui-joints": "Gelenkwinkel",
     "gui-ik-joints": "IK Gelenke",
     "gui-reset-robot": "Roboter zurücksetzen",

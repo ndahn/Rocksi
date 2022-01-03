@@ -47,6 +47,7 @@
     "gui-gripper": "Gripper",
     "gui-gripper-open": "Open",
     "gui-gripper-close": "Close",
+    "gui-advanced-gripping": "Realistic Grip",
     "gui-joints": "Joint Values",
     "gui-ik-joints": "IK Joints",
     "gui-reset-robot": "Reset Robot",
