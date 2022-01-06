@@ -37,12 +37,16 @@
     "tutorial-rf-heading": "Robot Driver's License",
     "tutorial-rf": "You want to know more about robots? Our free {{link:robot driver's license|https://www.robotikschulungen.de}} has you covered!",
 
+    "license-note": "Rocksi is distributed under the <a href=\"https://tldrlegal.com/license/mit-license\" target=\"_blank\">MIT license</a><br>",
+
     "imprint": "Imprint",
     "privacy": "Privacy Policy",
+    "software": "Software",
     "imprint-content": "i18n/imprint_en.html",
     "privacy-content": "i18n/privacy_en.html",
+    "software-content": "i18n/software_en.html",
 
-    "gui-robot": "Robot",
+    "gui-robot": "Rocksi",
     "gui-language": "Language",
     "gui-gripper": "Gripper",
     "gui-gripper-open": "Open",

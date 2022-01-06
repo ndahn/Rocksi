@@ -37,12 +37,16 @@
     "tutorial-rf-heading": "Roboterführerschein",
     "tutorial-rf": "Du möchtest noch mehr wissen oder dir war etwas unklar? Dann mach doch unseren kostenlosen {{link:Roboterführerschein|https://www.robotikschulungen.de}}",
 
+    "license-note": "Rocksi wird unter der <a href=\"https://tldrlegal.com/license/mit-license\" target=\"_blank\">MIT Lizenz</a> veröffentlicht<br>",
+
     "imprint": "Impressum",
     "privacy": "Datenschutz",
+    "software": "Software",
     "imprint-content": "i18n/imprint_de.html",
     "privacy-content": "i18n/privacy_de.html",
+    "software-content": "i18n/software_de.html",
 
-    "gui-robot": "Roboter",
+    "gui-robot": "Rocksi",
     "gui-language": "Sprache",
     "gui-gripper": "Greifer",
     "gui-gripper-open": "Öffnen",
