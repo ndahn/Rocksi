@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "parcel serve ./index.html --out-dir dist/dev/",
-    "build": "cross-env-shell PUBLIC_URL=\"/rocksi\" parcel ./index.html --out-dir dist/build/ --public-url $PUBLIC_URL"
+    "build-moodle": "cross-env-shell PUBLIC_URL=\"/rocksi\" parcel ./index.html --out-dir dist/build/ --public-url $PUBLIC_URL",
+    "build": "parcel ./index.html --out-dir dist/build/"
   },
   "author": "Robokind",
   "license": "ISC",

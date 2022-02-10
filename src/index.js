@@ -227,6 +227,18 @@ window.onbeforeunload = function() {
 }
 
 
+// Hide our URL hint if we are not inside an iframe
+try { 
+    // Will fail because of cross origin access if we're inside an iframe - in that 
+    // case we want the message to stay
+    if (document.location.hostname == window.parent.location.hostname) {
+        $('#iframe-notice').hide();
+    }
+} 
+catch (e)
+{}
+
+
 // Somehow loading blockly early improves page loading
 import 'blockly'
 import './blockly_fixes'

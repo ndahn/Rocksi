@@ -46,7 +46,7 @@ function createBoxMesh(simObject) {
                                             10,
                                             10);
 
-    const material = new MeshPhongMaterial({ color: simObject.colour });
+    const material = new MeshPhongMaterial({ color: simObject.color });
     const mesh = new Mesh(geometry, material);
     return mesh;
 }
