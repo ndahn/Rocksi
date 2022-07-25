@@ -116,11 +116,13 @@ Blockly.JavaScript["set_speed"] = function (block) {
 };
 
 Blockly.JavaScript["joint_lock"] = function (block) {
-	let joint = block.getFieldValue('JOINT');
-	return code = 'robot("lockJoint", ' + joint + ');\n';
+	var joint = block.getFieldValue('JOINT');
+	var code = 'robot("lockJoint", ' + joint + ');\n';
+	return code;
 };
 
 Blockly.JavaScript["joint_unlock"] = function (block) {
-	let joint = block.getFieldValue('JOINT');
-	return code = 'robot("unlockJoint", ' + joint + ');\n';
+	var joint = block.getFieldValue('JOINT');
+	var code = 'robot("unlockJoint", ' + joint + ');\n';
+	return code;
 };

@@ -47,6 +47,13 @@ var simulation = null;
 Simulation.getInstance().then(sim => simulation = sim);
 
 
+function export_impossible(block_name) {
+    let msg = block_name + ' cannot be translated for Niryo. So sorry ._.\n'
+    Alert.popWarning(msg);
+    return "# " + msg;
+}
+
+
 /* ==============
  * BLOCKS TO CODE
  * ============== */
@@ -135,18 +142,15 @@ NiryoGenerator_v3["gripper_close"] = function (block) {
 
 
 NiryoGenerator_v3["add_sim_object"] = function (block) {
-    Alert.popWarning('add_sim_object cannot be translated for Niryo');
-    return "";
+    return export_impossible("add_sim_object");
 };
 
 NiryoGenerator_v3["physics_done"] = function (block) {
-    Alert.popWarning('physics_done cannot be translated for Niryo');
-    return "";
+    return export_impossible("physics_done");
 };
 
 NiryoGenerator_v3["is_attached"] = function (block) {
-    Alert.popWarning('is_attached cannot be translated for Niryo');
-    return "";
+    return export_impossible("is_attached");
 };
 
 // Logic
@@ -165,31 +169,29 @@ NiryoGenerator_v3["wait"] = function (block) {
 };
 
 NiryoGenerator_v3["set_speed"] = function (block) {
-	var motion = block.getFieldValue('MOTION_TYPE');
-	var speed = block.getFieldValue('SPEED') / 100;
+	let motion = block.getFieldValue('MOTION_TYPE');
+	let speed = block.getFieldValue('SPEED') / 100;
 	
     switch (motion) {
         case 'move':
             // Set directly on the robot
             let v = (speed * NiryoGenerator_v3.MAX_MOVE_SPEED).toFixed(0);
-            return 'set_arm_max_velocity(' + v + ')\n';
+            return 'n.set_arm_max_velocity(' + v + ')\n';
         
         case 'gripper':
             // Used by gripper_open/_close
             NiryoGenerator_v3.GRIPPER_SPEED = (speed * NiryoGenerator_v3.MAX_GRIPPER_SPEED).toFixed(0);
-            return '';
+            return '# set_speed(gripper) will take effect on the next gripper movement';
         
         default:
-            throw new Error('Unknown motion type ' + motion);
+            return export_impossible("set_speed(" + motion + ")");
     }
 };
 
 NiryoGenerator_v3["joint_lock"] = function (block) {
-    Alert.popWarning('joint_lock cannot be translated for Niryo');
-    return "";
+    return export_impossible("joint_lock");
 };
 
 NiryoGenerator_v3["joint_unlock"] = function (block) {
-    Alert.popWarning('joint_unlock cannot be translated for Niryo');
-    return "";
+    return export_impossible("joint_unlock");
 };
