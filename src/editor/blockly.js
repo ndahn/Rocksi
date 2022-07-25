@@ -254,6 +254,7 @@ Simulation.getInstance().then(sim => {
         },
 
         callback: function (scope) {
+            generator.init(scope.workspace);
             let code = generator.workspaceToCode(scope.workspace);
             console.log(code);
 

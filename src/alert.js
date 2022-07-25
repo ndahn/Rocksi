@@ -16,6 +16,8 @@ class MessageBox {
 			throw "The 'msg' parameter is empty.";
 		}
 
+		console.log(msg);
+
 		let option = this.option;
 
 		let msgboxArea = document.querySelector(this.id);

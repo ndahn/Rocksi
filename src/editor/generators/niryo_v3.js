@@ -136,17 +136,17 @@ NiryoGenerator_v3["gripper_close"] = function (block) {
 
 NiryoGenerator_v3["add_sim_object"] = function (block) {
     Alert.popWarning('add_sim_object cannot be translated for Niryo');
-    return null;
+    return "";
 };
 
 NiryoGenerator_v3["physics_done"] = function (block) {
     Alert.popWarning('physics_done cannot be translated for Niryo');
-    return null;
+    return "";
 };
 
 NiryoGenerator_v3["is_attached"] = function (block) {
     Alert.popWarning('is_attached cannot be translated for Niryo');
-    return null;
+    return "";
 };
 
 // Logic
@@ -186,10 +186,10 @@ NiryoGenerator_v3["set_speed"] = function (block) {
 
 NiryoGenerator_v3["joint_lock"] = function (block) {
     Alert.popWarning('joint_lock cannot be translated for Niryo');
-    return null;
+    return "";
 };
 
 NiryoGenerator_v3["joint_unlock"] = function (block) {
     Alert.popWarning('joint_unlock cannot be translated for Niryo');
-    return null;
+    return "";
 };
