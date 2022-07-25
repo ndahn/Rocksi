@@ -1,7 +1,7 @@
 import * as Blockly from 'blockly/core'
 
 // Setup the language early so the correct messages are loaded by later imports
-import { getDesiredLanguage } from '../helpers'
+import { getDesiredLanguage, localize } from '../helpers'
 
 const language = getDesiredLanguage();
 let BlocklyLang = null;
@@ -265,6 +265,8 @@ Simulation.getInstance().then(sim => {
             document.body.appendChild(download);
             download.click();
             document.body.removeChild(download);
+
+            alert(localize('note-code-export'));
         },
 
         scopeType: Blockly.ContextMenuRegistry.ScopeType.WORKSPACE,

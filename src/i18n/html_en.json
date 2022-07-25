@@ -14,6 +14,7 @@
 
     "robot-loading": "Loading Robot...",
     "warn-unsaved": "The current state will not be saved. Continue?",
+    "note-code-export": "Code exported! Be careful before running this on your robot.",
 
     "tutorial-0-heading": "Welcome to Rocksi!",
     "tutorial-0-intro": "Robots are expensive, so for many people it's impossible to get to know them properly. But humans love touching things! Rocksi was created to make robots more accessible. Whether you're a teacher, a student, a specialist worker or just interested, Rocksi enables you to understand and share the very core concepts of robotics.",
@@ -45,6 +46,7 @@
     "imprint-content": "i18n/imprint_en.html",
     "privacy-content": "i18n/privacy_en.html",
     "software-content": "i18n/software_en.html",
+    "robots-content": "i18n/robots_en.html",
 
     "gui-robot": "Rocksi",
     "gui-language": "Language",
