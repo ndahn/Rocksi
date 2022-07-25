@@ -3,8 +3,7 @@ Rocksi is the R**obot** Bl**ock**s **Si**mulator. Acronyms are strange :)
 
 Rocksi is a robot simulator that runs entirely in (modern) web browsers with absolutely no installation. It is thus platform independent and won't care if students are working on Android tablets, iPads or laptops. The robot is programmed using the popular [Blockly](https://developers.google.com/blockly/ library, which is also used by Scratch, Niryo, and a bunch of other projects, and a custom execution routine. 
 
-A running version can be found **[rocksi.net](https://rocksi.net)**!
-The source code is available on github at **[github.com/ndahn/Rocksi](https://github.com/ndahn/Rocksi)**!
+A running version can be found on **[rocksi.net](https://rocksi.net)** and the source code is available at **[github.com/ndahn/Rocksi](https://github.com/ndahn/Rocksi)**!
 
 
 ## License
