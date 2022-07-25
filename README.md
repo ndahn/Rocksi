@@ -37,10 +37,4 @@ To this end many schools throughout the world have started adding robotics to th
 
 
 ## Further Reading
-If you speak German and want to learn more about robotics, Robokind offers several free courses such as the **Roboterführerschein** (robots driving license) on their [Moodle platform](https://robotikschulungen.de). Feel free to check it out!
-
-Rocksi is developed as part of my work at [Robokind](https://www.robokind.de), a non-profit foundation that strives to make robots more accessible to the general public. Check them out, they are a nice bunch! 
-
-<a href="https://robokind.de" target="_blank">
-  <img src="assets/images/robokind_logo_black.png" width="250" alttext="Robokind Logo">
-</a>
+If you speak German and want to learn more about robotics, I want to highlight the free **Roboterführerschein** (robots driving license) on [robotikschulungen.de](https://robotikschulungen.de), which I co-developed. Feel free to check out the other courses there, too!

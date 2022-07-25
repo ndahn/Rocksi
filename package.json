@@ -8,7 +8,7 @@
     "build-moodle": "cross-env-shell PUBLIC_URL=\"/rocksi\" parcel ./index.html --out-dir dist/build/ --public-url $PUBLIC_URL",
     "build": "parcel ./index.html --out-dir dist/build/"
   },
-  "author": "Robokind",
+  "author": "Nikolas Dahn",
   "license": "ISC",
   "dependencies": {
     "@blockly/field-slider": "^2.1.19",
