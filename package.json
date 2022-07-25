@@ -63,7 +63,8 @@
       {
         "staticPath": [
           "NOTICE",
-          "LICENSE"
+          "LICENSE",
+          "README.md"
         ]
       }
     ]

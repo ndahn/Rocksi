@@ -1,15 +1,14 @@
 # Rocksi
 Rocksi is the R**obot** Bl**ock**s **Si**mulator. Acronyms are strange :)
 
-Rocksi is a robot simulator that runs entirely in (modern) web browsers with absolutely no installation. It is thus platform independent and won't care if students are working on Android tablets, iPads or Laptops. The robot is programmed using the popular [Blockly](https://developers.google.com/blockly/) library and a custom execution routine (which is also used by Scratch, Niryo, and a bunch of other projects). 
+Rocksi is a robot simulator that runs entirely in (modern) web browsers with absolutely no installation. It is thus platform independent and won't care if students are working on Android tablets, iPads or laptops. The robot is programmed using the popular [Blockly](https://developers.google.com/blockly/ library, which is also used by Scratch, Niryo, and a bunch of other projects, and a custom execution routine. 
 
-In time I plan to add more robots and blocks (suggestions?), but for now I decided to use the [Franka Emika](https://franka.de/) robot.
-
-A running version can be found **[here](https://robotikschulungen.de/rocksi)**!
+A running version can be found **[rocksi.net](https://rocksi.net)**!
+The source code is available on github at **[github.com/ndahn/Rocksi](https://github.com/ndahn/Rocksi)**!
 
 
 ## License
-Rocksi is distributed under the very permissive MIT license, which basically states that you can do with it whatever you want! Check out the LICENSE file for further details.
+Rocksi is distributed under the very permissive MIT license, which basically states that you can do with it whatever you want! Check out the LICENSE file for further details. However, please be aware that some of the robot models included may use different licenses. The relevant companies have permitted the use in Rocksi.
 
 
 ## Building
@@ -37,4 +36,4 @@ To this end many schools throughout the world have started adding robotics to th
 
 
 ## Further Reading
-If you speak German and want to learn more about robotics, I want to highlight the free **Roboterführerschein** (robots driving license) on [robotikschulungen.de](https://robotikschulungen.de), which I co-developed. Feel free to check out the other courses there, too!
+If you speak German and want to learn more about robotics, I want to highlight the free **Roboterführerschein** (robots driving license) on [robotikschulungen.de](https://robotikschulungen.de), which I co-developed. Hint: the Niryo courses are by me as well :)
