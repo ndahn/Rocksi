@@ -61,7 +61,10 @@
         "staticOutDir": "i18n"
       },
       {
-        "staticPath": ["NOTICE", "LICENSE"]
+        "staticPath": [
+          "NOTICE",
+          "LICENSE"
+        ]
       }
     ]
   }
