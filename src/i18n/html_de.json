@@ -36,13 +36,14 @@
     "tutorial-7-heading": "Aus dem Kontext gerissen",
     "tutorial-7": "Das Kontext-Menü gibt dir weitere Optionen. Außerdem kannst du so deine Programme speichern und laden.",
     "tutorial-rf-heading": "Roboterführerschein",
-    "tutorial-rf": "Du möchtest noch mehr wissen oder dir war etwas unklar? Dann mach doch unseren kostenlosen {{link:Roboterführerschein|https://www.robotikschulungen.de}}",
+    "tutorial-rf": "Du möchtest noch mehr wissen oder dir war etwas unklar? Auf {{link:robotikschulungen.de|https://www.robotikschulungen.de}} findest du verschiedene kostenlose Kurse!",
 
     "license-note": "Rocksi wird unter der <a href=\"https://tldrlegal.com/license/mit-license\" target=\"_blank\">MIT Lizenz</a> veröffentlicht<br>",
 
     "imprint": "Impressum",
     "privacy": "Datenschutz",
     "software": "Software",
+    "robots": "Roboter",
     "imprint-content": "i18n/imprint_de.html",
     "privacy-content": "i18n/privacy_de.html",
     "software-content": "i18n/software_de.html",

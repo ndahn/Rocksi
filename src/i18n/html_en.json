@@ -36,13 +36,14 @@
     "tutorial-7-heading": "Context is Everything",
     "tutorial-7": "The context menus give you additional control over your program. You can also load and save programs there!",
     "tutorial-rf-heading": "Robot Driver's License",
-    "tutorial-rf": "You want to know more about robots? Our free {{link:robot driver's license|https://www.robotikschulungen.de}} has you covered!",
+    "tutorial-rf": "You want to know more about robots? You can find some decent basic courses on {{link:robotikschulungen.de|https://www.robotikschulungen.de}} (unfortunately only in German right now).",
 
     "license-note": "Rocksi is distributed under the <a href=\"https://tldrlegal.com/license/mit-license\" target=\"_blank\">MIT license</a><br>",
 
     "imprint": "Imprint",
     "privacy": "Privacy Policy",
     "software": "Software",
+    "robots": "Robots",
     "imprint-content": "i18n/imprint_en.html",
     "privacy-content": "i18n/privacy_en.html",
     "software-content": "i18n/software_en.html",
