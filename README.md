@@ -25,7 +25,7 @@ This will also start a local parcel webserver serving Rocksi. Especially when ru
 
 
 ## Navigating the code
-You can find the entry point in `src/index.js`. From there, anything related to the 3d-side (e.g. viewport, robot model, inverse kinematics, etc.) can be found in `src/simulation/`, and the entrypoint for that directory is `scene.js`. 
+You can find the main entry point in `src/index.js`. From there, anything related to the 3d-side (e.g. viewport, robot model, inverse kinematics, etc.) can be found in `src/simulation/`, and the entrypoint for that directory is `scene.js`. 
 
 If you are interested in the robot's programming side, you should have a look at `src/editor/blockly.js`. The custom commands for the robot can be found in `src/editor/blocks/` and the functions for turning them into runnable code in `src/editor/generators/`. 
 
