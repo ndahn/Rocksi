@@ -24,6 +24,16 @@ npm run [dev|build]
 This will also start a local parcel webserver serving Rocksi. Especially when running in `build` mode, check the `scripts` section in package.json as it may contain some settings that influence the build process.
 
 
+## Navigating the code
+You can find the entry point in `src/index.js`. From there, anything related to the 3d-side (e.g. viewport, robot model, inverse kinematics, etc.) can be found in `src/simulation/`, and the entrypoint for that directory is `scene.js`. 
+
+If you are interested in the robot's programming side, you should have a look at `src/editor/blockly.js`. The custom commands for the robot can be found in `src/editor/blocks/` and the functions for turning them into runnable code in `src/editor/generators/`. 
+
+Finally, if you want to see how the robot executes the commands it receives you should look at `src/simulation/simulator.js`. 
+
+Feel free to drop me a message if you need further help! :)
+
+
 ## Motivation
 Robots are one of the corner stones of future industries and technological development. The recent years' advancements in control, intuivity and sensitivity has made these beautiful yet complex machines much more accessible. Modern robots manage to hide much of their complexity, to the degree that even non-specialists and children can handle them with ease. 
 
