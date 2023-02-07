@@ -29,7 +29,7 @@ You can find the main entry point in `src/index.js`. From there, anything relate
 
 If you are interested in the robot's programming side, you should have a look at `src/editor/blockly.js`. The custom commands for the robot can be found in `src/editor/blocks/` and the functions for turning them into runnable code in `src/editor/generators/`. 
 
-Finally, if you want to see how the robot executes the commands it receives you should look at `src/simulation/simulator.js`. 
+Finally, if you want to see how the robot executes the commands it receives, you should look at `src/simulation/simulator.js`. 
 
 Feel free to drop me a message if you need further help! :)
 
