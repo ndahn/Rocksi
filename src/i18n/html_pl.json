@@ -1,0 +1,70 @@
+{
+    "@metadata": {
+        "authors": [
+          "Nikolas Dahn"
+        ],
+        "last-updated": "2024-11-12",
+        "locale": "pl",
+        "message-documentation": "qqq"
+    },
+
+    "seo-description": "Rocksi to darmowy symulator robota przemysłowego, działający w każdej współczesnej przeglądarce i pozwalający programować trójwymiarowe ramię robotyczne za pomocą wizualnego języka Blockly.",
+    "seo-header": "Przetestuj robota przemysłowego w wirtualnym środowisku twojej przeglądarki!",
+    "seo-text": "Rocksi to symulator pozwalający dowolnie programować trójwymiarowy model robota przemysłowego w sposób podobny do Scratcha lub LEGO Mindstorms. Rocksi działa w każdej współczesnej przeglądarce (Firefox, Chrome, Safari...) i na każdym urządzeniu (iPhone, iPad, IOS, Android, Linux, Windows, ...) - bez konieczności pobierania czy instalacji! Rocksi jest zarazem całkowicie darmowy i nie wymaga rejestracji.<br>Rocksi powstał po to, aby umożliwić interakcję z robotem przemysłowym każdemu, a zwłaszcza uczniom i studentom. Wykorzystaj go, jak chcesz, np. w na lekcji w klasie, podczas zajęć na uczelni, warsztatów, pikników naukowych, itd.! W tej chwili w symulatorze dostępne są roboty Franka Emika, Niryo i Sawyer, ale łatwo jest dodać własne modele (wskazówki w kodzie źródłowym).",
+
+    "robot-loading": "Ładowanie robota...",
+    "warn-unsaved": "Aktualny stan nie zostanie zapisany. Kontynuować?",
+    "note-code-export": "Program wyeksportowany! Zachowaj ostrożność uruchamiając go na swoim robocie.",
+
+    "tutorial-0-heading": "Wita cię Rocksi!",
+    "tutorial-0-intro": "Roboty przemysłowe kosztują dużo pieniędzy, co sprawia, że dla wielu osób nauczenie się ich obsługi jest nieosiągalne. A przecież ludzie uwielbiają eksperymentować! Rocksi powstał po to, by ułatwić dostęp do takich robotów. Jeśli jesteś nauczycielem, uczniem, studentem, specjalistą lub po prostu hobbystą, Rocksi pozwoli ci zrozumieć najbardziej podstawowe zasady robotyki.",
+    "tutorial-0-start": "Na początek kliknij strzałkę z prawej, aby przejść do pierwszego samouczka.<br><i>Na pewno ci się spodoba!</i>",
+    "tutorial-0-social": "Aktualności i kontakt z autorem",
+    "tutorial-1-heading": "Organizacja pracy",
+    "tutorial-1": "Przełączaj szybko widoki za pomocą menu po lewej stronie.",
+    "tutorial-2-heading": "Punkty widokowe",
+    "tutorial-2-desktop": "Zmieniaj kąt obserwacji za pomocą obu klawiszy myszy oraz kółka.",
+    "tutorial-2-mobile": "Zmieniaj kąt obserwacji za pomocą gestów dwoma palcami.",
+    "tutorial-3-heading": "Oswajanie robota",
+    "tutorial-3": "Zmieniaj pozycję robota łapiąc kursorem jego chwytak. Każdym przegubem można osobno manipulować za pomocą elementów sterujących po prawej stronie na górze.",
+    "tutorial-4-heading": "Dla fanów programowania",
+    "tutorial-4": "Łącząc komendy jak kawałki puzzle możesz szybko stworzyć program dla robota.",
+    "tutorial-5-heading": "Trzymanie formy",
+    "tutorial-5": "Używając strzałek możesz kopiować pozycję robota z symulatora do programu i odwrotnie.",
+    "tutorial-6-heading": "Idź na całość",
+    "tutorial-6": "Kliknij duży przycisk odtwarzania, aby uruchomić program w symulatorze.",
+    "tutorial-7-heading": "Wyrwane z kontekstu",
+    "tutorial-7": "Menu kontekstowe oferuje dodatkowe możliwości. Tam również jest opcja zapisania lub wczytania programu dla robota!",
+    "tutorial-rf-heading": "Chcesz prawo jazdy?",
+    "tutorial-rf": "Chcesz wiedzieć więcej o robotach przemysłowych? Tu znajdziesz kilka niezłych kursów dla początkujących: {{link:robotikschulungen.de|https://www.robotikschulungen.de}} (niestety na razie tylko po niemiecku).",
+
+    "license-note": "Rocksi jest udostępniany na <a href=\"https://tldrlegal.com/license/mit-license\" target=\"_blank\">licencji MIT</a><br>",
+
+    "imprint": "Autorzy",
+    "privacy": "Polityka prywatności",
+    "software": "Kod źródłowy",
+    "robots": "Roboty",
+    "imprint-content": "i18n/imprint_pl.html",
+    "privacy-content": "i18n/privacy_pl.html",
+    "software-content": "i18n/software_pl.html",
+    "robots-content": "i18n/robots_pl.html",
+
+    "gui-robot": "Rocksi",
+    "gui-language": "Język",
+    "gui-gripper": "Chwytak",
+    "gui-gripper-open": "Otwórz",
+    "gui-gripper-close": "Zaciśnij",
+    "gui-advanced-gripping": "Realistyczny chwytak",
+    "gui-joints": "Pozycje przegubów",
+    "gui-ik-joints": "Aktywne przeguby",
+    "gui-reset-robot": "Resetuj robota",
+    "gui-reset-view": "Resetuj widok",
+    "gui-close": "Zamknij",
+    "gui-confirm-switch-robot": "Czy na pewno chcesz załadować robota $1? Niezapisane programy zostaną utracone!",
+    "gui-confirm-switch-language": "Czy na pewno zmienić język? Niezapisane programy zostaną utracone!",
+    "gui-robot-info": "Informacje",
+
+    "franka-info": "Robot Franka Emika ma 7 stopni swobody i sesory o wysokiej czułości. To pozwala mu poruszać się podobnie do ludzkiego ramienia i reagować nawet na lekki dotyk. <p><a href=\"https://franka.de/\" target=\"_blank\">www.franka.de</a></p>",
+    "niryo-info": "Robot Niryo ma 6 stopni swobody i jest przeznaczony do zastosowań edukacyjnych. Projekt tego robota jest otwartoźródłowy, więc jeśli masz odpowiednie części i drukarkę 3D, to możesz zbudować go samodzielnie! <p><a href=\"https://niryo.com/\" target=\"_blank\">www.niryo.com</a></p>",
+    "sawyer-info": "Robot Sawyer jest następcą bardzo popularnego, dwuręcznego robota Baxter. Układ przegubów pozwala na bardzo nietypowe choreografie ruchu! <p><a href=\"https://www.rethinkrobotics.com/sawyer/\" target=\"_blank\">www.rethinkrobotics.com/sawyer/</a></p>"
+}
