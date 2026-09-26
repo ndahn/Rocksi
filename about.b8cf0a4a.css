@@ -1,0 +1,105 @@
+#about-lightbox {
+	display: none;
+	position: fixed;
+	z-index: 999;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background-color: rgba(1, 1, 1, 0.3);
+}
+
+#about-lightbox:target {
+	display: block;
+}
+
+#about-box {
+	display: flex;
+	position: absolute;
+	width: 30%;
+	min-width: 300px;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	background-color: rgba(0, 0, 0, 0.9);
+	border-radius: 20px;
+	flex-direction: column;
+	align-content: flex-start;
+	align-items: center;
+}
+
+@media only screen and (orientation: landscape) and (max-device-width : 1024px) {
+	#about-box {
+		width: 60%;
+	}
+}
+
+.about-logo {
+	position: relative;
+	left: 50%;
+	transform: translateX(-50%);
+	margin-top: 1.5em;
+	max-height: 4.5rem;
+	max-width: 90%;
+}
+
+.about-info {
+	max-width: 90%;
+	margin: 20px 5% 0 5%;
+	line-height: 1.5em;
+	text-align: center;
+}
+
+.about-info a:visited {
+	color: steelblue;
+}
+
+.about-panels {
+	max-width: 100%;
+	margin: 0;
+	margin-bottom: 1em;
+}
+
+.about-panels .accordion-headers {
+	text-align: center;
+	margin-bottom: 7px;
+}
+
+.accordion {
+	color: white !important;
+	display: inline;
+	width: 33%;
+}
+
+.about-panels .accordion-panel h3:not(:first) {
+	margin-top: 2em;
+    margin-bottom: .3em;
+}
+
+.about-panels .accordion-panel p {
+	margin-top: 1em;
+}
+
+.about-panels .accordion-panel.active {
+	min-height: 150px;
+}
+
+.about-panels .accordion:hover span {
+	text-decoration: underline;
+}
+
+.about-panels .accordion::before {
+	content: '\f0da';
+	text-decoration: none !important;
+	font-family: 'Font Awesome 5 Free';
+	font-size: 1.2em;
+	font-weight: bold;
+	margin-right: .5em;
+}
+
+.about-panels .accordion.active::before {
+	content: '\f0d7';
+}
+
+
+/*# sourceMappingURL=/about.b8cf0a4a.css.map */

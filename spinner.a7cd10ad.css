@@ -1,0 +1,114 @@
+/* Inspired by https://loading.io/css/ */
+.lds-roller {
+  display: inline-block;
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
+.lds-roller div {
+  animation: lds-roller linear infinite;
+  transform-origin: 40px 40px;
+  mix-blend-mode: screen;
+}
+.lds-roller div:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  border-radius: 50%;
+  background: rgb(30, 165, 255);
+  /*box-shadow: 0 0 1px 1px #fff;*/
+  transform-origin: 0 0;
+  animation: lds-scale ease-in-out infinite;
+}
+.lds-roller div:nth-child(1) {
+  animation-delay: -0.036s;
+  animation-duration: 0.8s;
+}
+.lds-roller div:nth-child(1):after {
+  /* background: #93dbe9; */
+  top: 63px;
+  left: 63px;
+  width: 7px;
+  height: 7px;
+  animation-delay: -0.036s;
+  animation-duration: 0.8s;
+}
+.lds-roller div:nth-child(2) {
+  animation-delay: -0.072s;
+  animation-duration: 1s;
+}
+.lds-roller div:nth-child(2):after {
+  /* background: #689cc5; */
+  top: 68px;
+  left: 56px;
+  width: 9px;
+  height: 9px;
+  animation-delay: -0.072s;
+  animation-duration: 1s;
+}
+.lds-roller div:nth-child(3) {
+  animation-delay: -0.108s;
+  animation-duration: 1.3s;
+}
+.lds-roller div:nth-child(3):after {
+  /* background: #5e6fa3; */
+  top: 71px;
+  left: 48px;
+  width: 11px;
+  height: 11px;
+  animation-delay: -0.108s;
+  animation-duration: 1.3s;
+}
+.lds-roller div:nth-child(4) {
+  animation-delay: -0.144s;
+  animation-duration: 2s;
+}
+.lds-roller div:nth-child(4):after {
+  /* background: #3b4368; */
+  top: 72px;
+  left: 40px;
+  width: 13px;
+  height: 13px;
+  animation-delay: -0.144s;
+  animation-duration: 2s;
+}
+.lds-roller div:nth-child(5) {
+  animation-delay: -0.18s;
+  animation-duration: 4s;
+}
+.lds-roller div:nth-child(5):after {
+  /* background: #191d3a; */
+  top: 71px;
+  left: 32px;
+  width: 17px;
+  height: 17px;
+  animation-delay: -0.18s;
+  animation-duration: 3.3s;
+}
+
+@keyframes lds-roller {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes lds-scale {
+  0% {
+    transform: scale(1.5);
+  }
+  50% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.5);
+  }
+}
+
+
+/*# sourceMappingURL=/spinner.a7cd10ad.css.map */

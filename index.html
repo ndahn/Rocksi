@@ -2,33 +2,33 @@
 <html lang="en">
 	<head>
 		<title>Rocksi - Robot Blocks Simulator</title>
-		<link rel="shortcut icon" type="image/jpg" href="favicon.png"/>
-		<meta charset="utf-8"/>
-		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
-		<meta name="author" content="Nikolas Dahn"/>
-		<meta name="description" data-i18n="[content]seo-description" content="Rocksi is a free robot simulator that runs in any modern browser and allows you to program a 3D robot arm using blockly visual programming."/>
-		<meta name="keywords" content="robot programming, roboter programmieren, roboter simulieren, online robot simulator, robot simulator for ios, robot simulator for android, franka emika simulator, niryo simulator, block programming, visual programming, platform independent robot simulator"/>
-		<meta property="og:url" content="https://rocksi.net"/>
-		<meta property="og:image" content="https://rocksi.net/images/preview_large.png"/>
-		<meta property="twitter:card" content="summary"/>
-		<meta property="twitter:description" content="Program and simulate real robots within your browser!"/>
-		<meta property="twitter:image" content="https://rocksi.net/images/preview_small.png"/>
-		<meta property="twitter:url" content="https://rocksi.net"/>
-		<link type="text/css" rel="stylesheet" href="./css/main.css">
-		<link type="text/css" rel="stylesheet" href="./css/spinner.css">
-		<link type="text/css" rel="stylesheet" href="./css/alerts.css">
-		<link type="text/css" rel="stylesheet" href="./css/blockly.css">
-		<link type="text/css" rel="stylesheet" href="./css/viewport.css">
-		<link type="text/css" rel="stylesheet" href="./css/tutorial.css">
-		<link type="text/css" rel="stylesheet" href="./css/about.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+		<link rel="shortcut icon" type="image/jpg" href="/favicon.2e70f008.png">
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="author" content="Nikolas Dahn">
+		<meta name="description" data-i18n="[content]seo-description" content="Rocksi is a free robot simulator that runs in any modern browser and allows you to program a 3D robot arm using blockly visual programming.">
+		<meta name="keywords" content="robot programming, roboter programmieren, roboter simulieren, online robot simulator, robot simulator for ios, robot simulator for android, franka emika simulator, niryo simulator, block programming, visual programming, platform independent robot simulator">
+		<meta property="og:url" content="https://rocksi.net">
+		<meta property="og:image" content="https://rocksi.net/images/preview_large.png">
+		<meta property="twitter:card" content="summary">
+		<meta property="twitter:description" content="Program and simulate real robots within your browser!">
+		<meta property="twitter:image" content="https://rocksi.net/images/preview_small.png">
+		<meta property="twitter:url" content="https://rocksi.net">
+		<link type="text/css" rel="stylesheet" href="/main.c52e0fe2.css">
+		<link type="text/css" rel="stylesheet" href="/spinner.a7cd10ad.css">
+		<link type="text/css" rel="stylesheet" href="/alerts.5a16890a.css">
+		<link type="text/css" rel="stylesheet" href="/blockly.e5ce808b.css">
+		<link type="text/css" rel="stylesheet" href="/viewport.5bdbceb2.css">
+		<link type="text/css" rel="stylesheet" href="/tutorial.25e8b96e.css">
+		<link type="text/css" rel="stylesheet" href="/about.b8cf0a4a.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.7/jquery.i18n.min.js" integrity="sha512-a0tGMh5o0nCoRDiMVaSmiWgB9s/JqfC+PQZHWANTzIhasvm5eH9NkWTmJ4WloaQWLT8fEzRBjvADgFNDf0WusQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.7/jquery.i18n.messagestore.min.js" integrity="sha512-/hv/2tE0W63ywFkKYwtnbYdBwlS+tjEw/TWvGD31awT1bbEliLB0G0akHicAUJVLPSCE6LVEnfdJy0lPkrauvg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.7/jquery.i18n.parser.min.js" integrity="sha512-7SqTAqYSZQLut/vsxY2AFpb+kHhx97D6aBE/mxasqUzdoFqdBunJexJX+I51Uj1j2o9yD9JtNyMZ1PXDMnJMoQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.i18n/1.0.7/jquery.i18n.emitter.min.js" integrity="sha512-Yw0lHnAEswccgVMDJm0wNcn6VoLj6g/xAerqevklCx+D1eBBJZDvs6N7vzmlgmpT9SrZ/QsWDjWVOV8d5InotA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-	</head>
+	<script src="/main.c52e0fe2.js"></script><script src="/spinner.a7cd10ad.js"></script><script src="/alerts.5a16890a.js"></script><script src="/blockly.e5ce808b.js"></script><script src="/viewport.5bdbceb2.js"></script><script src="/tutorial.25e8b96e.js"></script><script src="/about.b8cf0a4a.js"></script></head>
 	<body>
 		<!-- Only for SEO -->
 		<div style="display: none">
@@ -81,7 +81,7 @@
 			</button>
 			<div id="split-pane-2" class="split sim-container">
 				<div id="sim-canvas"></div>
-				<button class="run-button" disabled autocomplete="off">
+				<button class="run-button" disabled="" autocomplete="off">
 					<!--<i class="fa fa-play fa-2x"></i>-->
 				</button>
 				<div class="robot-info">
@@ -99,12 +99,12 @@
 			<div id="tutorial-container">
 				<div class="slide-container">
 					<!-- Introduction -->
-					<input class="tutorial-radio" id="tutorial-radio-0" name="tutorial" autocomplete="off" type="radio" checked>
+					<input class="tutorial-radio" id="tutorial-radio-0" name="tutorial" autocomplete="off" type="radio" checked="">
 					<div class="tutorial-slide">
 						<div class="slide-content">
 							<h3 data-i18n="tutorial-0-heading">Rocksi</h3>
 							<p>
-								<p data-i18n="[html]tutorial-0-intro"></p>
+								</p><p data-i18n="[html]tutorial-0-intro"></p>
 								<div class="fas fa-cat" style="color: #F86624; font-size: 3em;"></div>
 								<p data-i18n="[html]tutorial-0-start"></p>
 								<hr style="margin: 20px 15% 20px 15%">
@@ -122,7 +122,7 @@
 										--></a>
 									</div>
 								</div>
-							</p>
+							<p></p>
 						</div>
 					</div>
 
@@ -131,8 +131,8 @@
 					<div class="tutorial-slide">
 						<div class="slide-content">
 							<h3 data-i18n="tutorial-1-heading"></h3>
-							<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
-								<source data-src="assets/tutorial/01_panels.mp4" type="video/mp4">
+							<video class="tutorial-media lozad" controls="" preload="none" muted="" loop="" autoplay="" playsinline="">
+								<source data-src="/01_panels.341e80ed.mp4" type="video/mp4">
 							</video>
 							<p data-i18n="[html]tutorial-1"></p>
 						</div>
@@ -143,8 +143,8 @@
 					<div class="tutorial-slide">
 						<div class="slide-content">
 							<h3 data-i18n="tutorial-2-heading"></h3>
-							<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
-								<source data-src="assets/tutorial/02_viewport.mp4" type="video/mp4">
+							<video class="tutorial-media lozad" controls="" preload="none" muted="" loop="" autoplay="" playsinline="">
+								<source data-src="/02_viewport.6f1e5e93.mp4" type="video/mp4">
 							</video>
 							<p class="desktop-only" data-i18n="[html]tutorial-2-desktop"></p>
 							<p class="mobile-only" data-i18n="[html]tutorial-2-mobile"></p>
@@ -156,8 +156,8 @@
 					<div class="tutorial-slide">
 						<div class="slide-content">
 							<h3 data-i18n="tutorial-3-heading"></h3>
-							<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
-								<source data-src="assets/tutorial/03_robot-move.mp4" type="video/mp4">
+							<video class="tutorial-media lozad" controls="" preload="none" muted="" loop="" autoplay="" playsinline="">
+								<source data-src="/03_robot-move.663bcc56.mp4" type="video/mp4">
 							</video>
 							<p data-i18n="[html]tutorial-3"></p>
 						</div>
@@ -168,8 +168,8 @@
 					<div class="tutorial-slide">
 						<div class="slide-content">
 							<h3 data-i18n="tutorial-4-heading"></h3>
-							<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
-								<source data-src="assets/tutorial/04_blockly.mp4" type="video/mp4">
+							<video class="tutorial-media lozad" controls="" preload="none" muted="" loop="" autoplay="" playsinline="">
+								<source data-src="/04_blockly.70a47264.mp4" type="video/mp4">
 							</video>
 							<p data-i18n="[html]tutorial-4"></p>
 						</div>
@@ -180,8 +180,8 @@
 					<div class="tutorial-slide">
 						<div class="slide-content">
 							<h3 data-i18n="tutorial-5-heading"></h3>
-							<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
-								<source data-src="assets/tutorial/05_saving-poses.mp4" type="video/mp4">
+							<video class="tutorial-media lozad" controls="" preload="none" muted="" loop="" autoplay="" playsinline="">
+								<source data-src="/05_saving-poses.39c3f508.mp4" type="video/mp4">
 							</video>
 							<p data-i18n="[html]tutorial-5"></p>
 						</div>
@@ -192,8 +192,8 @@
 					<div class="tutorial-slide">
 						<div class="slide-content">
 							<h3 data-i18n="tutorial-6-heading"></h3>
-							<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
-								<source data-src="assets/tutorial/06_execution.mp4" type="video/mp4">
+							<video class="tutorial-media lozad" controls="" preload="none" muted="" loop="" autoplay="" playsinline="">
+								<source data-src="/06_execution.c281103e.mp4" type="video/mp4">
 							</video>
 							<p data-i18n="[html]tutorial-6"></p>
 						</div>
@@ -204,8 +204,8 @@
 					<div class="tutorial-slide">
 						<div class="slide-content">
 							<h3 data-i18n="tutorial-7-heading"></h3>
-							<video class="tutorial-media lozad" controls preload="none" muted loop autoplay playsinline>
-								<source data-src="assets/tutorial/07_context-menu.mp4" type="video/mp4">
+							<video class="tutorial-media lozad" controls="" preload="none" muted="" loop="" autoplay="" playsinline="">
+								<source data-src="/07_context-menu.9737cf34.mp4" type="video/mp4">
 							</video>
 							<p data-i18n="[html]tutorial-7"></p>
 						</div>
@@ -217,7 +217,7 @@
 						<div class="slide-content">
 							<h3 data-i18n="tutorial-rf-heading"></h3>
 							<a class="tutorial-media" style="margin: auto;" href="https://www.robotikschulungen.de" target="_blank">
-								<img src="assets/images/rofu_collage.jpg">
+								<img src="/rofu_collage.fc65dd18.jpg">
 							</a>
 							<p data-i18n="[html]tutorial-rf"></p>
 						</div>
@@ -236,7 +236,7 @@
 			<div id="about-lightbox">
 				<div id="about-box">
 					<div style="margin-left: auto; margin-right: auto; text-align: center;">
-						<img class="about-logo" src="assets/images/icon.png">
+						<img class="about-logo" src="/icon.6aac6de8.png">
 					</div>
 					<div class="about-info">
 						<span data-i18n="[html]license-note"></span>
@@ -265,8 +265,8 @@
 						</div>
 						<!--<div id="imprint-panel" class="accordion-panel" load-i18n="imprint-content">See <a href="i18n/imprint_en.html">Imprint</a></div>-->
 						<!--<div id="privacy-panel" class="accordion-panel" load-i18n="privacy-content">See <a href="i18n/privacy_en.html">Privacy Policy</a></div>-->
-						<div id="software-panel" class="accordion-panel" load-i18n="software-content">See <a href="i18n/software_en.html">Software</a></div>
-						<div id="robots-panel" class="accordion-panel" load-i18n="robots-content">See <a href="i18n/robots_en.html">Robots</a></div>
+						<div id="software-panel" class="accordion-panel" load-i18n="software-content">See <a href="/i18n\software_en.html">Software</a></div>
+						<div id="robots-panel" class="accordion-panel" load-i18n="robots-content">See <a href="/i18n\robots_en.html">Robots</a></div>
 					</div>
 				</div>
 			</div>
@@ -274,7 +274,7 @@
 
 			<div id="msgbox-area" class="msgbox-area"></div>
 
-			<script src="src/index.js" type="module"></script>
+			<script src="/src.a2b27638.js" type="module"></script>
 		</div>
 	</body>
 </html>
