@@ -18,6 +18,8 @@ import { Vec3 } from 'cannon-es';
 
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js';
 
 import * as Blockly from 'blockly/core';
 
@@ -117,7 +119,7 @@ export function addGeometry(simObject) {
             break;
 
         case 'custom':
-            loadUserSTL(simObject); //Body creation etc in event callback
+            loadUserFile(simObject);
             break;
 
         default:
@@ -158,22 +160,34 @@ function loadAssetSTL(simObject, assetPath, shape) {
     });
 }
 
-//Loads a 3D object added by the user.
-function loadUserSTL(simObject) {
+
+function loadUserFile(simObject) {
     const upload = document.createElement('input');
-    const reader = new FileReader();
-
-    reader.addEventListener('load', (event) => {
-        const data = event.target.result;
-        loadSTL(simObject, data);
-    });
-
     upload.setAttribute('type', 'file');
-    upload.setAttribute('accept', '.stl');
+    upload.setAttribute('accept', '.stl,.obj,.mtl,.png,.jpg,.jpeg,.bmp');
+    upload.setAttribute('multiple', 'true');  // allow .obj + .mtl + textures
+
     upload.onchange = (fileSelectedEvent) => {
         try {
-            const file = fileSelectedEvent.target.files[0];
-            reader.readAsArrayBuffer(file);
+            const files = Array.from(fileSelectedEvent.target.files);
+            if (files.length === 0) return;
+
+            const stlFile = files.find(f => f.name.toLowerCase().endsWith('.stl'));
+            const objFile = files.find(f => f.name.toLowerCase().endsWith('.obj'));
+
+            if (stlFile) {
+                const reader = new FileReader();
+                reader.addEventListener('load', (event) => {
+                    loadSTL(simObject, event.target.result);
+                });
+                reader.readAsArrayBuffer(stlFile);
+            }
+            else if (objFile) {
+                loadUserOBJ(simObject, files, objFile);
+            }
+            else {
+                alert('Please select an .stl or .obj file (you can also include .mtl and texture files).');
+            }
         }
         catch (e) { console.log(e); }
     }
@@ -182,39 +196,97 @@ function loadUserSTL(simObject) {
     document.body.removeChild(upload);
 }
 
-//Loads a stl into a simObject
-function loadSTL(simObject, data){
-    const geometry = new STLLoader().parse( data );
-    const material = new MeshPhongMaterial({color: simObject.colour});
 
-    const mesh = new Mesh();
+function loadUserOBJ(simObject, allFiles, objFile) {
+    const mtlFile = allFiles.find(f => f.name.toLowerCase().endsWith('.mtl'));
+    const textureFiles = allFiles.filter(f =>
+        /\.(png|jpe?g|bmp)$/i.test(f.name)
+    );
+    const fileMap = {};
+    allFiles.forEach(f => {
+        fileMap[f.name] = URL.createObjectURL(f);
+    });
+
+    const manager = new LoadingManager();
+    manager.setURLModifier((url) => {
+        const filename = url.split('/').pop().split('\\').pop();
+        if (fileMap[filename]) {
+            return fileMap[filename];
+        }
+        return url;
+    });
+
+    const objReader = new FileReader();
+    objReader.addEventListener('load', (event) => {
+        const objText = event.target.result;
+
+        if (mtlFile) {
+            const mtlReader = new FileReader();
+            mtlReader.addEventListener('load', (mtlEvent) => {
+                const mtlText = mtlEvent.target.result;
+                const mtlLoader = new MTLLoader(manager);
+                const materials = mtlLoader.parse(mtlText);
+                materials.preload();
+
+                const objLoader = new OBJLoader(manager);
+                objLoader.setMaterials(materials);
+                const obj = objLoader.parse(objText);
+                attachOBJToSimObject(simObject, obj);
+            });
+            mtlReader.readAsText(mtlFile);
+        }
+        else {
+            const objLoader = new OBJLoader(manager);
+            const obj = objLoader.parse(objText);
+
+            const defaultMaterial = new MeshPhongMaterial({ color: simObject.color });
+            obj.traverse((child) => {
+                if (child.isMesh) {
+                    child.material = defaultMaterial;
+                }
+            });
+            attachOBJToSimObject(simObject, obj);
+        }
+    });
+    objReader.readAsText(objFile);
+}
+
+function attachOBJToSimObject(simObject, obj) {
     const size = new Vector3();
-
-    mesh.geometry = geometry;
-    mesh.material = material;
-
-    const sf = simObject.scaleFactor;
-    mesh.scale.set(sf, sf, sf);
-
-    mesh.geometry.computeBoundingBox();
-    mesh.geometry.center();
-
-    const tmpBox = new Box3().setFromObject(mesh);
-    tmpBox.getSize(size);
+    const rawBox = new Box3().setFromObject(obj);
+    rawBox.getSize(size);
+ 
+    const TARGET_SIZE = 1.0;
+    const maxDim = Math.max(size.x, size.y, size.z);
+ 
+    if (maxDim > 0 && isFinite(maxDim)) {
+        const sf = TARGET_SIZE / maxDim;
+        obj.scale.set(sf, sf, sf);
+        simObject.scaleFactor = sf;
+    } else {
+        simObject.scaleFactor = 1;
+    }
+ 
+    obj.updateMatrixWorld(true);
+    const scaledBox = new Box3().setFromObject(obj);
+    const scaledCenter = new Vector3();
+    scaledBox.getCenter(scaledCenter);
+    scaledBox.getSize(size);
+ 
+    obj.position.x -= scaledCenter.x;
+    obj.position.y -= scaledCenter.y;
+    obj.position.z -= scaledBox.min.z;
+ 
     simObject.size.copy(size);
-
-    simObject.add(mesh);
-
+ 
+    simObject.add(obj);
     simObject.bodyShape = 'box';
-    simObject.createBody(5, 2, 0.1);
-
+    simObject.createBody(5, 2, 0.1); 
     simObject.setGrippable();
     simObject.setGripAxes();
-
     simObject.render();
 }
 
-//Create a new SimObject and add a 3D model to the simObject
 export function addSimObject(blockUUID, fieldValues, color, shape, scale) {
 
     let simObject = new SimObject;
