@@ -2,8 +2,8 @@ import Split from 'split.js'
 import lozad from 'lozad'
 import * as GUI from './simulator/gui'
 import { getDesiredLanguage, isTouch, isNarrowScreen, localize } from './helpers';
-import * as html_de from './i18n/html_de.json'
-import * as html_en from './i18n/html_en.json'
+import html_de from './i18n/html_de.json'
+import html_en from './i18n/html_en.json'
 
 
 // Initialize localization so it's immediately available

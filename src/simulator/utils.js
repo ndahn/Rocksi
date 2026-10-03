@@ -1,4 +1,4 @@
-import { PointsMaterial, Geometry, Points } from "three";
+import { ArrowHelper, BufferGeometry, Points, PointsMaterial, Vector3 } from "three";
 
 
 // A version of traverse that will stop a branch when the callback returns "true"
@@ -24,11 +24,8 @@ function showPoints(scene, positions, color = null) {
 			depthTest: false,
             depthWrite: true,
 		});
-	let geom = new Geometry();
-
-	for (let p of positions) {
-		geom.vertices.push(p);
-	}
+	// three.js dropped Geometry in r125; BufferGeometry takes the points directly.
+	let geom = new BufferGeometry().setFromPoints(positions);
 
     var dots = new Points(geom, material);
     dots.layers.toggle(31)

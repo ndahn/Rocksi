@@ -71,7 +71,7 @@
 	width: 33%;
 }
 
-.about-panels .accordion-panel h3:not(:first) {
+.about-panels .accordion-panel h3:not(:first-of-type) {
 	margin-top: 2em;
     margin-bottom: .3em;
 }

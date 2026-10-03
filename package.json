@@ -4,31 +4,33 @@
   "description": "Roboter Simulator für Webseiten",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "parcel serve ./index.html --out-dir dist/dev/",
-    "build-moodle": "cross-env-shell PUBLIC_URL=\"/rocksi\" parcel ./index.html --out-dir dist/build/ --public-url $PUBLIC_URL",
-    "build": "parcel ./index.html --out-dir dist/build/"
+    "clean": "node tools/clean.js",
+    "copy-static": "node tools/copy-static.js",
+    "dev": "npm run copy-static -- dist/dev && parcel serve ./index.html --dist-dir dist/dev",
+    "build": "parcel build ./index.html --dist-dir dist/build && npm run copy-static -- dist/build",
+    "build:gh-pages": "cross-env PUBLIC_URL=/Rocksi parcel build ./index.html --dist-dir dist/build --public-url /Rocksi/ && npm run copy-static -- dist/build",
+    "build:moodle": "cross-env PUBLIC_URL=/rocksi parcel build ./index.html --dist-dir dist/build --public-url /rocksi/ && npm run copy-static -- dist/build",
+    "predeploy": "npm run clean && npm run build:gh-pages",
+    "deploy": "node tools/deploy.js --dist dist/build --branch gh-pages"
   },
   "author": "Nikolas Dahn",
   "license": "ISC",
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
     "@blockly/field-slider": "^2.1.19",
     "@fortawesome/fontawesome-free": "^5.15.2",
     "blockly": "^5.20210325.1",
-    "blocks": "^0.3.5",
     "cannon-es": "^0.17.1",
     "cannon-es-debugger": "^0.1.2",
     "css-element-queries": "^1.2.3",
-    "fullik": "github:lo-th/fullik",
+    "fullik": "git+https://github.com/lo-th/fullik.git#3f22da98a0fa0051416b20077af5142aec3dfc2e",
     "js-interpreter": "^2.2.0",
     "lozad": "^1.16.0",
-    "objects": "^0.3.0",
-    "parcel-bundler": "^1.12.4",
-    "path": "^0.12.7",
     "split.js": "^1.6.2",
-    "temp-dir": "^2.0.0",
     "three": "^0.129.0",
-    "typescript": "^4.3.2",
-    "uil": "github:lo-th/uil",
+    "uil": "git+https://github.com/lo-th/uil.git#7087acbf6db3d3ad3f945ebccc65d89239db2807",
     "urdf-loader": "^0.9.3",
     "xacro-parser": "^0.3.1"
   },
@@ -36,37 +38,15 @@
     "since 2017-06"
   ],
   "devDependencies": {
+    "@parcel/packager-xml": "^2.16.4",
+    "@parcel/transformer-inline-string": "^2.16.4",
+    "@parcel/transformer-xml": "^2.16.4",
     "@tweenjs/tween.js": "^18.6.4",
     "@types/three": "^0.128.0",
     "cross-env": "^7.0.3",
-    "cssnano": "^4.1.10",
-    "parcel-bundler": "^1.12.5",
-    "parcel-plugin-data-src": "github:bkeepers/parcel-plugin-data-src#data-src-anywhere",
-    "parcel-plugin-raw-xml": "^1.0.1",
-    "parcel-plugin-static-files-copy": "^2.5.0"
-  },
-  "staticFiles": {
-    "staticPath": [
-      {
-        "staticPath": "assets",
-        "excludeGlob": [
-          "src",
-          "src/**",
-          "tutorial",
-          "tutorial/**"
-        ]
-      },
-      {
-        "staticPath": "i18n",
-        "staticOutDir": "i18n"
-      },
-      {
-        "staticPath": [
-          "NOTICE",
-          "LICENSE",
-          "README.md"
-        ]
-      }
-    ]
+    "parcel": "^2.16.4",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
+    "typescript": "^4.3.2"
   }
 }

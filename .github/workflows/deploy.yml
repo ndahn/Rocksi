@@ -1,0 +1,41 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+# Needed so the job can push the built site to the gh-pages branch.
+permissions:
+  contents: write
+
+# Never let two deploys race for the gh-pages branch.
+concurrency:
+  group: gh-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # tools/deploy.js pushes through the origin remote, so keep the token.
+          persist-credentials: true
+          # It also needs the gh-pages branch history to commit onto.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build:gh-pages
+
+      - name: Publish to gh-pages branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          node tools/deploy.js --message "Deploy ${GITHUB_SHA::7}"

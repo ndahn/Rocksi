@@ -11,17 +11,51 @@ Rocksi is distributed under the very permissive MIT license, which basically sta
 
 
 ## Building
-You will need [npm](https://www.npmjs.com/) or any other package manager that can handle `package.json` files to build this project. First install the dependencies by running the following command in the project's root directory:
+You will need [Node.js](https://nodejs.org/) 18 or newer and npm. First install the dependencies by running the following command in the project's root directory:
 ```
 npm install
 ```
 
-Afterwards you can build the project in development or build mode by running
+To work on Rocksi, start the Parcel development server:
 ```
-npm run [dev|build]
+npm run dev
 ```
+This serves Rocksi at http://localhost:1234 with hot reloading.
 
-This will also start a local parcel webserver serving Rocksi. Especially when running in `build` mode, check the `scripts` section in package.json as it may contain some settings that influence the build process.
+To produce a deployable site, use one of the build scripts:
+
+| Script | Serves from | Output |
+| --- | --- | --- |
+| `npm run build` | domain root | `dist/build/` |
+| `npm run build:gh-pages` | `/Rocksi/` | `dist/build/` |
+| `npm run build:moodle` | `/rocksi/` | `dist/build/` |
+
+The builds differ only in the public URL the assets are referenced under, so
+pick the one matching where the site will be hosted. `npm run clean` removes
+`dist/` and the Parcel cache.
+
+Note that the robot models, localization snippets and tutorial videos are
+fetched over HTTP at runtime rather than bundled, so every build runs
+`tools/copy-static.js` to place them next to `index.html`.
+
+
+## Deploying
+`npm run deploy` publishes the site to the `gh-pages` branch, which GitHub Pages
+serves at https://ndahn.github.io/Rocksi/:
+```
+npm run deploy
+```
+The `predeploy` script cleans and rebuilds first, so this is the only command
+you need. Pass `--dry-run` to build the commit without pushing it:
+```
+node tools/deploy.js --dry-run
+```
+The deploy works inside a temporary git worktree and never modifies your local
+branches or working tree.
+
+Pushing to `master` also deploys automatically via
+`.github/workflows/deploy.yml`, so manual deploys are only needed to publish
+without committing to `master`.
 
 
 ## Navigating the code
